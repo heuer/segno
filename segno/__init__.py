@@ -22,7 +22,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
