@@ -1,0 +1,7 @@
+*.pyc
+.coverage
+.tox
+.idea
+segno/*.egg-info
+tests/htmlcov/*
+tests/output/*
