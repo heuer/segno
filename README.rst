@@ -10,7 +10,7 @@ and produces Micro QR Codes and QR Codes with nearly no effort.
 Segno provides several serialization formats like SVG, EPS, PNG, PDF, or text
 output. Neither of these serializers require an external lib. Segno provides
 more serialization formats via a plugin architecture. It was tested against
-Jython, Python 2.6 - 3.4, and PyPy.
+Python 2.6 - 3.4 and PyPy.
 
 
 Installation
