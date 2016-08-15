@@ -1169,36 +1169,6 @@ def test_format_info_figure26():
     eq_(ref_matrix, matrix)
 
 
-_REF_DATA = (
-    # Input string, error level, encoding, mode, scale, reference file
-    #('Märchenbuch', 'M', 'iso-8859-1', 'byte', 6, 'mb_latin1_m.png'),
-    #('Märchenbuch', 'M', 'utf-8',      'byte', 6, 'mb_utf8_m.png'),
-    #('Märchenbuch', 'L', 'utf-8',      'byte', 6, 'mb_utf8_l.png'),
-    #('Märchenbuch', 'H', 'utf-8',      'byte', 6, 'mb_utf8_h.png'),
-    #('Märchenbuch', 'Q', 'utf-8',      'byte', 6, 'mb_utf8_q.png'),
-    #('Märchen',     'Q', 'utf-8',      'byte', 6, 'm_utf8_q.png'),
-    ('点',           'M', 'shift_jis', 'kanji', 'kanji1_m'),
-    ('茗',           'M', 'shift_jis', 'kanji', 'kanji2_m'),
-    ('漢字',         'M', 'shift_jis', 'kanji', 'kanji3_m'),
-    ('外来語',       'L', 'shift_jis', 'kanji', 'kanji4_l'),
-)
-
-@nottest
-def test_ref_matrix():
-    def check(data, error, encoding, mode, ref_file):
-        qr = encoder.encode(data, error=error, encoding=encoding, micro=False)
-        ref_matrix = read_ref_matrix(ref_file)
-        matrix = qr.matrix
-        from segno import writers
-        writers.write_svg_debug(matrix, qr.version, '/Users/lars/projects/qrcoda/tests/benchmark/%s.svg' % ref_file)
-        eq_(encoder.normalize_errorlevel(error), qr.error)
-        eq_(len(ref_matrix), len(matrix))
-        eq_(encoder.normalize_mode(mode), qr.segments[0].mode)
-        eq_(ref_matrix, matrix)
-
-    for data, error, encoding, mode, ref_file in _REF_DATA:
-        yield check, data, error, encoding, mode, ref_file
-
 
 if __name__ == '__main__':
     import nose

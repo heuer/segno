@@ -173,10 +173,10 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
     encode = partial(quote, safe=b"") if not encode_minimal else partial(quote, safe=b" :/='")
     buff = io.BytesIO()
     write_svg(matrix, version, buff, scale=scale, color=color, background=background,
-               border=border, xmldecl=xmldecl, svgns=svgns, title=title,
-               desc=desc, svgclass=svgclass, lineclass=lineclass,
-               omitsize=omitsize, encoding=encoding, svgid=svgid, unit=unit,
-               svgversion=svgversion, nl=nl)
+              border=border, xmldecl=xmldecl, svgns=svgns, title=title,
+              desc=desc, svgclass=svgclass, lineclass=lineclass,
+              omitsize=omitsize, encoding=encoding, svgid=svgid, unit=unit,
+              svgversion=svgversion, nl=nl)
     return 'data:image/svg+xml{0},{1}' \
                 .format(';charset=' + encoding if not omit_charset else '',
                         # Replace " quotes with ' and URL encode the result
@@ -184,8 +184,8 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
                         encode(_replace_quotes(buff.getvalue())))
 
 
-def write_svg_debug(matrix, version, out, scale=1, border=None, fallback_color='red',
-                    color_mapping=None):  # pragma: no cover
+def write_svg_debug(matrix, version, out, scale=1, border=None,
+                    fallback_color='red', color_mapping=None):  # pragma: no cover
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
@@ -472,8 +472,7 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                     background='#fff', compresslevel=9, addad=True):
     buff = io.BytesIO()
     write_png(matrix, version, buff, scale=scale, border=border, color=color,
-             background=background, compresslevel=compresslevel,
-             addad=addad)
+              background=background, compresslevel=compresslevel, addad=addad)
     return 'data:image/png;base64,{0}' \
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
