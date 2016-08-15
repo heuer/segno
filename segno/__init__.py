@@ -508,7 +508,9 @@ class QRCode(object):
 
         :param file_or_name: A filename or a writable file-like object with a
                 ``name`` attribute.
-        :param kind:
+        :param kind: If the desired output format cannot be extracted from
+                the filename, this parameter can be used to indicate the
+                serialization format (i.e. "svg" to enforce SVG output)
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
