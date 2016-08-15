@@ -23,7 +23,7 @@ Output acc. to ISO/IEC 18004:2015(E) Fig. 1     No                    No        
 Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not available)     No (not available)    Yes
 `PNG`_ output                                   Yes                   Yes                    No                    Yes
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
-`EPS`_ output                                   No                    Yes                    No                    Yes
+`EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
 `XPM`_ output                                   No                    Yes                    No                    No
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
