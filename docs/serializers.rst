@@ -62,7 +62,7 @@ accept float values and do not "downgrade" it to integer.
 Many serializers accept the parameters ``color`` and ``background`` to specify
 the color of the dark modules and light modules (background). If accepted,
 ``None`` is interpreted as "transparent". Colors may be specified as HTML color
-names, as hexadecimal value (``#RGB`` or ``#RRGGBB``), or (if supported, as
+names, as hexadecimal value (``#RGB`` or ``#RRGGBB``), or (if supported) as
 hexadecimal value with an alpha channel (``#RGBA`` or ``#RRGGBBAA``).
 
 .. code-block:: python
