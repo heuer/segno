@@ -490,7 +490,7 @@ class QRCode(object):
 
     def terminal(self, out=None, border=None):
         """\
-        Serializes the matrix in a text format.
+        Serializes the matrix as ANSI escape code.
 
         :param out: Filename or a file-like object supporting to write text.
                 If ``None`` (default), the matrix is written to ``stdout``.
