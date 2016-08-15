@@ -28,7 +28,7 @@ Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not av
 `XPM`_ output                                   No                    Yes                    No                    No
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
-Text output                                     Yes                   Yes                    Yes                   Yes
+Text output                                     Yes                   Yes                    No                    Yes
 `ANSI`_ escape code output                      Yes                   Yes                    No                    Yes
 Other output formats (i.e. `JPEG`_)             Yes                   No                     No                    No, but via `PIL plugin`_
 Black and white QR Codes                        Yes                   Yes                    Yes                   Yes
