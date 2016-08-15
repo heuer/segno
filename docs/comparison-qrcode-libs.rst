@@ -1,5 +1,5 @@
-Comparison of Pythn QR Code libraries
-=====================================
+Comparison of Python QR Code libraries
+======================================
 
 Features
 --------
