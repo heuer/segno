@@ -81,7 +81,7 @@ If the provided content is too large, a :py:class:`segno.DataOverflowError` is t
 Version
 -------
 
-It's possible to specify the desired version for the proided ``content``.
+It's possible to specify the desired version for the provided ``content``.
 
 .. code-block:: python
 

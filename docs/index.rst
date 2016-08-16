@@ -11,6 +11,7 @@ Contents:
    :maxdepth: 4
 
    make
+   colors
    serializers
    comparison-qrcode-libs
    replace-qrcode-libs
