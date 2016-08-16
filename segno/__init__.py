@@ -370,6 +370,31 @@ class QRCode(object):
         writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                border)
 
+    def svg(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='svg', **kw)
+
+    def png(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='png', **kw)
+
+    def txt(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='txt', **kw)
+
+    def eps(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='eps', **kw)
+
+    def pdf(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='pdf', **kw)
+
     def save(self, file_or_name, kind=None, **kw):
         """\
         Serializes the QR Code in one of the supported formats.
