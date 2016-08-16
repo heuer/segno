@@ -527,7 +527,7 @@ class QRCode(object):
         Name             Description
         =============    ==============================================================
         kind             "eps"
-        scale            integer of float
+        scale            integer or float
         color            Default: "#000" (black)
         background       Default value ``#fff`` (white)
         =============    ==============================================================
@@ -540,7 +540,7 @@ class QRCode(object):
         Name             Description
         =============    ==============================================================
         kind             "pdf"
-        scale            integer of float
+        scale            integer or float
         compresslevel    Default: 9. Integer indicating the compression level.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
