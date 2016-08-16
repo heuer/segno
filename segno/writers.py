@@ -678,6 +678,19 @@ _VALID_SERIALISERS = {
 }
 
 def save(matrix, version, file_or_name, kind=None, **kw):
+    """\
+    Serializes the matrix in any of the supported formats.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param file_or_name: A filename or a writable file-like object with a
+            ``name`` attribute.
+    :param kind: If the desired output format cannot be extracted from
+            the filename, this parameter can be used to indicate the
+            serialization format (i.e. "svg" to enforce SVG output)
+    :param kw: Any of the supported keywords by the specific serialization
+            method.
+    """
     is_stream = False
     if kind is None:
         try:
