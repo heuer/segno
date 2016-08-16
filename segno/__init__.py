@@ -395,7 +395,7 @@ class QRCode(object):
         warnings.warn('Deprecated, use QRCode.save()')
         self.save(out, kind='pdf', **kw)
 
-    def save(self, file_or_name, kind=None, **kw):
+    def save(self, out, kind=None, **kw):
         """\
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
@@ -562,15 +562,17 @@ class QRCode(object):
         =============    ==============================================================
 
 
-        :param file_or_name: A filename or a writable file-like object with a
-                ``name`` attribute.
+        :param out: A filename or a writable file-like object with a
+                ``name`` attribute. Use the `kind` parameter if `out` is
+                a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
+                don't have a ``name`` attribute.
         :param kind: If the desired output format cannot be extracted from
                 the filename, this parameter can be used to indicate the
                 serialization format (i.e. "svg" to enforce SVG output)
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
-        writers.save(self.matrix, self._version, file_or_name, kind, **kw)
+        writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
         """\
