@@ -145,7 +145,7 @@ def encode(content, error='M', version=None, mode=None, mask=None,
     add_codewords(matrix, buff, is_micro)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    matrix, mask = find_best_mask(matrix, version, error, is_micro, mask)
+    matrix, mask = find_best_mask(matrix, version, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -521,7 +521,7 @@ def make_error_block(ec_info, data_block):
     return error_block[len_data:]
 
 
-def find_best_mask(matrix, version, error, is_micro, proposed_mask=None):
+def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     """\
     Applies all mask patterns against the provided QR Code matrix and returns
     the best matrix and best pattern.
@@ -532,7 +532,7 @@ def find_best_mask(matrix, version, error, is_micro, proposed_mask=None):
     ISO/IEC 18004:2015(E) -- 7.8.3.2 Evaluation of Micro QR Code symbols (page 54/55)
 
     :param matrix: A matrix.
-    :param int error: Error level.
+    :param int version: A version (Micro) QR Code version constant.
     :param bool is_micro: Indicates if the matrix represents a Micro QR Code
     :param proposed_mask: Optional int to indicate the preferred mask.
     :rtype: tuple

@@ -1087,8 +1087,7 @@ def test_figure22_mask0():
     # Figure 22 - Mask 0
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, 'm', True,
-                                          proposed_mask=0)
+    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=0)
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1103,8 +1102,7 @@ def test_figure22_mask1():
     # Figure 22 - Mask 1
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, 'm', True,
-                                          proposed_mask=1)
+    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=1)
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1119,8 +1117,7 @@ def test_figure22_mask2():
     # Figure 22 - Mask 2
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, 'm', True,
-                                          proposed_mask=2)
+    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=2)
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1135,8 +1132,7 @@ def test_figure22_mask3():
     # Figure 22 - Mask 3
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, 'm', True,
-                                          proposed_mask=3)
+    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=3)
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1150,7 +1146,7 @@ def test_fig23_best_mask():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 23
     matrix = read_matrix('fig-23-unmasked')
-    masked_matrix, mask = encoder.find_best_mask(matrix, 1, error=None, is_micro=False)
+    masked_matrix, mask = encoder.find_best_mask(matrix, 1, is_micro=False)
     eq_(0, mask)
     ref_matrix = read_matrix('fig-23-mask-0')
     eq_(ref_matrix, masked_matrix)
@@ -1167,7 +1163,6 @@ def test_format_info_figure26():
     ref_matrix = read_matrix('fig-26')
     eq_(len(ref_matrix), len(matrix))
     eq_(ref_matrix, matrix)
-
 
 
 if __name__ == '__main__':
