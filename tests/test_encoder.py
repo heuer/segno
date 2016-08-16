@@ -13,12 +13,14 @@ Tests against the encoder module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
-import os
-import io
 from nose.tools import eq_, ok_, raises, nottest
 from segno import consts
 from segno import encoder
 from segno.encoder import Buffer
+try:
+    from .utils import read_ref_matrix, read_matrix
+except (ValueError, SystemError):  # Attempted relative import in non-package
+    from utils import read_ref_matrix, read_matrix
 
 
 def bits(s):
@@ -27,34 +29,6 @@ def bits(s):
 
 def check_prepare_data(expected, data, mode, encoding):
     eq_(expected, tuple(encoder.prepare_data(data, mode, encoding)))
-
-
-def read_matrix(name):
-    """\
-    Helper function to read a matrix from /ref_matrix. The file extension .txt
-    is added automatically.
-
-    :return: A tuple of bytearrays
-    """
-    matrix = []
-    with io.open(os.path.join(os.path.dirname(__file__), 'ref_matrix/{0}.txt'.format(name)), 'rt') as f:
-        for row in f:
-            matrix.append(bytearray([int(i) for i in row if i != '\n']))
-    return tuple(matrix)
-
-
-def read_ref_matrix(name):
-    """\
-    Helper function to read a matrix from /ref. The file extension .txt
-    is added automatically.
-
-    :return: A tuple of bytearrays
-    """
-    matrix = []
-    with io.open(os.path.join(os.path.dirname(__file__), 'ref/{0}.txt'.format(name)), 'rt') as f:
-        for row in f:
-            matrix.append(bytearray([int(i) for i in row if i != '\n']))
-    return tuple(matrix)
 
 
 def test_version_as_str():

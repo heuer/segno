@@ -12,7 +12,8 @@ Utility functions for test cases.
 :organization: Semagia - http://www.semagia.com/
 :license:      BSD License
 """
-
+import os
+import io
 
 def matrix_looks_valid(matrix):
     """\
@@ -33,3 +34,31 @@ def matrix_looks_valid(matrix):
     for i, j, bit in invalid_values:
         msg += '\nrow: {0}, col {1}, value: {2}'.format(i, j, bit)
     return False, msg
+
+
+def read_matrix(name):
+    """\
+    Helper function to read a matrix from /ref_matrix. The file extension .txt
+    is added automatically.
+
+    :return: A tuple of bytearrays
+    """
+    matrix = []
+    with io.open(os.path.join(os.path.dirname(__file__), 'ref_matrix/{0}.txt'.format(name)), 'rt') as f:
+        for row in f:
+            matrix.append(bytearray([int(i) for i in row if i != '\n']))
+    return tuple(matrix)
+
+
+def read_ref_matrix(name):
+    """\
+    Helper function to read a matrix from /ref. The file extension .txt
+    is added automatically.
+
+    :return: A tuple of bytearrays
+    """
+    matrix = []
+    with io.open(os.path.join(os.path.dirname(__file__), 'ref/{0}.txt'.format(name)), 'rt') as f:
+        for row in f:
+            matrix.append(bytearray([int(i) for i in row if i != '\n']))
+    return tuple(matrix)
