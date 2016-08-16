@@ -75,8 +75,10 @@ hexadecimal value with an alpha channel (``#RGBA`` or ``#RRGGBBAA``).
     >>> # Dark modules = transparent, light modules = black
     >>> qr.save('neil-young-3.png', color=None, background='black')
     >>> # Dark modules with alpha transparency
-    >>> qr.save('neil-young-4.png', color='#0000ffcc', background=None)
+    >>> qr.save('neil-young-4.png', color='#0000ffcc')
     >>> qr.save('neil-young-4.svg', color='#00fc')  # Same as above but SVG
+    >>> # Anonther color, save as compressed SVG
+    >>> qr.save('neil-young-5.svgz', color=(8, 90, 117))
 
 
 See :py:class:`segno.QRCode` for a complete reference which parameters are
