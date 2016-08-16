@@ -2,6 +2,8 @@
 .coverage
 .tox
 .idea
-segno/*.egg-info
+*.egg-info
 tests/htmlcov/*
 tests/output/*
+dist/
+build/
