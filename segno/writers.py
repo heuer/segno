@@ -7,6 +7,9 @@
 #
 """\
 Standard serializers and utility functions for serializers.
+
+The serializers are independent of the :py:class:`segno.QRCode` class,
+they just need a matrix (tuple of bytearrays) and the version constant.
 """
 from __future__ import absolute_import, unicode_literals, division
 import io
