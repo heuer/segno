@@ -375,6 +375,167 @@ class QRCode(object):
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
+        Common keywords
+        ---------------
+
+        ==========    ==============================================================
+        Name          Description
+        ==========    ==============================================================
+        scale         Integer or float indicating the size of a single module.
+                      Default: 1. The interpretation of the scaling factor depends
+                      on the serializer. For pixel-based output (like PNG) the
+                      scaling factor is interepreted as pixel-size (1 = 1 pixel).
+                      EPS interprets ``1`` as 1 point (1/72 inch) per module.
+                      Some serializers (like SVG) accept float values. If the
+                      serializer does not accept float values, the value will be
+                      converted to an integer value (note: int(1.6) == 1).
+        border        Integer indicating the size of the quiet zone.
+                      If set to ``None`` (default), the recommended border size
+                      will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+        color         A string or tuple representing a color value for the dark
+                      modules. The default value is "black".  The
+                      color can be provided as ``(R, G, B)`` tuple, as web color
+                      name (like "red") or in hexadecimal format (``#RGB`` or
+                      ``#RRGGBB``). Some serializers (SVG and PNG) accept an alpha
+                      transparency value like ``#RRGGBBAA``.
+        background    A string or tuple representing a color for the light modules
+                      or background. See "color" for valid values.
+                      The default value depends on the serializer. SVG uses no
+                      background color (``None``) by default, other serializers
+                      use "white" as default background color.
+        ==========    ==============================================================
+
+
+        Scalable Vector Graphics (SVG)
+        ------------------------------
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "svg" or "svgz" (to create a gzip compressed SVG)
+        scale            integer or float
+        color            Default: "#000" (black)
+                         ``None`` is a valid value. If set to ``None``, the resulting
+                         path won't have a "stroke" attribute. The "stroke" attribute
+                         may be defined via CSS (external).
+                         If an alpha channel is defined, the output depends of the
+                         used SVG version. For SVG versions >= 2.0, the "stroke"
+                         attribute will have a value like "rgba(R, G, B, A)", otherwise
+                         the path gets another attribute "stroke-opacity" to emulate
+                         the alpha channel.
+        background       Default value ``None``. If this paramater is set to another
+                         value, the resulting image will have another path which
+                         is used to define the background color.
+                         If an alpha channel is used, the resulting path may
+                         have a "fill-opacity" attribute (for SVG version < 2.0)
+                         or the "fill" attribute has a "rgba(R, G, B, A)" value.
+                         See keyword "color" for further details.
+        xmldecl          Boolean value (default: ``True``) indicating whether the
+                         document should have an XML declaration header.
+                         Set to ``False`` to omit the header.
+        svgns            Boolean value (default: True) indicating whether the
+                         document should have an explicit SVG namespace declaration.
+                         Set to ``False`` to omit the namespace declaration.
+                         The latter might be useful if the document should be
+                         embedded into a HTML 5 document where the SVG namespace
+                         is implicitly defined.
+        title            String (default: ``None``) Optional title of the generated
+                         SVG document.
+        desc             String (default: ``None``) Optional description of the
+                         generated SVG document.
+        svgid            A string indicating the ID of the SVG document
+                         (if set to ``None`` (default), the SVG element won't have
+                         an ID).
+        svgclass         Default: "segno". The CSS class of the SVG document
+                         (if set to ``None``, the SVG element won't have a class).
+        lineclass        Default: "qrline". The CSS class of the path element
+                         (which draws the dark modules (if set to ``None``, the path
+                         won't have a class).
+        omitsize         Indicates if width and height attributes should be
+                         omitted (default: ``False``). If these attributes are
+                         omitted, a ``viewBox`` attribute will be added to the
+                         document.
+        unit             Default: ''
+                         Inidctaes the unit for width / height and other coordinates.
+                         By default, the unit is unspecified and all values are
+                         in the user space.
+                         Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
+                         (any string is accepted, this parameter is not validated
+                         by the serializer)
+        encoding         Encoding of the XML document. "utf-8" by default.
+        svgversion       SVG version (default: ``None``). If specified (a float),
+                         the resulting document has an explicit "version" attribute.
+                         If set to ``None``, the document won't have a "version"
+                         attribute. This parameter is not validated.
+        compresslevel    Default: 9. This parameter is only valid, if a compressed
+                         SVG document should be created (file extension "svgz").
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        =============    ==============================================================
+
+
+        Portable Network Graphics (PNG)
+        -------------------------------
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "png"
+        scale            integer
+        color            Default: "#000" (black)
+                         ``None`` is a valid value iff background is not ``None``.
+        background       Default value ``#fff`` (white)
+                         See keyword "color" for further details.
+        compresslevel    Default: 9. Integer indicating the compression level
+                         for the ``IDAT`` (data) chunk.
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        addad            Boolean value (default: True) to (dis-)allow a "Software"
+                         comment indicating that the file was created by Segno.
+        =============    ==============================================================
+
+
+        Encapsulated PostScript (EPS)
+        -----------------------------
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "eps"
+        scale            integer of float
+        color            Default: "#000" (black)
+        background       Default value ``#fff`` (white)
+        =============    ==============================================================
+
+
+        Portable Document Format (PDF)
+        ------------------------------
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "pdf"
+        scale            integer of float
+        compresslevel    Default: 9. Integer indicating the compression level.
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        =============    ==============================================================
+
+
+        Text (TXT)
+        ----------
+
+        Does not support the "scale" keyword!
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "txt"
+        color            Default: "1"
+        background       Default: "0"
+        =============    ==============================================================
+
+
         :param file_or_name: A filename or a writable file-like object with a
                 ``name`` attribute.
         :param kind: If the desired output format cannot be extracted from
