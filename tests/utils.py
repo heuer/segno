@@ -48,17 +48,3 @@ def read_matrix(name):
         for row in f:
             matrix.append(bytearray([int(i) for i in row if i != '\n']))
     return tuple(matrix)
-
-
-def read_ref_matrix(name):
-    """\
-    Helper function to read a matrix from /ref. The file extension .txt
-    is added automatically.
-
-    :return: A tuple of bytearrays
-    """
-    matrix = []
-    with io.open(os.path.join(os.path.dirname(__file__), 'ref/{0}.txt'.format(name)), 'rt') as f:
-        for row in f:
-            matrix.append(bytearray([int(i) for i in row if i != '\n']))
-    return tuple(matrix)
