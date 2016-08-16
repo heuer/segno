@@ -8,7 +8,7 @@ This package implements main parts of ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015
 and produces Micro QR Codes and QR Codes with nearly no effort.
 
 Segno provides several serialization formats like SVG, EPS, PNG, PDF, or text
-output. Neither of these serializers require an external lib. Segno provides
+output. None of these serializers require an external lib. Segno provides
 more serialization formats via a plugin architecture. It was tested against
 Python 2.6 - 3.4 and PyPy.
 

@@ -236,6 +236,16 @@ def test_neq():
     ok_(qr != qr2)
 
 
+def test_save_png_buffer():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='png')
+    out.seek(0)
+    expected = b'\211PNG\r\n\032\n'  # PNG magic number
+    val = out.read(len(expected))
+    eq_(expected, val)
+
+
 def test_save_png_filestream():
     qr = segno.make_qr('test')
     f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
