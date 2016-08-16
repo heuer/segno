@@ -400,8 +400,8 @@ class QRCode(object):
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
-        Common keywords
-        ---------------
+        **Common keywords**
+
 
         ==========    ==============================================================
         Name          Description
@@ -431,8 +431,7 @@ class QRCode(object):
         ==========    ==============================================================
 
 
-        Scalable Vector Graphics (SVG)
-        ------------------------------
+        **Scalable Vector Graphics (SVG)**
 
         =============    ==============================================================
         Name             Description
@@ -499,8 +498,7 @@ class QRCode(object):
         =============    ==============================================================
 
 
-        Portable Network Graphics (PNG)
-        -------------------------------
+        **Portable Network Graphics (PNG)**
 
         =============    ==============================================================
         Name             Description
@@ -520,8 +518,7 @@ class QRCode(object):
         =============    ==============================================================
 
 
-        Encapsulated PostScript (EPS)
-        -----------------------------
+        **Encapsulated PostScript (EPS)**
 
         =============    ==============================================================
         Name             Description
@@ -533,8 +530,7 @@ class QRCode(object):
         =============    ==============================================================
 
 
-        Portable Document Format (PDF)
-        ------------------------------
+        **Portable Document Format (PDF)**
 
         =============    ==============================================================
         Name             Description
@@ -547,8 +543,7 @@ class QRCode(object):
         =============    ==============================================================
 
 
-        Text (TXT)
-        ----------
+        **Text (TXT)**
 
         Does not support the "scale" keyword!
 
