@@ -39,12 +39,12 @@ a custom border, you may specify the border
 
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
-factor of the serialization. By default, the scale is ``1`` which means that
-the dark / light modules of a (Micro) QR Code is interpreted as 1 unit in the
-specific user space (i.e. 1 pixel for the PNG serializer or 1 point (1/72 of an
-inch) in EPS). Some serializers (like PNG) accept only an integer value or
-convert the provided scaling factor to an integer. Other, like SVG and EPS
-accept float values and do not "downgrade" it to integer.
+factor of the serialization. By default, the scaling factor is ``1`` which means
+that the dark / light modules of a (Micro) QR Code is interpreted as 1 unit in
+the specific user space (i.e. 1 pixel for the PNG serializer or 1 point (1/72 of
+an inch) in EPS). Some serializers (like PNG) accept only an integer value or
+convert the provided scaling factor to an integer. Other, like SVG and EPS,
+accept float values and do not "downgrade" it to an integer.
 
 .. code-block:: python
 
@@ -60,10 +60,8 @@ accept float values and do not "downgrade" it to integer.
 
 
 Many serializers accept the parameters ``color`` and ``background`` to specify
-the color of the dark modules and light modules (background). If accepted,
-``None`` is interpreted as "transparent". Colors may be specified as HTML color
-names, as hexadecimal value (``#RGB`` or ``#RRGGBB``), or (if supported) as
-hexadecimal value with an alpha channel (``#RGBA`` or ``#RRGGBBAA``).
+the color of the dark modules and light modules (background). See :doc:`colors`
+for details.
 
 .. code-block:: python
 
@@ -81,5 +79,5 @@ hexadecimal value with an alpha channel (``#RGBA`` or ``#RRGGBBAA``).
     >>> qr.save('neil-young-5.svgz', color=(8, 90, 117))
 
 
-See :py:class:`segno.QRCode` for a complete reference which parameters are
+See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
 accepted by the specific serializers.

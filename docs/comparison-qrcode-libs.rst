@@ -12,7 +12,7 @@ Library version                                 5.3                   1.2.1     
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
-Mode Kanji                                      No                    Yes                    Yes                   Yes
+Mode Kanji                                      No                    Yes                    No                    Yes
 Mode ECI                                        No                    No                     Yes                   Yes
 Mode FNC1                                       No                    No                     No                    No
 Mode Structured Append                          No                    No                     No                    No
