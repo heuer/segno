@@ -23,6 +23,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
-
-.. _PyQRCode: https://github.com/mnooner256/pyqrcode
