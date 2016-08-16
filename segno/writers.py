@@ -697,14 +697,17 @@ _VALID_SERIALISERS = {
     'pdf': write_pdf
 }
 
-def save(matrix, version, file_or_name, kind=None, **kw):
+def save(matrix, version, out, kind=None, **kw):
     """\
     Serializes the matrix in any of the supported formats.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
-    :param file_or_name: A filename or a writable file-like object with a
-            ``name`` attribute.
+    :param out: A filename or a writable file-like object with a
+            ``name`` attribute. If a stream like :py:class:`io.ByteIO` or
+            :py:class:`io.StringIO` object without a ``name`` attribute is
+            provided, use the `kind` parameter to specify the serialization
+            format.
     :param kind: If the desired output format cannot be extracted from
             the filename, this parameter can be used to indicate the
             serialization format (i.e. "svg" to enforce SVG output)
@@ -714,15 +717,15 @@ def save(matrix, version, file_or_name, kind=None, **kw):
     is_stream = False
     if kind is None:
         try:
-            fname = file_or_name.name
+            fname = out.name
             is_stream = True
         except AttributeError:
-            fname = file_or_name
+            fname = out
         ext = fname[fname.rfind('.') + 1:].lower()
     else:
         ext = kind.lower()
     if not is_stream and ext == 'svgz':
-        f = gzip.open(file_or_name, 'wb', compresslevel=kw.pop('compresslevel', 9))
+        f = gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9))
         try:
             _VALID_SERIALISERS['svg'](matrix, version, f, **kw)
         finally:
@@ -731,6 +734,6 @@ def save(matrix, version, file_or_name, kind=None, **kw):
         if kw.pop('debug', False) and ext == 'svg':
             ext = 'svg_debug'
         try:
-            _VALID_SERIALISERS[ext](matrix, version, file_or_name, **kw)
+            _VALID_SERIALISERS[ext](matrix, version, out, **kw)
         except KeyError:
             raise ValueError('Unknown file extension ".{0}"'.format(ext))
