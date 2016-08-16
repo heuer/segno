@@ -17,6 +17,10 @@ from __future__ import unicode_literals, absolute_import
 import io
 from nose.tools import ok_, eq_
 import segno
+try:
+    from .utils import matrix_looks_valid
+except (ValueError, SystemError):  # Attempted relative import in non-package
+    from utils import matrix_looks_valid
 
 
 def test_issue_3():
@@ -34,13 +38,8 @@ def test_issue_3_autodetect_micro():
 
 
 def test_issue_3_matrix():
-    def check(row_no, row):
-        for i in range(len(row)):
-            ok_(row[i] in (0x0, 0x1), 'Error in row {0}. Found "{1}" at {2}' \
-                                      .format(row_no, row[i], i))
     qr = segno.make_micro('test')
-    for row_no, row in enumerate(qr.matrix):
-        yield check, row_no, row
+    ok_(*matrix_looks_valid(qr.matrix))
 
 
 if __name__ == '__main__':
