@@ -183,6 +183,9 @@ class QRCode(object):
         self._version = code.version
         self._error = code.error
         self.mask = code.mask
+        """\
+        Returns the data mask pattern reference (an integer).
+        """
         self._mode = code.segments[0].mode if len(code.segments) == 1 else None
 
     @property
