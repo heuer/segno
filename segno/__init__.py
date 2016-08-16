@@ -418,9 +418,9 @@ class QRCode(object):
                       If set to ``None`` (default), the recommended border size
                       will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
         color         A string or tuple representing a color value for the dark
-                      modules. The default value is "black".  The
-                      color can be provided as ``(R, G, B)`` tuple, as web color
-                      name (like "red") or in hexadecimal format (``#RGB`` or
+                      modules. The default value is "black".  The color can be
+                      provided as ``(R, G, B)`` tuple, as web color name
+                      (like "red") or in hexadecimal format (``#RGB`` or
                       ``#RRGGBB``). Some serializers (SVG and PNG) accept an alpha
                       transparency value like ``#RRGGBBAA``.
         background    A string or tuple representing a color for the light modules
@@ -447,6 +447,12 @@ class QRCode(object):
                          attribute will have a value like "rgba(R, G, B, A)", otherwise
                          the path gets another attribute "stroke-opacity" to emulate
                          the alpha channel.
+                         To minimize the document size, the SVG serializer uses
+                         automatically the shortest color representation: If
+                         a value like "#000000" is provided, the resulting
+                         document will have a color value of "#000". If the color
+                         is "#FF0000", the resulting color is not "#F00", but
+                         the web color name "red".
         background       Default value ``None``. If this paramater is set to another
                          value, the resulting image will have another path which
                          is used to define the background color.
