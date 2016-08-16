@@ -52,7 +52,7 @@ def test_write_svg():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out)
+    qr.save(out, kind='svg')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -78,7 +78,7 @@ def test_write_svg_black():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color='bLacK')
+    qr.save(out, kind='svg', color='bLacK')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -104,7 +104,7 @@ def test_write_svg_black2():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color='#000000')
+    qr.save(out, kind='svg', color='#000000')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -130,7 +130,7 @@ def test_write_svg_black3():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color=(0, 0, 0))
+    qr.save(out, kind='svg', color=(0, 0, 0))
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -156,7 +156,7 @@ def test_write_svg_background_omitted():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out)
+    qr.save(out, kind='svg')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -170,7 +170,7 @@ def test_write_svg_background_white():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, background='white')
+    qr.save(out, kind='svg', background='white')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -184,7 +184,7 @@ def test_write_svg_background_white2():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, background='#fff')
+    qr.save(out, kind='svg', background='#fff')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -198,7 +198,7 @@ def test_write_svg_background_white3():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, background='#ffffff')
+    qr.save(out, kind='svg', background='#ffffff')
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -212,7 +212,7 @@ def test_write_svg_color_rgb():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color=(76, 131, 205))
+    qr.save(out, kind='svg', color=(76, 131, 205))
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<?xml'))
     root = _parse_xml(out)
@@ -237,14 +237,14 @@ def test_write_svg_color_rgb():
 def test_write_svg_color_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color='#0000ffcc')
+    qr.save(out, kind='svg', color='#0000ffcc')
     ok_(b'stroke-opacity' in out.getvalue())
 
 
 def test_write_svg_color_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, color='#0000ffcc', svgversion=2.0)
+    qr.save(out, kind='svg', color='#0000ffcc', svgversion=2.0)
     ok_(b'stroke-opacity' not in out.getvalue())
     root = _parse_xml(out)
     path = _get_path(root)
@@ -254,14 +254,14 @@ def test_write_svg_color_rgba_svg2():
 def test_write_svg_background_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, background='#0000ffcc')
+    qr.save(out, kind='svg', background='#0000ffcc')
     ok_(b'fill-opacity' in out.getvalue())
 
 
 def test_write_svg_background_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, background='#0000ffcc', svgversion=2.0)
+    qr.save(out, kind='svg', background='#0000ffcc', svgversion=2.0)
     ok_(b'fill-opacity' not in out.getvalue())
     root = _parse_xml(out)
     path = _get_path(root)
@@ -271,7 +271,7 @@ def test_write_svg_background_rgba_svg2():
 def test_write_no_xmldecl():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, xmldecl=False)
+    qr.save(out, kind='svg', xmldecl=False)
     xml_str = out.getvalue()
     ok_(xml_str.startswith(b'<svg'))
 
@@ -279,7 +279,7 @@ def test_write_no_xmldecl():
 def test_viewbox():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, omitsize=True)
+    qr.save(out, kind='svg', omitsize=True)
     root = _parse_xml(out)
     ok_('viewBox' in root.attrib)
     ok_('height' not in root.attrib)
@@ -290,7 +290,7 @@ def test_svgid():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     ident = 'svgid'
-    qr.svg(out, svgid=ident)
+    qr.save(out, kind='svg', svgid=ident)
     root = _parse_xml(out)
     ok_('id' in root.attrib)
     eq_(ident, root.attrib['id'])
@@ -299,7 +299,7 @@ def test_svgid():
 def test_svgid_default():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out)
+    qr.save(out, kind='svg')
     root = _parse_xml(out)
     ok_('id' not in root.attrib)
 
@@ -308,7 +308,7 @@ def test_svgversion():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     version = 1.0
-    qr.svg(out, svgversion=version)
+    qr.save(out, kind='svg', svgversion=version)
     root = _parse_xml(out)
     ok_('version' in root.attrib)
     eq_(str(version), root.attrib['version'])
@@ -317,7 +317,7 @@ def test_svgversion():
 def test_svgversion_default():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out)
+    qr.save(out, kind='svg')
     root = _parse_xml(out)
     ok_('version' not in root.attrib)
 
@@ -325,7 +325,7 @@ def test_svgversion_default():
 def test_no_svg_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, svgclass=None)
+    qr.save(out, kind='svg', svgclass=None)
     root = _parse_xml(out)
     ok_('class' not in root.attrib)
 
@@ -333,7 +333,7 @@ def test_no_svg_class():
 def test_custom_svg_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, svgclass='test-class')
+    qr.save(out, kind='svg', svgclass='test-class')
     root = _parse_xml(out)
     ok_('class' in root.attrib)
     eq_('test-class', root.attrib.get('class'))
@@ -342,7 +342,7 @@ def test_custom_svg_class():
 def test_no_line_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, lineclass=None)
+    qr.save(out, kind='svg', lineclass=None)
     root = _parse_xml(out)
     path_el = _get_path(root)
     ok_('class' not in path_el.attrib)
@@ -351,7 +351,7 @@ def test_no_line_class():
 def test_custom_line_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, lineclass='test-class')
+    qr.save(out, kind='svg', lineclass='test-class')
     root = _parse_xml(out)
     path_el = _get_path(root)
     ok_('class' in path_el.attrib)
@@ -361,7 +361,7 @@ def test_custom_line_class():
 def test_omit_svgns():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, svgns=False)
+    qr.save(out, kind='svg', svgns=False)
     root = _parse_xml(out)
     path_el = _get_path(root)
     ok_(path_el is None)  # (since _get_path uses the SVG namespace)
@@ -372,7 +372,7 @@ def test_omit_svgns():
 def test_title():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, title='Test')
+    qr.save(out, kind='svg', title='Test')
     root = _parse_xml(out)
     title_el = _get_title(root)
     ok_(title_el is not None)
@@ -382,7 +382,7 @@ def test_title():
 def test_title2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, title='Määhhh')
+    qr.save(out, kind='svg', title='Määhhh')
     root = _parse_xml(out)
     title_el = _get_title(root)
     ok_(title_el is not None)
@@ -392,7 +392,7 @@ def test_title2():
 def test_title3():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, title='点')
+    qr.save(out, kind='svg', title='点')
     root = _parse_xml(out)
     title_el = _get_title(root)
     ok_(title_el is not None)
@@ -403,7 +403,7 @@ def test_title4():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     encoding = 'ISO-8859-1'
-    qr.svg(out, title='áà', encoding=encoding)
+    qr.save(out, kind='svg', title='áà', encoding=encoding)
     root = _parse_xml(out)
     title_el = _get_title(root)
     ok_(title_el is not None)
@@ -414,7 +414,7 @@ def test_title_escape():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     title = '<title>&</title>'
-    qr.svg(out, title=title)
+    qr.save(out, kind='svg', title=title)
     ok_(b'<title>&lt;title&gt;&amp;&lt;/title&gt;</title>' in out.getvalue())
     root = _parse_xml(out)
     title_el = _get_title(root)
@@ -426,7 +426,7 @@ def test_desc():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     desc = 'Test'
-    qr.svg(out, desc=desc)
+    qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
     ok_(desc_el is not None)
@@ -437,7 +437,7 @@ def test_desc2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     desc = 'Määhhhh'
-    qr.svg(out, desc=desc)
+    qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
     ok_(desc_el is not None)
@@ -448,7 +448,7 @@ def test_desc3():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     desc = '点'
-    qr.svg(out, desc=desc)
+    qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
     ok_(desc_el is not None)
@@ -460,7 +460,7 @@ def test_desc4():
     out = io.BytesIO()
     encoding = 'ISO-8859-1'
     desc = 'áà'
-    qr.svg(out, desc='áà', encoding=encoding)
+    qr.save(out, kind='svg', desc='áà', encoding=encoding)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
     ok_(desc_el is not None)
@@ -471,7 +471,7 @@ def test_desc_escape():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     desc = '<desc>&</desc>'
-    qr.svg(out, desc=desc)
+    qr.save(out, kind='svg', desc=desc)
     ok_(b'<desc>&lt;desc&gt;&amp;&lt;/desc&gt;</desc>' in out.getvalue())
     root = _parse_xml(out)
     desc_el = _get_desc(root)
@@ -483,7 +483,7 @@ def test_background():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     color = '#800080'
-    qr.svg(out, background=color)
+    qr.save(out, kind='svg', background=color)
     root = _parse_xml(out)
     # Background should be the first path in the doc
     rect = _get_path(root)
@@ -495,7 +495,7 @@ def test_module_color():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     color = '#800080'
-    qr.svg(out, color=color)
+    qr.save(out, kind='svg', color=color)
     root = _parse_xml(out)
     path = _get_path(root)
     ok_(path is not None)
@@ -505,7 +505,7 @@ def test_module_color():
 def test_scale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, scale=2)
+    qr.save(out, kind='svg', scale=2)
     root = _parse_xml(out)
     path = _get_path(root)
     ok_(path is not None)
@@ -516,7 +516,7 @@ def test_scale_float():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     scale = 2.13
-    qr.svg(out, scale=scale)
+    qr.save(out, kind='svg', scale=scale)
     root = _parse_xml(out)
     path = _get_path(root)
     ok_(path is not None)
@@ -527,13 +527,13 @@ def test_scale_float():
 def test_unit_omitsize():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, unit='cm', omitsize=True)
+    qr.save(out, kind='svg', unit='cm', omitsize=True)
 
 
 def test_unit():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.svg(out, unit='mm')
+    qr.save(out, kind='svg', unit='mm')
     width, height = qr.symbol_size()
     root = _parse_xml(out)
     ok_('width' in root.attrib)
