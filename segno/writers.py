@@ -88,6 +88,46 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
               background=None, xmldecl=True, svgns=True, title=None, desc=None,
               svgid=None, svgclass='segno', lineclass='qrline', omitsize=False,
               unit='', encoding='utf-8', svgversion=None, nl=True):
+    """\
+    Serializes the QR Code as SVG document.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write bytes.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer / float indicating the size of the
+            quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: ``#000``). Any value
+            which is supported by SVG can be used. In addition, ``None``
+            is a valid value. The resulting path won't have a ``stroke``
+            attribute.
+    :param background: Optional background color (default: ``None`` = no
+            background color). See `color` for valid values.
+    :param bool xmldecl: Inidcates if the XML declaration header should be
+            written (default: ``True``)
+    :param bool svgns: Indicates if the SVG namespace should be written
+            (default: ``True``).
+    :param str title: Optional title of the generated SVG document.
+    :param str desc: Optional description of the generated SVG document.
+    :param svgid: The ID of the SVG document (if set to ``None`` (default),
+            the SVG element won't have an ID).
+    :param svgclass: The CSS class of the SVG document
+            (if set to ``None``, the SVG element won't have a class).
+    :param lineclass: The CSS class of the path element (which draws the
+            "black" modules (if set to ``None``, the path won't have a class).
+    :param bool omitsize: Indicates if width and height attributes should be
+            omitted (default: ``False``). If these attributes are omitted,
+            a ``viewBox`` attribute will be added to the document.
+    :param str unit: Unit for width / height and other coordinates.
+            By default, the unit is unspecified and all values are
+            in the user space.
+            Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
+    :param str encoding: Encoding of the XML document. "utf-8" by default.
+    :param float svgversion: SVG version (default: None)
+    """
 
     check_valid_scale(scale)
     check_valid_border(border)
@@ -229,6 +269,24 @@ def write_svg_debug(matrix, version, out, scale=1, border=None,
 
 def write_eps(matrix, version, out, scale=1, border=None, color='#000',
               background=None):
+    """\
+    Serializes the QR Code as EPS document.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write strings.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 point (1/72 inch) per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple (this method
+            acceppts floats as R, G, B values), as web color name (like
+            "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: ``None`` = no
+            background color). See `color` for valid values.
+    """
     import textwrap
 
     def write_line(writemeth, content):
@@ -310,6 +368,32 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
 
 def write_png(matrix, version, out, scale=1, border=None, color='#000',
               background='#fff', compresslevel=9, addad=True):
+    """\
+    Serializes the QR Code as PNG image.
+
+    By default, the generated PNG will be a greyscale image with a bitdepth
+    of 1. If different colors are provided, an indexed-color image with
+    the same bitdepth is generated.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write bytes.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: white).
+            See `color` for valid values. In addition, ``None`` is
+            accepted which indicates a transparent background.
+    :param int compresslevel: Integer indicating the compression level
+            (default: 9). 1 is fastest and produces the least
+            compression, 9 is slowest and produces the most.
+            0 is no compression.
+    """
 
     def png_color(clr):
         return color_to_rgb_or_rgba(clr, alpha_float=False)
@@ -478,6 +562,22 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 
 def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
+    """\
+    Serializes the QR Code as PDF document.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write bytes.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param int compresslevel: Integer indicating the compression level
+            (default: 9). 1 is fastest and produces the least
+            compression, 9 is slowest and produces the most.
+            0 is no compression.
+    """
 
     def write_string(writemeth, s):
         writemeth(s.encode('ascii'))
@@ -531,6 +631,19 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
 
 
 def write_txt(matrix, version, out, border=None, color='1', background='0'):
+    """\
+    Serializes QR code in a text format.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write text.
+            If ``None`` (default), the matrix is written to ``stdout``.
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Character to use for the black modules (default: '1')
+    :param background: Character to use for the white modules (default: '0')
+    """
     check_valid_border(border)
     border = get_border(version, border)
     width, height = get_symbol_size(version, border=border)
