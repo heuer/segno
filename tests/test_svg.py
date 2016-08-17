@@ -162,7 +162,7 @@ def test_write_svg_background_omitted():
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not  None)
+    ok_(path is not None)
     ok_(not path.attrib.get('fill'))
 
 
@@ -176,7 +176,7 @@ def test_write_svg_background_white():
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not  None)
+    ok_(path is not None)
     eq_('#fff', path.attrib.get('fill'))
 
 
@@ -190,7 +190,7 @@ def test_write_svg_background_white2():
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not  None)
+    ok_(path is not None)
     eq_('#fff', path.attrib.get('fill'))
 
 
@@ -204,7 +204,7 @@ def test_write_svg_background_white3():
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not  None)
+    ok_(path is not None)
     eq_('#fff', path.attrib.get('fill'))
 
 
