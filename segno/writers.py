@@ -7,6 +7,9 @@
 #
 """\
 Standard serializers and utility functions for serializers.
+
+The serializers are independent of the :py:class:`segno.QRCode` class,
+they just need a matrix (tuple of bytearrays) and the version constant.
 """
 from __future__ import absolute_import, unicode_literals, division
 import io
@@ -224,8 +227,9 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
                         encode(_replace_quotes(buff.getvalue())))
 
 
-def write_svg_debug(matrix, version, out, scale=1, border=None,
-                    fallback_color='red', color_mapping=None):  # pragma: no cover
+def write_svg_debug(matrix, version, out, scale=15, border=None,
+                    fallback_color='fuchsia', color_mapping=None,
+                    add_legend=True):  # pragma: no cover
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
@@ -243,25 +247,40 @@ def write_svg_debug(matrix, version, out, scale=1, border=None,
     :param fallback_color: Color which is used for modules which are not 0x0 or 0x1
                 and for which no entry in `color_mapping` is defined.
     :param color_mapping: dict of module values to color mapping (optional)
+    :param bool add_legend: Indicates if the bit values should be added to the
+                matrix (default: True)
     """
-    color_mapping = color_mapping if color_mapping is not None else {}
-    if 0x0 not in color_mapping:
-        color_mapping[0x0] = '#fff'
-    if 0x1 not in color_mapping:
-        color_mapping[0x1] = '#000'
+    clr_mapping = {
+        0x0: '#fff',
+        0x1: '#000',
+        0x2: 'red',
+        0x3: 'orange',
+        0x4: 'gold',
+        0x5: 'green',
+    }
+    if color_mapping is not None:
+        clr_mapping.update(color_mapping)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     f, must_close = get_writable(out, 'wt', encoding='utf-8')
+    legend = []
     write = f.write
     write('<?xml version="1.0" encoding="utf-8"?>\n')
     write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
+    write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
     write('<g transform="scale({0})">'.format(scale))
     for i in range(len(matrix)):
         y = i + border
         for j in range(len(matrix)):
             x = j + border
-            fill = color_mapping.get(matrix[i][j], fallback_color)
+            bit = matrix[i][j]
+            if add_legend and bit not in (0x0, 0x1):
+                legend.append((y, x, bit))
+            fill = clr_mapping.get(bit, fallback_color)
             write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
+    if add_legend:
+        for y, x, val in legend:
+            write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
     write('</g></svg>\n')
     if must_close:
         f.close()
@@ -671,31 +690,50 @@ def write_terminal(matrix, version, out, border=None):
 
 _VALID_SERIALISERS = {
     'svg': write_svg,
+    'svg_debug': write_svg_debug,
     'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
     'pdf': write_pdf
 }
 
-def save(matrix, version, file_or_name, kind=None, **kw):
+def save(matrix, version, out, kind=None, **kw):
+    """\
+    Serializes the matrix in any of the supported formats.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: A filename or a writable file-like object with a
+            ``name`` attribute. If a stream like :py:class:`io.ByteIO` or
+            :py:class:`io.StringIO` object without a ``name`` attribute is
+            provided, use the `kind` parameter to specify the serialization
+            format.
+    :param kind: If the desired output format cannot be extracted from
+            the filename, this parameter can be used to indicate the
+            serialization format (i.e. "svg" to enforce SVG output)
+    :param kw: Any of the supported keywords by the specific serialization
+            method.
+    """
     is_stream = False
     if kind is None:
         try:
-            fname = file_or_name.name
+            fname = out.name
             is_stream = True
         except AttributeError:
-            fname = file_or_name
+            fname = out
         ext = fname[fname.rfind('.') + 1:].lower()
     else:
         ext = kind.lower()
     if not is_stream and ext == 'svgz':
-        f = gzip.open(file_or_name, 'wb', compresslevel=kw.pop('compresslevel', 9))
+        f = gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9))
         try:
             _VALID_SERIALISERS['svg'](matrix, version, f, **kw)
         finally:
             f.close()
     else:
+        if kw.pop('debug', False) and ext == 'svg':
+            ext = 'svg_debug'
         try:
-            _VALID_SERIALISERS[ext](matrix, version, file_or_name, **kw)
+            _VALID_SERIALISERS[ext](matrix, version, out, **kw)
         except KeyError:
             raise ValueError('Unknown file extension ".{0}"'.format(ext))

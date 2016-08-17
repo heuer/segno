@@ -25,7 +25,7 @@ def test_default_scale():
     out = io.BytesIO()
     scale = 1
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
-    qr.pdf(out, compresslevel=0)
+    qr.save(out, kind='pdf', compresslevel=0)
     ok_(scale_cmd not in _find_graphic(out))
 
 
@@ -34,7 +34,7 @@ def test_scale():
     out = io.BytesIO()
     scale = 2
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
-    qr.pdf(out, scale=scale, compresslevel=0)
+    qr.save(out, kind='pdf', scale=scale, compresslevel=0)
     ok_(scale_cmd in _find_graphic(out))
 
 
@@ -43,7 +43,7 @@ def test_scale_float():
     out = io.BytesIO()
     scale = 1.34
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
-    qr.pdf(out, scale=scale, compresslevel=0)
+    qr.save(out, kind='pdf', scale=scale, compresslevel=0)
     ok_(scale_cmd in _find_graphic(out))
 
 

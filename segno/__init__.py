@@ -22,7 +22,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.1'
+__version__ = '0.1.2'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -277,8 +277,6 @@ class QRCode(object):
 
         :param delete_after: Time in seconds to wait till the temporary file is
                 deleted.
-
-        See :py:meth:`png` for a description of the other parameters.
         """
         import os
         import time
@@ -313,53 +311,6 @@ class QRCode(object):
             t = threading.Thread(target=delete_file, args=(f.name,))
             t.start()
 
-    def svg(self, out, scale=1, border=None, color='#000', background=None,
-            xmldecl=True, svgns=True, title=None, desc=None, svgid=None,
-            svgclass='segno', lineclass='qrline', omitsize=False, unit='',
-            encoding='utf-8', svgversion=None, nl=True):
-        """\
-        Serializes the QR Code as SVG document.
-
-        :param out: Filename or a file-like object supporting to write bytes.
-        :param scale: Indicates the size of a single module (default: 1 which
-                corresponds to 1 x 1 pixel per module).
-        :param int border: Integer / float indicating the size of the
-                quiet zone.
-                If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-        :param color: Color of the modules (default: ``#000``). Any value
-                which is supported by SVG can be used. In addition, ``None``
-                is a valid value. The resulting path won't have a ``stroke``
-                attribute.
-        :param background: Optional background color (default: ``None`` = no
-                background color). See `color` for valid values.
-        :param bool xmldecl: Inidcates if the XML declaration header should be
-                written (default: ``True``)
-        :param bool svgns: Indicates if the SVG namespace should be written
-                (default: ``True``).
-        :param str title: Optional title of the generated SVG document.
-        :param str desc: Optional description of the generated SVG document.
-        :param svgid: The ID of the SVG document (if set to ``None`` (default),
-                the SVG element won't have an ID).
-        :param svgclass: The CSS class of the SVG document
-                (if set to ``None``, the SVG element won't have a class).
-        :param lineclass: The CSS class of the path element (which draws the
-                "black" modules (if set to ``None``, the path won't have a class).
-        :param bool omitsize: Indicates if width and height attributes should be
-                omitted (default: ``False``). If these attributes are omitted,
-                a ``viewBox`` attribute will be added to the document.
-        :param str unit: Unit for width / height and other coordinates.
-                By default, the unit is unspecified and all values are
-                in the user space.
-                Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
-        :param str encoding: Encoding of the XML document. "utf-8" by default.
-        :param float svgversion: SVG version (default: None)
-        """
-        writers.write_svg(self.matrix, self._version, out, scale, border, color,
-                          background, xmldecl, svgns, title, desc,
-                          svgid, svgclass, lineclass, omitsize, unit, encoding,
-                          svgversion, nl)
-
     def svg_data_uri(self, scale=1, border=None, color='#000', background=None,
                      xmldecl=False, svgns=True, title=None, desc=None,
                      svgid=None, svgclass='segno', lineclass='qrline',
@@ -374,8 +325,8 @@ class QRCode(object):
 
         Aside from the missing ``out`` parameter and the different ``xmldecl``
         and ``nl`` default values and the additional parameter ``encode_minimal``
-        and ``omit_charset`` this function uses the same parameters as
-        :py:meth:`svg`.
+        and ``omit_charset`` this function uses the same parameters as the
+        usual SVG serializer.
 
         :param bool encode_minimal: Indicates if the resulting data URI should
                         use minimal percent encoding (disabled by default).
@@ -394,61 +345,10 @@ class QRCode(object):
                                 encode_minimal=encode_minimal,
                                 omit_charset=omit_charset)
 
-    def eps(self, out, scale=1, border=None, color='#000', background=None):
-        """\
-        Serializes the QR Code as EPS document.
-
-        :param out: Filename or a file-like object supporting to write strings.
-        :param scale: Indicates the size of a single module (default: 1 which
-                corresponds to 1 point (1/72 inch) per module).
-        :param int border: Integer indicating the size of the quiet zone.
-                If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-        :param color: Color of the modules (default: black). The
-                color can be provided as ``(R, G, B)`` tuple (this method
-                acceppts floats as R, G, B values), as web color name (like
-                "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
-        :param background: Optional background color (default: ``None`` = no
-                background color). See `color` for valid values.
-        """
-        writers.write_eps(self.matrix, self._version, out, scale, border, color,
-                          background)
-
-    def png(self, out, scale=1, border=None, color='#000', background='#fff',
-            compresslevel=9, addad=True):
-        """\
-        Serializes the QR Code as PNG image.
-
-        By default, the generated PNG will be a greyscale image with a bitdepth
-        of 1. If different colors are provided, an indexed-color image with
-        the same bitdepth is generated.
-
-        :param out: Filename or a file-like object supporting to write bytes.
-        :param scale: Indicates the size of a single module (default: 1 which
-                corresponds to 1 x 1 pixel per module).
-        :param int border: Integer indicating the size of the quiet zone.
-                If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-        :param color: Color of the modules (default: black). The
-                color can be provided as ``(R, G, B)`` tuple, as web color name
-                (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
-        :param background: Optional background color (default: white).
-                See `color` for valid values. In addition, ``None`` is
-                accepted which indicates a transparent background.
-        :param int compresslevel: Integer indicating the compression level
-                (default: 9). 1 is fastest and produces the least
-                compression, 9 is slowest and produces the most.
-                0 is no compression.
-        """
-        writers.write_png(self.matrix, self._version, out, scale, border, color,
-                          background, compresslevel, addad)
-
     def png_data_uri(self, scale=1, border=None, color='#000', background='#fff',
                      compresslevel=9, addad=True):
         """\
         Converts the provided `qrcode` into a PNG data URI.
-
-        See :py:meth:`png` for a description of the available parameters.
 
         :rtype: str
         """
@@ -456,40 +356,6 @@ class QRCode(object):
                                 border=border, color=color,
                                 background=background,
                                 compresslevel=compresslevel, addad=addad)
-
-    def pdf(self, out, scale=1, border=None, color='#000', background=None,
-            compresslevel=9):
-        """\
-        Serializes the QR Code as PDF document.
-
-        :param out: Filename or a file-like object supporting to write bytes.
-        :param scale: Indicates the size of a single module (default: 1 which
-                corresponds to 1 x 1 pixel per module).
-        :param int border: Integer indicating the size of the quiet zone.
-                If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-        :param int compresslevel: Integer indicating the compression level
-                (default: 9). 1 is fastest and produces the least
-                compression, 9 is slowest and produces the most.
-                0 is no compression.
-        """
-        writers.write_pdf(self.matrix, self._version, out, scale, border,
-                          compresslevel)
-
-    def txt(self, out=None, border=None, color='1', background='0'):
-        """\
-        Serializes QR code in a text format.
-
-        :param out: Filename or a file-like object supporting to write text.
-                If ``None`` (default), the matrix is written to ``stdout``.
-        :param int border: Integer indicating the size of the quiet zone.
-                If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-        :param color: Character to use for the black modules (default: '1')
-        :param background: Character to use for the white modules (default: '0')
-        """
-        writers.write_txt(self.matrix, self._version, out or sys.stdout, border,
-                          color, background)
 
     def terminal(self, out=None, border=None):
         """\
@@ -504,20 +370,209 @@ class QRCode(object):
         writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                border)
 
-    def save(self, file_or_name, kind=None, **kw):
+    def svg(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='svg', **kw)
+
+    def png(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='png', **kw)
+
+    def txt(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='txt', **kw)
+
+    def eps(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='eps', **kw)
+
+    def pdf(self, out, **kw):
+        import warnings
+        warnings.warn('Deprecated, use QRCode.save()')
+        self.save(out, kind='pdf', **kw)
+
+    def save(self, out, kind=None, **kw):
         """\
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
-        :param file_or_name: A filename or a writable file-like object with a
-                ``name`` attribute.
+        **Common keywords**
+
+
+        ==========    ==============================================================
+        Name          Description
+        ==========    ==============================================================
+        scale         Integer or float indicating the size of a single module.
+                      Default: 1. The interpretation of the scaling factor depends
+                      on the serializer. For pixel-based output (like PNG) the
+                      scaling factor is interepreted as pixel-size (1 = 1 pixel).
+                      EPS interprets ``1`` as 1 point (1/72 inch) per module.
+                      Some serializers (like SVG) accept float values. If the
+                      serializer does not accept float values, the value will be
+                      converted to an integer value (note: int(1.6) == 1).
+        border        Integer indicating the size of the quiet zone.
+                      If set to ``None`` (default), the recommended border size
+                      will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+        color         A string or tuple representing a color value for the dark
+                      modules. The default value is "black".  The color can be
+                      provided as ``(R, G, B)`` tuple, as web color name
+                      (like "red") or in hexadecimal format (``#RGB`` or
+                      ``#RRGGBB``). Some serializers (SVG and PNG) accept an alpha
+                      transparency value like ``#RRGGBBAA``.
+        background    A string or tuple representing a color for the light modules
+                      or background. See "color" for valid values.
+                      The default value depends on the serializer. SVG uses no
+                      background color (``None``) by default, other serializers
+                      use "white" as default background color.
+        ==========    ==============================================================
+
+
+        **Scalable Vector Graphics (SVG)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "svg" or "svgz" (to create a gzip compressed SVG)
+        scale            integer or float
+        color            Default: "#000" (black)
+                         ``None`` is a valid value. If set to ``None``, the resulting
+                         path won't have a "stroke" attribute. The "stroke" attribute
+                         may be defined via CSS (external).
+                         If an alpha channel is defined, the output depends of the
+                         used SVG version. For SVG versions >= 2.0, the "stroke"
+                         attribute will have a value like "rgba(R, G, B, A)", otherwise
+                         the path gets another attribute "stroke-opacity" to emulate
+                         the alpha channel.
+                         To minimize the document size, the SVG serializer uses
+                         automatically the shortest color representation: If
+                         a value like "#000000" is provided, the resulting
+                         document will have a color value of "#000". If the color
+                         is "#FF0000", the resulting color is not "#F00", but
+                         the web color name "red".
+        background       Default value ``None``. If this paramater is set to another
+                         value, the resulting image will have another path which
+                         is used to define the background color.
+                         If an alpha channel is used, the resulting path may
+                         have a "fill-opacity" attribute (for SVG version < 2.0)
+                         or the "fill" attribute has a "rgba(R, G, B, A)" value.
+                         See keyword "color" for further details.
+        xmldecl          Boolean value (default: ``True``) indicating whether the
+                         document should have an XML declaration header.
+                         Set to ``False`` to omit the header.
+        svgns            Boolean value (default: True) indicating whether the
+                         document should have an explicit SVG namespace declaration.
+                         Set to ``False`` to omit the namespace declaration.
+                         The latter might be useful if the document should be
+                         embedded into a HTML 5 document where the SVG namespace
+                         is implicitly defined.
+        title            String (default: ``None``) Optional title of the generated
+                         SVG document.
+        desc             String (default: ``None``) Optional description of the
+                         generated SVG document.
+        svgid            A string indicating the ID of the SVG document
+                         (if set to ``None`` (default), the SVG element won't have
+                         an ID).
+        svgclass         Default: "segno". The CSS class of the SVG document
+                         (if set to ``None``, the SVG element won't have a class).
+        lineclass        Default: "qrline". The CSS class of the path element
+                         (which draws the dark modules (if set to ``None``, the path
+                         won't have a class).
+        omitsize         Indicates if width and height attributes should be
+                         omitted (default: ``False``). If these attributes are
+                         omitted, a ``viewBox`` attribute will be added to the
+                         document.
+        unit             Default: ''
+                         Inidctaes the unit for width / height and other coordinates.
+                         By default, the unit is unspecified and all values are
+                         in the user space.
+                         Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
+                         (any string is accepted, this parameter is not validated
+                         by the serializer)
+        encoding         Encoding of the XML document. "utf-8" by default.
+        svgversion       SVG version (default: ``None``). If specified (a float),
+                         the resulting document has an explicit "version" attribute.
+                         If set to ``None``, the document won't have a "version"
+                         attribute. This parameter is not validated.
+        compresslevel    Default: 9. This parameter is only valid, if a compressed
+                         SVG document should be created (file extension "svgz").
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        =============    ==============================================================
+
+
+        **Portable Network Graphics (PNG)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "png"
+        scale            integer
+        color            Default: "#000" (black)
+                         ``None`` is a valid value iff background is not ``None``.
+        background       Default value ``#fff`` (white)
+                         See keyword "color" for further details.
+        compresslevel    Default: 9. Integer indicating the compression level
+                         for the ``IDAT`` (data) chunk.
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        addad            Boolean value (default: True) to (dis-)allow a "Software"
+                         comment indicating that the file was created by Segno.
+        =============    ==============================================================
+
+
+        **Encapsulated PostScript (EPS)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "eps"
+        scale            integer or float
+        color            Default: "#000" (black)
+        background       Default value ``#fff`` (white)
+        =============    ==============================================================
+
+
+        **Portable Document Format (PDF)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "pdf"
+        scale            integer or float
+        compresslevel    Default: 9. Integer indicating the compression level.
+                         1 is fastest and produces the least compression, 9 is slowest
+                         and produces the most. 0 is no compression.
+        =============    ==============================================================
+
+
+        **Text (TXT)**
+
+        Does not support the "scale" keyword!
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "txt"
+        color            Default: "1"
+        background       Default: "0"
+        =============    ==============================================================
+
+
+        :param out: A filename or a writable file-like object with a
+                ``name`` attribute. Use the `kind` parameter if `out` is
+                a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
+                don't have a ``name`` attribute.
         :param kind: If the desired output format cannot be extracted from
                 the filename, this parameter can be used to indicate the
                 serialization format (i.e. "svg" to enforce SVG output)
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
-        writers.save(self.matrix, self._version, file_or_name, kind, **kw)
+        writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
         """\

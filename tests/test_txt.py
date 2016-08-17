@@ -23,7 +23,7 @@ def test_write_txt():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.txt(out, border=0)
+    qr.save(out, kind='txt', border=0)
     expected = '11111110011'
     val = out.getvalue()
     eq_(expected, val[:len(expected)])

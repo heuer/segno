@@ -1,7 +1,7 @@
 Replace existing QR Code libs with Segno
 ========================================
 
-The sub-project `Segno Mimos`_ provides a APIs which are usable to replace
+The sub-project `Segno Mimos`_ provides APIs which are usable to replace
 common Python QR Code libs like `PyQRCode`_ and `qrcode`_ with Segno.
 
 

@@ -8,11 +8,11 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
 Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 0.1.0
+Library version                                 5.3                   1.2.1                  1.0.0                 0.1.2
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
-Mode Kanji                                      No                    Yes                    Yes                   Yes
+Mode Kanji                                      No                    Yes                    No                    Yes
 Mode ECI                                        No                    No                     Yes                   Yes
 Mode FNC1                                       No                    No                     No                    No
 Mode Structured Append                          No                    No                     No                    No
@@ -37,7 +37,7 @@ Command line script                             Yes                   No        
 Plugins                                         No                    No                     No                    Yes
 Default encoding in Byte mode                   UTF-8                 ISO/IEC 8859-1         UTF-8                 ISO/IEC 8859-1
                                                                       or UTF-8                                     or UTF-8
-3rd party depencencies                          `six`_,               `PyPNG`_               -                     -
+3rd party dependencies                          `six`_,               `PyPNG`_               -                     -
                                                 `Pillow`_ or
                                                 `Pymaging`_ and
                                                 `Pymaging-PNG`_
