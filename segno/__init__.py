@@ -299,8 +299,8 @@ class QRCode(object):
 
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
-            self.png(f, scale=scale, color=color, background=background,
-                     border=border)
+            self.save(f, scale=scale, color=color, background=background,
+                      border=border)
         except:
             f.close()
             os.unlink(f.name)
