@@ -37,7 +37,7 @@ Command line script                             Yes                   No        
 Plugins                                         No                    No                     No                    Yes
 Default encoding in Byte mode                   UTF-8                 ISO/IEC 8859-1         UTF-8                 ISO/IEC 8859-1
                                                                       or UTF-8                                     or UTF-8
-3rd party depencencies                          `six`_,               `PyPNG`_               -                     -
+3rd party dependencies                          `six`_,               `PyPNG`_               -                     -
                                                 `Pillow`_ or
                                                 `Pymaging`_ and
                                                 `Pymaging-PNG`_
