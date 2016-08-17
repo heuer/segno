@@ -79,7 +79,7 @@ class DataOverflowError(QRCodeError):
 Code = namedtuple('Code', 'matrix version error mask segments')
 
 
-def encode(content, error='M', version=None, mode=None, mask=None,
+def encode(content, error=None, version=None, mode=None, mask=None,
            encoding=None, eci=False, micro=None):
     """\
     Encodes the provided `data` into a (Micro) QR Code matrix.
@@ -157,7 +157,7 @@ def write_segment(buff, segment, ver, ver_range, eci=False):
     """\
     Writes a segment.
 
-    :param buff: Function to write binary data
+    :param buff: The byte buffer.
     :param segment: The segment to serialize.
     :param ver: ``None`` if a QR Code is written, "M1", "M2", "M3", or "M4" if a
             Micro QR Code is written.
@@ -240,7 +240,7 @@ def write_terminator(buff, capacity, ver, length):
     """\
     Writes the terminator.
 
-    :param write: Function to write binary data
+    :param buff: The byte buffer.
     :param capacity: Symbol capacity.
     :param ver: ``None`` if a QR Code is written, "M1", "M2", "M3", or "M4" if a
             Micro QR Code is written.
@@ -254,7 +254,7 @@ def write_padding_bits(buff, length):
     """\
     Writes padding bits if the data stream does not meet the codeword boundary.
 
-    :param write: Function to write binary data
+    :param buff: The byte buffer.
     :param int length: Data stream length.
     """
     # ISO/IEC 18004:2015(E) - 7.4.10 Bit stream to codeword conversion -- page 32
@@ -265,7 +265,7 @@ def write_padding_bits(buff, length):
     # codeword boundary, padding bits with binary value 0 shall be added after
     # the final bit (least significant bit) of the data stream to extend it
     # to the codeword boundary. [...]
-    buff.extend([0] * (8 - length % 8))
+    buff.extend([0] * (8 - (length % 8)))
 
 
 def write_pad_codewords(buff, version, capacity, length):
@@ -273,7 +273,7 @@ def write_pad_codewords(buff, version, capacity, length):
     Writes the pad codewords iff the data does not fill the capacity of the
     symbol.
 
-    :param write: Function to write binary data
+    :param buff: The byte buffer.
     :param int version: The (Micro) QR Code version.
     :param int capacity: The total capacity of the symbol (incl. error correction)
     :param int length: Length of the data bit stream.
@@ -287,10 +287,12 @@ def write_pad_codewords(buff, version, capacity, length):
     # character position in Micro QR Code versions M1 and M3 symbols shall be
     # represented as 0000.
     write = buff.extend
+    padword_length = 8
     pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
     if version in (consts.VERSION_M1, consts.VERSION_M3):
+        padword_length = 4
         pad_codewords = ((0, 0, 0, 0), (0, 0, 0, 0))
-    for i in range(capacity // 8 - length // 8):
+    for i in range(capacity // padword_length - length // padword_length):
         write(pad_codewords[i % 2])
 
 
@@ -442,6 +444,7 @@ def make_final_message(version, error, codewords):
     :param int version: (Micro) QR Code version constant.
     :param int error: Error level constant.
     :param codewords: An iterable sequence of codewords (ints)
+    :return: Byte buffer representing the final message.
     """
     ec_infos = consts.ECC[version][error]
     data_blocks, error_blocks = make_blocks(ec_infos, codewords)
