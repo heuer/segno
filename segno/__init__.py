@@ -22,7 +22,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -369,31 +369,6 @@ class QRCode(object):
         """
         writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                border)
-
-    def svg(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='svg', **kw)
-
-    def png(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='png', **kw)
-
-    def txt(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='txt', **kw)
-
-    def eps(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='eps', **kw)
-
-    def pdf(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='pdf', **kw)
 
     def save(self, out, kind=None, **kw):
         """\
