@@ -438,7 +438,7 @@ class QRCode(object):
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
-        svgns            Boolean value (default: True) indicating whether the
+        svgns            Boolean value (default: ``True``) indicating whether the
                          document should have an explicit SVG namespace declaration.
                          Set to ``False`` to omit the namespace declaration.
                          The latter might be useful if the document should be
@@ -552,8 +552,8 @@ class QRCode(object):
                 ``name`` attribute. Use the `kind` parameter if `out` is
                 a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
                 don't have a ``name`` attribute.
-        :param kind: If the desired output format cannot be extracted from
-                the filename, this parameter can be used to indicate the
+        :param kind: If the desired output format cannot be determined from
+                the ``out`` parameter, this parameter can be used to indicate the
                 serialization format (i.e. "svg" to enforce SVG output)
         :param kw: Any of the supported keywords by the specific serialization
                 method.
