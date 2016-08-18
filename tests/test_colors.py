@@ -13,33 +13,33 @@ Tests against the colors module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
-from nose.tools import eq_, raises, nottest
+import pytest
 from segno import colors
 
 
-@raises(ValueError)
 def test_illegal():
-    colors.color_to_rgb('unknown')
+    with pytest.raises(ValueError):
+        colors.color_to_rgb('unknown')
 
 
-@raises(ValueError)
 def test_illegal2():
-    colors.color_to_rgb((1, 2, 3, 256))
+    with pytest.raises(ValueError):
+        colors.color_to_rgb((1, 2, 3, 256))
 
 
-@raises(ValueError)
 def test_illegal3():
-    colors.color_to_rgb((300, 300, 300))
+    with pytest.raises(ValueError):
+        colors.color_to_rgb((300, 300, 300))
 
 
-@raises(ValueError)
 def test_illegal4():
-    colors.color_to_rgb((0, 0, 256))
+    with pytest.raises(ValueError):
+        colors.color_to_rgb((0, 0, 256))
 
 
-@raises(ValueError)
 def test_illegal5():
-    colors.color_to_rgb((256, 0, 0))
+    with pytest.raises(ValueError):
+        colors.color_to_rgb((256, 0, 0))
 
 
 def test_color_is_black():
@@ -57,7 +57,7 @@ def test_color_is_black():
             )
 
     def check(expected, clr):
-        return eq_(expected, colors.color_is_black(clr))
+        assert expected == colors.color_is_black(clr)
 
     for clr, expected in data:
         yield check, expected, clr
@@ -82,7 +82,7 @@ def test_color_is_white():
             )
 
     def check(expected, clr):
-        return eq_(expected, colors.color_is_white(clr))
+        assert expected == colors.color_is_white(clr)
 
     for clr, expected in data:
         yield check, expected, clr
@@ -107,7 +107,7 @@ def test_color_to_webcolor():
     )
 
     def check(expected, clr):
-        return eq_(expected, colors.color_to_webcolor(clr))
+        assert expected == colors.color_to_webcolor(clr)
 
     for clr, expected in data:
         yield check, expected, clr
@@ -124,7 +124,7 @@ def test_color_to_webcolor_dont_optimize():
     )
 
     def check(expected, clr):
-        return eq_(expected, colors.color_to_webcolor(clr, optimize=False))
+        assert expected == colors.color_to_webcolor(clr, optimize=False)
 
     for clr, expected in data:
         yield check, expected, clr
@@ -133,8 +133,8 @@ def test_color_to_webcolor_dont_optimize():
 def test_valid_colornames():
     def check(name, expected):
         rgb = colors.color_to_rgb(name)
-        eq_(3, len(rgb))
-        eq_(expected, rgb)
+        assert 3 == len(rgb)
+        assert expected == rgb
     data = (
         ('red', (255, 0, 0)),
         ('green', (0, 128, 0)),
@@ -158,7 +158,7 @@ def test_hex_to_rgba():
     )
 
     def check(expected, color):
-        eq_(expected, colors._hex_to_rgb_or_rgba(color))
+        assert expected == colors._hex_to_rgb_or_rgba(color)
 
     for color, expected in data:
         yield check, expected, color
@@ -171,7 +171,7 @@ def test_hex_to_rgba_alpha_int():
     )
 
     def check(expected, color):
-        eq_(expected, colors._hex_to_rgb_or_rgba(color, alpha_float=False))
+        assert expected == colors._hex_to_rgb_or_rgba(color, alpha_float=False)
 
     for color, expected in data:
         yield check, expected, color
@@ -180,8 +180,8 @@ def test_hex_to_rgba_alpha_int():
 def test_valid_hexcodes_rgb():
     def check(name, expected):
         rgb = colors.color_to_rgb(name)
-        eq_(3, len(rgb))
-        eq_(expected, rgb)
+        assert 3 == len(rgb)
+        assert expected == rgb
     data = (
         ('#000', (0, 0, 0)),
         ('#FF1493', (255, 20, 147)),
@@ -200,8 +200,8 @@ def test_valid_hexcodes_rgb():
 def test_valid_hexcodes_rgba():
     def check(name, expected):
         rgba = colors.color_to_rgba(name)
-        eq_(4, len(rgba))
-        eq_(expected, rgba)
+        assert 4 == len(rgba)
+        assert expected == rgba
     data = (
         ('#808000', (128, 128, 0, 1.0)),
         ('red', (255, 0, 0, 1.0)),
@@ -216,7 +216,7 @@ def test_valid_hexcodes_rgba():
 def test_tuple_to_rgba():
     def check(t, expected):
         rgba = colors.color_to_rgba(t)
-        eq_(expected, rgba)
+        assert expected == rgba
 
     data = (
         ('#808000', (128, 128, 0, 1.0)),
@@ -231,7 +231,7 @@ def test_tuple_to_rgba():
 def test_tuple_to_rgba_int():
     def check(t, expected):
         rgba = colors.color_to_rgba(t, alpha_float=False)
-        eq_(expected, rgba)
+        assert expected == rgba
 
     data = (
         ('#808000', (128, 128, 0, 255)),
@@ -245,7 +245,7 @@ def test_tuple_to_rgba_int():
 
 def test_invert_color():
     def check(color, expected_color):
-        eq_(expected_color, colors.invert_color(color))
+        assert expected_color == colors.invert_color(color)
     data = (
         ((0, 0, 0), (255, 255, 255)),
         ((255, 255, 255), (0, 0, 0)),
@@ -257,5 +257,4 @@ def test_invert_color():
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    pytest.main(['-x', __file__])

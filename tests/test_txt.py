@@ -15,7 +15,6 @@ Text output related tests.
 from __future__ import absolute_import, unicode_literals
 import io
 from itertools import islice
-from nose.tools import eq_
 import segno
 
 
@@ -26,7 +25,7 @@ def test_write_txt():
     qr.save(out, kind='txt', border=0)
     expected = '11111110011'
     val = out.getvalue()
-    eq_(expected, val[:len(expected)])
+    assert expected == val[:len(expected)]
 
 
 def txt_as_matrix(buff, border):
@@ -44,5 +43,6 @@ def txt_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

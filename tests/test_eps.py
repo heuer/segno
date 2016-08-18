@@ -15,54 +15,54 @@ EPS related tests.
 from __future__ import absolute_import, unicode_literals
 import re
 import io
-from nose.tools import ok_, raises
+import pytest
 import segno
 
 
-@raises(ValueError)
 def test_illegal_color_float():
     color = (.1, 1.1, .1)
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', color=color)
+    with pytest.raises(ValueError):
+        qr.save(out, kind='eps', color=color)
 
 
-@raises(ValueError)
 def test_illegal_color_float2():
     color = (-.1, 1.0, .1)
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', color=color)
+    with pytest.raises(ValueError):
+        qr.save(out, kind='eps', color=color)
 
 
-@raises(ValueError)
 def test_illegal_color_int():
     color = (255, 255, 256)
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', color=color)
+    with pytest.raises(ValueError):
+        qr.save(out, kind='eps', color=color)
 
 
-@raises(ValueError)
 def test_illegal_color_int2():
     color = (-1, 1, 1)
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', color=color)
+    with pytest.raises(ValueError):
+        qr.save(out, kind='eps', color=color)
 
 
 def test_default_color():
     qr = segno.make_qr('test')
     out = io.StringIO()
     qr.save(out, kind='eps')
-    ok_('setrgbcolor' not in out.getvalue())
+    assert 'setrgbcolor' not in out.getvalue()
 
 
 def test_color():
     qr = segno.make_qr('test')
     out = io.StringIO()
     qr.save(out, kind='eps', color='#195805')
-    ok_('setrgbcolor' in out.getvalue())
+    assert 'setrgbcolor' in out.getvalue()
 
 
 def test_color_omit_black():
@@ -70,7 +70,7 @@ def test_color_omit_black():
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
     qr.save(out, kind='eps', color='#000')
-    ok_('setrgbcolor' not in out.getvalue())
+    assert 'setrgbcolor' not in out.getvalue()
 
 
 def test_color_omit_black2():
@@ -78,7 +78,7 @@ def test_color_omit_black2():
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
     qr.save(out, kind='eps', color='Black')
-    ok_('setrgbcolor' not in out.getvalue())
+    assert 'setrgbcolor' not in out.getvalue()
 
 
 def test_color_omit_black3():
@@ -86,29 +86,29 @@ def test_color_omit_black3():
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
     qr.save(out, kind='eps', color=(0, 0, 0))
-    ok_('setrgbcolor' not in out.getvalue())
+    assert 'setrgbcolor' not in out.getvalue()
 
 
 def test_background():
     qr = segno.make_qr('test')
     out = io.StringIO()
     qr.save(out, kind='eps', background='#EEE')
-    ok_('setrgbcolor' in out.getvalue())
-    ok_('clippath' in out.getvalue())
+    assert 'setrgbcolor' in out.getvalue()
+    assert 'clippath' in out.getvalue()
 
 
 def test_default_scale():
     qr = segno.make_qr('test')
     out = io.StringIO()
     qr.save(out, kind='eps')
-    ok_('scale' not in out.getvalue())
+    assert 'scale' not in out.getvalue()
 
 
 def test_scale():
     qr = segno.make_qr('test')
     out = io.StringIO()
     qr.save(out, kind='eps', scale=2)
-    ok_('2 2 scale' in out.getvalue())
+    assert '2 2 scale' in out.getvalue()
 
 
 def test_scale_float():
@@ -116,7 +116,7 @@ def test_scale_float():
     out = io.StringIO()
     scale = 1.34
     qr.save(out, kind='eps', scale=scale)
-    ok_('{0} {0} scale'.format(scale) in out.getvalue())
+    assert '{0} {0} scale'.format(scale) in out.getvalue()
 
 
 def eps_as_matrix(buff, border):
@@ -158,5 +158,5 @@ def eps_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    pytest.main(['-x', __file__])
+

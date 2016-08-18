@@ -14,18 +14,22 @@ Terminal output related tests.
 """
 from __future__ import absolute_import, unicode_literals
 import io
-from nose.tools import ok_
 import segno
 
 
 def test_terminal():
     # Test with default options
     qr = segno.make_qr('test')
+    expected = ''
+    for bit in qr.matrix[0]:
+        if bit:
+            expected += '\033[7m  \033[0m'
+        else:
+            expected += '\033[49m  \033[0m'
     out = io.StringIO()
     qr.terminal(out, border=0)
     val = out.getvalue()
-    expected = ''.join(['\033[7m  \033[0m'] * 7) + ' ' + '\033[7m  \033[0m'
-    ok_(expected, val[:len(expected)])
+    assert expected == val[:len(expected)]
 
 
 def terminal_as_matrix(buff, border):
@@ -40,5 +44,6 @@ def terminal_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

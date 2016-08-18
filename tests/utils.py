@@ -15,6 +15,7 @@ Utility functions for test cases.
 import os
 import io
 
+
 def matrix_looks_valid(matrix):
     """\
     Returns if the matrix contains just ``0x0`` and ``0x1`` values.

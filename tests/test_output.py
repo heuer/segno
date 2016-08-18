@@ -14,7 +14,6 @@ Different output tests.
 """
 from __future__ import unicode_literals, absolute_import
 import io
-from nose.tools import eq_
 import segno
 try:
     from .test_eps import eps_as_matrix
@@ -57,9 +56,9 @@ def test_data():
         out = buffer_factory()
         qr.save(out, kind=kind, border=border)
         matrix = to_matrix_func(out, border)
-        eq_(len(qr.matrix), len(matrix))
+        assert len(qr.matrix) == len(matrix)
         for i, row in enumerate(qr.matrix):
-            eq_(row, bytearray(matrix[i]))
+            assert row == bytearray(matrix[i])
     for kind, buffer_factory, to_matrix_func in (('eps', io.StringIO, eps_as_matrix),
                                                  ('png', io.BytesIO, png_as_matrix),
                                                  ('svg', io.BytesIO, svg_as_matrix),
@@ -70,5 +69,6 @@ def test_data():
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

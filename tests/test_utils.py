@@ -13,29 +13,28 @@ Tests against the ``utils`` module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
-from nose.tools import ok_, eq_, raises
 from segno import utils, consts
 
 
 def test_get_border():
     border = utils.get_border(1, None)
-    eq_(4, border)
+    assert 4 == border
     border = utils.get_border(1, 3)
-    eq_(3, border)
+    assert 3 == border
 
 
 def test_get_border2():
     border = utils.get_border(consts.VERSION_M1, 1)
-    eq_(1, border)
+    assert 1 == border
     border = utils.get_border(consts.VERSION_M1, None)
-    eq_(2, border)
+    assert 2 == border
 
 
 def test_get_border3():
     border = utils.get_border(3, 0)
-    eq_(0, border)
+    assert 0 == border
     border = utils.get_border(3, None)
-    eq_(4, border)
+    assert 4 == border
 
 
 def test_get_symbol_size():
@@ -43,10 +42,10 @@ def test_get_symbol_size():
     matrix_size = 21
     border = 0
     width, height = utils.get_symbol_size(version, border=border)
-    eq_((matrix_size, matrix_size), (width, height))
+    assert (matrix_size, matrix_size) == (width, height)
     border = 4
     width, height = utils.get_symbol_size(1)
-    eq_((matrix_size + 2 * border, matrix_size + 2 * border), (width, height))
+    assert (matrix_size + 2 * border, matrix_size + 2 * border) ==  (width, height)
 
 
 def test_get_symbol_size_micro():
@@ -54,12 +53,13 @@ def test_get_symbol_size_micro():
     matrix_size = 13
     border = 0
     width, height = utils.get_symbol_size(version, border=border)
-    eq_((matrix_size, matrix_size), (width, height))
+    assert (matrix_size, matrix_size) == (width, height)
     border = 2
     width, height = utils.get_symbol_size(version)
-    eq_((matrix_size + 2 * border, matrix_size + 2 * border), (width, height))
+    assert (matrix_size + 2 * border, matrix_size + 2 * border) == (width, height)
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

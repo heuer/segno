@@ -18,7 +18,7 @@ import re
 import io
 import tempfile
 import xml.etree.ElementTree as etree
-from nose.tools import eq_, ok_, raises
+import pytest
 import segno
 
 _SVG_NS = 'http://www.w3.org/2000/svg'
@@ -54,24 +54,24 @@ def test_write_svg():
     out = io.BytesIO()
     qr.save(out, kind='svg')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
-    ok_('viewBox' not in root.attrib)
-    ok_('height' in root.attrib)
-    ok_('width' in root.attrib)
+    assert 'viewBox' not in root.attrib
+    assert 'height' in root.attrib
+    assert 'width' in root.attrib
     css_class = root.attrib.get('class')
-    ok_(css_class)
-    eq_('segno', css_class)
+    assert css_class
+    assert 'segno' == css_class
     path_el = _get_path(root)
-    ok_(path_el is not None)
+    assert path_el is not None
     path_class = path_el.get('class')
-    eq_('qrline', path_class)
+    assert 'qrline' == path_class
     stroke = path_el.get('stroke')
-    eq_(stroke, '#000')
+    assert stroke == '#000'
     title_el = _get_title(root)
-    ok_(title_el is None)
+    assert title_el is None
     desc_el = _get_desc(root)
-    ok_(desc_el is None)
+    assert desc_el is None
 
 
 def test_write_svg_black():
@@ -80,24 +80,24 @@ def test_write_svg_black():
     out = io.BytesIO()
     qr.save(out, kind='svg', color='bLacK')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
-    ok_('viewBox' not in root.attrib)
-    ok_('height' in root.attrib)
-    ok_('width' in root.attrib)
+    assert 'viewBox' not in root.attrib
+    assert 'height' in root.attrib
+    assert 'width' in root.attrib
     css_class = root.attrib.get('class')
-    ok_(css_class)
-    eq_('segno', css_class)
+    assert css_class
+    assert 'segno' == css_class
     path_el = _get_path(root)
-    ok_(path_el is not None)
+    assert path_el is not None
     path_class = path_el.get('class')
-    eq_('qrline', path_class)
+    assert 'qrline' == path_class
     stroke = path_el.get('stroke')
-    eq_(stroke, '#000')
+    assert stroke == '#000'
     title_el = _get_title(root)
-    ok_(title_el is None)
+    assert title_el is None
     desc_el = _get_desc(root)
-    ok_(desc_el is None)
+    assert desc_el is None
 
 
 def test_write_svg_black2():
@@ -106,24 +106,24 @@ def test_write_svg_black2():
     out = io.BytesIO()
     qr.save(out, kind='svg', color='#000000')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
-    ok_('viewBox' not in root.attrib)
-    ok_('height' in root.attrib)
-    ok_('width' in root.attrib)
+    assert 'viewBox' not in root.attrib
+    assert 'height' in root.attrib
+    assert 'width' in root.attrib
     css_class = root.attrib.get('class')
-    ok_(css_class)
-    eq_('segno', css_class)
+    assert css_class
+    assert 'segno' == css_class
     path_el = _get_path(root)
-    ok_(path_el is not None)
+    assert path_el is not None
     path_class = path_el.get('class')
-    eq_('qrline', path_class)
+    assert 'qrline' == path_class
     stroke = path_el.get('stroke')
-    eq_(stroke, '#000')
+    assert stroke == '#000'
     title_el = _get_title(root)
-    ok_(title_el is None)
+    assert title_el is None
     desc_el = _get_desc(root)
-    ok_(desc_el is None)
+    assert desc_el is None
 
 
 def test_write_svg_black3():
@@ -132,24 +132,24 @@ def test_write_svg_black3():
     out = io.BytesIO()
     qr.save(out, kind='svg', color=(0, 0, 0))
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
-    ok_('viewBox' not in root.attrib)
-    ok_('height' in root.attrib)
-    ok_('width' in root.attrib)
+    assert 'viewBox' not in root.attrib
+    assert 'height' in root.attrib
+    assert 'width' in root.attrib
     css_class = root.attrib.get('class')
-    ok_(css_class)
-    eq_('segno', css_class)
+    assert css_class
+    assert 'segno' == css_class
     path_el = _get_path(root)
-    ok_(path_el is not None)
+    assert path_el is not None
     path_class = path_el.get('class')
-    eq_('qrline', path_class)
+    assert 'qrline' == path_class
     stroke = path_el.get('stroke')
-    eq_(stroke, '#000')
+    assert stroke == '#000'
     title_el = _get_title(root)
-    ok_(title_el is None)
+    assert title_el is None
     desc_el = _get_desc(root)
-    ok_(desc_el is None)
+    assert desc_el is None
 
 
 def test_write_svg_background_omitted():
@@ -158,12 +158,12 @@ def test_write_svg_background_omitted():
     out = io.BytesIO()
     qr.save(out, kind='svg')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not None)
-    ok_(not path.attrib.get('fill'))
+    assert path is not None
+    assert not path.attrib.get('fill')
 
 
 def test_write_svg_background_white():
@@ -172,12 +172,12 @@ def test_write_svg_background_white():
     out = io.BytesIO()
     qr.save(out, kind='svg', background='white')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not None)
-    eq_('#fff', path.attrib.get('fill'))
+    assert path is not None
+    assert '#fff' == path.attrib.get('fill')
 
 
 def test_write_svg_background_white2():
@@ -186,12 +186,12 @@ def test_write_svg_background_white2():
     out = io.BytesIO()
     qr.save(out, kind='svg', background='#fff')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not None)
-    eq_('#fff', path.attrib.get('fill'))
+    assert path is not None
+    assert '#fff' == path.attrib.get('fill')
 
 
 def test_write_svg_background_white3():
@@ -200,12 +200,12 @@ def test_write_svg_background_white3():
     out = io.BytesIO()
     qr.save(out, kind='svg', background='#ffffff')
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
     # Background should be the first path in the doc
     path = _get_path(root)
-    ok_(path is not None)
-    eq_('#fff', path.attrib.get('fill'))
+    assert path is not None
+    assert '#fff' == path.attrib.get('fill')
 
 
 def test_write_svg_color_rgb():
@@ -214,58 +214,58 @@ def test_write_svg_color_rgb():
     out = io.BytesIO()
     qr.save(out, kind='svg', color=(76, 131, 205))
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<?xml'))
+    assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
-    ok_('viewBox' not in root.attrib)
-    ok_('height' in root.attrib)
-    ok_('width' in root.attrib)
+    assert 'viewBox' not in root.attrib
+    assert 'height' in root.attrib
+    assert 'width' in root.attrib
     css_class = root.attrib.get('class')
-    ok_(css_class)
-    eq_('segno', css_class)
+    assert css_class
+    assert 'segno' == css_class
     path_el = _get_path(root)
-    ok_(path_el is not None)
+    assert path_el is not None
     path_class = path_el.get('class')
-    eq_('qrline', path_class)
+    assert 'qrline' == path_class
     stroke = path_el.get('stroke')
-    eq_(stroke, '#4c83cd')
+    assert stroke == '#4c83cd'
     title_el = _get_title(root)
-    ok_(title_el is None)
+    assert title_el is None
     desc_el = _get_desc(root)
-    ok_(desc_el is None)
+    assert desc_el is None
 
 
 def test_write_svg_color_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', color='#0000ffcc')
-    ok_(b'stroke-opacity' in out.getvalue())
+    assert b'stroke-opacity' in out.getvalue()
 
 
 def test_write_svg_color_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', color='#0000ffcc', svgversion=2.0)
-    ok_(b'stroke-opacity' not in out.getvalue())
+    assert b'stroke-opacity' not in out.getvalue()
     root = _parse_xml(out)
     path = _get_path(root)
-    ok_(path.attrib['stroke'].startswith('rgba'))
+    assert path.attrib['stroke'].startswith('rgba')
 
 
 def test_write_svg_background_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', background='#0000ffcc')
-    ok_(b'fill-opacity' in out.getvalue())
+    assert b'fill-opacity' in out.getvalue()
 
 
 def test_write_svg_background_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', background='#0000ffcc', svgversion=2.0)
-    ok_(b'fill-opacity' not in out.getvalue())
+    assert b'fill-opacity' not in out.getvalue()
     root = _parse_xml(out)
     path = _get_path(root)
-    ok_(path.attrib['fill'].startswith('rgba'))
+    assert path.attrib['fill'].startswith('rgba')
 
 
 def test_write_no_xmldecl():
@@ -273,7 +273,7 @@ def test_write_no_xmldecl():
     out = io.BytesIO()
     qr.save(out, kind='svg', xmldecl=False)
     xml_str = out.getvalue()
-    ok_(xml_str.startswith(b'<svg'))
+    assert xml_str.startswith(b'<svg')
 
 
 def test_viewbox():
@@ -281,9 +281,9 @@ def test_viewbox():
     out = io.BytesIO()
     qr.save(out, kind='svg', omitsize=True)
     root = _parse_xml(out)
-    ok_('viewBox' in root.attrib)
-    ok_('height' not in root.attrib)
-    ok_('width' not in root.attrib)
+    assert 'viewBox' in root.attrib
+    assert 'height' not in root.attrib
+    assert 'width' not in root.attrib
 
 
 def test_svgid():
@@ -292,8 +292,8 @@ def test_svgid():
     ident = 'svgid'
     qr.save(out, kind='svg', svgid=ident)
     root = _parse_xml(out)
-    ok_('id' in root.attrib)
-    eq_(ident, root.attrib['id'])
+    assert 'id' in root.attrib
+    assert ident == root.attrib['id']
 
 
 def test_svgid_default():
@@ -301,7 +301,7 @@ def test_svgid_default():
     out = io.BytesIO()
     qr.save(out, kind='svg')
     root = _parse_xml(out)
-    ok_('id' not in root.attrib)
+    assert 'id' not in root.attrib
 
 
 def test_svgversion():
@@ -310,8 +310,8 @@ def test_svgversion():
     version = 1.0
     qr.save(out, kind='svg', svgversion=version)
     root = _parse_xml(out)
-    ok_('version' in root.attrib)
-    eq_(str(version), root.attrib['version'])
+    assert 'version' in root.attrib
+    assert str(version) == root.attrib['version']
 
 
 def test_svgversion_default():
@@ -319,7 +319,7 @@ def test_svgversion_default():
     out = io.BytesIO()
     qr.save(out, kind='svg')
     root = _parse_xml(out)
-    ok_('version' not in root.attrib)
+    assert 'version' not in root.attrib
 
 
 def test_no_svg_class():
@@ -327,7 +327,7 @@ def test_no_svg_class():
     out = io.BytesIO()
     qr.save(out, kind='svg', svgclass=None)
     root = _parse_xml(out)
-    ok_('class' not in root.attrib)
+    assert 'class' not in root.attrib
 
 
 def test_custom_svg_class():
@@ -335,8 +335,8 @@ def test_custom_svg_class():
     out = io.BytesIO()
     qr.save(out, kind='svg', svgclass='test-class')
     root = _parse_xml(out)
-    ok_('class' in root.attrib)
-    eq_('test-class', root.attrib.get('class'))
+    assert 'class' in root.attrib
+    assert 'test-class' == root.attrib.get('class')
 
 
 def test_no_line_class():
@@ -345,7 +345,7 @@ def test_no_line_class():
     qr.save(out, kind='svg', lineclass=None)
     root = _parse_xml(out)
     path_el = _get_path(root)
-    ok_('class' not in path_el.attrib)
+    assert 'class' not in path_el.attrib
 
 
 def test_custom_line_class():
@@ -354,8 +354,8 @@ def test_custom_line_class():
     qr.save(out, kind='svg', lineclass='test-class')
     root = _parse_xml(out)
     path_el = _get_path(root)
-    ok_('class' in path_el.attrib)
-    eq_('test-class', path_el.attrib.get('class'))
+    assert 'class' in path_el.attrib
+    assert 'test-class' == path_el.attrib.get('class')
 
 
 def test_omit_svgns():
@@ -364,9 +364,9 @@ def test_omit_svgns():
     qr.save(out, kind='svg', svgns=False)
     root = _parse_xml(out)
     path_el = _get_path(root)
-    ok_(path_el is None)  # (since _get_path uses the SVG namespace)
+    assert path_el is None  # (since _get_path uses the SVG namespace)
     path_el = root.find('path')  # Query w/o namespace MUST find the path
-    ok_(path_el is not None)
+    assert path_el is not None
 
 
 def test_title():
@@ -375,8 +375,8 @@ def test_title():
     qr.save(out, kind='svg', title='Test')
     root = _parse_xml(out)
     title_el = _get_title(root)
-    ok_(title_el is not None)
-    eq_('Test', title_el.text)
+    assert title_el is not None
+    assert 'Test' == title_el.text
 
 
 def test_title2():
@@ -385,8 +385,8 @@ def test_title2():
     qr.save(out, kind='svg', title='Määhhh')
     root = _parse_xml(out)
     title_el = _get_title(root)
-    ok_(title_el is not None)
-    eq_('Määhhh', title_el.text)
+    assert title_el is not None
+    assert 'Määhhh' == title_el.text
 
 
 def test_title3():
@@ -395,8 +395,8 @@ def test_title3():
     qr.save(out, kind='svg', title='点')
     root = _parse_xml(out)
     title_el = _get_title(root)
-    ok_(title_el is not None)
-    eq_('点', title_el.text)
+    assert title_el is not None
+    assert '点' == title_el.text
 
 
 def test_title4():
@@ -406,8 +406,8 @@ def test_title4():
     qr.save(out, kind='svg', title='áà', encoding=encoding)
     root = _parse_xml(out)
     title_el = _get_title(root)
-    ok_(title_el is not None)
-    eq_('áà', title_el.text)
+    assert title_el is not None
+    assert 'áà' == title_el.text
 
 
 def test_title_escape():
@@ -415,11 +415,11 @@ def test_title_escape():
     out = io.BytesIO()
     title = '<title>&</title>'
     qr.save(out, kind='svg', title=title)
-    ok_(b'<title>&lt;title&gt;&amp;&lt;/title&gt;</title>' in out.getvalue())
+    assert b'<title>&lt;title&gt;&amp;&lt;/title&gt;</title>' in out.getvalue()
     root = _parse_xml(out)
     title_el = _get_title(root)
-    ok_(title_el is not None)
-    eq_(title, title_el.text)
+    assert title_el is not None
+    assert title == title_el.text
 
 
 def test_desc():
@@ -429,8 +429,8 @@ def test_desc():
     qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
-    ok_(desc_el is not None)
-    eq_(desc, desc_el.text)
+    assert desc_el is not None
+    assert desc == desc_el.text
 
 
 def test_desc2():
@@ -440,8 +440,8 @@ def test_desc2():
     qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
-    ok_(desc_el is not None)
-    eq_(desc, desc_el.text)
+    assert desc_el is not None
+    assert desc == desc_el.text
 
 
 def test_desc3():
@@ -451,8 +451,8 @@ def test_desc3():
     qr.save(out, kind='svg', desc=desc)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
-    ok_(desc_el is not None)
-    eq_(desc, desc_el.text)
+    assert desc_el is not None
+    assert desc == desc_el.text
 
 
 def test_desc4():
@@ -463,8 +463,8 @@ def test_desc4():
     qr.save(out, kind='svg', desc='áà', encoding=encoding)
     root = _parse_xml(out)
     desc_el = _get_desc(root)
-    ok_(desc_el is not None)
-    eq_(desc, desc_el.text)
+    assert desc_el is not None
+    assert desc == desc_el.text
 
 
 def test_desc_escape():
@@ -472,11 +472,11 @@ def test_desc_escape():
     out = io.BytesIO()
     desc = '<desc>&</desc>'
     qr.save(out, kind='svg', desc=desc)
-    ok_(b'<desc>&lt;desc&gt;&amp;&lt;/desc&gt;</desc>' in out.getvalue())
+    assert b'<desc>&lt;desc&gt;&amp;&lt;/desc&gt;</desc>' in out.getvalue()
     root = _parse_xml(out)
     desc_el = _get_desc(root)
-    ok_(desc_el is not None)
-    eq_(desc, desc_el.text)
+    assert desc_el is not None
+    assert desc == desc_el.text
 
 
 def test_background():
@@ -487,8 +487,8 @@ def test_background():
     root = _parse_xml(out)
     # Background should be the first path in the doc
     rect = _get_path(root)
-    ok_(rect is not None)
-    eq_(color, rect.attrib['fill'])
+    assert rect is not None
+    assert color == rect.attrib['fill']
 
 
 def test_module_color():
@@ -498,8 +498,8 @@ def test_module_color():
     qr.save(out, kind='svg', color=color)
     root = _parse_xml(out)
     path = _get_path(root)
-    ok_(path is not None)
-    eq_(color, path.attrib['stroke'])
+    assert path is not None
+    assert color == path.attrib['stroke']
 
 
 def test_scale():
@@ -508,8 +508,8 @@ def test_scale():
     qr.save(out, kind='svg', scale=2)
     root = _parse_xml(out)
     path = _get_path(root)
-    ok_(path is not None)
-    ok_('scale(2)' in path.attrib['transform'])
+    assert path is not None
+    assert 'scale(2)' in path.attrib['transform']
 
 
 def test_scale_float():
@@ -519,15 +519,15 @@ def test_scale_float():
     qr.save(out, kind='svg', scale=scale)
     root = _parse_xml(out)
     path = _get_path(root)
-    ok_(path is not None)
-    ok_('scale({0})'.format(scale) in path.attrib['transform'])
+    assert path is not None
+    assert 'scale({0})'.format(scale) in path.attrib['transform']
 
 
-@raises(ValueError)
 def test_unit_omitsize():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', unit='cm', omitsize=True)
+    with pytest.raises(ValueError):
+        qr.save(out, kind='svg', unit='cm', omitsize=True)
 
 
 def test_unit():
@@ -536,12 +536,12 @@ def test_unit():
     qr.save(out, kind='svg', unit='mm')
     width, height = qr.symbol_size()
     root = _parse_xml(out)
-    ok_('width' in root.attrib)
-    eq_('%dmm' % width, root.attrib['width'])
-    ok_('height' in root.attrib)
-    eq_('%dmm' % height, root.attrib['height'])
-    ok_('viewBox' in root.attrib)
-    eq_('0 0 %d %d' % (width, height), root.attrib['viewBox'])
+    assert 'width' in root.attrib
+    assert '%dmm' % width == root.attrib['width']
+    assert 'height' in root.attrib
+    assert '%dmm' % height == root.attrib['height']
+    assert 'viewBox' in root.attrib
+    assert '0 0 %d %d' % (width, height) == root.attrib['viewBox']
 
 
 def test_write_unicode_filename():
@@ -557,9 +557,9 @@ def test_write_unicode_filename():
     val = f.read(6)
     f.close()
     os.unlink(f.name)
-    eq_(b'<?xml ', val)
-    eq_(title, _get_title(root).text)
-    eq_(desc, _get_desc(root).text)
+    assert b'<?xml ' == val
+    assert title == _get_title(root).text
+    assert desc == _get_desc(root).text
 
 
 def svg_as_matrix(buff, border):
@@ -603,5 +603,5 @@ def svg_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    pytest.main(['-x', __file__])
+
