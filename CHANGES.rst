@@ -5,6 +5,7 @@ Changes
 -------------------
 * Removed deprecated methods "eps", "svg", "png", "pdf", and "txt" from
   segno.QRCode
+* Switched from nose tests to py.test
 
 
 0.1.2 -- 2016-08-17
