@@ -275,12 +275,12 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
             x = j + border
             bit = matrix[i][j]
             if add_legend and bit not in (0x0, 0x1):
-                legend.append((y, x, bit))
+                legend.append((x, y, bit))
             fill = clr_mapping.get(bit, fallback_color)
             write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
-    if add_legend:
-        for y, x, val in legend:
-            write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
+    # legend may be empty if add_legend == False
+    for x, y, val in legend:
+        write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
     write('</g></svg>\n')
     if must_close:
         f.close()
