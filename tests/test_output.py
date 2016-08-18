@@ -21,12 +21,14 @@ try:
     from .test_svg import svg_as_matrix
     from .test_txt import txt_as_matrix
     from .test_pdf import pdf_as_matrix
+    from .test_terminal import terminal_as_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
     from test_svg import svg_as_matrix
     from test_txt import txt_as_matrix
     from test_pdf import pdf_as_matrix
+    from test_terminal import terminal_as_matrix
 
 
 _DATA = (
@@ -63,7 +65,8 @@ def test_data():
                                                  ('png', io.BytesIO, png_as_matrix),
                                                  ('svg', io.BytesIO, svg_as_matrix),
                                                  ('txt', io.StringIO, txt_as_matrix),
-                                                 ('pdf', io.BytesIO, pdf_as_matrix),):
+                                                 ('pdf', io.BytesIO, pdf_as_matrix),
+                                                 ('ans', io.StringIO, terminal_as_matrix),):
         for data, error, border in _DATA:
             yield check, kind, buffer_factory, to_matrix_func, data, error, border
 

@@ -694,7 +694,8 @@ _VALID_SERIALISERS = {
     'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
-    'pdf': write_pdf
+    'pdf': write_pdf,
+    'ans': write_terminal
 }
 
 def save(matrix, version, out, kind=None, **kw):
