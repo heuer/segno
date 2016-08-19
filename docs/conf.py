@@ -8,6 +8,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 from __future__ import unicode_literals
+import sphinx_rtd_theme
 import segno
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -89,7 +90,7 @@ exclude_patterns = ['_build']
 
 # If true, sectionauthor and moduleauthor directives will be shown in the
 # output. They are ignored by default.
-#show_authors = False
+show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -108,7 +109,7 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'classic' #'alabaster'
+html_theme = "sphinx_rtd_theme" #'classic' #'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -116,7 +117,7 @@ html_theme = 'classic' #'alabaster'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
