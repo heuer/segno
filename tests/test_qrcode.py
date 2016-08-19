@@ -439,6 +439,21 @@ def test_save_kind_filename():
     assert expected == val
 
 
+def test_save_kind_overrides_filename():
+    qr = segno.make_qr('test')
+    # SVG extension
+    f = tempfile.NamedTemporaryFile('w', suffix='.svg', delete=False)
+    f.close()
+    # ... but we want EPS
+    qr.save(f.name, kind='eps')
+    f = open(f.name, mode='r')
+    expected = '%!PS-Adobe-3.0 EPSF-3.0'
+    val = f.read(len(expected))
+    f.close()
+    os.unlink(f.name)
+    assert expected == val
+
+
 def test_save_invalid_filename():
     qr = segno.make_qr('test')
     f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=True)
