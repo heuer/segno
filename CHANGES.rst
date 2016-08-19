@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.1.3 -- 2016-mm-dd
+-------------------
+* Registered new file extension "ans" which serializes the QR Code as
+  ANSI escape code (same output as QRCode.terminal())
+* Removed deprecated methods "eps", "svg", "png", "pdf", and "txt" from
+  segno.QRCode
+* Switched from nose tests to py.test
+
+
 0.1.2 -- 2016-08-17
 -------------------
 * Updated docs

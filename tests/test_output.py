@@ -14,7 +14,6 @@ Different output tests.
 """
 from __future__ import unicode_literals, absolute_import
 import io
-from nose.tools import eq_
 import segno
 try:
     from .test_eps import eps_as_matrix
@@ -22,12 +21,14 @@ try:
     from .test_svg import svg_as_matrix
     from .test_txt import txt_as_matrix
     from .test_pdf import pdf_as_matrix
+    from .test_terminal import terminal_as_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
     from test_svg import svg_as_matrix
     from test_txt import txt_as_matrix
     from test_pdf import pdf_as_matrix
+    from test_terminal import terminal_as_matrix
 
 
 _DATA = (
@@ -57,18 +58,20 @@ def test_data():
         out = buffer_factory()
         qr.save(out, kind=kind, border=border)
         matrix = to_matrix_func(out, border)
-        eq_(len(qr.matrix), len(matrix))
+        assert len(qr.matrix) == len(matrix)
         for i, row in enumerate(qr.matrix):
-            eq_(row, bytearray(matrix[i]))
+            assert row == bytearray(matrix[i])
     for kind, buffer_factory, to_matrix_func in (('eps', io.StringIO, eps_as_matrix),
                                                  ('png', io.BytesIO, png_as_matrix),
                                                  ('svg', io.BytesIO, svg_as_matrix),
                                                  ('txt', io.StringIO, txt_as_matrix),
-                                                 ('pdf', io.BytesIO, pdf_as_matrix),):
+                                                 ('pdf', io.BytesIO, pdf_as_matrix),
+                                                 ('ans', io.StringIO, terminal_as_matrix),):
         for data, error, border in _DATA:
             yield check, kind, buffer_factory, to_matrix_func, data, error, border
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

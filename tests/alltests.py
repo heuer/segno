@@ -12,7 +12,6 @@ Executes all tests.
 :organization: Semagia - http://www.semagia.com/
 :license:      BSD License
 """
-import nose
-
 if __name__ == '__main__':
-    nose.run()
+    import pytest
+    pytest.main()

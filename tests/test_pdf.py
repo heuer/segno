@@ -16,7 +16,6 @@ from __future__ import absolute_import, unicode_literals
 import re
 import io
 import zlib
-from nose.tools import ok_
 import segno
 
 
@@ -26,7 +25,7 @@ def test_default_scale():
     scale = 1
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
     qr.save(out, kind='pdf', compresslevel=0)
-    ok_(scale_cmd not in _find_graphic(out))
+    assert scale_cmd not in _find_graphic(out)
 
 
 def test_scale():
@@ -35,7 +34,7 @@ def test_scale():
     scale = 2
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
     qr.save(out, kind='pdf', scale=scale, compresslevel=0)
-    ok_(scale_cmd in _find_graphic(out))
+    assert scale_cmd in _find_graphic(out)
 
 
 def test_scale_float():
@@ -44,7 +43,7 @@ def test_scale_float():
     scale = 1.34
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
     qr.save(out, kind='pdf', scale=scale, compresslevel=0)
-    ok_(scale_cmd in _find_graphic(out))
+    assert scale_cmd in _find_graphic(out)
 
 
 def _find_graphic(out):
@@ -78,5 +77,6 @@ def pdf_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

@@ -15,7 +15,6 @@ Test against issue #3.
 """
 from __future__ import unicode_literals, absolute_import
 import io
-from nose.tools import ok_, eq_
 import segno
 try:
     from .utils import matrix_looks_valid
@@ -25,23 +24,25 @@ except (ValueError, SystemError):  # Attempted relative import in non-package
 
 def test_issue_3():
     qr = segno.make_micro('test')
-    eq_('M3', qr.version)
+    assert 'M3' == qr.version
     # This fails since PNG operates with a fixed set of two colors
     qr.save(io.BytesIO(), kind='png')
 
 
 def test_issue_3_autodetect_micro():
     qr = segno.make('test')
-    eq_('M3', qr.version)
+    assert 'M3' == qr.version
     # This fails since PNG operates with a fixed set of two colors
     qr.save(io.BytesIO(), kind='png')
 
 
 def test_issue_3_matrix():
     qr = segno.make_micro('test')
-    ok_(*matrix_looks_valid(qr.matrix))
+    is_ok, msg = matrix_looks_valid(qr.matrix)
+    assert is_ok, msg
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

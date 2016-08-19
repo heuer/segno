@@ -13,7 +13,6 @@ Tests against the encoder module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
-from nose.tools import eq_, ok_, raises
 import segno
 from segno import consts
 
@@ -46,11 +45,11 @@ _DATA_AUTODETECT = (
 def test_valid_mode_autodetection():
     def check_qr(data, expected_mode):
         qr = segno.make_qr(data)
-        eq_(expected_mode, qr.mode)
+        assert expected_mode == qr.mode
 
     def check_auto(data, expected_mode):
         qr = segno.make(data)
-        eq_(expected_mode, qr.mode)
+        assert expected_mode == qr.mode
 
     for data, mode in _DATA_AUTODETECT:
         yield check_qr, data, mode
@@ -61,80 +60,81 @@ def test_default_encoding():
     qr = segno.make('Märchenbücher', error='m', micro=False)
     # 1 since the data fits into version 1 if ISO/IEC 8859-1 (the default
     # encoding) is used
-    eq_(1, qr.version)
-    eq_('byte', qr.mode)
+    assert 1 == qr.version
+    assert 'byte' == qr.mode
 
 
 def test_encoding_latin1():
     qr = segno.make('Märchenbücher', error='m', encoding='latin1', micro=False)
-    eq_(1, qr.version)
-    eq_('byte', qr.mode)
+    assert 1 == qr.version
+    assert 'byte' == qr.mode
 
 
 def test_encoding_utf8():
     qr = segno.make('Märchenbücher', error='m', encoding='utf-8', micro=False)
-    eq_(2, qr.version)
-    eq_('byte', qr.mode)
+    assert 2 == qr.version
+    assert 'byte' == qr.mode
 
 
 def test_kanji_enforce_byte():
     data = '点'
     qr = segno.make_qr(data)
-    eq_('kanji', qr.mode)
+    assert 'kanji' == qr.mode
     qr = segno.make_qr(data, encoding='utf-8')
-    eq_('byte', qr.mode)
+    assert 'byte' == qr.mode
 
 
 def test_kanji_enforce_byte2():
     data = '点'
     qr = segno.make_qr(data.encode('utf-8'))
-    eq_('byte', qr.mode)
+    assert 'byte' == qr.mode
 
 
 def test_kanji_bytes():
     data = '外来語'
     qr = segno.make_qr(data.encode('shift_jis'))
-    eq_('kanji', qr.mode)
+    assert 'kanji' == qr.mode
 
 
 def test_kanji_mode_byte():
     data = '外来語'
     qr = segno.make_qr(data, mode='byte')
-    eq_('byte', qr.mode)
+    assert 'byte' == qr.mode
 
 
 def test_kanji_mode_byte2():
     data = '漢字'.encode('shift_jis')
     qr = segno.make_qr(data, mode='byte')
-    eq_('byte', qr.mode)
+    assert 'byte' == qr.mode
 
 
 def test_create_micro():
     qr = segno.make_micro('1')
-    ok_(qr.is_micro)
-    eq_('M1', qr.version)
+    assert qr.is_micro
+    assert 'M1' == qr.version
 
 
 def test_enforce_qrcode():
     content = 'HELLO WORLD'
     qr = segno.make(content)
-    ok_(qr.is_micro)
-    eq_('M3', qr.version)
+    assert qr.is_micro
+    assert 'M3' == qr.version
     qr = segno.make_qr(content)
-    ok_(not qr.is_micro)
-    eq_(1, qr.version)
+    assert not qr.is_micro
+    assert 1 == qr.version
     qr = segno.make(content, micro=False)
-    ok_(not qr.is_micro)
-    eq_(1, qr.version)
+    assert not qr.is_micro
+    assert 1 == qr.version
 
 
 def test_m1_has_no_error_level():
     qr = segno.make('1')
-    ok_(qr.is_micro)
-    eq_('M1', qr.version)
-    ok_(qr.error is None)
+    assert qr.is_micro
+    assert 'M1' == qr.version
+    assert qr.error is None
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

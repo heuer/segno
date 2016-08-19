@@ -14,31 +14,42 @@ Terminal output related tests.
 """
 from __future__ import absolute_import, unicode_literals
 import io
-from nose.tools import ok_
+import re
 import segno
 
 
 def test_terminal():
     # Test with default options
     qr = segno.make_qr('test')
+    expected = ''
+    for bit in qr.matrix[0]:
+        if bit:
+            expected += '\033[7m  \033[0m'
+        else:
+            expected += '\033[49m  \033[0m'
     out = io.StringIO()
     qr.terminal(out, border=0)
     val = out.getvalue()
-    expected = ''.join(['\033[7m  \033[0m'] * 7) + ' ' + '\033[7m  \033[0m'
-    ok_(expected, val[:len(expected)])
+    assert expected == val[:len(expected)]
 
+
+
+_COLOR_PATTERN = re.compile(r'\033\[\d+m\s+\033\[0m')
 
 def terminal_as_matrix(buff, border):
     """\
     Returns the text QR code as list of [0,1] lists.
     """
     res = []
-    for l in buff:
-        row = [int(i) for i in l]
-        res.append(row)
+    colors = ('\033[49m  \033[0m', '\033[7m  \033[0m')
+    code = buff.getvalue().splitlines()
+    h_border = border * len(colors[0])
+    for l in code[border:len(code) - border]:
+        res.append([colors.index(color) for color in _COLOR_PATTERN.findall(l[h_border:len(l) - h_border])])
     return res
 
 
 if __name__ == '__main__':
-    import nose
-    nose.core.runmodule()
+    import pytest
+    pytest.main(['-x', __file__])
+

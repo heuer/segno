@@ -24,10 +24,6 @@ Use ``pip`` to install segno from PyPI::
 Usage
 -----
 
-Segno provides several, specific methods which serialize the QR Code (like
-``svg``, ``png``), but it also provides a general ``save()`` method which could
-be used to save a QR Code in the desired format.
-
 .. code-block:: python
 
     >>> import segno

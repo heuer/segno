@@ -22,7 +22,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.2'
+__version__ = '0.1.3'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -299,8 +299,8 @@ class QRCode(object):
 
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
-            self.png(f, scale=scale, color=color, background=background,
-                     border=border)
+            self.save(f, scale=scale, color=color, background=background,
+                      border=border)
         except:
             f.close()
             os.unlink(f.name)
@@ -370,31 +370,6 @@ class QRCode(object):
         writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                border)
 
-    def svg(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='svg', **kw)
-
-    def png(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='png', **kw)
-
-    def txt(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='txt', **kw)
-
-    def eps(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='eps', **kw)
-
-    def pdf(self, out, **kw):
-        import warnings
-        warnings.warn('Deprecated, use QRCode.save()')
-        self.save(out, kind='pdf', **kw)
-
     def save(self, out, kind=None, **kw):
         """\
         Serializes the QR Code in one of the supported formats.
@@ -463,7 +438,7 @@ class QRCode(object):
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
-        svgns            Boolean value (default: True) indicating whether the
+        svgns            Boolean value (default: ``True``) indicating whether the
                          document should have an explicit SVG namespace declaration.
                          Set to ``False`` to omit the namespace declaration.
                          The latter might be useful if the document should be
@@ -562,12 +537,23 @@ class QRCode(object):
         =============    ==============================================================
 
 
+        **ANSI escape code**
+
+        Supports the "border" keyword, only!
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "ans"
+        =============    ==============================================================
+
+
         :param out: A filename or a writable file-like object with a
                 ``name`` attribute. Use the `kind` parameter if `out` is
                 a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
                 don't have a ``name`` attribute.
-        :param kind: If the desired output format cannot be extracted from
-                the filename, this parameter can be used to indicate the
+        :param kind: If the desired output format cannot be determined from
+                the ``out`` parameter, this parameter can be used to indicate the
                 serialization format (i.e. "svg" to enforce SVG output)
         :param kw: Any of the supported keywords by the specific serialization
                 method.
