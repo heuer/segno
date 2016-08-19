@@ -60,7 +60,7 @@ def parse(args):
 
 def main(args):
     args = parse(args)
-    qr = segno.make(args.content,  error=args.error, version=args.version,
+    qr = segno.make(args.content, error=args.error, version=args.version,
                     mask=args.mask, micro=args.micro)
     if args.output is None:
         qr.terminal()
