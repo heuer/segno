@@ -28,6 +28,8 @@ def test_defaults():
     assert not args.micro
     assert args.output is None
     assert args.border is None
+    assert args.color is None
+    assert args.background is None
 
 
 def test_error():
@@ -86,21 +88,11 @@ def test_micro_true():
 
 
 def test_border():
-    args = cmd.parse(['-b', '2'])
-    assert args.border == 2
-
-
-def test_border2():
     args = cmd.parse(['--border', '0'])
     assert args.border == 0
 
 
 def test_scale():
-    args = cmd.parse(['-s', '10'])
-    assert args.scale == 10
-
-
-def test_scale2():
     args = cmd.parse(['--scale', '1.6'])
     assert args.scale == 1.6
 
