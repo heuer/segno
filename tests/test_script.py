@@ -15,6 +15,7 @@ Tests against the command line script.
 from __future__ import absolute_import, unicode_literals
 import os
 import tempfile
+import gzip
 from segno.scripts import cmd
 
 
@@ -105,6 +106,17 @@ def test_color():
 def test_background():
     args = cmd.parse(['--background', 'red'])
     assert args.background == 'red'
+
+
+def test_output_svgz():
+    f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
+    f.close()
+    cmd.main(['test', '--scale=10', '--color=red', '--output={0}'.format(f.name)])
+    f = gzip.open(f.name)
+    content = f.read()
+    os.unlink(f.name)
+    assert 'scale(10)' in content
+    assert 'stroke="red"' in content
 
 
 def test_output():

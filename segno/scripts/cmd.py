@@ -95,8 +95,12 @@ def main(args=sys.argv[1:]):
             config['color'] = args.color if args.color not in ('trans', 'transparent') else None
         if args.background is not None:
             config['background'] = args.background if args.background not in ('trans', 'transparent') else None
+        if int(args.scale) == args.scale:
+            config['scale'] = int(args.scale)
         fname = args.output
         ext = fname[fname.rfind('.') + 1:].lower()
+        if ext == 'svgz':  # There is no svgz serializer, use same config as svg
+            ext = 'svg'
         supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
         # Drop unsupported arguments from config
         for k in list(config):
