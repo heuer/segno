@@ -97,6 +97,16 @@ def test_scale():
     assert args.scale == 1.6
 
 
+def test_color():
+    args = cmd.parse(['--color', 'green'])
+    assert args.color == 'green'
+
+
+def test_background():
+    args = cmd.parse(['--background', 'red'])
+    assert args.background == 'red'
+
+
 def test_output():
     data = (('svg', b'<?xml ', 'rb'),
             ('pdf', b'%PDF-', 'rb'),
