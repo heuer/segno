@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.1.3 -- 2016-mm-dd
+0.1.3 -- 2016-08-20
 -------------------
 * Added command line script "segno"
 * Registered new file extension "ans" which serializes the QR Code as
