@@ -4,7 +4,8 @@ Changes
 
 0.1.4 -- 2016-mm-dd
 -------------------
-
+* QRCode.terminal(out=std.out) suppport for Windows (does not support ANSI
+  escape codes)
 
 
 0.1.3 -- 2016-08-20

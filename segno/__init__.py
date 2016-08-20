@@ -366,8 +366,11 @@ class QRCode(object):
                 If set to ``None`` (default), the recommended border size
                 will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
         """
-        writers.write_terminal(self.matrix, self._version, out or sys.stdout,
-                               border)
+        if out is None and sys.platform == 'win32':
+            writers.write_terminal_win(self.matrix, self._version, border)
+        else:
+            writers.write_terminal(self.matrix, self._version, out or sys.stdout,
+                                   border)
 
     def save(self, out, kind=None, **kw):
         """\
