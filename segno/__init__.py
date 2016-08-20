@@ -16,7 +16,6 @@ QR Code and Micro QR Code implementation.
 """
 from __future__ import absolute_import, unicode_literals
 import sys
-import io
 from . import encoder
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError

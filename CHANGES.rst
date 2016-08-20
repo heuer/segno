@@ -1,8 +1,9 @@
 Changes
 =======
 
-0.1.3 -- 2016-mm-dd
+0.1.3 -- 2016-08-20
 -------------------
+* Added command line script "segno"
 * Registered new file extension "ans" which serializes the QR Code as
   ANSI escape code (same output as QRCode.terminal())
 * Removed deprecated methods "eps", "svg", "png", "pdf", and "txt" from

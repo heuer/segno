@@ -8,7 +8,7 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
 Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 0.1.2
+Library version                                 5.3                   1.2.1                  1.0.0                 0.1.3
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
@@ -33,7 +33,7 @@ Text output                                     Yes                   Yes       
 Other output formats (i.e. `JPEG`_)             Yes                   No                     No                    No, but via `PIL plugin`_
 Black and white QR Codes                        Yes                   Yes                    Yes                   Yes
 Colored QR Codes                                No                    Yes                    No                    Yes
-Command line script                             Yes                   No                     No                    No
+Command line script                             Yes                   No                     No                    Yes
 Plugins                                         No                    No                     No                    Yes
 Default encoding in Byte mode                   UTF-8                 ISO/IEC 8859-1         UTF-8                 ISO/IEC 8859-1
                                                                       or UTF-8                                     or UTF-8
