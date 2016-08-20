@@ -18,6 +18,7 @@ Command line script to generate QR Codes with Segno.
 from __future__ import absolute_import, unicode_literals
 import argparse
 import segno
+import sys
 
 
 def parse(args):
@@ -51,14 +52,12 @@ def parse(args):
                         required=False,
                         )
     parsed_args = parser.parse_args(args)
-    if parsed_args.content == '':
-        parsed_args.content = None
     if parsed_args.error == '-':
         parsed_args.error = None
     return parsed_args
 
 
-def main(args):
+def main(args=sys.argv[1:]):
     args = parse(args)
     qr = segno.make(args.content, error=args.error, version=args.version,
                     mask=args.mask, micro=args.micro)
@@ -69,5 +68,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    import sys
-    main(sys.argv[1:])
+    main()

@@ -20,7 +20,7 @@ from segno.scripts import cmd
 
 def test_defaults():
     args = cmd.parse(())
-    assert args.content is None
+    assert args.content == ''
     assert args.error is None
     assert args.mask is None
     assert args.version is None
@@ -46,8 +46,8 @@ def test_error3():
 
 
 def test_error4():
-    args = cmd.parse(['--error', 'l'])
-    assert args.error == 'L'
+    args = cmd.parse(['--error', 'q'])
+    assert args.error == 'Q'
 
 
 def test_version():
@@ -99,10 +99,10 @@ def test_border2():
 def test_output():
     data = (('svg', b'<?xml ', 'rb'),
             ('pdf', b'%PDF-', 'rb'),
-            ('eps', b'%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
+            ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
             ('png', b'\211PNG\r\n\032\n', 'rb'),
             ('svgz', b'\x1f\x8b\x08', 'rb'),
-            ('txt', b'000000', 'rt'),
+            ('txt', '000000', 'rt'),
     )
 
     def check(arg, ext, expected, mode):
