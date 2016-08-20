@@ -116,8 +116,8 @@ def test_output_svgz():
     content = f.read()
     f.close()
     os.unlink(f.name)
-    assert 'scale(10)' in content
-    assert 'stroke="red"' in content
+    assert b'scale(10)' in content
+    assert b'stroke="red"' in content
 
 
 def test_output():
