@@ -1,5 +1,5 @@
-Welcome to Segno's documentation!
-=================================
+Segno - Python QR Code and Micro QR Code generator
+==================================================
 
 Segno generates QR Codes and Micro QR Codes according to ``ISO/IEC 18004:2015(E)``.
 Aside from other Pyhton QR Code generators, Segno has no 3rd party dependencies
@@ -10,6 +10,7 @@ Contents:
 .. toctree::
    :maxdepth: 4
 
+   command-line
    make
    colors
    serializers
