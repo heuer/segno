@@ -114,6 +114,7 @@ def test_output_svgz():
     cmd.main(['test', '--scale=10', '--color=red', '--output={0}'.format(f.name)])
     f = gzip.open(f.name)
     content = f.read()
+    f.close()
     os.unlink(f.name)
     assert 'scale(10)' in content
     assert 'stroke="red"' in content
