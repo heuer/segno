@@ -21,21 +21,25 @@ import segno
 from segno import writers
 import sys
 
+
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
 for ext, func in writers._VALID_SERIALISERS.items():
     if len(ext) > 3:
         continue
-    args = func.func_code.co_varnames[:func.func_code.co_argcount]
-    _EXT_TO_KW_MAPPING[ext] = args[-len(func.func_defaults):]
+    # Python 2 vs Python 3
+    func_code = getattr(func, 'func_code', None) or func.__code__
+    defaults = getattr(func, 'func_defaults', None) or func.__defaults__
+    args = func_code.co_varnames[:func_code.co_argcount]
+    _EXT_TO_KW_MAPPING[ext] = args[-len(defaults):]
+
+del writers
 
 
 def parse(args):
     """\
-    Creates the parser.
-
-    :rtype: argparse.ArgumentParser
+    Parses the arguments and returns the result.
     """
     parser = argparse.ArgumentParser(description='Segno QR Code and Micro QR Code generator')
     parser.add_argument('content', nargs='?', default='')
