@@ -95,14 +95,24 @@ def test_border2():
     assert args.border == 0
 
 
+def test_scale():
+    args = cmd.parse(['-s', '10'])
+    assert args.scale == 10
+
+
+def test_scale2():
+    args = cmd.parse(['--scale', '1.6'])
+    assert args.scale == 1.6
+
 
 def test_output():
     data = (('svg', b'<?xml ', 'rb'),
             ('pdf', b'%PDF-', 'rb'),
-            ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
             ('png', b'\211PNG\r\n\032\n', 'rb'),
             ('svgz', b'\x1f\x8b\x08', 'rb'),
             ('txt', '000000', 'rt'),
+            ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
+            ('ans', '\033[49m  \033[0m', 'rt'),
     )
 
     def check(arg, ext, expected, mode):

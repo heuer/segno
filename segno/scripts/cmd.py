@@ -40,7 +40,7 @@ def parse(args):
                         required=False,
                         default=None,
                         type=int)
-    parser.add_argument('--scale', help='Scaling factor',
+    parser.add_argument('--scale', '-s', help='Scaling factor',
                         default=1,
                         type=float)
     parser.add_argument('--border', '-b', help='Border / quiet zone',
@@ -54,6 +54,14 @@ def parse(args):
     parsed_args = parser.parse_args(args)
     if parsed_args.error == '-':
         parsed_args.error = None
+    # 'micro' is False by default. If version is set to a Micro QR Code version,
+    # encoder.encode raises a VersionError.
+    # Small problem: --version=M4 --no-micro is allowed
+    version = parsed_args.version
+    if version is not None:
+        version = str(version).upper()
+    if not parsed_args.micro and version in ('M1', 'M2', 'M3', 'M4'):
+        parsed_args.micro = None
     return parsed_args
 
 
@@ -62,9 +70,10 @@ def main(args=sys.argv[1:]):
     qr = segno.make(args.content, error=args.error, version=args.version,
                     mask=args.mask, micro=args.micro)
     if args.output is None:
-        qr.terminal()
+        qr.terminal(border=args.border)
     else:
-        qr.save(args.output)
+        config = dict(border=args.border)
+        qr.save(args.output, **config)
 
 
 if __name__ == '__main__':
