@@ -60,7 +60,7 @@ def test_data():
         matrix = to_matrix_func(out, border)
         assert len(qr.matrix) == len(matrix)
         for i, row in enumerate(qr.matrix):
-            assert row == bytearray(matrix[i])
+            assert row == bytearray(matrix[i]), 'Error in row {0}'.format(i)
     for kind, buffer_factory, to_matrix_func in (('eps', io.StringIO, eps_as_matrix),
                                                  ('png', io.BytesIO, png_as_matrix),
                                                  ('svg', io.BytesIO, svg_as_matrix),
