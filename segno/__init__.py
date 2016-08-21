@@ -361,7 +361,7 @@ class QRCode(object):
         Serializes the matrix as ANSI escape code.
 
         :param out: Filename or a file-like object supporting to write text.
-                If ``None`` (default), the matrix is written to ``stdout``.
+                If ``None`` (default), the matrix is written to ``sys.stdout``.
         :param int border: Integer indicating the size of the quiet zone.
                 If set to ``None`` (default), the recommended border size
                 will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).

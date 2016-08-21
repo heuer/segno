@@ -715,8 +715,8 @@ def write_terminal_win(matrix, version, border=None):
     csbi = ctypes.create_string_buffer(22)
     res = ctypes.windll.kernel32.GetConsoleScreenBufferInfo(std_out, csbi)
     if not res:
-        raise OSError('Cannot find information about the console. Not running on the command line?')
-
+        raise OSError('Cannot find information about the console. '
+                      'Not running on the command line?')
     check_valid_border(border)
     border = get_border(version, border)
     size = get_symbol_size(version, border=0)[0]
