@@ -4,6 +4,7 @@ Changes
 
 0.1.4 -- 2016-mm-dd
 -------------------
+* Nicer terminal output
 * QRCode.terminal(out=std.out) support for Windows (does not support ANSI
   escape codes)
 

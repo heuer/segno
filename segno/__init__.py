@@ -367,7 +367,15 @@ class QRCode(object):
                 will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
         """
         if out is None and sys.platform == 'win32':
-            writers.write_terminal_win(self.matrix, self._version, border)
+            # Windows < 10 does not support ANSI escape sequences, try to
+            # call the a Windows specific terminal output which uses the
+            # Windows API.
+            try:
+                writers.write_terminal_win(self.matrix, self._version, border)
+            except OSError:
+                # Use the standard output even if it may print garbage
+                writers.write_terminal(self.matrix, self._version, sys.stdout,
+                                       border)
         else:
             writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                    border)
