@@ -21,7 +21,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.3'
+__version__ = '0.1.4'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -361,13 +361,24 @@ class QRCode(object):
         Serializes the matrix as ANSI escape code.
 
         :param out: Filename or a file-like object supporting to write text.
-                If ``None`` (default), the matrix is written to ``stdout``.
+                If ``None`` (default), the matrix is written to ``sys.stdout``.
         :param int border: Integer indicating the size of the quiet zone.
                 If set to ``None`` (default), the recommended border size
                 will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
         """
-        writers.write_terminal(self.matrix, self._version, out or sys.stdout,
-                               border)
+        if out is None and sys.platform == 'win32':
+            # Windows < 10 does not support ANSI escape sequences, try to
+            # call the a Windows specific terminal output which uses the
+            # Windows API.
+            try:
+                writers.write_terminal_win(self.matrix, self._version, border)
+            except OSError:
+                # Use the standard output even if it may print garbage
+                writers.write_terminal(self.matrix, self._version, sys.stdout,
+                                       border)
+        else:
+            writers.write_terminal(self.matrix, self._version, out or sys.stdout,
+                                   border)
 
     def save(self, out, kind=None, **kw):
         """\

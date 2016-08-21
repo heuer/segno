@@ -127,7 +127,7 @@ def test_output():
             ('svgz', b'\x1f\x8b\x08', 'rb'),
             ('txt', '000000', 'rt'),
             ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
-            ('ans', '\033[49m  \033[0m', 'rt'),
+            ('ans', '\033[7m       ', 'rt'),
     )
 
     def check(arg, ext, expected, mode):

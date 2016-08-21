@@ -656,7 +656,6 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
     :param out: Filename or a file-like object supporting to write text.
-            If ``None`` (default), the matrix is written to ``stdout``.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
@@ -683,9 +682,97 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
 
 
 def write_terminal(matrix, version, out, border=None):
-    colors = ['\033[{0}m  \033[0m'.format(i) for i in (7, 49)]
-    write_txt(matrix, version, out, border=border, color=colors[0],
-              background=colors[1])
+    """\
+    Function to write to a terminal which supports ANSI escape codes.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version.
+    :param out: Filename or a file-like object supporting to write text.
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    """
+    check_valid_border(border)
+    border = get_border(version, border)
+    size = get_symbol_size(version, border=0)[0]
+
+    def get_bit(i, j):
+        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+
+    f, must_close = get_writable(out, 'wt')
+    write = f.write
+    colors = ['\033[{0}m'.format(i) for i in (7, 49)]
+    for i in range(-border, size + border):
+        prev_bit = -1
+        cnt = 0
+        for j in range(-border, size + border):
+            bit = get_bit(i, j)
+            if bit == prev_bit:
+                cnt += 1
+            else:
+                if cnt:
+                    write(colors[prev_bit])
+                    write('  ' * cnt)
+                    write('\033[0m')  # reset color
+                prev_bit = bit
+                cnt = 1
+        if cnt:
+            write(colors[prev_bit])
+            write('  ' * cnt)
+            write('\033[0m')  # reset color
+        write('\n')
+    if must_close:
+        f.close()
+
+
+def write_terminal_win(matrix, version, border=None):  # pragma: no cover
+    """\
+    Function to write a QR Code to a MS Windows terminal.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    """
+    import sys
+    import struct
+    import ctypes
+    write = sys.stdout.write
+    std_out = ctypes.windll.kernel32.GetStdHandle(-11)
+    csbi = ctypes.create_string_buffer(22)
+    res = ctypes.windll.kernel32.GetConsoleScreenBufferInfo(std_out, csbi)
+    if not res:
+        raise OSError('Cannot find information about the console. '
+                      'Not running on the command line?')
+    check_valid_border(border)
+    border = get_border(version, border)
+    size = get_symbol_size(version, border=0)[0]
+
+    def get_bit(i, j):
+        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+
+    default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
+    set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
+    colors = (240, default_color)
+    for i in range(-border, size + border):
+        prev_bit = -1
+        cnt = 0
+        for j in range(-border, size + border):
+            bit = get_bit(i, j)
+            if bit == prev_bit:
+                cnt += 1
+            else:
+                if cnt:
+                    set_color(colors[prev_bit])
+                    write('  ' * cnt)
+                prev_bit = bit
+                cnt = 1
+        if cnt:
+            set_color(colors[prev_bit])
+            write('  ' * cnt)
+        set_color(default_color)  # reset color
+        write('\n')
 
 
 _VALID_SERIALISERS = {

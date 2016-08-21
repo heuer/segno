@@ -16,10 +16,10 @@ Command line script to generate QR Codes with Segno.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
+import sys
 import argparse
 import segno
 from segno import writers
-import sys
 
 
 # file extension to supported keywords mapping
@@ -102,7 +102,8 @@ def main(args=sys.argv[1:]):
         if ext == 'svgz':  # There is no svgz serializer, use same config as svg
             ext = 'svg'
         supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
-        # Drop unsupported arguments from config
+        # Drop unsupported arguments from config rather than getting a
+        # "unsupported keyword" exception
         for k in list(config):
             if k not in supported_args:
                 del config[k]
