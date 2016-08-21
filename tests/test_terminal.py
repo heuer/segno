@@ -23,7 +23,7 @@ def test_terminal():
     qr = segno.make_qr('test')
     expected = ''
     for bit in qr.matrix[0]:
-        if bit:
+        if not bit:
             expected += '\033[7m  \033[0m'
         else:
             expected += '\033[49m  \033[0m'
@@ -41,7 +41,7 @@ def terminal_as_matrix(buff, border):
     Returns the text QR code as list of [0,1] lists.
     """
     res = []
-    colors = ('\033[49m  \033[0m', '\033[7m  \033[0m')
+    colors = ('\033[7m  \033[0m', '\033[49m  \033[0m')
     code = buff.getvalue().splitlines()
     h_border = border * len(colors[0])
     for l in code[border:len(code) - border]:

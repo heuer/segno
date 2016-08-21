@@ -692,7 +692,7 @@ def write_terminal(matrix, version, out, border=None):
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     """
-    colors = ['\033[{0}m  \033[0m'.format(i) for i in (7, 49)]
+    colors = ['\033[{0}m  \033[0m'.format(i) for i in (49, 7)]
     write_txt(matrix, version, out, border=border, color=colors[0],
               background=colors[1])
 
@@ -710,40 +710,43 @@ def write_terminal_win(matrix, version, border=None):
     import sys
     import struct
     import ctypes
-    check_valid_border(border)
-    border = get_border(version, border)
-    size = get_symbol_size(version, border=0)[0]
-
-    def get_bit(i, j):
-        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
-
     write = sys.stdout.write
     std_out = ctypes.windll.kernel32.GetStdHandle(-11)
     csbi = ctypes.create_string_buffer(22)
     res = ctypes.windll.kernel32.GetConsoleScreenBufferInfo(std_out, csbi)
     if not res:
-        raise OSError('Cannot get information about the terminal. Not running inside a terminal?')
-    default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
-    set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
-    colors = (240, default_color)
-    for i in range(-border, size + border):
-        prev_bit = -1
-        cnt = 0
-        for j in range(-border, size + border):
-            bit = get_bit(i, j)
-            if bit == prev_bit:
-                cnt += 1
-            else:
-                if cnt:
-                    set_color(colors[prev_bit])
-                    write('  ' * cnt)
-                prev_bit = bit
-                cnt = 1
-        if cnt:
-            set_color(colors[prev_bit])
-            write('  ' * cnt)
-        set_color(default_color)  # reset color
-        write('\n')
+        # Not on the command line? Use the default terminal output even if
+        # it results in garbage.
+        write_terminal(matrix, version, sys.stdout, border)
+    else:
+        check_valid_border(border)
+        border = get_border(version, border)
+        size = get_symbol_size(version, border=0)[0]
+
+        def get_bit(i, j):
+            return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+
+        default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
+        set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
+        colors = (240, default_color)
+        for i in range(-border, size + border):
+            prev_bit = -1
+            cnt = 0
+            for j in range(-border, size + border):
+                bit = get_bit(i, j)
+                if bit == prev_bit:
+                    cnt += 1
+                else:
+                    if cnt:
+                        set_color(colors[prev_bit])
+                        write('  ' * cnt)
+                    prev_bit = bit
+                    cnt = 1
+            if cnt:
+                set_color(colors[prev_bit])
+                write('  ' * cnt)
+            set_color(default_color)  # reset color
+            write('\n')
 
 
 _VALID_SERIALISERS = {

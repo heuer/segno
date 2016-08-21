@@ -16,10 +16,10 @@ Command line script to generate QR Codes with Segno.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
+import sys
 import argparse
 import segno
 from segno import writers
-import sys
 
 
 # file extension to supported keywords mapping
