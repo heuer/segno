@@ -14,12 +14,12 @@ Usage
 
 Output the QR Code to the terminal::
 
-    $ segno 'Little wing'
+    $ segno "Little wing"
 
 
 Same content, but as Micro QR Code (M4)::
 
-    $ segno 'Little wing' --micro
+    $ segno "Little wing" --micro
 
 
 Version
@@ -32,14 +32,14 @@ Micro QR Code identifier.
 The content 'Layla' would fit into a version 1 QR Code, but the following command
 enforces version 5::
 
-    $ segno 'Layla' --version=5
-    $ segno 'Layla' -v=5
+    $ segno "Layla" --version=5
+    $ segno "Layla" -v=5
 
 
 Micro QR Code::
 
-    $ segno 'Layla' -v=m4
-    $ segno 'Layla' --version=M4
+    $ segno "Layla" -v=m4
+    $ segno "Layla" --version=M4
 
 
 Error correction level
@@ -49,7 +49,7 @@ The default error correction level is "M", use the ``error`` parameter to change
 it::
 
     $ segno "Ain't no grave" --error=q
-    $ segno 'Heart of Gold' -e=h
+    $ segno "Heart of Gold" -e=h
 
 
 QR Code serialization
@@ -58,12 +58,12 @@ QR Code serialization
 Printing the QR Codes to the terminal is nice but the ``output`` parameter
 serializes the QR Code in one of the supported file formats::
 
-    $ segno 'White Room' --output=white-room.png
-    $ segno 'Satellite Of Love' -o=satellite.svg
-    $ segno 'Mrs. Robinson' --output=mrs.eps
-    $ segno 'De Do Do Do, De Da Da Da' --output=dedodo.pdf
-    $ segno 'Tin Pan Alley' --output=tin-pan-alley.svgz
-    $ segno 'The Thrill Is Gone' --output=thrill-gone.txt
+    $ segno "White Room" --output=white-room.png
+    $ segno "Satellite Of Love" -o=satellite.svg
+    $ segno "Mrs. Robinson" --output=mrs.eps
+    $ segno "De Do Do Do, De Da Da Da" --output=dedodo.pdf
+    $ segno "Tin Pan Alley" --output=tin-pan-alley.svgz
+    $ segno "The Thrill Is Gone" --output=thrill-gone.txt
 
 
 Scaling QR Codes
@@ -72,7 +72,7 @@ Scaling QR Codes
 If the resulting QR Code is too small, ``scale`` can be used to create a more
 appropriate output::
 
-    $ segno 'Money Talks' --scale=10 --output=money-talks.png
+    $ segno "Money Talks" --scale=10 --output=money-talks.png
 
 If the serializer does not support a scaling factor (i.e. text output), this
 parameter is ignored.
@@ -84,8 +84,8 @@ Changing the size of the quiet zone
 The generated QR Codes will have a recommended quiet zone / border around the
 symbol. To change the size of the border, ``border`` can be utilized::
 
-    $ segno 'Black Magic Woman' --border=0 --output=black-magic-woman.svg
-    $ segno 'Shine On You Crazy Diamond' --border=10 --output=diamond.png
+    $ segno "Black Magic Woman" --border=0 --output=black-magic-woman.svg
+    $ segno "Shine On You Crazy Diamond" --border=10 --output=diamond.png
 
 
 Colors
@@ -96,8 +96,8 @@ to change the color of the dark modules and ``background`` to change the
 color of the light modules. If the color or background should be transparent,
 set the value to "transparent"::
 
-    $ segno 'So Excited' --color=darkblue --output=excited.png
-    $ segno 'Hotel California' --background=transparent --output=hotel.png
+    $ segno "So Excited" --color=darkblue --output=excited.png
+    $ segno "Hotel California" --background=transparent --output=hotel.png
     $ segno "Don't Give Up" --color=transparent --output=dontgiveup.svg
 
 If the serializer does not support ``color`` or ``background``, these arguments
