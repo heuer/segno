@@ -2,11 +2,11 @@ Changes
 =======
 
 
-0.1.4 -- 2016-mm-dd
+0.1.4 -- 2016-08-21
 -------------------
-* Nicer terminal output
-* QRCode.terminal(out=std.out) support for Windows (does not support ANSI
-  escape codes)
+* Better terminal output
+* QRCode.terminal() uses a special output function (if it detects Windows) to
+  support MS Windows which may not support ANSI escape codes
 
 
 0.1.3 -- 2016-08-20

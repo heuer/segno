@@ -725,7 +725,7 @@ def write_terminal(matrix, version, out, border=None):
         f.close()
 
 
-def write_terminal_win(matrix, version, border=None):
+def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     """\
     Function to write a QR Code to a MS Windows terminal.
 
