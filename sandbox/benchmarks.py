@@ -92,16 +92,16 @@ def png_segno(data='QR Code Symbol'):
 
 
 def run_create_tests(which=None, number=200, table=None):
-    tests = ('create_segno', 'create_pyqrcode', 'create_qrcodegen',
-             'create_qrcode')
+    tests = ('create_pyqrcode', 'create_qrcodegen',
+             'create_qrcode', 'create_segno',)
     if which:
         tests = filter(lambda n: n[len('create_'):] in which, tests)
     _run_tests(tests, number, table)
 
 
 def run_svg_tests(which=None, number=200, table=None):
-    tests = ('svg_segno', 'svg_pyqrcode', 'svg_qrcodegen',
-             'svg_qrcode_path', 'svg_qrcode_rects')
+    tests = ('svg_pyqrcode', 'svg_qrcodegen',
+             'svg_qrcode_path', 'svg_qrcode_rects', 'svg_segno',)
 
     if which:
         tests = filter(lambda n: n[len('svg_'):] in which, tests)
@@ -109,7 +109,7 @@ def run_svg_tests(which=None, number=200, table=None):
 
 
 def run_png_tests(which=None, number=200, table=None):
-    tests = ('png_segno', 'png_pyqrcode', 'png_qrcode')
+    tests = ('png_pyqrcode', 'png_qrcode', 'png_segno',)
     if which:
         tests = filter(lambda n: n[len('png_'):] in which, tests)
     _run_tests(tests, number, table)
@@ -142,5 +142,3 @@ if __name__ == '__main__':
     with open('out/results.csv', 'wb') as f:
         writer = csv.writer(f)
         writer.writerows(table)
-
-        
