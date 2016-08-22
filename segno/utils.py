@@ -9,10 +9,6 @@
 Utility functions useful for writers or QR Code objects.
 """
 from __future__ import absolute_import, unicode_literals
-try:
-    range = xrange
-except NameError:
-    pass
 
 
 def get_default_border_size(version):
@@ -63,28 +59,6 @@ def get_symbol_size(version, scale=1, border=None):
     return dim, dim
 
 
-def check_valid_scale(scale):
-    """\
-    Raises a ValueError iff `scale` is negative or zero.
-
-    :param scale: float or integer indicating a scaling factor.
-    """
-    if scale <= 0:
-        raise ValueError('The scale must not be negative or zero. '
-                         'Got: "{0}"'.format(scale))
-
-
-def check_valid_border(border):
-    """\
-    Raises a ValueError iff `border` is negative.
-
-    :param int border: Indicating the size of the quiet zone.
-    """
-    if border is not None and (int(border) != border or border < 0):
-        raise ValueError('The border must not a non-negative integer value. '
-                         'Got: "{0}"'.format(border))
-
-
 def matrix_to_lines(matrix, x, y, incby=1):
     """\
     Converts the `matrix` into an iterable of ((x1, y1), (x2, y2)) tuples which
@@ -115,23 +89,3 @@ def matrix_to_lines(matrix, x, y, incby=1):
         if last_bit:
             yield (x1, y), (x2, y)
             last_bit = 0x0
-
-
-def matrix_with_border(matrix, version, border):
-    """\
-
-    :param matrix: The matrix.
-    :param int version: The (Micro) QR code version.
-    :param int border: Integer indicating the size of the quiet zone.
-            If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    """
-    check_valid_border(border)
-    border = get_border(version, border)
-    size = get_symbol_size(version, border=0)[0]
-
-    def get_bit(i, j):
-        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
-
-    for i in range(-border, size + border):
-        yield (get_bit(i, j) for j in range(-border, size + border))

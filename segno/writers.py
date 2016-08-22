@@ -38,8 +38,10 @@ except ImportError:  # pragma: no cover
     from io import open
 from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
         color_to_webcolor, color_is_black, color_is_white
-from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_with_border
+from .utils import matrix_to_lines, get_symbol_size, get_border
+
+__all__ = ('get_writable', 'check_valid_scale', 'check_valid_border')
+
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
@@ -61,6 +63,28 @@ def get_writable(file_or_path, mode, encoding=None):
         return codecs.getwriter(encoding)(file_or_path), False
     except AttributeError:
         return open(file_or_path, mode, encoding=encoding), True
+
+
+def check_valid_scale(scale):
+    """\
+    Raises a ValueError iff `scale` is negative or zero.
+
+    :param scale: float or integer indicating a scaling factor.
+    """
+    if scale <= 0:
+        raise ValueError('The scale must not be negative or zero. '
+                         'Got: "{0}"'.format(scale))
+
+
+def check_valid_border(border):
+    """\
+    Raises a ValueError iff `border` is negative.
+
+    :param int border: Indicating the size of the quiet zone.
+    """
+    if border is not None and (int(border) != border or border < 0):
+        raise ValueError('The border must not a non-negative integer value. '
+                         'Got: "{0}"'.format(border))
 
 
 def write_svg(matrix, version, out, scale=1, border=None, color='#000',
@@ -668,13 +692,21 @@ def write_terminal(matrix, version, out, border=None):
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     """
+    check_valid_border(border)
+    border = get_border(version, border)
+    size = get_symbol_size(version, border=0)[0]
+
+    def get_bit(i, j):
+        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+
     f, must_close = get_writable(out, 'wt')
     write = f.write
     colors = ['\033[{0}m'.format(i) for i in (7, 49)]
-    for row in matrix_with_border(matrix, version, border):
+    for i in range(-border, size + border):
         prev_bit = -1
         cnt = 0
-        for bit in row:
+        for j in range(-border, size + border):
+            bit = get_bit(i, j)
             if bit == prev_bit:
                 cnt += 1
             else:
@@ -713,13 +745,21 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     if not res:
         raise OSError('Cannot find information about the console. '
                       'Not running on the command line?')
+    check_valid_border(border)
+    border = get_border(version, border)
+    size = get_symbol_size(version, border=0)[0]
+
+    def get_bit(i, j):
+        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+
     default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colors = (240, default_color)
-    for row in matrix_with_border(matrix, version, border):
+    for i in range(-border, size + border):
         prev_bit = -1
         cnt = 0
-        for bit in row:
+        for j in range(-border, size + border):
+            bit = get_bit(i, j)
             if bit == prev_bit:
                 cnt += 1
             else:
