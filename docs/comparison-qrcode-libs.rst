@@ -62,8 +62,8 @@ Create a 1-M QR Code "QR Code Symbol".
 
 .. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_create.svg
     :alt: Chart showing the results of creating a 1-M QR Code.
-    :width: 360
-    :height: 270
+    :width: 500
+    :height: 375
 
 
 
@@ -75,8 +75,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
 .. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_svg.svg
     :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
-    :width: 360
-    :height: 270
+    :width: 500
+    :height: 375
 
 
 
@@ -87,8 +87,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_png.svg
     :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
-    :width: 360
-    :height: 270
+    :width: 500
+    :height: 375
 
 
 .. _qrcode: https://pypi.python.org/pypi/qrcode/
