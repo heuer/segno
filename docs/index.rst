@@ -16,6 +16,7 @@ Contents:
    serializers
    comparison-qrcode-libs
    replace-qrcode-libs
+   plugins
    api
 
 
