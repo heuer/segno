@@ -8,7 +8,7 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
 Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 0.1.3
+Library version                                 5.3                   1.2.1                  1.0.0                 0.1.4
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
@@ -33,6 +33,7 @@ Text output                                     Yes                   Yes       
 Other output formats (i.e. `JPEG`_)             Yes                   No                     No                    No, but via `PIL plugin`_
 Black and white QR Codes                        Yes                   Yes                    Yes                   Yes
 Colored QR Codes                                No                    Yes                    No                    Yes
+Changing size of modules (scaling factor)       Yes                   Yes                    No                    Yes
 Command line script                             Yes                   No                     No                    Yes
 Plugins                                         No                    No                     No                    Yes
 Default encoding in Byte mode                   UTF-8                 ISO/IEC 8859-1         UTF-8                 ISO/IEC 8859-1
@@ -41,7 +42,46 @@ Default encoding in Byte mode                   UTF-8                 ISO/IEC 88
                                                 `Pillow`_ or
                                                 `Pymaging`_ and
                                                 `Pymaging-PNG`_
+                                                (Windows:
+                                                `colorama`_)
 ============================================    ==================    ===================    ==================    ========
+
+
+Performance
+-----------
+
+Some performance indicators. The script `benchmark.py`_ ran on a
+MacBook Air 2,13 Core2 Duo using CPython 2.7.10. Each SVG / PNG image uses a
+scaling factor of 10 (aside from qrcodegen which does not support any scaling).
+
+
+Create a QR Code
+^^^^^^^^^^^^^^^^
+
+Create a 1-M QR Code "QR Code Symbol".
+
+.. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_create.svg
+    :alt: Chart showing the results of creating a 1-M QR Code.
+
+
+Create a QR Code and serialize it as SVG
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
+
+
+.. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_svg.svg
+    :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
+
+
+
+Create a QR Code and serialize it as PNG
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
+
+.. image:: https://cdn.rawgit.com/heuer/segno/master/sandbox/out/chart_png.svg
+    :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
 
 
 .. _qrcode: https://pypi.python.org/pypi/qrcode/
@@ -64,4 +104,6 @@ Default encoding in Byte mode                   UTF-8                 ISO/IEC 88
 .. _Pymaging-PNG: https://github.com/ojii/pymaging-png
 .. _PIL: http://pythonware.com/products/pil/
 .. _Pillow: https://python-pillow.github.io/
+.. _colorama: https://pypi.python.org/pypi/colorama
 .. _PIL plugin: https://github.com/heuer/segno-pil
+.. _benchmark.py: https://github.com/heuer/segno/sandbox/benchmark.py
