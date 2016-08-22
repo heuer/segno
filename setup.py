@@ -43,7 +43,7 @@ setup(
     author='Lars Heuer',
     author_email='heuer@semagia.com',
     platforms=['any'],
-    packages=['segno'],
+    packages=find_packages(exclude=['docs', 'tests', 'sandbox']),
     include_package_data=True,
     entry_points = {'console_scripts': ['segno = segno.scripts.cmd:main']},
     keywords=['QR Code', 'Micro QR Code', 'ISO/IEC 18004',
