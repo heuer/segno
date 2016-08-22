@@ -80,7 +80,7 @@ Create a QR Code and serialize it as PNG
 
 Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
-.. image::static/chart_png.svg
+.. image:: _static/chart_png.svg
     :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
 
 
