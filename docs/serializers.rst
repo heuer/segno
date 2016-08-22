@@ -4,18 +4,8 @@ QR Code and Micro QR Code serialization
 A QR Code or Micro QR Code is independent of its output, it's just a matrix.
 To save a QR Code or Micro QR Code, Segno provides several output formats.
 
-The simpliest way to generate and save a QR Code or Micro QR Code is calling
-
-.. code-block:: python
-
-    >>> import segno
-    >>> # Save as SVG
-    >>> segno.make('Polly').save('polly.svg')
-    >>> # Save as PNG
-    >>> segno.make('Polly').save('polly.png')
-
-
-The above statement are equivalent to
+Segno provides a :py:func:`segno.QRCode.save` method to serialize the (Micro)
+QR Code in different formats:
 
 .. code-block:: python
 
@@ -23,6 +13,7 @@ The above statement are equivalent to
     >>> qr = segno.make('Polly')
     >>> qr.save('polly.svg')
     >>> qr.save('polly.png')
+    >>> qr.save('polly.eps')
 
 
 All serializers accept a ``border`` parameter which indicates the "quiet zone"
@@ -40,7 +31,7 @@ a custom border, you may specify the border
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
-that the dark / light modules of a (Micro) QR Code is interpreted as 1 unit in
+that the dark / light modules of a (Micro) QR Code is interpreted as one unit in
 the specific user space (i.e. 1 pixel for the PNG serializer or 1 point (1/72 of
 an inch) in EPS). Some serializers (like PNG) accept only an integer value or
 convert the provided scaling factor to an integer. Other, like SVG and EPS,
@@ -80,4 +71,4 @@ for details.
 
 
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
-accepted by the specific serializers.
+accepted by the specific serializer.
