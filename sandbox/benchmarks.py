@@ -2,6 +2,7 @@
 """\
 Some benchmarks running against QR Code generators
 """
+from __future__ import print_function
 import sys
 import timeit
 import segno
@@ -25,28 +26,29 @@ if QRCode:
     def create_qrcode(data='QR Code Symbol'):
         """qrcode create"""
         qr = QRCode(error_correction=ERROR_CORRECT_M)
-        qr.add_data(data)
+        qr.add_data(data, optimize=False)
         qr.make()
 
     def svg_qrcode_path(data='QR Code Symbol'):
         """qrcode SVG path"""
-        qrcode.make(data, error_correction=qrcode.ERROR_CORRECT_M,
-                    box_size=10,
-                    image_factory=SvgPathImage) \
-            .save('out/qrcode_path_%s.svg' % data)
+        qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
+                    image_factory=SvgPathImage)
+        qr.add_data(data, optimize=False)
+        qr.make_image().save('out/qrcode_path_%s.svg' % data)
 
     def svg_qrcode_rects(data='QR Code Symbol'):
         """qrcode SVG rects"""
-        qrcode.make(data, error_correction=qrcode.ERROR_CORRECT_M,
-                    box_size=10,
-                    image_factory=SvgImage) \
-            .save('out/qrcode_rects_%s.svg' % data)
+        qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
+                    image_factory=SvgImage)
+        qr.add_data(data, optimize=False)
+        qr.make_image().save('out/qrcode_rects_%s.svg' % data)
 
     def png_qrcode(data='QR Code Symbol'):
         """qrcode PNG"""
-        qrcode.make(data, error_correction=qrcode.ERROR_CORRECT_M,
-                    box_size=10) \
-            .save('out/qrcode_%s.png' % data)
+        qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
+                    image_factory=SvgImage)
+        qr.add_data(data, optimize=False)
+        qr.make_image().save('out/qrcode_%s.png' % data)
 
 
 if pyqrcode:
@@ -89,31 +91,31 @@ def png_segno(data='QR Code Symbol'):
     segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10)
 
 
-def run_create_tests(which=None, number=500):
+def run_create_tests(which=None, number=200, table=None):
     tests = ('create_segno', 'create_pyqrcode', 'create_qrcodegen',
              'create_qrcode')
     if which:
         tests = filter(lambda n: n[len('create_'):] in which, tests)
-    _run_tests(tests, number)
+    _run_tests(tests, number, table)
 
 
-def run_svg_tests(which=None, number=500):
+def run_svg_tests(which=None, number=200, table=None):
     tests = ('svg_segno', 'svg_pyqrcode', 'svg_qrcodegen',
              'svg_qrcode_path', 'svg_qrcode_rects')
 
     if which:
         tests = filter(lambda n: n[len('svg_'):] in which, tests)
-    _run_tests(tests, number)
+    _run_tests(tests, number, table)
 
 
-def run_png_tests(which=None, number=500):
+def run_png_tests(which=None, number=200, table=None):
     tests = ('png_segno', 'png_pyqrcode', 'png_qrcode')
     if which:
         tests = filter(lambda n: n[len('png_'):] in which, tests)
-    _run_tests(tests, number)
+    _run_tests(tests, number, table)
 
 
-def _run_tests(tests, number):
+def _run_tests(tests, number, table=None):
     # Code taken from <https://genshi.edgewall.org/browser/trunk/examples/bench/bigtable.py>
     # Author: Jonas Borgström <jonas@edgewall.com>
     # License: BSD (I'd think since Genshi uses BSD as well)
@@ -124,10 +126,21 @@ def _run_tests(tests, number):
             result = '   (not installed?)'
         else:
             result = '%16.2f ms' % (1000 * time)
-        print '%-35s %s' % (getattr(sys.modules[__name__], test).__doc__, result)
+        name = getattr(sys.modules[__name__], test).__doc__
+        print('%-35s %s' % (name, result))
+        if table is not None:
+            table.append((name, '%.2f' % (1000 * time)))
+        
 
 
 if __name__ == '__main__':
-    run_create_tests()
-    run_svg_tests()
-    run_png_tests()
+    import csv
+    table = []
+    run_create_tests(table=table)
+    run_svg_tests(table=table)
+    run_png_tests(table=table)
+    with open('out/results.csv', 'wb') as f:
+        writer = csv.writer(f)
+        writer.writerows(table)
+
+        
