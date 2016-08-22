@@ -115,7 +115,12 @@ def matrix_to_lines(matrix, x, y, incby=1):
 
 def matrix_with_border(matrix, version, border):
     """\
+    Returns an interator / generator over the provided matrix.
 
+    :param matrix: An iterable of bytearrays.
+    :param int version: A version constant.
+    :param int border: The border size or ``None`` to specify the
+            default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
     """
     check_valid_border(border)
     border = get_border(version, border)
