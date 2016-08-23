@@ -332,7 +332,7 @@ class QRCode(object):
 
         Aside from the missing ``out`` parameter and the different ``xmldecl``
         and ``nl`` default values and the additional parameter ``encode_minimal``
-        and ``omit_charset`` this function uses the same parameters as the
+        and ``omit_charset`` this method uses the same parameters as the
         usual SVG serializer.
 
         :param bool encode_minimal: Indicates if the resulting data URI should
@@ -355,7 +355,7 @@ class QRCode(object):
     def png_data_uri(self, scale=1, border=None, color='#000', background='#fff',
                      compresslevel=9, addad=True):
         """\
-        Converts the provided `qrcode` into a PNG data URI.
+        Converts the QR Code into a PNG data URI.
 
         :rtype: str
         """

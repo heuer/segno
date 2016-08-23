@@ -9,6 +9,10 @@
 Utility functions useful for writers or QR Code objects.
 """
 from __future__ import absolute_import, unicode_literals
+try:  # pragma: no cover
+    range = xrange
+except NameError:  # pragma: no cover
+    pass
 
 
 def get_default_border_size(version):

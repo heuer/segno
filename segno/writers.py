@@ -107,7 +107,6 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
     :param str encoding: Encoding of the XML document. "utf-8" by default.
     :param float svgversion: SVG version (default: None)
     """
-
     check_valid_scale(scale)
     check_valid_border(border)
     if unit and omitsize:
@@ -189,6 +188,24 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
                     lineclass='qrline', omitsize=False, unit='',
                     encoding='utf-8', svgversion=None, nl=False,
                     encode_minimal=False, omit_charset=False):
+    """\
+    Converts the matrix to a SVG data URI.
+
+    The XML declaration is omitted by default (set ``xmldecl`` to ``True``
+    to enable it), further the newline is omitted by default (set ``nl`` to
+    ``True`` to enable it).
+
+    Aside from the missing ``out`` parameter and the different ``xmldecl``
+    and ``nl`` default values and the additional parameter ``encode_minimal``
+    and ``omit_charset`` this function uses the same parameters as the
+    usual SVG serializer.
+
+    :param bool encode_minimal: Indicates if the resulting data URI should
+                    use minimal percent encoding (disabled by default).
+    :param bool omit_charset: Indicates if the ``;charset=...`` should be omitted
+                    (disabled by default)
+    :rtype: str
+    """
     encode = partial(quote, safe=b"") if not encode_minimal else partial(quote, safe=b" :/='")
     buff = io.BytesIO()
     write_svg(matrix, version, buff, scale=scale, color=color, background=background,
@@ -549,6 +566,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
 
 def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                     background='#fff', compresslevel=9, addad=True):
+    """\
+    Converts the provided matrix into a PNG data URI.
+
+    :rtype: str
+    """
     buff = io.BytesIO()
     write_png(matrix, version, buff, scale=scale, border=border, color=color,
               background=background, compresslevel=compresslevel, addad=addad)
