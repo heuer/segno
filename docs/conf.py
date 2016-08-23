@@ -8,13 +8,16 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 from __future__ import unicode_literals
+import os
+import sys
 import sphinx_rtd_theme
-import segno
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('..'))
+
+import segno
 
 # -- General configuration ------------------------------------------------
 
