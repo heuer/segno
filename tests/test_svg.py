@@ -304,6 +304,14 @@ def test_svgid_default():
     assert 'id' not in root.attrib
 
 
+def test_svgid_empty_string():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', svgid='')
+    root = _parse_xml(out)
+    assert 'id' not in root.attrib
+
+
 def test_svgversion():
     qr = segno.make_qr('test')
     out = io.BytesIO()
@@ -330,6 +338,14 @@ def test_no_svg_class():
     assert 'class' not in root.attrib
 
 
+def test_no_svg_class_empty_str():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', svgclass='')
+    root = _parse_xml(out)
+    assert 'class' not in root.attrib
+
+
 def test_custom_svg_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
@@ -343,6 +359,15 @@ def test_no_line_class():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', lineclass=None)
+    root = _parse_xml(out)
+    path_el = _get_path(root)
+    assert 'class' not in path_el.attrib
+
+
+def test_no_line_class_empty_str():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', lineclass='')
     root = _parse_xml(out)
     path_el = _get_path(root)
     assert 'class' not in path_el.attrib

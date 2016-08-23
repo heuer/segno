@@ -128,9 +128,9 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
         write(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
     if omitsize or unit:
         write(' viewBox="0 0 {0} {1}"'.format(width, height))
-    if svgid is not None:
+    if svgid:
         write(' id={0}'.format(quoteattr(svgid)))
-    if svgclass is not None:
+    if svgclass:
         write(' class={0}'.format(quoteattr(svgclass)))
     write('>')
     if title is not None:
@@ -157,7 +157,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
         write(' stroke={0}'.format(quoteattr(stroke_color)))
         if opacity is not None:
             write(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
-    if lineclass is not None:
+    if lineclass:
         write(' class={0}'.format(quoteattr(lineclass)))
     write(' d="')
     # Current pen pointer position
