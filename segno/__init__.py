@@ -254,6 +254,18 @@ class QRCode(object):
         """
         return utils.get_symbol_size(self._version, scale=scale, border=border)
 
+    def matrix_iter(self, border=None):
+        """\
+        Returns an iterator over the matrix which includes the border.
+
+        The border is interpreted as light module.
+
+        :param int border: The size of border / quiet zone or ``None`` to
+                indicate the default border.
+        :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
+        """
+        return utils.matrix_with_border_iter(self.matrix, self._version, border)
+
     def show(self, delete_after=20, scale=10, border=None, color='#000',
              background='#fff'):  # pragma: no cover
         """\

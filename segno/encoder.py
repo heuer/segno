@@ -82,7 +82,16 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 def encode(content, error=None, version=None, mode=None, mask=None,
            encoding=None, eci=False, micro=None):
     """\
-    Encodes the provided `data` into a (Micro) QR Code matrix.
+    Creates a (Micro) QR Code.
+
+    See :py:func:`segno.make` for a detailed description of the parameters.
+
+    Contrary to ``make`` this function returns a named tuple:
+    ``(matrix, version, error, mask, segments)``
+
+    Note that ``version`` is always an integer referring
+    to the values of the :py:mod:`segno.consts` constants. ``error`` is ``None``
+    iff a M1 QR Code was generated, otherwise it is always an integer.
 
     :rtype: namedtuple
     """

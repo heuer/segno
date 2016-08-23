@@ -14,7 +14,7 @@ Tests against the ``utils`` module.
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
-from segno import encoder, utils, consts
+from segno import utils, consts
 
 
 def test_get_border():
@@ -96,42 +96,6 @@ def test_invalid_border():
 
     for border in (.2, -1, 1.3):
         yield check, border
-
-
-def test_matrix_iter_invalid_border():
-    def check(border):
-        qr = encoder.encode('A')
-        with pytest.raises(ValueError):
-            for row in utils.matrix_with_border_iter(qr.matrix, qr.version, border):
-                pass
-    for border in (.2, -1, 1.3):
-        yield check, border
-
-
-def test_matrix_iter_border_zero():
-    qr = encoder.encode('No border')
-    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, 0)]
-    assert qr.matrix == tuple(res)
-
-
-def test_matrix_iter_border_default():
-    qr = encoder.encode('A', version=1)
-    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, None)]
-    top_border = [bytearray([0x0] * 29)] * 4
-                   # border              finder
-    seq = bytearray([0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
-    assert top_border == res[:4]
-    assert seq == res[4][:len(seq)]
-
-
-def test_matrix_iter_border_3():
-    qr = encoder.encode('A', version=1)
-    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, 3)]
-    top_border = [bytearray([0x0] * 27)] * 3
-                   # border         finder
-    seq = bytearray([0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
-    assert top_border == res[:3]
-    assert seq == res[3][:len(seq)]
 
 
 if __name__ == '__main__':
