@@ -13,7 +13,8 @@ Tests against the ``utils`` module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
-from segno import utils, consts
+import pytest
+from segno import encoder, utils, consts
 
 
 def test_get_border():
@@ -59,7 +60,79 @@ def test_get_symbol_size_micro():
     assert (matrix_size + 2 * border, matrix_size + 2 * border) == (width, height)
 
 
-if __name__ == '__main__':
-    import pytest
-    pytest.main(['-x', __file__])
+def test_valid_scale():
 
+    def check(scale):
+        assert utils.check_valid_scale(scale) is None
+
+    for i in (1, 1.2, .8, 10):
+        yield check, i
+
+
+def test_invalid_scale():
+
+    def check(scale):
+        with pytest.raises(ValueError):
+            utils.check_valid_scale(scale)
+
+    for scale in (0.0, 0, -1, -.2, int(.8)):
+        yield check, scale
+
+
+def test_valid_border():
+
+    def check(border):
+        assert utils.check_valid_border(border) is None
+
+    for i in (None, 0, 0.0, 1, 2):
+        yield check, i
+
+
+def test_invalid_border():
+
+    def check(border):
+        with pytest.raises(ValueError):
+            utils.check_valid_border(border)
+
+    for border in (.2, -1, 1.3):
+        yield check, border
+
+
+def test_matrix_iter_invalid_border():
+    def check(border):
+        qr = encoder.encode('A')
+        with pytest.raises(ValueError):
+            for row in utils.matrix_with_border_iter(qr.matrix, qr.version, border):
+                pass
+    for border in (.2, -1, 1.3):
+        yield check, border
+
+
+def test_matrix_iter_border_zero():
+    qr = encoder.encode('No border')
+    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, 0)]
+    assert qr.matrix == tuple(res)
+
+
+def test_matrix_iter_border_default():
+    qr = encoder.encode('A', version=1)
+    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, None)]
+    top_border = [bytearray([0x0] * 29)] * 4
+                   # border              finder
+    seq = bytearray([0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
+    assert top_border == res[:4]
+    assert seq == res[4][:len(seq)]
+
+
+def test_matrix_iter_border_3():
+    qr = encoder.encode('A', version=1)
+    res = [bytearray(row) for row in utils.matrix_with_border_iter(qr.matrix, qr.version, 3)]
+    top_border = [bytearray([0x0] * 27)] * 3
+                   # border         finder
+    seq = bytearray([0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
+    assert top_border == res[:3]
+    assert seq == res[3][:len(seq)]
+
+
+if __name__ == '__main__':
+    pytest.main(['-x', __file__])

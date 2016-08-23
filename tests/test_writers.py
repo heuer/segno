@@ -68,43 +68,5 @@ def test_get_writable_not_stream2():
         os.remove(name)
 
 
-def test_valid_scale():
-
-    def check(scale):
-        assert writers.check_valid_scale(scale) is None
-
-    for i in (1, 1.2, .8, 10):
-        yield check, i
-
-
-def test_invalid_scale():
-
-    def check(scale):
-        with pytest.raises(ValueError):
-            writers.check_valid_scale(scale)
-
-    for scale in (0.0, 0, -1, -.2, int(.8)):
-        yield check, scale
-
-
-def test_valid_border():
-
-    def check(border):
-        assert writers.check_valid_border(border) is None
-
-    for i in (None, 0, 0.0, 1, 2):
-        yield check, i
-
-
-def test_invalid_border():
-
-    def check(border):
-        with pytest.raises(ValueError):
-            writers.check_valid_border(border)
-
-    for border in (.2, -1, 1.3):
-        yield check, border
-
-
 if __name__ == '__main__':
     pytest.main(['-x', __file__])

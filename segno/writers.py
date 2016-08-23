@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
 from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
         color_to_webcolor, color_is_black, color_is_white
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_with_border
+        check_valid_scale, check_valid_border, matrix_with_border_iter
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
@@ -671,7 +671,7 @@ def write_terminal(matrix, version, out, border=None):
     f, must_close = get_writable(out, 'wt')
     write = f.write
     colors = ['\033[{0}m'.format(i) for i in (7, 49)]
-    for row in matrix_with_border(matrix, version, border):
+    for row in matrix_with_border_iter(matrix, version, border):
         prev_bit = -1
         cnt = 0
         for bit in row:
@@ -716,7 +716,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colors = (240, default_color)
-    for row in matrix_with_border(matrix, version, border):
+    for row in matrix_with_border_iter(matrix, version, border):
         prev_bit = -1
         cnt = 0
         for bit in row:

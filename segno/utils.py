@@ -113,7 +113,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
             last_bit = 0x0
 
 
-def matrix_with_border(matrix, version, border):
+def matrix_with_border_iter(matrix, version, border):
     """\
     Returns an interator / generator over the provided matrix which includes
     the border.
