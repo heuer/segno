@@ -176,15 +176,11 @@ class QRCode(object):
             ``mask`` and ``segments`` attribute.
         """
         self.matrix = code.matrix
-        """\
-        Returns the matrix (tuple of bytearrays).
-        """
+        """Returns the matrix (tuple of bytearrays)."""
+        self.mask = code.mask
+        """Returns the data mask pattern reference (an integer)."""
         self._version = code.version
         self._error = code.error
-        self.mask = code.mask
-        """\
-        Returns the data mask pattern reference (an integer).
-        """
         self._mode = code.segments[0].mode if len(code.segments) == 1 else None
 
     @property
