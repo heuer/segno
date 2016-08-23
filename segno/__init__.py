@@ -374,7 +374,7 @@ class QRCode(object):
                 If set to ``None`` (default), the recommended border size
                 will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
         """
-        if out is None and sys.platform == 'win32':
+        if out is None and sys.platform == 'win32':  # pragma: no cover
             # Windows < 10 does not support ANSI escape sequences, try to
             # call the a Windows specific terminal output which uses the
             # Windows API.

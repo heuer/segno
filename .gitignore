@@ -3,7 +3,6 @@
 .tox
 .idea
 *.egg-info
-tests/htmlcov/*
-tests/output/*
-dist/
-build/
+htmlcov/*
+dist/*
+build/*

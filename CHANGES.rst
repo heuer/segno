@@ -3,7 +3,8 @@ Changes
 
 0.1.5 -- 2016-mm-dd
 -------------------
-
+* Added QRCode.matrix_iter(border) which returns an iterator over the matrix and
+  includes the border (as light modules)
 
 
 0.1.4 -- 2016-08-21
