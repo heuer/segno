@@ -18,6 +18,7 @@ Contents:
    replace-qrcode-libs
    plugins
    api
+   api-low-level
 
 
 Indices and tables
