@@ -32,6 +32,7 @@ def test_defaults():
     assert args.border is None
     assert args.color is None
     assert args.background is None
+    assert args.addad
 
 
 def test_error():
@@ -114,9 +115,38 @@ def test_color():
     assert args.color == 'green'
 
 
+def test_color_transparent():
+    args = cmd.parse(['', '--color=transparent', '-output=x.png'])
+    assert args.color == 'transparent'
+    assert cmd.build_config(args)['color'] is None
+
+
+def test_color_transparent2():
+    args = cmd.parse(['', '--color=trans', '-output=x.png'])
+    assert args.color == 'trans'
+    assert cmd.build_config(args)['color'] is None
+
+
 def test_background():
     args = cmd.parse(['', '--background', 'red'])
     assert args.background == 'red'
+
+
+def test_background_transparent():
+    args = cmd.parse(['', '--background=transparent', '-output=x.png'])
+    assert args.background == 'transparent'
+    assert cmd.build_config(args)['background'] is None
+
+
+def test_background_transparent2():
+    args = cmd.parse(['', '--background=trans', '-output=x.png'])
+    assert args.background == 'trans'
+    assert cmd.build_config(args)['background'] is None
+
+
+def test_noad():
+    args = cmd.parse(['', '--no-ad'])
+    assert not args.addad
 
 
 def test_output_svgz():
