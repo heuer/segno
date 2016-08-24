@@ -106,9 +106,13 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
             Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
     :param str encoding: Encoding of the XML document. "utf-8" by default.
     :param float svgversion: SVG version (default: None)
+    :param bool nl: Indicates if the document should have a trailing newline
+            (default: ``True``)
     """
     check_valid_scale(scale)
     check_valid_border(border)
+    if not unit:
+        unit = ''
     if unit and omitsize:
         raise ValueError('The unit "{0}" has no effect if the size '
                          '(width and height) is omitted.'.format(unit))

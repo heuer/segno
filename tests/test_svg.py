@@ -569,6 +569,19 @@ def test_unit():
     assert '0 0 %d %d' % (width, height) == root.attrib['viewBox']
 
 
+def test_unit_none():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', unit=None)
+    width, height = qr.symbol_size()
+    root = _parse_xml(out)
+    assert 'width' in root.attrib
+    assert str(width) == root.attrib['width']
+    assert 'height' in root.attrib
+    assert str(height) == root.attrib['height']
+    assert 'viewBox' not in root.attrib
+
+
 def test_write_unicode_filename():
     qr = segno.make_qr('test')
     f = tempfile.NamedTemporaryFile('wt', suffix='.svg', delete=False)
