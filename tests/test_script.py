@@ -20,10 +20,11 @@ from segno.scripts import cmd
 
 
 def test_defaults():
-    args = cmd.parse(())
+    args = cmd.parse([''])
     assert args.content == ''
     assert args.error is None
-    assert args.mask is None
+    assert args.mode is None
+    assert args.pattern is None
     assert args.version is None
     assert args.scale == 1
     assert not args.micro
@@ -34,77 +35,87 @@ def test_defaults():
 
 
 def test_error():
-    args = cmd.parse(['-e', 'm'])
+    args = cmd.parse(['', '-e', 'm'])
     assert args.error == 'M'
 
 
 def test_error2():
-    args = cmd.parse(['-e', 'M'])
+    args = cmd.parse(['', '-e', 'M'])
     assert args.error == 'M'
 
 
 def test_error3():
-    args = cmd.parse(['-e', '-'])
+    args = cmd.parse(['', '-e', '-'])
     assert args.error is None
 
 
 def test_error4():
-    args = cmd.parse(['--error', 'q'])
+    args = cmd.parse(['', '--error=q'])
     assert args.error == 'Q'
 
 
 def test_version():
-    args = cmd.parse(['-v', '1'])
+    args = cmd.parse(['', '-v', '1'])
     assert args.version == '1'
 
 
 def test_version2():
-    args = cmd.parse(['--version', '40'])
+    args = cmd.parse(['', '--version', '40'])
     assert args.version == '40'
 
 
 def test_version_micro():
-    args = cmd.parse(['-v', 'M1'])
+    args = cmd.parse(['', '-v', 'M1'])
     assert args.version == 'M1'
 
 
-def test_mask():
-    args = cmd.parse(['-m', '1'])
-    assert args.mask == 1
+def test_mode():
+    args = cmd.parse(['', '-m', 'alphanumeric'])
+    assert args.mode == 'alphanumeric'
 
 
-def test_mask2():
-    args = cmd.parse(['--mask', '5'])
-    assert args.mask == 5
+def test_mode2():
+    args = cmd.parse(['', '--mode=byte'])
+    assert args.mode == 'byte'
+
+
+def test_pattern():
+    args = cmd.parse(['', '-p', '1'])
+    assert args.pattern == 1
+
+
+def test_pattern2():
+    args = cmd.parse(['', '--pattern', '5'])
+    assert args.pattern == 5
 
 
 def test_micro_false():
-    args = cmd.parse(['--no-micro'])
+    args = cmd.parse(['', '--no-micro'])
     assert not args.micro
 
 
 def test_micro_true():
-    args = cmd.parse(['--micro'])
+    args = cmd.parse(['', '--micro'])
     assert args.micro
 
 
 def test_border():
-    args = cmd.parse(['--border', '0'])
+    args = cmd.parse(['', '--border', '0'])
     assert args.border == 0
 
 
 def test_scale():
-    args = cmd.parse(['--scale', '1.6'])
+    args = cmd.parse(['', '--scale', '1.6'])
     assert args.scale == 1.6
 
 
 def test_color():
-    args = cmd.parse(['--color', 'green'])
+    args = cmd.parse(['', '--color', 'green'])
     assert args.color == 'green'
 
 
 def test_background():
-    args = cmd.parse(['--background', 'red'])
+    args = cmd.parse(['', '--background', 'red'])
     assert args.background == 'red'
 
 
