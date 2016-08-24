@@ -37,26 +37,35 @@ for ext, func in writers._VALID_SERIALISERS.items():
 del writers
 
 
-def parse(args):
+def make_parser():
     """\
-    Parses the arguments and returns the result.
+    Returns the command line parser.
     """
-    parser = argparse.ArgumentParser(description='Segno QR Code and Micro QR Code generator')
-    parser.add_argument('content', nargs='?', default='')
+
+    def _convert_scale(val):
+        val = float(val)
+        return val if val != int(val) else int(val)
+
+    parser = argparse.ArgumentParser(prog='segno',
+                                     description='Segno QR Code and Micro QR Code generator')
+    parser.add_argument('content', help='The content to encode')
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
     parser.add_argument('--error', '-e', help='Error correction level: "L": 7%%, "M": 15%% (default), "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
-                        required=False,
                         choices=('L', 'M', 'Q', 'H', '-'),
                         default=None,
                         type=lambda x: x.upper())
-    parser.add_argument('--mask', '-m', help='Mask pattern to use',
+    parser.add_argument('--mode', '-m', help='Mode',
+                        choices=('numeric', 'alphanumeric', 'byte', 'kanji'),
+                        default=None,
+                        type=lambda x: x.lower())
+    parser.add_argument('--pattern', '-p', help='Mask pattern to use',
                         required=False,
                         default=None,
                         type=int)
     parser.add_argument('--scale', help='Scaling factor',
                         default=1,
-                        type=float)
+                        type=_convert_scale)
     parser.add_argument('--border', help='Size of the border / quiet zone',
                         default=None,
                         type=int)
@@ -69,6 +78,18 @@ def parse(args):
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
+    png_group = parser.add_argument_group('PNG', 'PNG specific options')
+    png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
+                           dest='addad',
+                           action='store_false')
+    return parser
+
+
+def parse(args):
+    """\
+    Parses the arguments and returns the result.
+    """
+    parser = make_parser()
     parsed_args = parser.parse_args(args)
     if parsed_args.error == '-':
         parsed_args.error = None
@@ -83,32 +104,49 @@ def parse(args):
     return parsed_args
 
 
+def build_config(args):
+    """\
+    Builds a configuration and returns it. The config contains only keywords,
+    which are supported by the serializer. Unsupported values are ignored.
+    """
+    config = dict()
+    config.update(vars(args))
+    # Remove args which are used to build the QR Code
+    for name in ('content', 'mode', 'error', 'version', 'pattern', 'micro',
+                 'output'):
+        config.pop(name, None)
+    # Done here since it seems not to be possible to detect if an argument
+    # was supplied by the user or if it's the default argument.
+    # If using type=lambda v: None if v in ('transparent', 'trans') else v
+    # we cannot detect if "None" comes from "transparent" or the default value
+    for clr in ('color', 'background'):
+        val = config[clr]
+        if val is None:
+            del config[clr]
+        elif val in ('transparent', 'trans'):
+            config[clr] = None
+    fname = args.output
+    ext = fname[fname.rfind('.') + 1:].lower()
+    if ext == 'svgz':  # There is no svgz serializer, use same config as svg
+        ext = 'svg'
+    supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
+    # Drop unsupported arguments from config rather than getting a
+    # "unsupported keyword" exception
+    for k in list(config):
+        if k not in supported_args:
+            del config[k]
+    return config
+
+
 def main(args=sys.argv[1:]):
     args = parse(args)
-    qr = segno.make(args.content, error=args.error, version=args.version,
-                    mask=args.mask, micro=args.micro)
+    qr = segno.make(args.content, mode=args.mode, error=args.error,
+                    version=args.version, mask=args.pattern, micro=args.micro)
     if args.output is None:
         qr.terminal(border=args.border)
     else:
-        config = dict(scale=args.scale, border=args.border)
-        if args.color is not None:
-            config['color'] = args.color if args.color not in ('trans', 'transparent') else None
-        if args.background is not None:
-            config['background'] = args.background if args.background not in ('trans', 'transparent') else None
-        if int(args.scale) == args.scale:
-            config['scale'] = int(args.scale)
-        fname = args.output
-        ext = fname[fname.rfind('.') + 1:].lower()
-        if ext == 'svgz':  # There is no svgz serializer, use same config as svg
-            ext = 'svg'
-        supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
-        # Drop unsupported arguments from config rather than getting a
-        # "unsupported keyword" exception
-        for k in list(config):
-            if k not in supported_args:
-                del config[k]
-        qr.save(fname, **config)
+        qr.save(args.output, **build_config(args))
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     main()
