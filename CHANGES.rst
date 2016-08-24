@@ -8,6 +8,7 @@ Changes
 * Invalid (empty) SVG identifiers / class names are ignored and do not result
   into an invalid SVG document (issue #8).
 * Better command line support:
+
   - Added ``--mode``/``-m``, renamed ``--mask``/``-m`` to ``--pattern``/``-p``
     (issue #10)
   - The script used an empty string as default value for the data to encode.
