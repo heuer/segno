@@ -32,7 +32,22 @@ def test_defaults():
     assert args.border is None
     assert args.color is None
     assert args.background is None
+    # PNG
     assert args.addad
+    # SVG
+    assert args.xmldecl
+    assert not args.no_classes
+    assert args.encoding == 'utf-8'
+    assert args.title is None
+    assert args.desc is None
+    assert args.svgns is True
+    assert args.svgid is None
+    assert args.svgclass is None
+    assert args.lineclass is None
+    assert args.omitsize is False
+    assert args.unit is None
+    assert args.svgversion is None
+    assert args.nl is True
 
 
 def test_error():
@@ -150,23 +165,6 @@ def test_background_transparent2():
     assert cmd.build_config(args)['background'] is None
 
 
-def test_noad():
-    args = cmd.parse(['', '--no-ad'])
-    assert not args.addad
-
-
-def test_output_svgz():
-    f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
-    f.close()
-    cmd.main(['test', '--scale=10', '--color=red', '--output={0}'.format(f.name)])
-    f = gzip.open(f.name)
-    content = f.read()
-    f.close()
-    os.unlink(f.name)
-    assert b'scale(10)' in content
-    assert b'stroke="red"' in content
-
-
 def test_output():
     data = (('svg', b'<?xml ', 'rb'),
             ('pdf', b'%PDF-', 'rb'),
@@ -191,6 +189,192 @@ def test_output():
     for arg in ('--output', '-o'):
         for ext, expected, mode in data:
             yield check, arg, ext, expected, mode
+
+
+# -- PNG
+def test_noad():
+    args = cmd.parse(['', '--no-ad'])
+    assert not args.addad
+
+
+# -- SVG
+def test_xmldecl():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.xmldecl
+    assert cmd.build_config(args)['xmldecl'] is True
+
+
+def test_omit_xmldecl():
+    args = cmd.parse(['', '--no-xmldecl', '--output=x.svg'])
+    assert not args.xmldecl
+    assert cmd.build_config(args)['xmldecl'] is False
+
+
+def test_not_omit_classes():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert not args.no_classes
+    config = cmd.build_config(args)
+    assert 'svgclass' not in config
+    assert 'lineclass' not in config
+
+
+def test_omit_classes():
+    args = cmd.parse(['', '--no-classes', '--output=x.svg'])
+    assert args.no_classes
+    config = cmd.build_config(args)
+    assert config['svgclass'] is None
+    assert config['lineclass'] is None
+
+
+def test_encoding():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.encoding == 'utf-8'
+    assert cmd.build_config(args)['encoding'] == 'utf-8'
+
+
+def test_encoding2():
+    args = cmd.parse(['', '--encoding=ascii', '--output=x.svg'])
+    assert args.encoding == 'ascii'
+    assert cmd.build_config(args)['encoding'] == 'ascii'
+
+
+def test_title():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.title is None
+    assert cmd.build_config(args)['title'] is None
+
+
+def test_title2():
+    args = cmd.parse(['', '--title=Magnolia', '--output=x.svg'])
+    assert args.title == 'Magnolia'
+    assert cmd.build_config(args)['title'] == 'Magnolia'
+
+
+def test_desc():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.desc is None
+    assert cmd.build_config(args)['desc'] is None
+
+
+def test_desc2():
+    args = cmd.parse(['', '--desc=Magnolia', '--output=x.svg'])
+    assert args.desc == 'Magnolia'
+    assert cmd.build_config(args)['desc'] == 'Magnolia'
+
+
+def test_nl():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.nl is True
+    assert cmd.build_config(args)['nl'] is True
+
+
+def test_nl2():
+    args = cmd.parse(['', '--no-newline', '--output=x.svg'])
+    assert not args.nl
+    assert cmd.build_config(args)['nl'] is False
+
+
+def test_ns():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.svgns is True
+    assert cmd.build_config(args)['svgns'] is True
+
+
+def test_ns2():
+    args = cmd.parse(['', '--no-namespace', '--output=x.svg'])
+    assert not args.svgns
+    assert cmd.build_config(args)['svgns'] is False
+
+
+def test_svgid():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.svgid is None
+    assert 'svgid' not in cmd.build_config(args)
+
+
+def test_svgid2():
+    args = cmd.parse(['', '--svgid=magnolia', '--output=x.svg'])
+    assert args.svgid == 'magnolia'
+    assert cmd.build_config(args)['svgid'] == 'magnolia'
+
+
+def test_svgclass():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.svgclass is None
+    assert 'svgclass' not in cmd.build_config(args)
+
+
+def test_svgclass2():
+    args = cmd.parse(['', '--svgclass=magnolia', '--output=x.svg'])
+    assert args.svgclass == 'magnolia'
+    assert cmd.build_config(args)['svgclass'] == 'magnolia'
+
+
+def test_svg_lineclass():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.lineclass is None
+    assert 'lineclass' not in cmd.build_config(args)
+
+
+def test_svg_lineclass2():
+    args = cmd.parse(['', '--lineclass=magnolia', '--output=x.svg'])
+    assert args.lineclass == 'magnolia'
+    assert cmd.build_config(args)['lineclass'] == 'magnolia'
+
+
+def test_omitsize():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert not args.omitsize
+    assert cmd.build_config(args)['omitsize'] is False
+
+
+def test_omitsize2():
+    args = cmd.parse(['', '--no-size', '--output=x.svg'])
+    assert args.omitsize
+    assert cmd.build_config(args)['omitsize'] is True
+
+
+def test_unit():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.unit is None
+    assert cmd.build_config(args)['unit'] is None
+
+
+def test_unit2():
+    args = cmd.parse(['', '--unit=cm', '--output=x.svg'])
+    assert args.unit == 'cm'
+    assert cmd.build_config(args)['unit'] == 'cm'
+
+
+def test_svgversion():
+    args = cmd.parse(['', '--output=x.svg'])
+    assert args.svgversion is None
+    assert cmd.build_config(args)['svgversion'] is None
+
+
+def test_svgversion2():
+    args = cmd.parse(['', '--svgversion=1', '--output=x.svg'])
+    assert args.svgversion == 1.0
+    assert cmd.build_config(args)['svgversion'] == 1.0
+
+
+def test_svgversion3():
+    args = cmd.parse(['', '--svgversion=1.1', '--output=x.svg'])
+    assert args.svgversion == 1.1
+    assert cmd.build_config(args)['svgversion'] == 1.1
+
+
+def test_output_svgz():
+    f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
+    f.close()
+    cmd.main(['test', '--scale=10', '--color=red', '--output={0}'.format(f.name)])
+    f = gzip.open(f.name)
+    content = f.read()
+    f.close()
+    os.unlink(f.name)
+    assert b'scale(10)' in content
+    assert b'stroke="red"' in content
+
 
 
 if __name__ == '__main__':

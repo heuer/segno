@@ -78,6 +78,31 @@ def make_parser():
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
+    svg_group = parser.add_argument_group('SVG', 'SVG specific options')
+    svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
+                           action='store_true')
+    svg_group.add_argument('--no-xmldecl', help='Omits the XML declaration header',
+                           dest='xmldecl',
+                           action='store_false')
+    svg_group.add_argument('--no-namespace', help='Indicates that the SVG document should have no SVG namespace declaration',
+                           dest='svgns',
+                           action='store_false')
+    svg_group.add_argument('--no-newline', help='Indicates that the SVG document should have no trailing newline',
+                           dest='nl',
+                           action='store_false')
+    svg_group.add_argument('--title', help='Specifies the title of the SVG document')
+    svg_group.add_argument('--desc', help='Specifies the description of the SVG document')
+    svg_group.add_argument('--svgid', help='Indicates the ID of the <svg/> element')
+    svg_group.add_argument('--svgclass', help='Indicates the CSS class of the <svg/> element')
+    svg_group.add_argument('--lineclass', help='Indicates the CSS class of the <path/> element (the dark modules)')
+    svg_group.add_argument('--no-size', help='Indicates that the SVG document should not have "width" and "height" attributes',
+                           dest='omitsize',
+                           action='store_true')
+    svg_group.add_argument('--unit', help='Indicates SVG coordinate system unit')
+    svg_group.add_argument('--svgversion', help='Indicates the SVG version',
+                           type=float)
+    svg_group.add_argument('--encoding', help='Specifies the encoding of the document',
+                           default='utf-8')
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
     png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
                            dest='addad',
@@ -125,6 +150,13 @@ def build_config(args):
             del config[clr]
         elif val in ('transparent', 'trans'):
             config[clr] = None
+    # SVG
+    for name in ('svgid', 'svgclass', 'lineclass'):
+        if config.get(name, None) is None:
+            config.pop(name, None)
+    if config.pop('no_classes', False):
+        config['svgclass'] = None
+        config['lineclass'] = None
     fname = args.output
     ext = fname[fname.rfind('.') + 1:].lower()
     if ext == 'svgz':  # There is no svgz serializer, use same config as svg
