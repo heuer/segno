@@ -317,7 +317,7 @@ def test_svg_lineclass():
 
 
 def test_svg_lineclass2():
-    args = cmd.parse(['', '--lineclass=magnolia', '--output=x.svg'])
+    args = cmd.parse(['', '--lineclass=magnolia'])
     assert args.lineclass == 'magnolia'
     assert cmd.build_config(args)['lineclass'] == 'magnolia'
 
@@ -329,39 +329,45 @@ def test_omitsize():
 
 
 def test_omitsize2():
-    args = cmd.parse(['', '--no-size', '--output=x.svg'])
+    args = cmd.parse(['', '--no-size'])
     assert args.omitsize
     assert cmd.build_config(args)['omitsize'] is True
 
 
 def test_unit():
-    args = cmd.parse(['', '--output=x.svg'])
+    args = cmd.parse([''])
     assert args.unit is None
     assert cmd.build_config(args)['unit'] is None
 
 
 def test_unit2():
-    args = cmd.parse(['', '--unit=cm', '--output=x.svg'])
+    args = cmd.parse(['', '--unit=cm'])
     assert args.unit == 'cm'
     assert cmd.build_config(args)['unit'] == 'cm'
 
 
 def test_svgversion():
-    args = cmd.parse(['', '--output=x.svg'])
+    args = cmd.parse([''])
     assert args.svgversion is None
     assert cmd.build_config(args)['svgversion'] is None
 
 
 def test_svgversion2():
-    args = cmd.parse(['', '--svgversion=1', '--output=x.svg'])
+    args = cmd.parse(['', '--svgversion=1'])
     assert args.svgversion == 1.0
     assert cmd.build_config(args)['svgversion'] == 1.0
 
 
 def test_svgversion3():
-    args = cmd.parse(['', '--svgversion=1.1', '--output=x.svg'])
+    args = cmd.parse(['', '--svgversion=1.1'])
     assert args.svgversion == 1.1
     assert cmd.build_config(args)['svgversion'] == 1.1
+
+
+def test_png_svg_command():
+    args = cmd.parse(['', '--svgversion=1.1'])
+    assert args.svgversion == 1.1
+    assert 'svgversion' not in cmd.build_config(args, filename='x.png')
 
 
 def test_output_svgz():
