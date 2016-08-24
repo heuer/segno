@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.1.6 -- 2016-08-25
+-------------------
+* Fixed setup
+
+
 0.1.5 -- 2016-08-24
 -------------------
 * Added QRCode.matrix_iter(border) which returns an iterator over the matrix and
