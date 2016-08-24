@@ -106,8 +106,14 @@ def test_border():
 
 
 def test_scale():
-    args = cmd.parse(['', '--scale', '1.6'])
+    args = cmd.parse(['', '--scale=1.6'])
     assert args.scale == 1.6
+
+
+def test_scale2():
+    args = cmd.parse(['', '--scale=2.0'])
+    assert args.scale == 2
+    assert isinstance(args.scale, int)
 
 
 def test_color():
