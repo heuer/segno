@@ -42,6 +42,11 @@ def test_illegal5():
         colors.color_to_rgb((256, 0, 0))
 
 
+def test_rgba_vs_rgb_conflict():
+    with pytest.raises(ValueError):
+        colors.color_to_rgb('#949494E8')
+
+
 def test_color_is_black():
     data = (((0, 0, 0, 0), False),
             ((0, 0, 0, 1), True),
