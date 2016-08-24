@@ -478,7 +478,7 @@ class QRCode(object):
                          omitted (default: ``False``). If these attributes are
                          omitted, a ``viewBox`` attribute will be added to the
                          document.
-        unit             Default: ''
+        unit             Default: ``None``
                          Inidctaes the unit for width / height and other coordinates.
                          By default, the unit is unspecified and all values are
                          in the user space.

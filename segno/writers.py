@@ -66,7 +66,7 @@ def get_writable(file_or_path, mode, encoding=None):
 def write_svg(matrix, version, out, scale=1, border=None, color='#000',
               background=None, xmldecl=True, svgns=True, title=None, desc=None,
               svgid=None, svgclass='segno', lineclass='qrline', omitsize=False,
-              unit='', encoding='utf-8', svgversion=None, nl=True):
+              unit=None, encoding='utf-8', svgversion=None, nl=True):
     """\
     Serializes the QR Code as SVG document.
 
@@ -111,8 +111,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
     """
     check_valid_scale(scale)
     check_valid_border(border)
-    if not unit:
-        unit = ''
+    unit = unit or ''
     if unit and omitsize:
         raise ValueError('The unit "{0}" has no effect if the size '
                          '(width and height) is omitted.'.format(unit))
