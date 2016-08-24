@@ -7,6 +7,8 @@ Changes
   includes the border (as light modules).
 * Invalid (empty) SVG identifiers / class names are ignored and do not result
   into an invalid SVG document (issue #8).
+* SVG serializer: If ``unit`` was set to ``None``, an invalid SVG document was
+  generated (issue #14).
 * Better command line support:
 
   - Added ``--mode``/``-m``, renamed ``--mask``/``-m`` to ``--pattern``/``-p``
