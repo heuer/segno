@@ -11,6 +11,7 @@ Changes
   generated (issue #14).
 * Better command line support:
 
+  - The command line script recognizes all SVG options (#9)
   - Added ``--mode``/``-m``, renamed ``--mask``/``-m`` to ``--pattern``/``-p``
     (issue #10)
   - The script used an empty string as default value for the data to encode.
