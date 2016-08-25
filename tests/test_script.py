@@ -367,6 +367,7 @@ def test_svgversion3():
 def test_png_svg_command():
     args = cmd.parse(['', '--svgversion=1.1'])
     assert args.svgversion == 1.1
+    assert 'svgversion' in cmd.build_config(args)
     assert 'svgversion' not in cmd.build_config(args, filename='x.png')
 
 
