@@ -29,7 +29,7 @@ __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
 
 
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
-         eci=False, micro=None):
+         eci=False, micro=None, boost_error=True):
     """\
     Creates a (Micro) QR Code.
 
@@ -118,6 +118,10 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             raises an exception if the `mode` is not compatible or the `content`
             is too large for Micro QR Codes.
     :type micro: bool or None
+    :param bool boost_error: Indicates if the error correction level may be
+            increased if it does not affect the version / symbol size
+            (default: ``True``). If provided, the ``error`` parameter is
+            interpreted as minimum
     :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
             likely that a derived exception is thrown:
             :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
@@ -132,11 +136,11 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
-                                 eci, micro))
+                                 eci, micro, boost_error=boost_error))
 
 
 def make_qr(content, error=None, version=None, mode=None, mask=None,
-            encoding=None, eci=False):
+            encoding=None, eci=False, boost_error=True):
     """\
     Creates a QR Code (never a Micro QR Code).
 
@@ -145,11 +149,11 @@ def make_qr(content, error=None, version=None, mode=None, mask=None,
     :rtype: QRCode
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
-                encoding=encoding, eci=eci, micro=False)
+                encoding=encoding, eci=eci, micro=False, boost_error=boost_error)
 
 
 def make_micro(content, error=None, version=None, mode=None, mask=None,
-               encoding=None):
+               encoding=None, boost_error=True):
     """\
     Creates a Micro QR Code.
 
@@ -161,7 +165,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
     :rtype: QRCode
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
-                encoding=encoding, micro=True)
+                encoding=encoding, micro=True, boost_error=boost_error)
 
 
 class QRCode(object):
