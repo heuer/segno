@@ -80,7 +80,7 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 
 
 def encode(content, error=None, version=None, mode=None, mask=None,
-           encoding=None, eci=False, micro=None):
+           encoding=None, eci=False, micro=None, boost_error=True):
     """\
     Creates a (Micro) QR Code.
 
@@ -125,6 +125,19 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_M
     is_micro = version in consts.MICRO_VERSIONS
+    if boost_error and error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
+        mode = segments[0].mode
+        candidates = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M, consts.ERROR_LEVEL_Q, consts.ERROR_LEVEL_H]
+        if is_micro:
+            candidates.pop()  # H isn't support by Micro QR Codes
+            if version < consts.VERSION_M4:
+                candidates.pop()  # Error level Q isn't supported by M2 and M3
+        for lvl in candidates[candidates.index(error)+1:]:
+            try:
+                if consts.SYMBOL_CAPACITY[version][error][mode] >= segments.data_length:
+                    error = lvl
+            except KeyError:
+                pass
     mask = normalize_mask(mask, is_micro)
     buff = Buffer()
     ver = version
