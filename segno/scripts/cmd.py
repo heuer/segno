@@ -166,12 +166,16 @@ def build_config(config, filename=None):
     return config
 
 
+def make_code(config):
+    return segno.make(config.pop('content'), mode=config.pop('mode'),
+                      error=config.pop('error'), version=config.pop('version'),
+                      mask=config.pop('pattern'), micro=config.pop('micro'),
+                      boost_error=config.pop('boost_error'))
+
+
 def main(args=sys.argv[1:]):
     config = parse(args)
-    qr = segno.make(config.pop('content'), mode=config.pop('mode'),
-                    error=config.pop('error'), version=config.pop('version'),
-                    mask=config.pop('pattern'), micro=config.pop('micro'),
-                    boost_error=config.pop('boost_error'))
+    qr = make_code(config)
     output = config.pop('output')
     if output is None:
         qr.terminal(border=config['border'])
