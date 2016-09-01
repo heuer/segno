@@ -29,7 +29,7 @@ def test_boost_error_automatic_disabled():
 
 def test_boost_error_automatic_arg_error():
     qr = segno.make_qr('ABCDEF', error='l')
-    assert '1-M' == qr.designator
+    assert '1-H' == qr.designator
 
 
 def test_boost_error_disabled_arg_error():
