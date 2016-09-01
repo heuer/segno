@@ -36,7 +36,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     This is main entry point to create QR Codes and Micro QR Codes.
 
     Aside from `content`, all parameters are optional and an optimal (minimal)
-    (Micro) QR Code is generated.
+    (Micro) QR Code with a maximal error correction level (minimum "M") is
+    generated.
 
     :param content: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be
@@ -63,6 +64,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             parameter).
 
             The `error` parameter is case insensitive.
+
+            See also the `boost_error` parameter.
     :type error: str or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
@@ -119,11 +122,11 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             is too large for Micro QR Codes.
     :type micro: bool or None
     :param bool boost_error: Indicates if the error correction level may be
-            increased if it does not affect the version / symbol size
-            (default: ``True``). If set to ``True``, the ``error`` parameter is
-            interpreted as minimum error level. If set to ``False``, the resulting
-            (Micro) QR Code uses the provided ``error`` level (or the default
-            error correction level, if error is ``None``)
+            increased if it does not affect the version (default: ``True``).
+            If set to ``True``, the ``error`` parameter is interpreted as
+            minimum error level. If set to ``False``, the resulting (Micro) QR
+            Code uses the provided ``error`` level (or the default error
+            correction level, if error is ``None``)
     :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
             likely that a derived exception is thrown:
             :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
