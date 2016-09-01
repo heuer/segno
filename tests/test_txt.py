@@ -20,7 +20,7 @@ import segno
 
 def test_write_txt():
     # Test with default options
-    qr = segno.make_qr('test')
+    qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='txt', border=0)
     expected = '11111110011'

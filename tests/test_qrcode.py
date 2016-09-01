@@ -95,7 +95,7 @@ def test_valid_versions():
 
 def test_legal_error_levels():
     def check(error):
-        qr = segno.make(1, error=error)
+        qr = segno.make(1, error=error, boost_error=False)
         assert error.upper() == qr.error
     for error in _LEGAL_ERROR_LEVELS:
         yield check, error
@@ -194,17 +194,17 @@ def test_symbol_size_scale_float2():
 
 
 def test_designator():
-    qr = segno.make('test', version=40, error='L')
+    qr = segno.make('test', version=40, error='L', boost_error=False)
     assert '40-L' == qr.designator
 
 
 def test_designator2():
-    qr = segno.make('test', version=8, error='m')
+    qr = segno.make('test', version=8, error='m', boost_error=False)
     assert '8-M' == qr.designator
 
 
 def test_designator_micro():
-    qr = segno.make('test', version='M4', error='L')
+    qr = segno.make('test', version='M4', error='L', boost_error=False)
     assert 'M4-L' == qr.designator
 
 
