@@ -32,6 +32,7 @@ def test_defaults():
     assert args.border is None
     assert args.color is None
     assert args.background is None
+    assert args.boost_error
     # PNG
     assert args.addad
     # SVG
@@ -113,6 +114,11 @@ def test_micro_false():
 def test_micro_true():
     args = cmd.parse(['', '--micro'])
     assert args.micro
+
+
+def test_boost_error_disable():
+    args = cmd.parse(['', '--no-error-boost'])
+    assert not args.boost_error
 
 
 def test_border():

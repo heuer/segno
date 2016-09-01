@@ -78,6 +78,8 @@ def make_parser():
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
+    parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
+                        dest='boost_error', action='store_false')
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
                            action='store_true')
@@ -168,7 +170,8 @@ def main(args=sys.argv[1:]):
     config = parse(args)
     qr = segno.make(config.pop('content'), mode=config.pop('mode'),
                     error=config.pop('error'), version=config.pop('version'),
-                    mask=config.pop('pattern'), micro=config.pop('micro'))
+                    mask=config.pop('pattern'), micro=config.pop('micro'),
+                    boost_error=config.pop('boost_error'))
     output = config.pop('output')
     if output is None:
         qr.terminal(border=config['border'])
