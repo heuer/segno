@@ -59,7 +59,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================
 
-            Higher error levels require larger QR Codes (see also `version`
+            Higher error levels may require larger QR Codes (see also `version`
             parameter).
 
             The `error` parameter is case insensitive.
@@ -120,8 +120,10 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type micro: bool or None
     :param bool boost_error: Indicates if the error correction level may be
             increased if it does not affect the version / symbol size
-            (default: ``True``). If provided, the ``error`` parameter is
-            interpreted as minimum
+            (default: ``True``). If set to ``True``, the ``error`` parameter is
+            interpreted as minimum error level. If set to ``False``, the resulting
+            (Micro) QR Code uses the provided ``error`` level (or the default
+            error correction level, if error is ``None``)
     :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
             likely that a derived exception is thrown:
             :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
