@@ -11,6 +11,7 @@ Changes
 * Added tests for issue #18
 * Added PBM (P1 and P4) serialization.
 * Deprecated ``utils.matrix_with_border_iter``, use ``utils.matrix_iter``
+* API change: ``QRCode.matrix_iter(border)`` -> ``QRCode.matrix_iter(scale=1, border=None)``
 
 
 0.1.6 -- 2016-08-25
