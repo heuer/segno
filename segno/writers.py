@@ -705,7 +705,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
             write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
     else:
         for row in row_iter:
-            write(b''.join(str(i) for i in row).encode('ascii'))
+            write(b''.join(bytes(i) for i in row))
             write(b'\n')
     if must_close:
         f.close()
