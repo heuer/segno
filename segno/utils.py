@@ -9,6 +9,7 @@
 Utility functions useful for writers or QR Code objects.
 """
 from __future__ import absolute_import, unicode_literals
+from itertools import chain
 try:  # pragma: no cover
     range = xrange
 except NameError:  # pragma: no cover
@@ -128,12 +129,29 @@ def matrix_with_border_iter(matrix, version, border):
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
     :raises: py:exc:`ValueError` if an illegal border value is provided
     """
+    return matrix_iter(matrix, version, border=border)
+
+
+def matrix_iter(matrix, version, scale=1, border=None):
+    """\
+    Returns an interator / generator over the provided matrix which includes
+    the border and the scaling factor.
+
+    :param matrix: An iterable of bytearrays.
+    :param int version: A version constant.
+    :param int border: The border size or ``None`` to specify the
+            default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
+    :raises: py:exc:`ValueError` if an illegal border value is provided
+    """
     check_valid_border(border)
+    scale = int(scale)
+    check_valid_scale(scale)
     border = get_border(version, border)
-    size = get_symbol_size(version, border=0)[0]
+    size = get_symbol_size(version, scale=1, border=0)[0]
 
     def get_bit(i, j):
         return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
 
     for i in range(-border, size + border):
-        yield (get_bit(i, j) for j in range(-border, size + border))
+        for s in range(scale):
+            yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, size + border)))
