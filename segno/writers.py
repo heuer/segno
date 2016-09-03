@@ -682,6 +682,43 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
         f.close()
 
 
+def write_pbm(matrix, version, out, border=None, plain=False):
+    """\
+    Serializes the matrix in PBM format.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param bool plain: Indicates if a
+    :param out: Filename or a file-like object supporting to write binary data.
+    """
+    def groups_of_eight(row):
+        """\
+        Returns 8 columns from the iterable. If the iterable is of uneven
+        length, missing values will be filled-up with ``0x0``.
+        """
+        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
+
+    width, height = get_symbol_size(version, border=border)
+    f, must_close = get_writable(out, 'wb')
+    write = f.write
+    kind = b'P4' if not plain else b'P1'
+    write(kind + '\n# Created by {0}\n{1} {2}\n' \
+          .format(CREATOR, width, height).encode('ascii'))
+    row_iter = matrix_with_border_iter(matrix, version, border)
+    if not plain:
+        for row in matrix_with_border_iter(matrix, version, border):
+            write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
+    else:
+        for row in row_iter:
+            write(b''.join(str(i) for i in row).encode('ascii'))
+            write(b'\n')
+    if must_close:
+        f.close()
+
+
 def write_terminal(matrix, version, out, border=None):
     """\
     Function to write to a terminal which supports ANSI escape codes.
@@ -767,7 +804,8 @@ _VALID_SERIALISERS = {
     'eps': write_eps,
     'txt': write_txt,
     'pdf': write_pdf,
-    'ans': write_terminal
+    'ans': write_terminal,
+    'pbm': write_pbm,
 }
 
 def save(matrix, version, out, kind=None, **kw):
