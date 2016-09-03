@@ -247,7 +247,7 @@ def test_matrix_iter_invalid_border():
     def check(border):
         qr = segno.make('A')
         with pytest.raises(ValueError):
-            for row in qr.matrix_iter(border):
+            for row in qr.matrix_iter(border=border):
                 pass
     for border in (.2, -1, 1.3):
         yield check, border
@@ -255,13 +255,13 @@ def test_matrix_iter_invalid_border():
 
 def test_matrix_iter_border_zero():
     qr = segno.make('No border')
-    res = [bytearray(row) for row in qr.matrix_iter(0)]
+    res = [bytearray(row) for row in qr.matrix_iter(border=0)]
     assert qr.matrix == tuple(res)
 
 
 def test_matrix_iter_border_default():
     qr = segno.make('A', version=1)
-    res = [bytearray(row) for row in qr.matrix_iter(None)]
+    res = [bytearray(row) for row in qr.matrix_iter(border=None)]
     top_border = [bytearray([0x0] * 29)] * 4
                    # border              finder
     seq = bytearray([0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
@@ -271,7 +271,7 @@ def test_matrix_iter_border_default():
 
 def test_matrix_iter_border_3():
     qr = segno.make('A', version=1)
-    res = [bytearray(row) for row in qr.matrix_iter(3)]
+    res = [bytearray(row) for row in qr.matrix_iter(border=3)]
     top_border = [bytearray([0x0] * 27)] * 3
                    # border         finder
     seq = bytearray([0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
