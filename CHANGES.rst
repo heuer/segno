@@ -9,6 +9,7 @@ Changes
   correction level incrementation (#17)
 * Command line script: Internal changes and better test coverage
 * Added tests for issue #18
+* Added PBM (P1 and P4) serialization.
 
 
 0.1.6 -- 2016-08-25
