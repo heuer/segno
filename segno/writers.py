@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
 from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
         color_to_webcolor, color_is_black, color_is_white
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_with_border_iter
+        check_valid_scale, check_valid_border, matrix_with_border_iter, matrix_iter
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
@@ -682,7 +682,7 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
         f.close()
 
 
-def write_pbm(matrix, version, out, border=None, plain=False):
+def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     """\
     Serializes the matrix in PBM format.
 
@@ -701,15 +701,15 @@ def write_pbm(matrix, version, out, border=None, plain=False):
         """
         return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
 
-    width, height = get_symbol_size(version, border=border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
     f, must_close = get_writable(out, 'wb')
     write = f.write
     kind = b'P4' if not plain else b'P1'
     write(kind + '\n# Created by {0}\n{1} {2}\n' \
           .format(CREATOR, width, height).encode('ascii'))
-    row_iter = matrix_with_border_iter(matrix, version, border)
+    row_iter = matrix_iter(matrix, version, scale, border)
     if not plain:
-        for row in matrix_with_border_iter(matrix, version, border):
+        for row in row_iter:
             write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
     else:
         for row in row_iter:
