@@ -263,7 +263,7 @@ class QRCode(object):
         """
         return utils.get_symbol_size(self._version, scale=scale, border=border)
 
-    def matrix_iter(self, border=None):
+    def matrix_iter(self, scale=1, border=None):
         """\
         Returns an iterator over the matrix which includes the border.
 
@@ -273,7 +273,7 @@ class QRCode(object):
                 indicate the default border.
         :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
         """
-        return utils.matrix_with_border_iter(self.matrix, self._version, border)
+        return utils.matrix_iter(self.matrix, self._version, scale, border)
 
     def show(self, delete_after=20, scale=10, border=None, color='#000',
              background='#fff'):  # pragma: no cover

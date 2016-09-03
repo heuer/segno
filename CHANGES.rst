@@ -10,6 +10,7 @@ Changes
 * Command line script: Internal changes and better test coverage
 * Added tests for issue #18
 * Added PBM (P1 and P4) serialization.
+* Deprecated ``utils.matrix_with_border_iter``, use ``utils.matrix_iter``
 
 
 0.1.6 -- 2016-08-25

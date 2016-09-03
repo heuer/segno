@@ -129,6 +129,8 @@ def matrix_with_border_iter(matrix, version, border):
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
     :raises: py:exc:`ValueError` if an illegal border value is provided
     """
+    import warnings
+    warnings.warn('Use utils.matrix_iter', DeprecationWarning)
     return matrix_iter(matrix, version, border=border)
 
 
@@ -139,6 +141,7 @@ def matrix_iter(matrix, version, scale=1, border=None):
 
     :param matrix: An iterable of bytearrays.
     :param int version: A version constant.
+    :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
     :raises: py:exc:`ValueError` if an illegal border value is provided
