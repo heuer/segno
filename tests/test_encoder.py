@@ -972,7 +972,8 @@ def test_make_final_message_thonky():
 def test_encode_iso_fig1():
     # ISO/IEC 18004:2015(E) - page 7
     # 'QR Code Symbol' as 1-M symbol
-    qr = encoder.encode('QR Code Symbol', error='M', mask=None, micro=False)
+    qr = encoder.encode('QR Code Symbol', error='M', mask=None, micro=False,
+                        boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
     assert 5 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
@@ -985,11 +986,13 @@ def test_encode_iso_i2():
     # 01234567 as 1-M symbol
     #TODO: Without the mask param Segno chooses mask 3 which seems to be correct
     # Mask 2 is IMO an error in the standard
-    qr = encoder.encode('01234567', error='m', version=1, mask=2, micro=False)
+    qr = encoder.encode('01234567', error='m', version=1, mask=2, micro=False,
+                        boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
     assert 2 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
-    qr = encoder.encode('01234567', error='m', mask=2, micro=False)
+    qr = encoder.encode('01234567', error='m', mask=2, micro=False,
+                        boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
     assert 2 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
@@ -1000,11 +1003,13 @@ def test_encode_iso_i2():
 def test_encode_iso_i3():
     # ISO/IEC 18004:2015(E) - page 96
     # 01234567 as M2-L symbol
-    qr = encoder.encode('01234567', error='l', version='m2', mask=1, micro=True)
+    qr = encoder.encode('01234567', error='l', version='m2', mask=1, micro=True,
+                        boost_error=False)
     assert consts.ERROR_LEVEL_L == qr.error
     assert consts.VERSION_M2 == qr.version
     assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
-    qr = encoder.encode('01234567', error='l', version=None, mask=1, micro=True)
+    qr = encoder.encode('01234567', error='l', version=None, mask=1, micro=True,
+                        boost_error=False)
     assert consts.ERROR_LEVEL_L == qr.error
     assert consts.VERSION_M2 == qr.version
     assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)

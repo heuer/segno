@@ -8,7 +8,7 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
 Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 0.1.4
+Library version                                 5.3                   1.2.1                  1.0.0                 0.1.7
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
@@ -21,11 +21,13 @@ QR Codes version 1 - 40                         Yes                   Yes       
 Micro QR Codes version M1 - M4                  No                    No                     No                    Yes
 Output acc. to ISO/IEC 18004:2015(E) Fig. 1     No                    No                     No                    Yes
 Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not available)     No (not available)    Yes
+Find best error correction level                No                    No                     Yes                   Yes
 `PNG`_ output                                   Yes                   Yes                    No                    Yes
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
 `XPM`_ output                                   No                    Yes                    No                    No
+`PBM`_ output                                   No                    No                     No                    Yes
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
 Text output                                     Yes                   Yes                    No                    Yes
@@ -95,6 +97,7 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _EPS: https://en.wikipedia.org/wiki/Encapsulated_PostScript
 .. _PDF: https://en.wikipedia.org/wiki/Portable_Document_Format
 .. _XPM: https://en.wikipedia.org/wiki/X_PixMap
+.. _PBM: https://de.wikipedia.org/wiki/Portable_Bitmap
 .. _data URI: https://en.wikipedia.org/wiki/Data_URI_scheme
 .. _ANSI: https://en.wikipedia.org/wiki/ANSI_escape_code
 .. _JPEG: https://en.wikipedia.org/wiki/JPEG

@@ -39,7 +39,7 @@ except ImportError:  # pragma: no cover
 from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
         color_to_webcolor, color_is_black, color_is_white
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_with_border_iter
+        check_valid_scale, check_valid_border, matrix_iter
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
@@ -663,21 +663,50 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
     :param color: Character to use for the black modules (default: '1')
     :param background: Character to use for the white modules (default: '0')
     """
-    check_valid_border(border)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, border=border)
+    row_iter = matrix_iter(matrix, version, scale=1, border=border)
     colors = (str(background), str(color))
     f, must_close = get_writable(out, 'wt')
     write = f.write
-    border_horizontal = '\n'.join([colors[0] * width] * border) + '\n' if border else ''
-    border_vertical = colors[0] * border
-    write(border_horizontal)
-    for row in matrix:
-        write(border_vertical)
+    for row in row_iter:
         write(''.join([colors[i] for i in row]))
-        write(border_vertical)
         write('\n')
-    write(border_horizontal)
+    if must_close:
+        f.close()
+
+
+def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
+    """\
+    Serializes the matrix in PBM format.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param bool plain: Indicates if a
+    :param out: Filename or a file-like object supporting to write binary data.
+    """
+    def groups_of_eight(row):
+        """\
+        Returns 8 columns from the iterable. If the iterable is of uneven
+        length, missing values will be filled-up with ``0x0``.
+        """
+        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
+
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    f, must_close = get_writable(out, 'wb')
+    write = f.write
+    kind = b'P4' if not plain else b'P1'
+    write(kind + '\n# Created by {0}\n{1} {2}\n' \
+          .format(CREATOR, width, height).encode('ascii'))
+    row_iter = matrix_iter(matrix, version, scale, border)
+    if not plain:
+        for row in row_iter:
+            write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
+    else:
+        for row in row_iter:
+            write(b''.join(str(i).encode('ascii') for i in row))
+            write(b'\n')
     if must_close:
         f.close()
 
@@ -696,7 +725,7 @@ def write_terminal(matrix, version, out, border=None):
     f, must_close = get_writable(out, 'wt')
     write = f.write
     colors = ['\033[{0}m'.format(i) for i in (7, 49)]
-    for row in matrix_with_border_iter(matrix, version, border):
+    for row in matrix_iter(matrix, version, scale=1, border=border):
         prev_bit = -1
         cnt = 0
         for bit in row:
@@ -741,7 +770,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colors = (240, default_color)
-    for row in matrix_with_border_iter(matrix, version, border):
+    for row in matrix_iter(matrix, version, scale=1, border=border):
         prev_bit = -1
         cnt = 0
         for bit in row:
@@ -767,7 +796,8 @@ _VALID_SERIALISERS = {
     'eps': write_eps,
     'txt': write_txt,
     'pdf': write_pdf,
-    'ans': write_terminal
+    'ans': write_terminal,
+    'pbm': write_pbm,
 }
 
 def save(matrix, version, out, kind=None, **kw):

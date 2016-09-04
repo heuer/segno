@@ -80,7 +80,7 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 
 
 def encode(content, error=None, version=None, mode=None, mask=None,
-           encoding=None, eci=False, micro=None):
+           encoding=None, eci=False, micro=None, boost_error=True):
     """\
     Creates a (Micro) QR Code.
 
@@ -124,7 +124,9 @@ def encode(content, error=None, version=None, mode=None, mask=None,
                                         get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_M
-    is_micro = version in consts.MICRO_VERSIONS
+    if boost_error:
+        error = boost_error_level(version, error, segments)
+    is_micro = version < 1
     mask = normalize_mask(mask, is_micro)
     buff = Buffer()
     ver = version
@@ -160,6 +162,32 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
     add_version_info(matrix, version)
     return Code(matrix, version, error, mask, segments)
+
+
+def boost_error_level(version, error, segments):
+    """\
+    Increases the error level if possible.
+
+    :param version: Version constant.
+    :param error: Error level constant or ``None``
+    :param segments: Instance of :py:class:`Segments`
+    """
+    if error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
+        mode = segments[0].mode
+        data_length = segments.data_length
+        levels = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M,
+                  consts.ERROR_LEVEL_Q, consts.ERROR_LEVEL_H]
+        if version < 1:
+            levels.pop()  # H isn't support by Micro QR Codes
+            if version < consts.VERSION_M4:
+                levels.pop()  # Error level Q isn't supported by M2 and M3
+        for level in levels[levels.index(error)+1:]:
+            try:
+                if consts.SYMBOL_CAPACITY[version][error][mode] >= data_length:
+                    error = level
+            except KeyError:
+                pass
+    return error
 
 
 def write_segment(buff, segment, ver, ver_range, eci=False):

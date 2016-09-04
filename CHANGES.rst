@@ -1,6 +1,20 @@
 Changes
 =======
 
+0.1.7 -- 2016-09-04
+-------------------
+* Changed API: Added a feature to increase the error correction level
+  if it fits. Disable this feature via ``boost_error=False`` (#16)
+* Added ``--no-error-boost`` to the command line script to disable error
+  correction level incrementation (#17)
+* Command line script: Internal changes and better test coverage
+* Added tests for issue #18
+* Added PBM (P1 and P4) serialization.
+* Deprecated ``utils.matrix_with_border_iter``, use ``utils.matrix_iter``
+* ``utils.matrix_with_border_iter`` will be removed in the next release
+* API change: ``QRCode.matrix_iter(border)`` -> ``QRCode.matrix_iter(scale=1, border=None)``
+
+
 0.1.6 -- 2016-08-25
 -------------------
 * Fixed setup

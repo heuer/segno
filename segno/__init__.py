@@ -21,7 +21,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.6'
+__version__ = '0.1.7'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -29,14 +29,15 @@ __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
 
 
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
-         eci=False, micro=None):
+         eci=False, micro=None, boost_error=True):
     """\
     Creates a (Micro) QR Code.
 
     This is main entry point to create QR Codes and Micro QR Codes.
 
     Aside from `content`, all parameters are optional and an optimal (minimal)
-    (Micro) QR Code is generated.
+    (Micro) QR Code with a maximal error correction level (minimum "M") is
+    generated.
 
     :param content: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be
@@ -59,10 +60,12 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================
 
-            Higher error levels require larger QR Codes (see also `version`
+            Higher error levels may require larger QR Codes (see also `version`
             parameter).
 
             The `error` parameter is case insensitive.
+
+            See also the `boost_error` parameter.
     :type error: str or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
@@ -118,6 +121,12 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             raises an exception if the `mode` is not compatible or the `content`
             is too large for Micro QR Codes.
     :type micro: bool or None
+    :param bool boost_error: Indicates if the error correction level may be
+            increased if it does not affect the version (default: ``True``).
+            If set to ``True``, the ``error`` parameter is interpreted as
+            minimum error level. If set to ``False``, the resulting (Micro) QR
+            Code uses the provided ``error`` level (or the default error
+            correction level, if error is ``None``)
     :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
             likely that a derived exception is thrown:
             :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
@@ -132,11 +141,11 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
-                                 eci, micro))
+                                 eci, micro, boost_error=boost_error))
 
 
 def make_qr(content, error=None, version=None, mode=None, mask=None,
-            encoding=None, eci=False):
+            encoding=None, eci=False, boost_error=True):
     """\
     Creates a QR Code (never a Micro QR Code).
 
@@ -145,11 +154,11 @@ def make_qr(content, error=None, version=None, mode=None, mask=None,
     :rtype: QRCode
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
-                encoding=encoding, eci=eci, micro=False)
+                encoding=encoding, eci=eci, micro=False, boost_error=boost_error)
 
 
 def make_micro(content, error=None, version=None, mode=None, mask=None,
-               encoding=None):
+               encoding=None, boost_error=True):
     """\
     Creates a Micro QR Code.
 
@@ -161,7 +170,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
     :rtype: QRCode
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
-                encoding=encoding, micro=True)
+                encoding=encoding, micro=True, boost_error=boost_error)
 
 
 class QRCode(object):
@@ -254,7 +263,7 @@ class QRCode(object):
         """
         return utils.get_symbol_size(self._version, scale=scale, border=border)
 
-    def matrix_iter(self, border=None):
+    def matrix_iter(self, scale=1, border=None):
         """\
         Returns an iterator over the matrix which includes the border.
 
@@ -264,7 +273,7 @@ class QRCode(object):
                 indicate the default border.
         :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
         """
-        return utils.matrix_with_border_iter(self.matrix, self._version, border)
+        return utils.matrix_iter(self.matrix, self._version, scale, border)
 
     def show(self, delete_after=20, scale=10, border=None, color='#000',
              background='#fff'):  # pragma: no cover
@@ -563,6 +572,19 @@ class QRCode(object):
         Name             Description
         =============    ==============================================================
         kind             "ans"
+        =============    ==============================================================
+
+
+        **Portable Bitmap (PBM)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "pbm"
+        scale            integer
+        plain            Default: False. Boolean to switch between the P4 and P1 format.
+                         If set to ``True``, the (outdated) P1 serialization format is
+                         used.
         =============    ==============================================================
 
 

@@ -32,6 +32,7 @@ def test_defaults():
     assert args.border is None
     assert args.color is None
     assert args.background is None
+    assert args.boost_error
     # PNG
     assert args.addad
     # SVG
@@ -53,66 +54,108 @@ def test_defaults():
 def test_error():
     args = cmd.parse(['', '-e', 'm'])
     assert args.error == 'M'
+    qr = cmd.make_code(args)
+    assert 'H' == qr.error
 
 
 def test_error2():
     args = cmd.parse(['', '-e', 'M'])
     assert args.error == 'M'
+    qr = cmd.make_code(args)
+    assert 'H' == qr.error
 
 
 def test_error3():
-    args = cmd.parse(['', '-e', '-'])
+    args = cmd.parse(['123', '-e', '-'])
     assert args.error is None
+    qr = cmd.make_code(args)
+    assert not qr.is_micro
+    assert 1 == qr.version
+    assert 'H' == qr.error
+
+
+def test_error_allow_micro():
+    args = cmd.parse(['123', '-e', '-', '--micro'])
+    assert args.error is None
+    qr = cmd.make_code(args)
+    assert qr.is_micro
+    assert 'M1' == qr.version
+    assert qr.error is None
 
 
 def test_error4():
-    args = cmd.parse(['', '--error=q'])
+    args = cmd.parse(['', '--error=q', '--no-error-boost'])
     assert args.error == 'Q'
+    qr = cmd.make_code(args)
+    assert 'Q' == qr.error
 
 
 def test_version():
     args = cmd.parse(['', '-v', '1'])
     assert args.version == '1'
+    qr = cmd.make_code(args)
+    assert 1 == qr.version
 
 
 def test_version2():
     args = cmd.parse(['', '--version', '40'])
     assert args.version == '40'
+    qr = cmd.make_code(args)
+    assert 40 == qr.version
 
 
 def test_version_micro():
-    args = cmd.parse(['', '-v', 'M1'])
+    args = cmd.parse(['0', '-v', 'M1'])
     assert args.version == 'M1'
+    qr = cmd.make_code(args)
+    assert 'M1' == qr.version
 
 
 def test_mode():
-    args = cmd.parse(['', '-m', 'alphanumeric'])
+    args = cmd.parse(['A', '-m', 'alphanumeric'])
     assert args.mode == 'alphanumeric'
+    qr = cmd.make_code(args)
+    assert 'alphanumeric' == qr.mode
 
 
 def test_mode2():
     args = cmd.parse(['', '--mode=byte'])
     assert args.mode == 'byte'
+    qr = cmd.make_code(args)
+    assert 'byte' == qr.mode
 
 
 def test_pattern():
     args = cmd.parse(['', '-p', '1'])
     assert args.pattern == 1
+    qr = cmd.make_code(args)
+    assert qr.mask == 1
 
 
 def test_pattern2():
     args = cmd.parse(['', '--pattern', '5'])
     assert args.pattern == 5
+    qr = cmd.make_code(args)
+    assert qr.mask == 5
 
 
 def test_micro_false():
     args = cmd.parse(['', '--no-micro'])
     assert not args.micro
+    qr = cmd.make_code(args)
+    assert not qr.is_micro
 
 
 def test_micro_true():
     args = cmd.parse(['', '--micro'])
     assert args.micro
+    qr = cmd.make_code(args)
+    assert qr.is_micro
+
+
+def test_boost_error_disable():
+    args = cmd.parse(['', '--no-error-boost'])
+    assert not args.boost_error
 
 
 def test_border():
@@ -317,7 +360,7 @@ def test_svg_lineclass():
 
 
 def test_svg_lineclass2():
-    args = cmd.parse(['', '--lineclass=magnolia', '--output=x.svg'])
+    args = cmd.parse(['', '--lineclass=magnolia'])
     assert args.lineclass == 'magnolia'
     assert cmd.build_config(args)['lineclass'] == 'magnolia'
 
@@ -329,39 +372,46 @@ def test_omitsize():
 
 
 def test_omitsize2():
-    args = cmd.parse(['', '--no-size', '--output=x.svg'])
+    args = cmd.parse(['', '--no-size'])
     assert args.omitsize
     assert cmd.build_config(args)['omitsize'] is True
 
 
 def test_unit():
-    args = cmd.parse(['', '--output=x.svg'])
+    args = cmd.parse([''])
     assert args.unit is None
     assert cmd.build_config(args)['unit'] is None
 
 
 def test_unit2():
-    args = cmd.parse(['', '--unit=cm', '--output=x.svg'])
+    args = cmd.parse(['', '--unit=cm'])
     assert args.unit == 'cm'
     assert cmd.build_config(args)['unit'] == 'cm'
 
 
 def test_svgversion():
-    args = cmd.parse(['', '--output=x.svg'])
+    args = cmd.parse([''])
     assert args.svgversion is None
     assert cmd.build_config(args)['svgversion'] is None
 
 
 def test_svgversion2():
-    args = cmd.parse(['', '--svgversion=1', '--output=x.svg'])
+    args = cmd.parse(['', '--svgversion=1'])
     assert args.svgversion == 1.0
     assert cmd.build_config(args)['svgversion'] == 1.0
 
 
 def test_svgversion3():
-    args = cmd.parse(['', '--svgversion=1.1', '--output=x.svg'])
+    args = cmd.parse(['', '--svgversion=1.1'])
     assert args.svgversion == 1.1
     assert cmd.build_config(args)['svgversion'] == 1.1
+
+
+def test_png_svg_command():
+    args = cmd.parse(['', '--svgversion=1.1'])
+    assert args.svgversion == 1.1
+    assert 'svgversion' in cmd.build_config(args)
+    assert 'svgversion' not in cmd.build_config(args, filename='x.png')
 
 
 def test_output_svgz():
@@ -379,4 +429,4 @@ def test_output_svgz():
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])

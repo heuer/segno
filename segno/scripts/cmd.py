@@ -78,6 +78,8 @@ def make_parser():
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
+    parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
+                        dest='boost_error', action='store_false')
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
                            action='store_true')
@@ -126,30 +128,24 @@ def parse(args):
         version = str(version).upper()
     if not parsed_args.micro and version in ('M1', 'M2', 'M3', 'M4'):
         parsed_args.micro = None
-    return parsed_args
+    return _AttrDict(vars(parsed_args))
 
 
-def build_config(args):
+def build_config(config, filename=None):
     """\
     Builds a configuration and returns it. The config contains only keywords,
     which are supported by the serializer. Unsupported values are ignored.
     """
-    config = dict()
-    config.update(vars(args))
-    # Remove args which are used to build the QR Code
-    for name in ('content', 'mode', 'error', 'version', 'pattern', 'micro',
-                 'output'):
-        config.pop(name, None)
     # Done here since it seems not to be possible to detect if an argument
     # was supplied by the user or if it's the default argument.
     # If using type=lambda v: None if v in ('transparent', 'trans') else v
     # we cannot detect if "None" comes from "transparent" or the default value
     for clr in ('color', 'background'):
-        val = config[clr]
-        if val is None:
-            del config[clr]
-        elif val in ('transparent', 'trans'):
+        val = config.pop(clr, None)
+        if val in ('transparent', 'trans'):
             config[clr] = None
+        elif val:
+            config[clr] = val
     # SVG
     for name in ('svgid', 'svgclass', 'lineclass'):
         if config.get(name, None) is None:
@@ -157,27 +153,40 @@ def build_config(args):
     if config.pop('no_classes', False):
         config['svgclass'] = None
         config['lineclass'] = None
-    fname = args.output
-    ext = fname[fname.rfind('.') + 1:].lower()
-    if ext == 'svgz':  # There is no svgz serializer, use same config as svg
-        ext = 'svg'
-    supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
-    # Drop unsupported arguments from config rather than getting a
-    # "unsupported keyword" exception
-    for k in list(config):
-        if k not in supported_args:
-            del config[k]
+    if filename is not None:
+        ext = filename[filename.rfind('.') + 1:].lower()
+        if ext == 'svgz':  # There is no svgz serializer, use same config as svg
+            ext = 'svg'
+        supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
+        # Drop unsupported arguments from config rather than getting a
+        # "unsupported keyword" exception
+        for k in list(config):
+            if k not in supported_args:
+                del config[k]
     return config
 
 
+def make_code(config):
+    return segno.make(config.pop('content'), mode=config.pop('mode'),
+                      error=config.pop('error'), version=config.pop('version'),
+                      mask=config.pop('pattern'), micro=config.pop('micro'),
+                      boost_error=config.pop('boost_error'))
+
+
 def main(args=sys.argv[1:]):
-    args = parse(args)
-    qr = segno.make(args.content, mode=args.mode, error=args.error,
-                    version=args.version, mask=args.pattern, micro=args.micro)
-    if args.output is None:
-        qr.terminal(border=args.border)
+    config = parse(args)
+    qr = make_code(config)
+    output = config.pop('output')
+    if output is None:
+        qr.terminal(border=config['border'])
     else:
-        qr.save(args.output, **build_config(args))
+        qr.save(output, **build_config(config, filename=output))
+
+
+class _AttrDict(dict):
+    def __init__(self, *args, **kwargs):
+        super(_AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
 
 
 if __name__ == '__main__':  # pragma: no cover
