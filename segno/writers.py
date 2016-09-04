@@ -680,11 +680,14 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param bool plain: Indicates if a
-    :param out: Filename or a file-like object supporting to write binary data.
+    :param bool plain: Indicates if a P1 image should be created (default: False).
+            By default a P4 image is created.
     """
     def groups_of_eight(row):
         """\
