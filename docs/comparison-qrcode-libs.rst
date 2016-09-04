@@ -27,7 +27,7 @@ Find best error correction level                No                    No        
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
 `XPM`_ output                                   No                    Yes                    No                    No
-`PBM`_ output                                   No                    Yes                    No                    Yes
+`PBM`_ output                                   No                    No                     No                    Yes
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
 Text output                                     Yes                   Yes                    No                    Yes
