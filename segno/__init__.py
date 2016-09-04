@@ -267,7 +267,7 @@ class QRCode(object):
         """\
         Returns an iterator over the matrix which includes the border.
 
-        The border is interpreted as light module.
+        The border is returned as sequence of light modules.
 
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
