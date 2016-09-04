@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.1.8 -- 2016-mm-dd
+-------------------
+* Removed ``utils.matrix_with_border_iter``
+
+
+
 0.1.7 -- 2016-09-04
 -------------------
 * Changed API: Added a feature to increase the error correction level
