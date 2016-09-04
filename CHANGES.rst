@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.1.7 -- 2016-mm-dd
+0.1.7 -- 2016-09-04
 -------------------
 * Changed API: Added a feature to increase the error correction level
   if it fits. Disable this feature via ``boost_error=False`` (#16)
