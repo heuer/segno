@@ -269,6 +269,7 @@ class QRCode(object):
 
         The border is interpreted as light module.
 
+        :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
                 indicate the default border.
         :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
