@@ -22,6 +22,7 @@ try:
     from .test_txt import txt_as_matrix
     from .test_pdf import pdf_as_matrix
     from .test_terminal import terminal_as_matrix
+    from .test_pbm import pbm_p1_as_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
@@ -29,6 +30,7 @@ except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_txt import txt_as_matrix
     from test_pdf import pdf_as_matrix
     from test_terminal import terminal_as_matrix
+    from test_pbm import pbm_p1_as_matrix
 
 
 _DATA = (
@@ -45,7 +47,7 @@ _DATA = (
 def test_data():
     # Creates a QR Code, serializes it and checks if the serialization
     # corresponds to the initial QR Code matrix.
-    def check(kind, buffer_factory, to_matrix_func, data, error, border):
+    def check(kind, buffer_factory, to_matrix_func, data, error, border, kw):
         """\
         :param str kind: "kind" parameter to serialize the QR code
         :param buffer_factory: Callable to construct the output buffer.
@@ -56,22 +58,23 @@ def test_data():
         """
         qr = segno.make_qr(data, error=error)
         out = buffer_factory()
-        qr.save(out, kind=kind, border=border)
+        qr.save(out, kind=kind, border=border, **kw)
         matrix = to_matrix_func(out, border)
         assert len(qr.matrix) == len(matrix)
         for i, row in enumerate(qr.matrix):
             assert row == bytearray(matrix[i]), 'Error in row {0}'.format(i)
-    for kind, buffer_factory, to_matrix_func in (('eps', io.StringIO, eps_as_matrix),
-                                                 ('png', io.BytesIO, png_as_matrix),
-                                                 ('svg', io.BytesIO, svg_as_matrix),
-                                                 ('txt', io.StringIO, txt_as_matrix),
-                                                 ('pdf', io.BytesIO, pdf_as_matrix),
-                                                 ('ans', io.StringIO, terminal_as_matrix),):
+    for kind, buffer_factory, to_matrix_func, kw in (('eps', io.StringIO, eps_as_matrix, {}),
+                                                     ('png', io.BytesIO, png_as_matrix, {}),
+                                                     ('svg', io.BytesIO, svg_as_matrix, {}),
+                                                     ('txt', io.StringIO, txt_as_matrix, {}),
+                                                     ('pdf', io.BytesIO, pdf_as_matrix, {}),
+                                                     ('ans', io.StringIO, terminal_as_matrix, {}),
+                                                     ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True),)):
         for data, error, border in _DATA:
-            yield check, kind, buffer_factory, to_matrix_func, data, error, border
+            yield check, kind, buffer_factory, to_matrix_func, data, error, border, kw
 
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
 
