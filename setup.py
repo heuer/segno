@@ -37,6 +37,7 @@ setup(
     name='segno',
     version=version,
     url='https://github.com/heuer/segno/',
+    bugtrack_url='https://github.com/heuer/segno/issues',
     description='QR Code and Micro QR Code generator for Python 2 and Python 3',
     long_description=read('README.rst', 'CHANGES.rst'),
     license='BSD',
