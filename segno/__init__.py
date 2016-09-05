@@ -268,11 +268,28 @@ class QRCode(object):
         Returns an iterator over the matrix which includes the border.
 
         The border is returned as sequence of light modules.
+        Dark modules are reported as ``0x1``, light modules have the value
+        ``0x0``.
+
+        The following example converts the QR Code matrix into a list of
+        lists which use boolean values for the modules (True = dark module,
+        False = light module)::
+
+            >>> import segno
+            >>> qr = segno.make('The Beatles')
+            >>> size = qr.symbol_size()[0]
+            >>> res = []
+            >>> # Scaling factor 2, default border
+            >>> for row in qr.matrix_iter(scale=2):
+            >>>     res.append([col == 0x1 for col in row])
+            >>> size * 2 == len(res[0])
+            True
 
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
                 indicate the default border.
-        :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
+        :raises: :py:exc:`ValueError` if the scaling factor or the border is
+                invalid (i.e. negative).
         """
         return utils.matrix_iter(self.matrix, self._version, scale, border)
 
