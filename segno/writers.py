@@ -714,6 +714,42 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         f.close()
 
 
+def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
+    """\
+    Serializes the matrix into the LaTeX PGF/TikZ format.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write text data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    """
+    def point(x, y):
+        return '\\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+    check_valid_scale(scale)
+    check_valid_border(border)
+    border = get_border(version, border)
+    f, must_close = get_writable(out, 'wt')
+    write = f.write
+    write('% Creaator: {0}\n'.format(CREATOR).decode('ascii'))
+    creation_date = time.strftime('%Y-%m-%dT%H:%M:%S')
+    write('% Date:     {0}\n'.format(creation_date))
+    write('\\begin{pgfpicture}\n')
+    if scale != 1:
+        write('  \pgfsetlinewidth{{{0}}}\n'.format(scale))
+    x, y = border, border
+    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y):
+        write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
+        write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
+    write('  \pgfusepath{stroke}\n')
+    write('\\end{pgfpicture}\n')
+    if must_close:
+        f.close()
+
+
 def write_terminal(matrix, version, out, border=None):
     """\
     Function to write to a terminal which supports ANSI escape codes.
