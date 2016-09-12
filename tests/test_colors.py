@@ -135,30 +135,20 @@ def test_valid_colornames():
         yield check, name.lower(), expected
 
 
-def test_hex_to_rgba():
-    data = (('#fff', (255, 255, 255)),
-            ('#0000ffcc', (0, 0, 255, .8)),
-            ('#949494E8', (148, 148, 148, 0.91)),
-    )
-
-    def check(expected, color):
-        assert expected == colors._hex_to_rgb_or_rgba(color)
-
-    for color, expected in data:
-        yield check, expected, color
+@pytest.mark.parametrize('color, expected', (('#fff', (255, 255, 255)),
+                                             ('#0000ffcc', (0, 0, 255, .8)),
+                                             ('#949494E8', (148, 148, 148, 0.91)),
+    ))
+def test_hex_to_rgba(color, expected):
+    assert expected == colors._hex_to_rgb_or_rgba(color)
 
 
-def test_hex_to_rgba_alpha_int():
-    data = (('#fff', (255, 255, 255)),
-            ('#0000ffcc', (0, 0, 255, 204)),
-            ('#949494E8', (148, 148, 148, 232)),
-    )
-
-    def check(expected, color):
-        assert expected == colors._hex_to_rgb_or_rgba(color, alpha_float=False)
-
-    for color, expected in data:
-        yield check, expected, color
+@pytest.mark.parametrize('color, expected', (('#fff', (255, 255, 255)),
+                                             ('#0000ffcc', (0, 0, 255, 204)),
+                                             ('#949494E8', (148, 148, 148, 232)),
+                                ))
+def test_hex_to_rgba_alpha_int(color, expected):
+    assert expected == colors._hex_to_rgb_or_rgba(color, alpha_float=False)
 
 
 def test_valid_hexcodes_rgb():
@@ -197,48 +187,34 @@ def test_valid_hexcodes_rgba():
         yield check, name.lower(), expected
 
 
-def test_tuple_to_rgba():
-    def check(t, expected):
-        rgba = colors.color_to_rgba(t)
-        assert expected == rgba
-
-    data = (
-        ('#808000', (128, 128, 0, 1.0)),
-        ('red', (255, 0, 0, 1.0)),
-        ((255, 0, 0, .2), (255, 0, 0, .2)),
-    )
-
-    for t, expected in data:
-        yield check, t, expected
+@pytest.mark.parametrize('t, expected', (
+                                            ('#808000', (128, 128, 0, 1.0)),
+                                            ('red', (255, 0, 0, 1.0)),
+                                            ((255, 0, 0, .2), (255, 0, 0, .2)),
+    ))
+def test_tuple_to_rgba(t, expected):
+    rgba = colors.color_to_rgba(t)
+    assert expected == rgba
 
 
-def test_tuple_to_rgba_int():
-    def check(t, expected):
-        rgba = colors.color_to_rgba(t, alpha_float=False)
-        assert expected == rgba
-
-    data = (
-        ('#808000', (128, 128, 0, 255)),
-        ('red', (255, 0, 0, 255)),
-        ((0, 0, 255, .8), (0, 0, 255, 204)),
-    )
-
-    for t, expected in data:
-        yield check, t, expected
+@pytest.mark.parametrize('t, expected', (
+                                        ('#808000', (128, 128, 0, 255)),
+                                        ('red', (255, 0, 0, 255)),
+                                        ((0, 0, 255, .8), (0, 0, 255, 204)),
+    ))
+def test_tuple_to_rgba_int(t, expected):
+    rgba = colors.color_to_rgba(t, alpha_float=False)
+    assert expected == rgba
 
 
-def test_invert_color():
-    def check(color, expected_color):
-        assert expected_color == colors.invert_color(color)
-    data = (
-        ((0, 0, 0), (255, 255, 255)),
-        ((255, 255, 255), (0, 0, 0)),
-        ((123, 123, 123), (132, 132, 132)),
-        ((60, 70, 80), (195, 185, 175)),
-    )
-    for color, expected_color in data:
-        yield check, color, expected_color
-
+@pytest.mark.parametrize('color, expected', (
+                                            ((0, 0, 0), (255, 255, 255)),
+                                            ((255, 255, 255), (0, 0, 0)),
+                                            ((123, 123, 123), (132, 132, 132)),
+                                            ((60, 70, 80), (195, 185, 175)),
+    ))
+def test_invert_color(color, expected):
+    assert expected == colors.invert_color(color)
 
 if __name__ == '__main__':
     pytest.main([__file__])
