@@ -13,6 +13,7 @@ Tests against the encoder module.
 :license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
+import pytest
 import segno
 from segno import consts
 
@@ -42,18 +43,17 @@ _DATA_AUTODETECT = (
 )
 
 
-def test_valid_mode_autodetection():
-    def check_qr(data, expected_mode):
-        qr = segno.make_qr(data)
-        assert expected_mode == qr.mode
 
-    def check_auto(data, expected_mode):
-        qr = segno.make(data)
-        assert expected_mode == qr.mode
+@pytest.mark.parametrize('data, expected_mode', _DATA_AUTODETECT)
+def test_valid_mode_autodetection(data, expected_mode):
+    qr = segno.make_qr(data)
+    assert expected_mode == qr.mode
 
-    for data, mode in _DATA_AUTODETECT:
-        yield check_qr, data, mode
-        yield check_auto, data, mode
+
+@pytest.mark.parametrize('data, expected_mode', _DATA_AUTODETECT)
+def test_valid_mode_autodetection_auto(data, expected_mode):
+    qr = segno.make(data)
+    assert expected_mode == qr.mode
 
 
 def test_default_encoding():
@@ -135,6 +135,5 @@ def test_m1_has_no_error_level():
 
 
 if __name__ == '__main__':
-    import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
 
