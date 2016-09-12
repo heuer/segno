@@ -735,6 +735,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     border = get_border(version, border)
     f, must_close = get_writable(out, 'wt')
     write = f.write
+    write('% Requires: \\usepackage{tikz}\n'
     write('% Creaator: {0}\n'.format(CREATOR).decode('ascii'))
     creation_date = time.strftime('%Y-%m-%dT%H:%M:%S')
     write('% Date:     {0}\n'.format(creation_date))
