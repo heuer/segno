@@ -46,69 +46,48 @@ def test_illegal_mode_micro():
         yield check, version.lower(), mode
 
 
-def test_micro_version_contradicts_micro():
-
-    def check(version):
-        with pytest.raises(VersionError):
-            qr = segno.make(1, version=version, micro=False)
-
-    for version in _LEGAL_MICRO_VERSIONS:
-        yield check, version
+@pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
+def test_micro_version_contradicts_micro(version):
+    with pytest.raises(VersionError):
+        segno.make(1, version=version, micro=False)
 
 
-def test_version_contradicts_micro():
-
-    def check(version):
-        with pytest.raises(VersionError):
-            segno.make(1, version=version, micro=True)
-    for version in _LEGAL_VERSIONS:
-        yield check, version
+@pytest.mark.parametrize('version', _LEGAL_VERSIONS)
+def test_version_contradicts_micro(version):
+    with pytest.raises(VersionError):
+        segno.make(1, version=version, micro=True)
 
 
-def test_illegal_version():
-
-    def check(version):
-        with pytest.raises(VersionError):
-            segno.make('a', version=version)
-
-    for version in ('M0', 'M5', -1, 0, 41, 'M1 ', object()):
-        yield check, version
+@pytest.mark.parametrize('version', ['M0', 'M5', -1, 0, 41, 'M1 ', object()])
+def test_illegal_version(version):
+    with pytest.raises(VersionError):
+        segno.make('a', version=version)
 
 
-def test_valid_mirco_versions():
-    def check(version):
-        qr = segno.make(1, version=version)
-        assert version.upper() == qr.version
-        assert qr.is_micro
-    for version in _LEGAL_MICRO_VERSIONS:
-        yield check, version
+@pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
+def test_valid_mirco_versions(version):
+    qr = segno.make(1, version=version)
+    assert version.upper() == qr.version
+    assert qr.is_micro
 
 
-def test_valid_versions():
-    def check(version):
-        qr = segno.make(1, version=version)
-        assert int(version) == qr.version
-        assert not qr.is_micro
-    for version in _LEGAL_VERSIONS:
-        yield check, version
+@pytest.mark.parametrize('version', _LEGAL_VERSIONS)
+def test_valid_versions(version):
+    qr = segno.make(1, version=version)
+    assert int(version) == qr.version
+    assert not qr.is_micro
 
 
-def test_legal_error_levels():
-    def check(error):
-        qr = segno.make(1, error=error, boost_error=False)
-        assert error.upper() == qr.error
-    for error in _LEGAL_ERROR_LEVELS:
-        yield check, error
+@pytest.mark.parametrize('error', _LEGAL_ERROR_LEVELS)
+def test_legal_error_levels(error):
+    qr = segno.make(1, error=error, boost_error=False)
+    assert error.upper() == qr.error
 
 
-def test_illegal_error_level():
-
-    def check(error):
-        with pytest.raises(ErrorLevelError):
-            segno.make(1, error=error)
-
-    for error in ('R', 'M ', ' L'):
-        yield check, error
+@pytest.mark.parametrize('error', ['R', 'M ', ' L'])
+def test_illegal_error_level(error):
+    with pytest.raises(ErrorLevelError):
+        segno.make(1, error=error)
 
 
 def test_illegal_error_level_micro():
@@ -511,5 +490,5 @@ def test_unknown_converter():
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
 
