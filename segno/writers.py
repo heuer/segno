@@ -729,6 +729,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     """
     def point(x, y):
         return '\\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(version, border)
@@ -739,7 +740,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     write('% Date:     {0}\n'.format(creation_date))
     write('\\begin{pgfpicture}\n')
     if scale != 1:
-        write('  \pgfsetlinewidth{{{0}}}\n'.format(scale))
+        write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
     x, y = border, border
     for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
