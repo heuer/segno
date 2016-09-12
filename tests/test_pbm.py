@@ -52,7 +52,6 @@ def _move_to_raster(buff, border):
     code_iter = iter(code)
     for l in code_iter:
         if l.startswith(b'P') or l.startswith(b'#'):
-            print('Skip line', l)
             continue
         m = _is_size(l)
         if m:
