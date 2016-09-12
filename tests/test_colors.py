@@ -47,92 +47,71 @@ def test_rgba_vs_rgb_conflict():
         colors.color_to_rgb('#949494E8')
 
 
-def test_color_is_black():
-    data = (((0, 0, 0, 0), False),
-            ((0, 0, 0, 1), True),
-            ((0, 0, 0, 1.0), True),
-            ((0, 0, 0, 255), True),
-            ((0, 0, 0, 0.25), False),
-            ('#000', True),
-            ('#000000', True),
-            ('Black', True),
-            ('black', True),
-            ('BLACK', True),
-            ('blacK', True),
-            )
-
-    def check(expected, clr):
-        assert expected == colors.color_is_black(clr)
-
-    for clr, expected in data:
-        yield check, expected, clr
+@pytest.mark.parametrize('clr, expected', [((0, 0, 0, 0), False),
+                                           ((0, 0, 0, 1), True),
+                                           ((0, 0, 0, 1.0), True),
+                                           ((0, 0, 0, 255), True),
+                                           ((0, 0, 0, 0.25), False),
+                                           ('#000', True),
+                                           ('#000000', True),
+                                           ('Black', True),
+                                           ('black', True),
+                                           ('BLACK', True),
+                                           ('blacK', True),])
+def test_color_is_black(clr, expected):
+    assert expected == colors.color_is_black(clr)
 
 
-def test_color_is_white():
-    data = (((255, 255, 255, 0), False),
-            ((255, 255, 255, 1), True),
-            ((255, 255, 255, 255), True),
-            ((255, 255, 255, 1.0), True),
-            ((255, 255, 255, .0), False),
-            ((255, 255, 255, .25), False),
-            ('#FFF', True),
-            ('#fFF', True),
-            ('#ffF', True),
-            ('#fff', True),
-            ('#ffffff', True),
-            ('White', True),
-            ('white', True),
-            ('WHITE', True),
-            ('whitE', True),
-            )
-
-    def check(expected, clr):
-        assert expected == colors.color_is_white(clr)
-
-    for clr, expected in data:
-        yield check, expected, clr
+@pytest.mark.parametrize('clr, expected', (((255, 255, 255, 0), False),
+                                            ((255, 255, 255, 1), True),
+                                            ((255, 255, 255, 255), True),
+                                            ((255, 255, 255, 1.0), True),
+                                            ((255, 255, 255, .0), False),
+                                            ((255, 255, 255, .25), False),
+                                            ('#FFF', True),
+                                            ('#fFF', True),
+                                            ('#ffF', True),
+                                            ('#fff', True),
+                                            ('#ffffff', True),
+                                            ('White', True),
+                                            ('white', True),
+                                            ('WHITE', True),
+                                            ('whitE', True),
+                                            ))
+def test_color_is_white(clr, expected):
+    assert expected == colors.color_is_white(clr)
 
 
-def test_color_to_webcolor():
-    data = (('black', '#000'),
-            ('WHite', '#fff'),
-            ('#000000', '#000'),
-            ('#ffFFff', '#fff'),
-            ('#EEeeEE', '#eee'),
-            ('#F00', 'red'),
-            ('#FF0000', 'red'),
-            ('red', 'red'),
-            ('#d2b48c', 'tan'),
-            ('tan', 'tan'),
-            ((0, 0, 0, 1.0), '#000'),
-            ((255, 255, 255, 1.0), '#fff'),
-            ((255, 0, 0, 0.25), 'rgba(255,0,0,0.25)'),
-            ('#0000ffcc', 'rgba(0,0,255,0.8)'),
-            ('#949494E8', 'rgba(148,148,148,0.91)'),
-    )
-
-    def check(expected, clr):
-        assert expected == colors.color_to_webcolor(clr)
-
-    for clr, expected in data:
-        yield check, expected, clr
+@pytest.mark.parametrize('clr, expected', (('black', '#000'),
+                                            ('WHite', '#fff'),
+                                            ('#000000', '#000'),
+                                            ('#ffFFff', '#fff'),
+                                            ('#EEeeEE', '#eee'),
+                                            ('#F00', 'red'),
+                                            ('#FF0000', 'red'),
+                                            ('red', 'red'),
+                                            ('#d2b48c', 'tan'),
+                                            ('tan', 'tan'),
+                                            ((0, 0, 0, 1.0), '#000'),
+                                            ((255, 255, 255, 1.0), '#fff'),
+                                            ((255, 0, 0, 0.25), 'rgba(255,0,0,0.25)'),
+                                            ('#0000ffcc', 'rgba(0,0,255,0.8)'),
+                                            ('#949494E8', 'rgba(148,148,148,0.91)'),
+                                    ))
+def test_color_to_webcolor(clr, expected):
+    assert expected == colors.color_to_webcolor(clr)
 
 
-def test_color_to_webcolor_dont_optimize():
-    data = (('black', '#000'),
-            ('#F00', '#ff0000'),
-            ('#FF0000', '#ff0000'),
-            ('red', '#ff0000'),
-            ('#D2B48C', '#d2b48c'),
-            ((0, 0, 0, 1.0), '#000'),
-            ((255, 255, 255, 1.0), '#fff'),
-    )
-
-    def check(expected, clr):
-        assert expected == colors.color_to_webcolor(clr, optimize=False)
-
-    for clr, expected in data:
-        yield check, expected, clr
+@pytest.mark.parametrize('clr, expected', (('black', '#000'),
+                                            ('#F00', '#ff0000'),
+                                            ('#FF0000', '#ff0000'),
+                                            ('red', '#ff0000'),
+                                            ('#D2B48C', '#d2b48c'),
+                                            ((0, 0, 0, 1.0), '#000'),
+                                            ((255, 255, 255, 1.0), '#fff'),
+    ))
+def test_color_to_webcolor_dont_optimize(clr, expected):
+    assert expected == colors.color_to_webcolor(clr, optimize=False)
 
 
 def test_valid_colornames():
@@ -262,4 +241,4 @@ def test_invert_color():
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
