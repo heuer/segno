@@ -770,7 +770,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     if not res:
         raise OSError('Cannot find information about the console. '
                       'Not running on the command line?')
-    default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
+    default_color = struct.unpack(b'hhhhHhhhhhh', csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colors = (240, default_color)
     for row in matrix_iter(matrix, version, scale=1, border=border):

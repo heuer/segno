@@ -4,6 +4,7 @@ Changes
 0.1.8 -- 2016-mm-dd
 -------------------
 * Removed ``utils.matrix_with_border_iter``
+* Fixed #21 (type error while writing to terminal under Windows)
 
 
 
