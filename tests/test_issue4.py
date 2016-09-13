@@ -43,5 +43,5 @@ def test_issue_4_explicit_error2():
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
 

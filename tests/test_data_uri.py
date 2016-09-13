@@ -52,5 +52,5 @@ def test_data_png():
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([ __file__])
 

@@ -78,5 +78,5 @@ def pdf_as_matrix(buff, border):
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
 

@@ -216,5 +216,6 @@ def test_tuple_to_rgba_int(t, expected):
 def test_invert_color(color, expected):
     assert expected == colors.invert_color(color)
 
+
 if __name__ == '__main__':
     pytest.main([__file__])
