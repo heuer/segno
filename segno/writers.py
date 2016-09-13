@@ -726,8 +726,8 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param unicode|str unit: Unit of the drawing (default: ``pt``)
-    :param unicode|str|None url: Optional URL where the QR Code should point to.
+    :param unit: Unit of the drawing (default: ``pt``)
+    :param url: Optional URL where the QR Code should point to.
             Requires the "hyperref" package. Default: ``None`
     """
     def point(x, y):
@@ -738,7 +738,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     border = get_border(version, border)
     f, must_close = get_writable(out, 'wt')
     write = f.write
-    write('%% Creator:  {0}\n'.format(CREATOR).decode('ascii'))
+    write('%% Creator:  {0}\n'.format(CREATOR))
     write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
     if url:
         write('\href{{{0}}}{{\n'.format(url))
