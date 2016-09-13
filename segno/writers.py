@@ -740,8 +740,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     creation_date = time.strftime('%Y-%m-%dT%H:%M:%S')
     write('% Date:     {0}\n'.format(creation_date))
     write('\\begin{pgfpicture}\n')
-    if scale != 1:
-        write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+    write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
     x, y = border, border
     for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
