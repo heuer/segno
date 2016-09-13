@@ -26,6 +26,29 @@ def test_write_tex():
     assert '\pgfpathmoveto{\pgfqpoint{4pt}{-4pt}}' in out.getvalue()
 
 
+def test_write_tex_url():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    url = 'http://www.example.org/~xxx#aaa'
+    qr.save(out, kind='tex', border=4, url=url)
+    assert '\href{' + url + '}' in out.getvalue()
+
+
+def test_write_tex_omit_url():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    url = ''
+    qr.save(out, kind='tex', border=4, url=url)
+    assert '\href' not in out.getvalue()
+
+
+def test_write_tex_omit_url2():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    qr.save(out, kind='tex', border=4)
+    assert '\href' not in out.getvalue()
+
+
 _COMMAND_PATTERN = re.compile(r'pgfpath(move|line)to\{\\pgfqpoint\{(\-?[0-9]+)pt\}\{(\-?[0-9]+)pt\}')
 
 def tex_as_matrix(buff, border):
