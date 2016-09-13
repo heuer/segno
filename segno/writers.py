@@ -735,14 +735,12 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     border = get_border(version, border)
     f, must_close = get_writable(out, 'wt')
     write = f.write
-    write('% Requires: \\usepackage{tikz}\n')
     write('% Creator:  {0}\n'.format(CREATOR).decode('ascii'))
-    creation_date = time.strftime('%Y-%m-%dT%H:%M:%S')
-    write('% Date:     {0}\n'.format(creation_date))
+    write('% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
     write('\\begin{pgfpicture}\n')
     write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
     x, y = border, border
-    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y):
+    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
         write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
     write('  \pgfusepath{stroke}\n')
