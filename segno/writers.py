@@ -727,8 +727,8 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     :param unit: Unit of the drawing (default: ``pt``)
-    :param url: Optional URL where the QR Code should point to.
-            Requires the "hyperref" package. Default: ``None`
+    :param url: Optional URL where the QR Code should point to. Requires the
+            ``hyperref`` package. Default: ``None``
     """
     def point(x, y):
         return '\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
