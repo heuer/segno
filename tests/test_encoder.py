@@ -36,54 +36,43 @@ def test_version_as_str():
     assert 1 == qr.version
 
 
-def test_prepare_data_numeric():
-    test_data = (
-        '1234567',
-        '666',
-    )
-    for data in test_data:
-        for mode in (None, consts.MODE_NUMERIC):
-            expected = ((data.encode('ascii'), len(data), consts.MODE_NUMERIC, None),)
-            yield check_prepare_data, expected, data, mode, None
+@pytest.mark.parametrize('data', ['1234567', '666'])
+@pytest.mark.parametrize('mode', [None, consts.MODE_NUMERIC])
+def test_prepare_data_numeric(data, mode):
+    expected = ((data.encode('ascii'), len(data), consts.MODE_NUMERIC, None),)
+    check_prepare_data(expected, data, mode, None)
 
 
-def test_prepare_data_override_numeric():
-    test_data = (
-        '1234567',
-        '666',
-    )
-    for data in test_data:
-        for mode in (None, consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC,
-                     consts.MODE_BYTE):
-            encoding = None if mode != consts.MODE_BYTE else consts.DEFAULT_BYTE_ENCODING
-            expected = ((data.encode('ascii'), len(data), mode or consts.MODE_NUMERIC, encoding),)
-            yield check_prepare_data, expected, data, mode, None
+@pytest.mark.parametrize('data', ['1234567', '666'])
+@pytest.mark.parametrize('mode', [None, consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC, consts.MODE_BYTE])
+def test_prepare_data_override_numeric(data, mode):
+    encoding = None if mode != consts.MODE_BYTE else consts.DEFAULT_BYTE_ENCODING
+    expected = ((data.encode('ascii'), len(data), mode or consts.MODE_NUMERIC, encoding),)
+    check_prepare_data(expected, data, mode, None)
 
 
-def test_prepare_data_alphanumeric():
-    test_data = (
+@pytest.mark.parametrize('data', (
         'HELLO WORLD',
         'ABCDEF',
         'HELLO    WORLD ',
         '-123',
-    )
-    for data in test_data:
-        for mode in (None, consts.MODE_ALPHANUMERIC):
-            expected = ((data.encode('ascii'), len(data), consts.MODE_ALPHANUMERIC, None),)
-            yield check_prepare_data, expected, data, mode, None
+    ))
+@pytest.mark.parametrize('mode', [None, consts.MODE_ALPHANUMERIC])
+def test_prepare_data_alphanumeric(data, mode):
+    expected = ((data.encode('ascii'), len(data), consts.MODE_ALPHANUMERIC, None),)
+    check_prepare_data(expected, data, mode, None)
 
 
-def test_prepare_data_override_alphanumeric():
-    test_data = (
+@pytest.mark.parametrize('data', (
         'HELLO WORLD',
         'ABCDEF',
         'HELLO    WORLD ',
-    )
-    for data in test_data:
-        for mode in (None, consts.MODE_ALPHANUMERIC, consts.MODE_BYTE):
-            encoding = None if mode != consts.MODE_BYTE else consts.DEFAULT_BYTE_ENCODING
-            expected = ((data.encode('ascii'), len(data), mode or consts.MODE_ALPHANUMERIC, encoding),)
-            yield check_prepare_data, expected, data, mode, None
+    ))
+@pytest.mark.parametrize('mode', (None, consts.MODE_ALPHANUMERIC, consts.MODE_BYTE))
+def test_prepare_data_override_alphanumeric(data, mode):
+    encoding = None if mode != consts.MODE_BYTE else consts.DEFAULT_BYTE_ENCODING
+    expected = ((data.encode('ascii'), len(data), mode or consts.MODE_ALPHANUMERIC, encoding),)
+    check_prepare_data(expected, data, mode, None)
 
 
 def test_prepare_data_byte():
@@ -1146,4 +1135,4 @@ def test_format_info_figure26():
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
