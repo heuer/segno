@@ -597,6 +597,18 @@ class QRCode(object):
         =============    ==============================================================
 
 
+        **LaTeX / PGF/TikZ**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "tex"
+        scale            integer or float
+        url              Default: ``None``. Optional URL where the QR Code should
+                         point to. Requires the hyperref package.
+        =============    ==============================================================
+
+
         :param out: A filename or a writable file-like object with a
                 ``name`` attribute. Use the `kind` parameter if `out` is
                 a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which

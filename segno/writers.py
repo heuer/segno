@@ -714,7 +714,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         f.close()
 
 
-def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
+def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     """\
     Serializes the matrix into the LaTeX PGF/TikZ format.
 
@@ -726,25 +726,32 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt'):
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param unicode|str unit: Unit of the drawing (default: ``pt``)
+    :param unicode|str|None url: Optional URL where the QR Code should point to.
+            Requires the "hyperref" package. Default: ``None`
     """
     def point(x, y):
-        return '\\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+        return '\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
 
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(version, border)
     f, must_close = get_writable(out, 'wt')
     write = f.write
-    write('% Creator:  {0}\n'.format(CREATOR).decode('ascii'))
-    write('% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+    write('%% Creator:  {0}\n'.format(CREATOR).decode('ascii'))
+    write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+    if url:
+        write('\href{{{0}}}{{\n'.format(url))
     write('\\begin{pgfpicture}\n')
     write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
-    x, y = border, border
+    x, y = border, -border
     for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
         write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
     write('  \pgfusepath{stroke}\n')
-    write('\\end{pgfpicture}\n')
+    write('\end{pgfpicture}\n')
+    if url:
+        write('}\n')
     if must_close:
         f.close()
 
