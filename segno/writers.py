@@ -838,6 +838,7 @@ _VALID_SERIALISERS = {
     'pdf': write_pdf,
     'ans': write_terminal,
     'pbm': write_pbm,
+    'tex': write_tex,
 }
 
 def save(matrix, version, out, kind=None, **kw):
