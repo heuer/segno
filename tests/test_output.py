@@ -23,6 +23,7 @@ try:
     from .test_pdf import pdf_as_matrix
     from .test_terminal import terminal_as_matrix
     from .test_pbm import pbm_p1_as_matrix
+    from .test_tex import tex_as_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
@@ -31,6 +32,7 @@ except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_pdf import pdf_as_matrix
     from test_terminal import terminal_as_matrix
     from test_pbm import pbm_p1_as_matrix
+    from test_tex import tex_as_matrix
 
 
 _DATA = (
@@ -62,13 +64,16 @@ def test_data():
         matrix = to_matrix_func(out, border)
         assert len(qr.matrix) == len(matrix)
         for i, row in enumerate(qr.matrix):
-            assert row == bytearray(matrix[i]), 'Error in row {0}'.format(i)
+            exptected_row = bytearray(matrix[i])
+            assert len(row) == len(exptected_row)
+            assert exptected_row == row, 'Error in row {0}'.format(i)
     for kind, buffer_factory, to_matrix_func, kw in (('eps', io.StringIO, eps_as_matrix, {}),
                                                      ('png', io.BytesIO, png_as_matrix, {}),
                                                      ('svg', io.BytesIO, svg_as_matrix, {}),
                                                      ('txt', io.StringIO, txt_as_matrix, {}),
                                                      ('pdf', io.BytesIO, pdf_as_matrix, {}),
                                                      ('ans', io.StringIO, terminal_as_matrix, {}),
+                                                     ('tex', io.StringIO, tex_as_matrix, {}),
                                                      ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True),)):
         for data, error, border in _DATA:
             yield check, kind, buffer_factory, to_matrix_func, data, error, border, kw
