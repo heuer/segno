@@ -37,7 +37,6 @@ setup(
     name='segno',
     version=version,
     url='https://github.com/heuer/segno/',
-    bugtrack_url='https://github.com/heuer/segno/issues',
     description='QR Code and Micro QR Code generator for Python 2 and Python 3',
     long_description=read('README.rst', 'CHANGES.rst'),
     license='BSD',
@@ -49,7 +48,7 @@ setup(
     entry_points = {'console_scripts': ['segno = segno.scripts.cmd:main']},
     keywords=['QR Code', 'Micro QR Code', 'ISO/IEC 18004',
               'ISO/IEC 18004:2006(E)', 'ISO/IEC 18004:2015(E)', 'qrcode', 'QR',
-              'barcode', 'matrix', '2D'],
+              'barcode', 'matrix', '2D', 'latex'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
