@@ -680,11 +680,14 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param bool plain: Indicates if a
-    :param out: Filename or a file-like object supporting to write binary data.
+    :param bool plain: Indicates if a P1 image should be created (default: False).
+            By default a P4 image is created.
     """
     def groups_of_eight(row):
         """\
@@ -707,6 +710,49 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         for row in row_iter:
             write(b''.join(str(i).encode('ascii') for i in row))
             write(b'\n')
+    if must_close:
+        f.close()
+
+
+def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
+    """\
+    Serializes the matrix as LaTeX PGF picture.
+
+    Requires the `PGF/TikZ <https://en.wikipedia.org/wiki/PGF/TikZ>`_ package
+    (i.e. ``\\usepackage{pgf}``) in the LaTeX source.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write text data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 in the provided unit per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param unit: Unit of the drawing (default: ``pt``)
+    :param url: Optional URL where the QR Code should point to. Requires the
+            "hyperref" package. Default: ``None``.
+    """
+    def point(x, y):
+        return '\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+
+    check_valid_scale(scale)
+    check_valid_border(border)
+    border = get_border(version, border)
+    f, must_close = get_writable(out, 'wt')
+    write = f.write
+    write('%% Creator:  {0}\n'.format(CREATOR))
+    write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+    if url:
+        write('\href{{{0}}}{{\n'.format(url))
+    write('\\begin{pgfpicture}\n')
+    write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+    x, y = border, -border
+    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
+        write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
+        write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
+    write('  \pgfusepath{stroke}\n')
+    write('\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
     if must_close:
         f.close()
 
@@ -767,7 +813,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     if not res:
         raise OSError('Cannot find information about the console. '
                       'Not running on the command line?')
-    default_color = struct.unpack("hhhhHhhhhhh", csbi.raw)[4]
+    default_color = struct.unpack(b'hhhhHhhhhhh', csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colors = (240, default_color)
     for row in matrix_iter(matrix, version, scale=1, border=border):
@@ -798,6 +844,7 @@ _VALID_SERIALISERS = {
     'pdf': write_pdf,
     'ans': write_terminal,
     'pbm': write_pbm,
+    'tex': write_tex,
 }
 
 def save(matrix, version, out, kind=None, **kw):

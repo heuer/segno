@@ -21,7 +21,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.1.7'
+__version__ = '0.1.8'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -90,7 +90,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
             The `mode` parameter is case insensitive.
 
-    :type mode: str or None
+    :type mode: unicode|str|None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is choosen automatically. If the `mask`
             parameter if provided, this function may raise a :py:exc:`MaskError`
@@ -102,7 +102,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             will use UTF-8. Note that no ECI mode indicator is inserted by
             default (see `eci`).
             The `encoding` parameter is case insensitive.
-    :type encoding: str or None
+    :type encoding: unicode|str|None
     :param bool eci: Indicates if binary data which does not use the default
             encoding (ISO/IEC 8859-1) should enforce the ECI mode. Since a lot
             of QR Code readers do not support the ECI mode, this feature is
@@ -267,11 +267,29 @@ class QRCode(object):
         """\
         Returns an iterator over the matrix which includes the border.
 
-        The border is interpreted as light module.
+        The border is returned as sequence of light modules.
+        Dark modules are reported as ``0x1``, light modules have the value
+        ``0x0``.
 
+        The following example converts the QR Code matrix into a list of
+        lists which use boolean values for the modules (True = dark module,
+        False = light module)::
+
+            >>> import segno
+            >>> qr = segno.make('The Beatles')
+            >>> size = qr.symbol_size()[0]
+            >>> res = []
+            >>> # Scaling factor 2, default border
+            >>> for row in qr.matrix_iter(scale=2):
+            >>>     res.append([col == 0x1 for col in row])
+            >>> size * 2 == len(res[0])
+            True
+
+        :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
                 indicate the default border.
-        :raises: :py:exc:`ValueError` if the border is invalid (i.e. negative).
+        :raises: :py:exc:`ValueError` if the scaling factor or the border is
+                invalid (i.e. negative).
         """
         return utils.matrix_iter(self.matrix, self._version, scale, border)
 
@@ -327,11 +345,8 @@ class QRCode(object):
             t = threading.Thread(target=delete_file, args=(f.name,))
             t.start()
 
-    def svg_data_uri(self, scale=1, border=None, color='#000', background=None,
-                     xmldecl=False, svgns=True, title=None, desc=None,
-                     svgid=None, svgclass='segno', lineclass='qrline',
-                     omitsize=False, unit='', encoding='utf-8', svgversion=None,
-                     nl=False, encode_minimal=False, omit_charset=False):
+    def svg_data_uri(self, xmldecl=False, encode_minimal=False,
+                     omit_charset=False, nl=False, **kw):
         """\
         Converts the QR Code into a SVG data URI.
 
@@ -344,34 +359,28 @@ class QRCode(object):
         and ``omit_charset`` this method uses the same parameters as the
         usual SVG serializer.
 
+        :param bool xmldecl: Indicates if the XML declaration should be
+                        serialized (default: ``False``)
         :param bool encode_minimal: Indicates if the resulting data URI should
                         use minimal percent encoding (disabled by default).
         :param bool omit_charset: Indicates if the ``;charset=...`` should be omitted
                         (disabled by default)
         :rtype: str
         """
-        return writers.as_svg_data_uri(self.matrix, self._version, scale=scale,
-                                border=border, color=color,
-                                background=background, xmldecl=xmldecl,
-                                svgns=svgns, title=title, desc=desc,
-                                svgid=svgid, svgclass=svgclass,
-                                lineclass=lineclass, omitsize=omitsize,
-                                unit=unit, encoding=encoding,
-                                svgversion=svgversion, nl=nl,
-                                encode_minimal=encode_minimal,
-                                omit_charset=omit_charset)
+        return writers.as_svg_data_uri(self.matrix, self._version,
+                                       xmldecl=xmldecl, nl=nl,
+                                       encode_minimal=encode_minimal,
+                                       omit_charset=omit_charset, **kw)
 
-    def png_data_uri(self, scale=1, border=None, color='#000', background='#fff',
-                     compresslevel=9, addad=True):
+    def png_data_uri(self, **kw):
         """\
         Converts the QR Code into a PNG data URI.
 
+        Uses the same keyword parameters as the usual PNG serializer.
+
         :rtype: str
         """
-        return writers.as_png_data_uri(self.matrix, self._version, scale=scale,
-                                border=border, color=color,
-                                background=background,
-                                compresslevel=compresslevel, addad=addad)
+        return writers.as_png_data_uri(self.matrix, self._version, **kw)
 
     def terminal(self, out=None, border=None):
         """\
@@ -585,6 +594,18 @@ class QRCode(object):
         plain            Default: False. Boolean to switch between the P4 and P1 format.
                          If set to ``True``, the (outdated) P1 serialization format is
                          used.
+        =============    ==============================================================
+
+
+        **LaTeX / PGF/TikZ**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "tex"
+        scale            integer or float
+        url              Default: ``None``. Optional URL where the QR Code should
+                         point to. Requires the hyperref package.
         =============    ==============================================================
 
 

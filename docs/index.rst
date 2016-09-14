@@ -8,17 +8,18 @@ and is very simple to use.
 Contents:
 
 .. toctree::
-   :maxdepth: 4
+    :maxdepth: 4
 
-   command-line
-   make
-   colors
-   serializers
-   comparison-qrcode-libs
-   replace-qrcode-libs
-   plugins
-   api
-   api-low-level
+    command-line
+    make
+    special-qrcode-factories
+    colors
+    serializers
+    comparison-qrcode-libs
+    replace-qrcode-libs
+    plugins
+    api
+    api-low-level
 
 
 Indices and tables

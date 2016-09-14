@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.1.8 -- 2016-09-14
+-------------------
+* Removed ``utils.matrix_with_border_iter``
+* Fixed #21 (type error while writing to terminal under Windows)
+* Added option to serialize QR Codes as LaTeX vector graphic
+* Added module ``segno.helpers`` which provides additional factory funcitons
+  to create common QR Codes like a WIFI configuration, a geo location or MeCard
+
+
 0.1.7 -- 2016-09-04
 -------------------
 * Changed API: Added a feature to increase the error correction level

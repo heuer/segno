@@ -48,7 +48,7 @@ setup(
     entry_points = {'console_scripts': ['segno = segno.scripts.cmd:main']},
     keywords=['QR Code', 'Micro QR Code', 'ISO/IEC 18004',
               'ISO/IEC 18004:2006(E)', 'ISO/IEC 18004:2015(E)', 'qrcode', 'QR',
-              'barcode', 'matrix', '2D'],
+              'barcode', 'matrix', '2D', 'latex'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

@@ -44,5 +44,5 @@ def test_issue_3_matrix():
 
 if __name__ == '__main__':
     import pytest
-    pytest.main(['-x', __file__])
+    pytest.main([ __file__])
 

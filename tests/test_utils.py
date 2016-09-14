@@ -60,43 +60,27 @@ def test_get_symbol_size_micro():
     assert (matrix_size + 2 * border, matrix_size + 2 * border) == (width, height)
 
 
-def test_valid_scale():
-
-    def check(scale):
-        assert utils.check_valid_scale(scale) is None
-
-    for i in (1, 1.2, .8, 10):
-        yield check, i
+@pytest.mark.parametrize('scale', [1, 1.2, .8, 10])
+def test_valid_scale(scale):
+    assert utils.check_valid_scale(scale) is None
 
 
-def test_invalid_scale():
-
-    def check(scale):
-        with pytest.raises(ValueError):
-            utils.check_valid_scale(scale)
-
-    for scale in (0.0, 0, -1, -.2, int(.8)):
-        yield check, scale
+@pytest.mark.parametrize('scale', (0.0, 0, -1, -.2, int(.8)))
+def test_invalid_scale(scale):
+    with pytest.raises(ValueError):
+        utils.check_valid_scale(scale)
 
 
-def test_valid_border():
-
-    def check(border):
-        assert utils.check_valid_border(border) is None
-
-    for i in (None, 0, 0.0, 1, 2):
-        yield check, i
+@pytest.mark.parametrize('border', (None, 0, 0.0, 1, 2))
+def test_valid_border(border):
+    assert utils.check_valid_border(border) is None
 
 
-def test_invalid_border():
-
-    def check(border):
-        with pytest.raises(ValueError):
-            utils.check_valid_border(border)
-
-    for border in (.2, -1, 1.3):
-        yield check, border
+@pytest.mark.parametrize('border', (.2, -1, 1.3))
+def test_invalid_border(border):
+    with pytest.raises(ValueError):
+        utils.check_valid_border(border)
 
 
 if __name__ == '__main__':
-    pytest.main(['-x', __file__])
+    pytest.main([__file__])
