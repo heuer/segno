@@ -719,19 +719,19 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     Serializes the matrix as LaTeX PGF picture.
 
     Requires the `PGF/TikZ <https://en.wikipedia.org/wiki/PGF/TikZ>`_ package
-    (i.e. ``\usepackage{pgf}``) in the LaTeX source.
+    (i.e. ``\\usepackage{pgf}``) in the LaTeX source.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
     :param out: Filename or a file-like object supporting to write text data.
     :param scale: Indicates the size of a single module (default: 1 which
-            corresponds to 1 x 1 in the provided unit (``pt`` by default) per module).
+            corresponds to 1 x 1 in the provided unit per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     :param unit: Unit of the drawing (default: ``pt``)
     :param url: Optional URL where the QR Code should point to. Requires the
-            ``hyperref`` package. Default: ``None``
+            "hyperref" package. Default: ``None``.
     """
     def point(x, y):
         return '\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
