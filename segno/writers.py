@@ -716,8 +716,10 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
 
 def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     """\
-    Serializes the matrix into the LaTeX PGF/TikZ format. Requires the ``pgf``
-    package (``\usepackage{pgf}`` or ``tikz`` package ``\usepackage{tikz}``.
+    Serializes the matrix as LaTeX PGF picture.
+
+    Requires the `PGF/TikZ <https://en.wikipedia.org/wiki/PGF/TikZ>`_ package
+    (i.e. ``\usepackage{pgf}``) in the LaTeX source.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
