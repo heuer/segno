@@ -5,7 +5,7 @@ Changes
 -------------------
 * Removed ``utils.matrix_with_border_iter``
 * Fixed #21 (type error while writing to terminal under Windows)
-* Added option to serialize a QR Code to LaTeX (using PGF/TikZ)
+* Added option to serialize QR Codes as LaTeX vector graphic
 
 
 0.1.7 -- 2016-09-04

@@ -725,7 +725,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     :param int version: The (Micro) QR code version
     :param out: Filename or a file-like object supporting to write text data.
     :param scale: Indicates the size of a single module (default: 1 which
-            corresponds to 1 x 1 pixel per module).
+            corresponds to 1 x 1 in the provided unit (``pt`` by default) per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
