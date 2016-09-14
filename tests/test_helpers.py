@@ -69,7 +69,8 @@ def test_mecard_data():
     assert 'MECARD:N:Mustermann,Max;BDAY:{0};;'.format(date.today().strftime('%Y%m%d')) == mecard
     mecard = helpers.make_mecard_data(name='Mustermann,Max', birthday=19760919)
     assert 'MECARD:N:Mustermann,Max;BDAY:19760919;;' == mecard
-
+    mecard = helpers.make_mecard_data(name='Mustermann,Max', country='Germany')
+    assert 'MECARD:N:Mustermann,Max;ADR:,,,,,,Germany;;' == mecard
 
 def test_mecard():
     qr = helpers.make_mecard(name='Mustermann,Max')
