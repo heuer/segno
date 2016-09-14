@@ -716,7 +716,8 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
 
 def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     """\
-    Serializes the matrix into the LaTeX PGF/TikZ format.
+    Serializes the matrix into the LaTeX PGF/TikZ format. Requires the ``pgf``
+    package (``\usepackage{pgf}`` or ``tikz`` package ``\usepackage{tikz}``.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -749,9 +750,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
         write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
     write('  \pgfusepath{stroke}\n')
-    write('\end{pgfpicture}\n')
-    if url:
-        write('}\n')
+    write('\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
     if must_close:
         f.close()
 
