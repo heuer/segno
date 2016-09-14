@@ -604,6 +604,9 @@ class QRCode(object):
         =============    ==============================================================
         kind             "tex"
         scale            integer or float
+        color            LaTeX color name (default: "black"). The color is written
+                         "at it is", so ensure that the color is a standard color or it
+                         has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
                          point to. Requires the hyperref package.
         =============    ==============================================================

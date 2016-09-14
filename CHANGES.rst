@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.1.9 -- 2016-mm-dd
+-------------------
+* Added "color" parameter to the LaTeX serializer to define the color of the
+  dark modules.
+
+
 0.1.8 -- 2016-09-14
 -------------------
 * Removed ``utils.matrix_with_border_iter``
