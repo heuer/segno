@@ -11,7 +11,7 @@ better error correction level will be used.
 Create a QR Code for a WIFI configuration
 -----------------------------------------
 
-.. code-block::python
+.. code-block:: python
 
     >>> from segno import helpers
     >>> # Create a WIFI config with min. error level "M" or better
@@ -24,7 +24,7 @@ If you want more control over the creation of the QR Code (i.e. using a specific
 version or error correction level, use the "make_wifi_data" factory function,
 which returns a string which encodes the WIFI configuration.
 
-.. code-block::python
+.. code-block:: python
 
     >>> import segno
     >>> from segno import helpers
@@ -40,7 +40,7 @@ which returns a string which encodes the WIFI configuration.
 Create a QR Code encoding geographic information
 ------------------------------------------------
 
-.. code-block::python
+.. code-block:: python
 
     >>> from segno import helpers
     >>> latitude, longitude = 38.8976763,-77.0365297
@@ -51,7 +51,7 @@ Create a QR Code encoding geographic information
 A factory function for encoding the geographic information as string is also
 available.
 
-.. code-block::python
+.. code-block:: python
 
     >>> import segno
     >>> from segno import helpers
@@ -71,7 +71,7 @@ Creating a QR Code encoding contact information
 The function ``make_mecard`` returns a QR Code which encodes contact information
 as MeCard.
 
-.. code-block::python
+.. code-block:: python
 
     >>> from segno import helpers
     >>> qr = helpers.make_mecard(name='Doe,John', email='me@example.org', phone='+1234567')
@@ -83,7 +83,7 @@ as MeCard.
 
 A factory function which returns the MeCard as string is available as well.
 
-.. code-block::python
+.. code-block:: python
 
     >>> import segno
     >>> from segno import helpers
