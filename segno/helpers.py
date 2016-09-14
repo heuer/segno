@@ -34,7 +34,7 @@ def _escape(s):
     """\
     Escapes ``\\``, ``;``, ``"`` and ``:`` in the provided string.
 
-    :param (str|unicode) s: The string to escape.
+    :param str|unicode s: The string to escape.
     :rtype unicode
     """
     return str(s).translate(_MECARD_ESCAPE)
@@ -44,9 +44,9 @@ def make_wifi_data(ssid, password, security, hidden=False):
     """\
     Creates WIFI configuration string.
 
-    :param (str|unicode) ssid: The SSID of the network.
-    :param (str|unicode|None) password: The password.
-    :param (str|unicode|None) security: Authentication type; the value should
+    :param str|unicode ssid: The SSID of the network.
+    :param str|unicode|None password: The password.
+    :param str|unicode|None security: Authentication type; the value should
             be "WEP" or "WPA". Set to ``None`` to omit the value.
             "nopass" is equivalent to setting the value to ``None`` but in
             the former case, the value is not omitted.
@@ -82,9 +82,9 @@ def make_wifi(ssid, password, security, hidden=False):
     """\
     Creates a WIFI configuration QR Code.
 
-    :param (str|unicode) ssid: The SSID of the network.
-    :param (str|unicode|None) password: The password.
-    :param (str|unicode|None) security: Authentication type; the value should
+    :param str|unicode ssid: The SSID of the network.
+    :param str|unicode|None password: The password.
+    :param str|unicode|None security: Authentication type; the value should
             be "WEP" or "WPA". Set to ``None`` to omit the value.
             "nopass" is equivalent to setting the value to ``None`` but in
             the former case, the value is not omitted.
@@ -101,28 +101,28 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     """\
     Creates a string encoding the contact information as MeCard.
 
-    :param (str|unicode) name: Name. If it contains a comma, the first part
+    :param str|unicode name: Name. If it contains a comma, the first part
             is treated as lastname and the second part is treated as forename.
-    :param (str|unicode|None) reading: Designates a text string to be set as the
+    :param str|unicode|None reading: Designates a text string to be set as the
             kana name in the phonebook
-    :param (str|unicode|iterable) email: E-mail address. Multiple values are
+    :param str|unicode|iterable email: E-mail address. Multiple values are
             allowed.
-    :param (str|unicode|iterable) phone: Phone number. Multiple values are
+    :param str|unicode|iterable phone: Phone number. Multiple values are
             allowed.
-    :param (str|unicode|iterable) videophone: Phone number for video calls.
+    :param str|unicode|iterable videophone: Phone number for video calls.
             Multiple values are allowed.
-    :param (str|unicode) memo: A notice for the contact.
-    :param (str|unicode) nickname: Nickname.
+    :param str|unicode memo: A notice for the contact.
+    :param str|unicode nickname: Nickname.
     :param (str|unicode|int|date) birthday: Birthday. If a string is provided,
             it should encode the date as YYYYMMDD value.
-    :param (str|unicode|iterable) url: Homepage. Multiple values are allowed.
-    :param (str|unicode|None) pobox: P.O. box (address information).
-    :param (str|unicode|None) roomno: Room number (address information).
-    :param (str|unicode|None) houseno: House number (address information).
-    :param (str|unicode|None) city: City (address information).
-    :param (str|unicode|None) prefecture: Prefecture (address information).
-    :param (str|unicode|None) zipcode: Zip code (address information).
-    :param (str|unicode|None) country: Country (address information).
+    :param str|unicode|iterable url: Homepage. Multiple values are allowed.
+    :param str|unicode|None pobox: P.O. box (address information).
+    :param str|unicode|None roomno: Room number (address information).
+    :param str|unicode|None houseno: House number (address information).
+    :param str|unicode|None city: City (address information).
+    :param str|unicode|None prefecture: Prefecture (address information).
+    :param str|unicode|None zipcode: Zip code (address information).
+    :param str|unicode|None country: Country (address information).
     :rtype: unicode
     """
     def make_multifield(name, val):
@@ -164,28 +164,28 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
     """\
     Returns a QR Code which encodes a `MeCard <https://en.wikipedia.org/wiki/MeCard>`_
 
-    :param (str|unicode) name: Name. If it contains a comma, the first part
+    :param str|unicode name: Name. If it contains a comma, the first part
             is treated as lastname and the second part is treated as forename.
-    :param (str|unicode|None) reading: Designates a text string to be set as the
+    :param str|unicode|None reading: Designates a text string to be set as the
             kana name in the phonebook
-    :param (str|unicode|iterable) email: E-mail address. Multiple values are
+    :param str|unicode|iterable email: E-mail address. Multiple values are
             allowed.
-    :param (str|unicode|iterable) phone: Phone number. Multiple values are
+    :param str|unicode|iterable phone: Phone number. Multiple values are
             allowed.
-    :param (str|unicode|iterable) videophone: Phone number for video calls.
+    :param str|unicode|iterable videophone: Phone number for video calls.
             Multiple values are allowed.
-    :param (str|unicode) memo: A notice for the contact.
-    :param (str|unicode) nickname: Nickname.
-    :param (str|unicode|int|date) birthday: Birthday. If a string is provided,
+    :param str|unicode memo: A notice for the contact.
+    :param str|unicode nickname: Nickname.
+    :param str|unicode|int|date birthday: Birthday. If a string is provided,
             it should encode the date as YYYYMMDD value.
-    :param (str|unicode|iterable) url: Homepage. Multiple values are allowed.
-    :param (str|unicode|None) pobox: P.O. box (address information).
-    :param (str|unicode|None) roomno: Room number (address information).
-    :param (str|unicode|None) houseno: House number (address information).
-    :param (str|unicode|None) city: City (address information).
-    :param (str|unicode|None) prefecture: Prefecture (address information).
-    :param (str|unicode|None) zipcode: Zip code (address information).
-    :param (str|unicode|None) country: Country (address information).
+    :param str|unicode|iterable url: Homepage. Multiple values are allowed.
+    :param str|unicode|None pobox: P.O. box (address information).
+    :param str|unicode|None roomno: Room number (address information).
+    :param str|unicode|None houseno: House number (address information).
+    :param str|unicode|None city: City (address information).
+    :param str|unicode|None prefecture: Prefecture (address information).
+    :param str|unicode|None zipcode: Zip code (address information).
+    :param str|unicode|None country: Country (address information).
     :rtype: segno.QRCode
     """
     return segno.make_qr(make_mecard_data(name=name, reading=reading,
