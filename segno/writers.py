@@ -744,7 +744,7 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     write('%% Creator:  {0}\n'.format(CREATOR))
     write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
     if url:
-        write('\href{{{0}}}{{\n'.format(url))
+        write('\href{{{0}}}{{'.format(url))
     write('\\begin{pgfpicture}\n')
     write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
     x, y = border, -border
