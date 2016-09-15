@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.2.1 -- 2016-09-15
+-------------------
+* Fixed Python packaging (source distribution did not work), again
+
+
 0.2.0 -- 2016-09-15
 -------------------
 * Fixed Python packaging
