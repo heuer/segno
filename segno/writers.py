@@ -714,7 +714,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         f.close()
 
 
-def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
+def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='pt', url=None):
     """\
     Serializes the matrix as LaTeX PGF picture.
 
@@ -729,6 +729,9 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param str color: LaTeX color name. The color name is taken at it is, so
+            ensure that it refers either to a default color name or that the
+            color was defined previously.
     :param unit: Unit of the drawing (default: ``pt``)
     :param url: Optional URL where the QR Code should point to. Requires the
             "hyperref" package. Default: ``None``.
@@ -744,9 +747,11 @@ def write_tex(matrix, version, out, scale=1, border=None, unit='pt', url=None):
     write('%% Creator:  {0}\n'.format(CREATOR))
     write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
     if url:
-        write('\href{{{0}}}{{\n'.format(url))
+        write('\href{{{0}}}{{'.format(url))
     write('\\begin{pgfpicture}\n')
     write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+    if color and color != 'black':
+        write('  \color{{{0}}}\n'.format(color))
     x, y = border, -border
     for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
         write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))

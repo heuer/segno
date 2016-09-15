@@ -49,6 +49,20 @@ def test_write_tex_omit_url2():
     assert '\href' not in out.getvalue()
 
 
+def test_write_tex_color():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    qr.save(out, kind='tex', border=4)
+    assert '\color' not in out.getvalue()
+
+
+def test_write_tex_color2():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    qr.save(out, kind='tex', border=4, color='green')
+    assert '\color{green}' in out.getvalue()
+
+
 _COMMAND_PATTERN = re.compile(r'pgfpath(move|line)to\{\\pgfqpoint\{(\-?[0-9]+)pt\}\{(\-?[0-9]+)pt\}')
 
 def tex_as_matrix(buff, border):
