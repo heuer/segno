@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.2.0 -- 2016-09-15
+-------------------
+* Fixed Python packaging
+
+
 0.1.9 -- 2016-09-15
 -------------------
 * Added "color" parameter to the LaTeX serializer to define the color of the
