@@ -173,7 +173,7 @@ def boost_error_level(version, error, segments):
     :param segments: Instance of :py:class:`Segments`
     """
     if error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
-        mode = segments[0].mode
+        modes = segments.modes
         data_length = segments.data_length
         levels = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M,
                   consts.ERROR_LEVEL_Q, consts.ERROR_LEVEL_H]
@@ -182,11 +182,18 @@ def boost_error_level(version, error, segments):
             if version < consts.VERSION_M4:
                 levels.pop()  # Error level Q isn't supported by M2 and M3
         for level in levels[levels.index(error)+1:]:
-            try:
-                if consts.SYMBOL_CAPACITY[version][error][mode] >= data_length:
-                    error = level
-            except KeyError:
-                pass
+            found = False
+            for mode in modes:
+                try:
+                    if consts.SYMBOL_CAPACITY[version][level][mode] >= data_length:
+                        found = True
+                except KeyError:
+                    found = False
+                    break
+            if found:
+                error = level
+            else:
+                break
     return error
 
 

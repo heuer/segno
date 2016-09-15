@@ -5,6 +5,8 @@ Changes
 -------------------
 * Added "color" parameter to the LaTeX serializer to define the color of the
   dark modules.
+* Fixed serious issue #23: Segno creates invalid QR Codes if boost_error
+  is not disabled (enabled by default)
 
 
 0.1.8 -- 2016-09-14
