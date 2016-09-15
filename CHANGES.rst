@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.1.9 -- 2016-mm-dd
+0.1.9 -- 2016-09-15
 -------------------
 * Added "color" parameter to the LaTeX serializer to define the color of the
   dark modules.
