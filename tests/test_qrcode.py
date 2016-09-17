@@ -31,19 +31,12 @@ _LEGAL_ERROR_LEVELS = tuple(chain(consts.ERROR_MAPPING.keys(),
                                   [e.lower() for e in consts.ERROR_MAPPING.keys()]))
 
 
-def test_illegal_mode_micro():
-    def check(version, mode):
-        with pytest.raises(ModeError):
-            segno.make(1, version=version, mode=mode)
-    illegal_micro_modes = (
-        # version, illegal mode
-        ('M1', 'alphanumeric'),
-        ('M1', 'byte'),
-        ('M2', 'byte'),
-    )
-    for version, mode in illegal_micro_modes:
-        yield check, version, mode
-        yield check, version.lower(), mode
+@pytest.mark.parametrize('version, mode', [('M1', 'alphanumeric'), ('M1', 'byte'), ('M2', 'byte')])
+def test_illegal_mode_micro(version, mode):
+    with pytest.raises(ModeError):
+        segno.make(1, version=version, mode=mode)
+    with pytest.raises(ModeError):
+        segno.make(1, version=version.lower(), mode=mode)
 
 
 @pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
@@ -95,18 +88,10 @@ def test_illegal_error_level_micro():
         segno.make('test', error='H', micro=True)
 
 
-def test_data_too_large():
-
-    def check(data, wrong_version):
-        with pytest.raises(DataOverflowError):
-            segno.make(data, version=wrong_version)
-
-    test_data = (
-        ('abcdefghijklmno', 1),
-        (123456, 'M1'),
-    )
-    for data, wrong_version in test_data:
-        yield check, data, wrong_version
+@pytest.mark.parametrize('data,version', [('abcdefghijklmno', 1), (123456, 'M1')])
+def test_data_too_large(data, version):
+    with pytest.raises(DataOverflowError):
+        segno.make(data, version=version)
 
 
 def _calc_size(dim, border, scale=1):
@@ -222,14 +207,12 @@ def test_neq():
     assert qr != qr2
 
 
-def test_matrix_iter_invalid_border():
-    def check(border):
-        qr = segno.make('A')
-        with pytest.raises(ValueError):
-            for row in qr.matrix_iter(border=border):
-                pass
-    for border in (.2, -1, 1.3):
-        yield check, border
+@pytest.mark.parametrize('border', [.2, -1, 1.3])
+def test_matrix_iter_invalid_border(border):
+    qr = segno.make('A')
+    with pytest.raises(ValueError):
+        for row in qr.matrix_iter(border=border):
+            pass
 
 
 def test_matrix_iter_border_zero():
@@ -294,23 +277,17 @@ def test_save_png_filename():
     assert expected == val
 
 
-def test_save_svg_filestream():
-    def check(suffix):
-        qr = segno.make_qr('test')
-        f = tempfile.NamedTemporaryFile('wb', suffix='.' + suffix, delete=False)
-        qr.save(f)
-        f.close()
-        f = open(f.name, mode='rb')
-        val = f.read(6)
-        f.close()
-        os.unlink(f.name)
-        assert b'<?xml ' == val
-
-    # Check usual file extension and if QRCode.save is case insensitive
-    yield check, 'svg'
-    yield check, 'SvG'
-    yield check, 'SVG'
-    yield check, 'Svg'
+@pytest.mark.parametrize('ext', ['svg', 'SvG', 'SVG', 'Svg'])
+def test_save_svg_filestream(ext):
+    qr = segno.make_qr('test')
+    f = tempfile.NamedTemporaryFile('wb', suffix='.' + ext, delete=False)
+    qr.save(f)
+    f.close()
+    f = open(f.name, mode='rb')
+    val = f.read(6)
+    f.close()
+    os.unlink(f.name)
+    assert b'<?xml ' == val
 
 
 def test_save_svg_filename():
@@ -421,24 +398,18 @@ def test_save_txt_filename():
     assert expected == val
 
 
-def test_save_kind_filestream():
-    def check(kind):
-        qr = segno.make_qr('test')
-        f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=False)
-        qr.save(f, kind=kind)
-        f.close()
-        f = open(f.name, mode='r')
-        expected = '%!PS-Adobe-3.0 EPSF-3.0'
-        val = f.read(len(expected))
-        f.close()
-        os.unlink(f.name)
-        assert expected == val
-
-    # Check if "kind" is recognized and if QRCode.save is case insensitive
-    yield check, 'eps'
-    yield check, 'EpS'
-    yield check, 'EPS'
-    yield check, 'Eps'
+@pytest.mark.parametrize('kind', ['eps', 'EpS', 'EPS', 'Eps'])
+def test_save_kind_filestream(kind):
+    qr = segno.make_qr('test')
+    f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=False)
+    qr.save(f, kind=kind)
+    f.close()
+    f = open(f.name, mode='r')
+    expected = '%!PS-Adobe-3.0 EPSF-3.0'
+    val = f.read(len(expected))
+    f.close()
+    os.unlink(f.name)
+    assert expected == val
 
 
 def test_save_kind_filename():
@@ -491,4 +462,3 @@ def test_unknown_converter():
 
 if __name__ == '__main__':
     pytest.main([__file__])
-
