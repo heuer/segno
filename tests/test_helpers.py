@@ -78,5 +78,29 @@ def test_mecard():
     assert qr
 
 
+def test_email_data():
+    data = helpers.make_make_email_data('me@example.org')
+    assert 'mailto:me@example.org' == data
+    data = helpers.make_make_email_data(('me@example.org', 'you@example.org'))
+    assert 'mailto:me@example.org,you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc='you@example.org')
+    assert 'mailto:me@example.org?cc:you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'))
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Test')
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject:Test' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Subject', body='Body')
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject:Subject&body:Body' == data
+
+
+def test_email_data_illegal():
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data(None)
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data('')
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data([])
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
