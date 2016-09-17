@@ -102,5 +102,10 @@ def test_email_data_illegal():
         helpers.make_make_email_data([])
 
 
+def test_email():
+    qr = helpers.make_email('me@example.org')
+    assert qr
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
