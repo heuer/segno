@@ -47,7 +47,7 @@ def make_parser():
         return val if val != int(val) else int(val)
 
     parser = argparse.ArgumentParser(prog='segno',
-                                     description='Segno QR Code and Micro QR Code generator')
+                                     description='Segno QR Code and Micro QR Code generator version {0}'.format(segno.__version__))
     parser.add_argument('content', help='The content to encode')
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
@@ -109,6 +109,9 @@ def make_parser():
     png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
                            dest='addad',
                            action='store_false')
+    parser.add_mutually_exclusive_group().add_argument('--ver', help="Shows Segno's version",
+                                                       action='version',
+                                                       version='Segno {0}'.format(segno.__version__))
     return parser
 
 

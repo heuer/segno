@@ -16,6 +16,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import tempfile
 import gzip
+import pytest
 from segno.scripts import cmd
 
 
@@ -49,6 +50,12 @@ def test_defaults():
     assert args.unit is None
     assert args.svgversion is None
     assert args.nl is True
+
+
+def test_segno_version():
+    with pytest.raises(SystemExit) as e:
+        cmd.parse(['', '--ver'])
+        assert 0 == e.exception.code
 
 
 def test_error():
@@ -428,5 +435,4 @@ def test_output_svgz():
 
 
 if __name__ == '__main__':
-    import pytest
     pytest.main([__file__])
