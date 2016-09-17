@@ -72,6 +72,7 @@ def test_mecard_data():
     mecard = helpers.make_mecard_data(name='Mustermann,Max', country='Germany')
     assert 'MECARD:N:Mustermann,Max;ADR:,,,,,,Germany;;' == mecard
 
+
 def test_mecard():
     qr = helpers.make_mecard(name='Mustermann,Max')
     assert qr

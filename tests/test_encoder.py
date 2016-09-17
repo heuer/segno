@@ -173,95 +173,83 @@ def test_write_segment_eci_standard_value():
     assert expected == result
 
 
-def test_write_segment_numeric_standard_value_example1():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_numeric_standard_value_example1(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE 1 (page 25)
-    def check(eci):
-        s = b'01234567'
-        seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
-        buff = Buffer()
-        v, vrange = None, consts.VERSION_RANGE_01_09
-        encoder.write_segment(buff, seg, v, vrange, eci=eci)
-        assert bits('00010000001000000000110001010110011000011') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'01234567'
+    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    buff = Buffer()
+    v, vrange = None, consts.VERSION_RANGE_01_09
+    encoder.write_segment(buff, seg, v, vrange, eci=eci)
+    assert bits('00010000001000000000110001010110011000011') == buff.getbits()
 
 
-def test_write_segment_numeric_standard_value_example2():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_numeric_standard_value_example2(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE 2 (page 25)
-    def check(eci):
-        s = b'0123456789012345'
-        seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
-        buff = Buffer()
-        v, vrange = consts.VERSION_M3, consts.VERSION_M3
-        encoder.write_segment(buff, seg, v, vrange, eci=eci)
-        assert bits('0010000000000110001010110011010100110111000010100111010100101') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'0123456789012345'
+    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    buff = Buffer()
+    v, vrange = consts.VERSION_M3, consts.VERSION_M3
+    encoder.write_segment(buff, seg, v, vrange, eci=eci)
+    assert bits('0010000000000110001010110011010100110111000010100111010100101') == buff.getbits()
 
 
-def test_write_segment_numeric_standard_value_i3():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_numeric_standard_value_i3(eci):
     # See ISO/IEC 18004:2006(E) -- I.3 Encoding a Micro QR Code symbol (page 96)
-    def check(eci):
-        s = b'01234567'
-        seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
-        buff = Buffer()
-        v, vrange = consts.VERSION_M2, consts.VERSION_M2
-        encoder.write_segment(buff, seg, v, vrange, eci=eci)
-        assert bits('01000000000110001010110011000011') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'01234567'
+    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    buff = Buffer()
+    v, vrange = consts.VERSION_M2, consts.VERSION_M2
+    encoder.write_segment(buff, seg, v, vrange, eci=eci)
+    assert bits('01000000000110001010110011000011') == buff.getbits()
 
 
-def test_write_segment_alphanumeric_standard_value_example():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_alphanumeric_standard_value_example(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE (page 26)
-    def check(eci):
-        s = b'AC-42'
-        seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
-        buff = Buffer()
-        v, vrange = None, consts.VERSION_RANGE_01_09
-        encoder.write_segment(buff, seg, v, vrange, eci=eci)
-        assert bits('00100000001010011100111011100111001000010') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'AC-42'
+    seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
+    buff = Buffer()
+    v, vrange = None, consts.VERSION_RANGE_01_09
+    encoder.write_segment(buff, seg, v, vrange, eci=eci)
+    assert bits('00100000001010011100111011100111001000010') == buff.getbits()
 
 
-def test_write_segment_alphanumeric_thonky():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_alphanumeric_thonky(eci):
     # <http://www.thonky.com/qr-code-tutorial/data-encoding/#step-3-encode-using-the-selected-mode>
-    def check(eci):
-        s = b'HELLO WORLD'
-        seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
-        buff = Buffer()
-        v, vrange = None, consts.VERSION_RANGE_01_09
-        encoder.write_segment(buff, seg, v, vrange, eci)
-        assert bits('00100000010110110000101101111000110100010111001011011100010011010100001101') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'HELLO WORLD'
+    seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
+    buff = Buffer()
+    v, vrange = None, consts.VERSION_RANGE_01_09
+    encoder.write_segment(buff, seg, v, vrange, eci)
+    assert bits('00100000010110110000101101111000110100010111001011011100010011010100001101') == buff.getbits()
 
 
-def test_write_segment_bytes_thonky():
+@pytest.mark.parametrize('eci', [True, False])
+def test_write_segment_bytes_thonky(eci):
     # <http://www.thonky.com/qr-code-tutorial/byte-mode-encoding/>
-    def check(eci):
-        s = b'Hello, world!'
-        seg = encoder.Segment(s, len(s), consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING)
-        buff = Buffer()
-        v, vrange = None, consts.VERSION_RANGE_01_09
-        encoder.write_segment(buff, seg, v, vrange, eci=eci)
-        assert bits('010000001101'
-                 '01001000'
-                 '01100101'
-                 '01101100'
-                 '01101100'
-                 '01101111'
-                 '00101100'
-                 '00100000'
-                 '01110111'
-                 '01101111'
-                 '01110010'
-                 '01101100'
-                 '01100100'
-                 '00100001') == buff.getbits()
-    for eci in (True, False):
-        yield check, eci
+    s = b'Hello, world!'
+    seg = encoder.Segment(s, len(s), consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING)
+    buff = Buffer()
+    v, vrange = None, consts.VERSION_RANGE_01_09
+    encoder.write_segment(buff, seg, v, vrange, eci=eci)
+    assert bits('010000001101'
+             '01001000'
+             '01100101'
+             '01101100'
+             '01101100'
+             '01101111'
+             '00101100'
+             '00100000'
+             '01110111'
+             '01101111'
+             '01110010'
+             '01101100'
+             '01100100'
+             '00100001') == buff.getbits()
 
 
 def test_write_terminator_thonky():
@@ -342,46 +330,31 @@ def test_write_pad_codewords_standard_value_i3():
     assert data == buff.getbits()
 
 
-def test_is_alphanumeric():
-    def check(data):
-        assert encoder.is_alphanumeric(data)
-    valid = (b'ABCDEF', b'A', b'A1', b'1A', b'HTTP://WWW.EXAMPLE.ORG',
-             b'666', b' ', b'HELLO WORLD', b'AC-42',
-             consts.ALPHANUMERIC_CHARS)
-    for data in valid:
-        yield check, data
+@pytest.mark.parametrize('data', [b'ABCDEF', b'A', b'A1', b'1A', b'HTTP://WWW.EXAMPLE.ORG',
+                                  b'666', b' ', b'HELLO WORLD', b'AC-42',
+                                  consts.ALPHANUMERIC_CHARS])
+def test_is_alphanumeric(data):
+    assert encoder.is_alphanumeric(data)
 
 
-def test_is_not_alphanumeric():
-    def check(data):
-        assert not encoder.is_alphanumeric(data)
-    invalid = (b'a', b'0123b', b'_', b'http://www.example.org/',  b'',
-               'ü'.encode('utf-8'), 'Ü'.encode('utf-8'),
-               'ä'.encode(consts.DEFAULT_BYTE_ENCODING), b'HELLO\nWORLD', b'Ab')
-    for data in invalid:
-        yield check, data
+@pytest.mark.parametrize('data', [b'a', b'0123b', b'_', b'http://www.example.org/',  b'',
+                                  'ü'.encode('utf-8'), 'Ü'.encode('utf-8'),
+                                  'ä'.encode(consts.DEFAULT_BYTE_ENCODING), b'HELLO\nWORLD', b'Ab'])
+def test_is_not_alphanumeric(data):
+    assert not encoder.is_alphanumeric(data)
 
 
-def test_is_kanji():
-    def check(data):
-        assert encoder.is_kanji(data.encode('shift_jis'))
-    valid = ('点', '漢字', '外来語', 'あめかんむり', 'ひへん', 'くさかんむり')
-    for data in valid:
-        yield check, data
+@pytest.mark.parametrize('data', ['点', '漢字', '外来語', 'あめかんむり', 'ひへん', 'くさかんむり'])
+def test_is_kanji(data):
+    assert encoder.is_kanji(data.encode('shift_jis'))
 
 
-def test_is_not_kanji():
-    def check(data):
-        assert not encoder.is_kanji(data.encode('shift_jis'))
-    invalid = ('abcdef', '1234', '1234a', 'ABCDEF')
-    for data in invalid:
-        yield check, data
+@pytest.mark.parametrize('data', ['abcdef', '1234', '1234a', 'ABCDEF'])
+def test_is_not_kanji(data):
+    assert not encoder.is_kanji(data.encode('shift_jis'))
 
 
-def test_find_mode():
-    def check(data, expected):
-        assert expected == encoder.find_mode(data)
-    data = (
+_test_find_mode_test_data = (
         (b'123', consts.MODE_NUMERIC),
         (b'-123', consts.MODE_ALPHANUMERIC),
         (b'123a', consts.MODE_BYTE),
@@ -399,107 +372,85 @@ def test_find_mode():
         ('外来語'.encode('shift_jis'), consts.MODE_KANJI),
         ('外来語'.encode('utf-8'), consts.MODE_BYTE),
     )
-    for d, mode in data:
-        yield check, d, mode
+
+@pytest.mark.parametrize('data, expected', _test_find_mode_test_data)
+def test_find_mode(data, expected):
+    assert expected == encoder.find_mode(data)
 
 
-def test_get_matrix_size():
-    def check(version, expected):
-        try:
-            v = consts.MICRO_VERSION_MAPPING[version]
-        except KeyError:
-            v = version
-        assert expected == encoder.calc_matrix_size(v)
-    data = (
-        # Version, matrix size
-        ('M1', 11),
-        ('M2', 13),
-        ('M3', 15),
-        ('M4', 17),
-        (1, 21),
-        (27, 125),
-        (40, 177),
-    )
-    for version, size in data:
-        yield check, version, size
+@pytest.mark.parametrize('version, expected',  # Version, matrix size
+                                               [('M1', 11),
+                                                ('M2', 13),
+                                                ('M3', 15),
+                                                ('M4', 17),
+                                                (1, 21),
+                                                (27, 125),
+                                                (40, 177)])
+def test_get_matrix_size(version, expected):
+    try:
+        v = consts.MICRO_VERSION_MAPPING[version]
+    except KeyError:
+        v = version
+    assert expected == encoder.calc_matrix_size(v)
 
 
-def test_is_mode_supported():
-    def check(mode, version, expected):
-        try:
-            v = consts.MICRO_VERSION_MAPPING[version]
-        except KeyError:
-            v = version
-        assert expected == encoder.is_mode_supported(mode, v)
-    # See ISO/IEC 18004:2006(E) - Table 2 (page 22)
-    data = (
-        (consts.MODE_NUMERIC, 'M1', True),
-        (consts.MODE_NUMERIC, 'M2', True),
-        (consts.MODE_NUMERIC, 'M3', True),
-        (consts.MODE_NUMERIC, 'M4', True),
-        (consts.MODE_ALPHANUMERIC, 'M1', False),
-        (consts.MODE_ALPHANUMERIC, 'M2', True),
-        (consts.MODE_ALPHANUMERIC, 'M3', True),
-        (consts.MODE_ALPHANUMERIC, 'M4', True),
-        (consts.MODE_ECI, 'M1', False),
-        (consts.MODE_ECI, 'M2', False),
-        (consts.MODE_ECI, 'M3', False),
-        (consts.MODE_ECI, 'M4', False),
-        (consts.MODE_BYTE, 'M1', False),
-        (consts.MODE_BYTE, 'M2', False),
-        (consts.MODE_BYTE, 'M3', True),
-        (consts.MODE_BYTE, 'M4', True),
-        (consts.MODE_KANJI, 'M3', True),
-        (consts.MODE_KANJI, 'M4', True),
-    )
-    for v in range(1, 41):
-        for mode in (consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC,
-                     consts.MODE_BYTE, consts.MODE_ECI, consts.MODE_KANJI):
-            yield check, mode, v, True
-    for mode, version, expected in data:
-        yield check, mode, version, expected
+# See ISO/IEC 18004:2006(E) - Table 2 (page 22)
+_test_is_mode_supported_micro_data = (
+    (consts.MODE_NUMERIC, 'M1', True),
+    (consts.MODE_NUMERIC, 'M2', True),
+    (consts.MODE_NUMERIC, 'M3', True),
+    (consts.MODE_NUMERIC, 'M4', True),
+    (consts.MODE_ALPHANUMERIC, 'M1', False),
+    (consts.MODE_ALPHANUMERIC, 'M2', True),
+    (consts.MODE_ALPHANUMERIC, 'M3', True),
+    (consts.MODE_ALPHANUMERIC, 'M4', True),
+    (consts.MODE_ECI, 'M1', False),
+    (consts.MODE_ECI, 'M2', False),
+    (consts.MODE_ECI, 'M3', False),
+    (consts.MODE_ECI, 'M4', False),
+    (consts.MODE_BYTE, 'M1', False),
+    (consts.MODE_BYTE, 'M2', False),
+    (consts.MODE_BYTE, 'M3', True),
+    (consts.MODE_BYTE, 'M4', True),
+    (consts.MODE_KANJI, 'M3', True),
+    (consts.MODE_KANJI, 'M4', True),
+)
+
+@pytest.mark.parametrize('mode, version, expected', _test_is_mode_supported_micro_data)
+def test_is_mode_supported_micro(mode, version, expected):
+    v = consts.MICRO_VERSION_MAPPING[version]
+    assert expected == encoder.is_mode_supported(mode, v)
 
 
-def test_is_mode_supported_invalid_mode():
-
-    def check(mode, version):
-        with pytest.raises(encoder.ModeError):
-            encoder.is_mode_supported(mode, version)
-    data = (
-        (-1, 1),
-        (-2, consts.VERSION_M2),
-        (10, 1),
-        (10, consts.VERSION_M1),
-        (9, 39),
-    )
-    for mode, version in data:
-        yield check, mode, version
+@pytest.mark.parametrize('version', tuple(range(1, 41)))
+@pytest.mark.parametrize('mode', (consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC,
+                                  consts.MODE_BYTE, consts.MODE_ECI, consts.MODE_KANJI))
+def test_is_mode_supported_micro(version, mode):
+    assert encoder.is_mode_supported(mode, version)
 
 
-def test_normalize_mode_illegal():
-
-    def check(mode):
-        with pytest.raises(encoder.ModeError):
-            encoder.normalize_mode(mode)
-    data = ('kanij', 'binary', 'blub', '')
-    for mode in data:
-        yield check, mode
+@pytest.mark.parametrize('mode, version', [(-1, 1), (-2, consts.VERSION_M2),
+                                           (10, 1), (10, consts.VERSION_M1),
+                                           (9, 39)])
+def test_is_mode_supported_invalid_mode(mode, version):
+    with pytest.raises(encoder.ModeError):
+        encoder.is_mode_supported(mode, version)
 
 
-def test_normalize_mask():
-    micro = range(4)
-    usual = range(8)
+@pytest.mark.parametrize('mode', ('kanij', 'binary', 'blub', ''))
+def test_normalize_mode_illegal(mode):
+    with pytest.raises(encoder.ModeError):
+        encoder.normalize_mode(mode)
 
-    def check(version, mask):
-        assert mask == encoder.normalize_mask(mask, version < 1)
 
-    for mask in usual:
-        for version in range(1, 41):
-            yield check, version, mask
+@pytest.mark.parametrize('mask', tuple(range(8)))
+def test_normalize_mask(mask):
+    assert mask == encoder.normalize_mask(mask, is_micro=False)
 
-    for mask in micro:
-        for version in range(consts.VERSION_M1, 1):
-            yield check, version, mask
+
+@pytest.mark.parametrize('mask', tuple(range(4)))
+def test_normalize_mask_micro(mask):
+    assert mask == encoder.normalize_mask(mask, is_micro=True)
 
 
 def test_normalize_mask_none():
@@ -507,14 +458,10 @@ def test_normalize_mask_none():
     assert encoder.normalize_mask(None, is_micro=False) is None
 
 
-def test_normalize_mask_illegal():
-
-    def check(version, mask):
-        with pytest.raises(encoder.MaskError):
-            encoder.normalize_mask(mask, version < 1)
-
-    for version, mask in ((consts.VERSION_M1, 8), (1, 9), (1, -1)):
-        yield check, version, mask
+@pytest.mark.parametrize('version, mask', [(consts.VERSION_M1, 8), (1, 9), (1, -1)])
+def test_normalize_mask_illegal(version, mask):
+    with pytest.raises(encoder.MaskError):
+        encoder.normalize_mask(mask, version < 1)
 
 
 def test_mode_name_illegal():
@@ -554,38 +501,37 @@ def test_normalize_errorlevel_illegal2():
         encoder.normalize_errorlevel(None)
 
 
-def test_find_version():
-    def check(data, error, micro, expected_version):
-        segments = encoder.prepare_data(data, None, None)
-        assert expected_version == encoder.find_version(segments, error, micro)
+_test_find_version_test_data = (
+    # data, error, micro, expected version
+    ('12345', None, True, consts.VERSION_M1),
+    ('12345', consts.ERROR_LEVEL_M, True, consts.VERSION_M2),
+    # Error level Q isn't suppoted by M1 - M3
+    ('12345', consts.ERROR_LEVEL_Q, True, consts.VERSION_M4),
+    # Error level H isn't supported by Micro QR Codes
+    ('12345', consts.ERROR_LEVEL_H, None, 1),
+    ('12345', None, False, 1),
+    (12345, None, True, consts.VERSION_M1),
+    (-12345, None, True, consts.VERSION_M3),  # Negative number
+    (12345, None, False, 1),
+    ('123456', None, True, consts.VERSION_M2),
+    ('123456', None, False, 1),
+    (123456, None, True, consts.VERSION_M2),
+    (123456, None, False, 1),
+    ('ABCDE', None, True, consts.VERSION_M2),  # Alphanumeric isn't supported by M1
+    ('ABCDEF', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
+    ('ABCDEF', consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Too much data for error level M and version M2
+    ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
+    ('ABCDEF', consts.ERROR_LEVEL_M, False, 1),
+    ('Märchenbuch', None, True, consts.VERSION_M4),
+    ('Märchenbücher', None, False, 1),
+    ('Märchenbücherei', None, None, 2),
+)
 
-    test_data = (
-        # data, error, micro, expected version
-        ('12345', None, True, consts.VERSION_M1),
-        ('12345', consts.ERROR_LEVEL_M, True, consts.VERSION_M2),
-        # Error level Q isn't suppoted by M1 - M3
-        ('12345', consts.ERROR_LEVEL_Q, True, consts.VERSION_M4),
-        # Error level H isn't supported by Micro QR Codes
-        ('12345', consts.ERROR_LEVEL_H, None, 1),
-        ('12345', None, False, 1),
-        (12345, None, True, consts.VERSION_M1),
-        (-12345, None, True, consts.VERSION_M3),  # Negative number
-        (12345, None, False, 1),
-        ('123456', None, True, consts.VERSION_M2),
-        ('123456', None, False, 1),
-        (123456, None, True, consts.VERSION_M2),
-        (123456, None, False, 1),
-        ('ABCDE', None, True, consts.VERSION_M2),  # Alphanumeric isn't supported by M1
-        ('ABCDEF', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
-        ('ABCDEF', consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Too much data for error level M and version M2
-        ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
-        ('ABCDEF', consts.ERROR_LEVEL_M, False, 1),
-        ('Märchenbuch', None, True, consts.VERSION_M4),
-        ('Märchenbücher', None, False, 1),
-        ('Märchenbücherei', None, None, 2),
-    )
-    for data, error, micro, expected_version in test_data:
-        yield check, data, error, micro, expected_version
+
+@pytest.mark.parametrize('data, error, micro, expected_version', _test_find_version_test_data)
+def test_find_version(data, error, micro, expected_version):
+    segments = encoder.prepare_data(data, None, None)
+    assert expected_version == encoder.find_version(segments, error, micro)
 
 
 def test_thonky_add_format_info():
