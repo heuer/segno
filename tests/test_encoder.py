@@ -75,7 +75,7 @@ def test_prepare_data_override_alphanumeric(data, mode):
     check_prepare_data(expected, data, mode, None)
 
 
-def test_prepare_data_byte():
+def _make_test_prepare_data_byte_data():
     test_data = (
         ('HeLLO WORLD', consts.DEFAULT_BYTE_ENCODING),
         ('HELLO\nWORLD', consts.DEFAULT_BYTE_ENCODING),
@@ -88,7 +88,11 @@ def test_prepare_data_byte():
             for param_encoding in (None, encoding):
                 encoded_data = data.encode(encoding)
                 expected = ((encoded_data, len(encoded_data), consts.MODE_BYTE, encoding),)
-                yield check_prepare_data, expected, data, mode, param_encoding
+                yield expected, data, mode, param_encoding
+
+@pytest.mark.parametrize('expected, data, mode, param_encoding', _make_test_prepare_data_byte_data())
+def test_prepare_data_byte(expected, data, mode, param_encoding):
+    check_prepare_data(expected, data, mode, param_encoding)
 
 
 def test_prepare_data_multiple():
@@ -722,7 +726,20 @@ def test_score_n2_iso():
     assert 12 == score
 
 
-def test_score_n4_iso():
+def _make_score_n4_data():
+    for p in range(41, 46):
+        yield 10, p
+
+    for p in range(55, 60):
+        yield 10, p
+
+    for p in range(46, 55):
+        yield 0, p
+
+    yield 3 * 10, 35
+
+@pytest.mark.parametrize('score, percent', _make_score_n4_data())
+def test_score_n4_iso(score, percent):
     # Add 10 points to a deviation of 5% increment or decrement in the
     # proportion ratio of dark module from the referential 50% (or 0 point)
     # level. For example, assign 0 points as a penalty if the ratio of dark
@@ -746,21 +763,9 @@ def test_score_n4_iso():
             if finished:
                 break
 
-    def check(score, percent):
-        matrix = make_matrix()
-        fill_matrix(matrix, percent)
-        assert score == encoder.score_n4(matrix, len(matrix))
-
-    for p in range(41, 46):
-        yield check, 10, p
-
-    for p in range(55, 60):
-        yield check, 10, p
-
-    for p in range(46, 55):
-        yield check, 0, p
-
-    yield check, 3 * 10, 35
+    matrix = make_matrix()
+    fill_matrix(matrix, percent)
+    assert score == encoder.score_n4(matrix, len(matrix))
 
 
 def test_binary_sequence_to_integers():

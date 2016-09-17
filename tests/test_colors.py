@@ -114,11 +114,7 @@ def test_color_to_webcolor_dont_optimize(clr, expected):
     assert expected == colors.color_to_webcolor(clr, optimize=False)
 
 
-def test_valid_colornames():
-    def check(name, expected):
-        rgb = colors.color_to_rgb(name)
-        assert 3 == len(rgb)
-        assert expected == rgb
+def _make_valid_colornames_data():
     data = (
         ('red', (255, 0, 0)),
         ('green', (0, 128, 0)),
@@ -129,10 +125,18 @@ def test_valid_colornames():
         ('darkSlateGrey', (47, 79, 79)),
     )
     for name, expected in data:
-        yield check, name, expected
-        yield check, name.title(), expected
-        yield check, name.upper(), expected
-        yield check, name.lower(), expected
+        yield name, expected
+        yield name.title(), expected
+        yield name.upper(), expected
+        yield name.lower(), expected
+
+
+@pytest.mark.parametrize('name, expected', _make_valid_colornames_data())
+def test_valid_colornames(name, expected):
+    rgb = colors.color_to_rgb(name)
+    assert 3 == len(rgb)
+    assert expected == rgb
+
 
 
 @pytest.mark.parametrize('color, expected', (('#fff', (255, 255, 255)),
@@ -151,11 +155,8 @@ def test_hex_to_rgba_alpha_int(color, expected):
     assert expected == colors._hex_to_rgb_or_rgba(color, alpha_float=False)
 
 
-def test_valid_hexcodes_rgb():
-    def check(name, expected):
-        rgb = colors.color_to_rgb(name)
-        assert 3 == len(rgb)
-        assert expected == rgb
+
+def _make_valid_hexcodes_rgb_data():
     data = (
         ('#000', (0, 0, 0)),
         ('#FF1493', (255, 20, 147)),
@@ -165,26 +166,34 @@ def test_valid_hexcodes_rgb():
         ('#812dd3', (129, 45, 211)),
     )
     for name, expected in data:
-        yield check, name, expected
-        yield check, name.title(), expected
-        yield check, name.upper(), expected
-        yield check, name.lower(), expected
+        yield name, expected
+        yield name.title(), expected
+        yield name.upper(), expected
+        yield name.lower(), expected
+
+@pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgb_data())
+def test_valid_hexcodes_rgb(name, expected):
+    rgb = colors.color_to_rgb(name)
+    assert 3 == len(rgb)
+    assert expected == rgb
 
 
-def test_valid_hexcodes_rgba():
-    def check(name, expected):
-        rgba = colors.color_to_rgba(name)
-        assert 4 == len(rgba)
-        assert expected == rgba
+def _make_valid_hexcodes_rgba_data():
     data = (
         ('#808000', (128, 128, 0, 1.0)),
         ('red', (255, 0, 0, 1.0)),
     )
     for name, expected in data:
-        yield check, name, expected
-        yield check, name.title(), expected
-        yield check, name.upper(), expected
-        yield check, name.lower(), expected
+        yield name, expected
+        yield name.title(), expected
+        yield name.upper(), expected
+        yield name.lower(), expected
+
+@pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgba_data())
+def test_valid_hexcodes_rgba(name, expected):
+    rgba = colors.color_to_rgba(name)
+    assert 4 == len(rgba)
+    assert expected == rgba
 
 
 @pytest.mark.parametrize('t, expected', (

@@ -215,30 +215,25 @@ def test_background_transparent2():
     assert cmd.build_config(args)['background'] is None
 
 
-def test_output():
-    data = (('svg', b'<?xml ', 'rb'),
-            ('pdf', b'%PDF-', 'rb'),
-            ('png', b'\211PNG\r\n\032\n', 'rb'),
-            ('svgz', b'\x1f\x8b\x08', 'rb'),
-            ('txt', '000000', 'rt'),
-            ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
-            ('ans', '\033[7m       ', 'rt'),
-    )
-
-    def check(arg, ext, expected, mode):
-        f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
+@pytest.mark.parametrize('arg', ['-o', '--output'])
+@pytest.mark.parametrize('ext, expected, mode', [('svg', b'<?xml ', 'rb'),
+                                                 ('pdf', b'%PDF-', 'rb'),
+                                                 ('png', b'\211PNG\r\n\032\n', 'rb'),
+                                                 ('svgz', b'\x1f\x8b\x08', 'rb'),
+                                                 ('txt', '000000', 'rt'),
+                                                 ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
+                                                 ('ans', '\033[7m       ', 'rt')])
+def test_output(arg, ext, expected, mode):
+    f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
+    f.close()
+    try:
+        cmd.main(['test', arg, f.name])
+        f = open(f.name, mode=mode)
+        val = f.read(len(expected))
         f.close()
-        try:
-            cmd.main(['test', arg, f.name])
-            f = open(f.name, mode=mode)
-            val = f.read(len(expected))
-            f.close()
-            assert expected == val
-        finally:
-            os.unlink(f.name)
-    for arg in ('--output', '-o'):
-        for ext, expected, mode in data:
-            yield check, arg, ext, expected, mode
+        assert expected == val
+    finally:
+        os.unlink(f.name)
 
 
 # -- PNG
