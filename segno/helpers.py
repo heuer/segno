@@ -16,10 +16,13 @@ a string which can be used as input for :py:func:`segno.make()`.
 from __future__ import absolute_import, unicode_literals
 import segno
 try:  # pragma: no cover
+    from urllib.parse import urlsplit, quote
+    str_type = str
+except ImportError:  # pragma: no cover
+    from urlparse import urlsplit
+    from urllib import quote
     str = unicode
     str_type = basestring
-except NameError:  # pragma: no cover
-    str_type = str
 
 
 _MECARD_ESCAPE = {
@@ -257,7 +260,7 @@ def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
             delim = '&'
     for key, val in (('subject', subject), ('body', body)):
         if val is not None:
-            data.append('{0}{1}:{2}'.format(delim, key, val))
+            data.append('{0}{1}={2}'.format(delim, key, quote(val.encode('utf-8'))))
         delim = '&'
     return ''.join(data)
 

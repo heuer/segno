@@ -215,4 +215,3 @@ def _get_png_info(**kw):
 
 if __name__ == '__main__':
     pytest.main([__file__])
-
