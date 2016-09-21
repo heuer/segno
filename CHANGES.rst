@@ -1,6 +1,14 @@
 Changes
 =======
 
+0.2.2 -- 2016-mm-dd
+-------------------
+* Command line script reports Segno's version (``--ver``) and the version
+  is also mentioned in the help message (``-h``) (#24)
+* Support for creating E-mail addresses or complete messages (``segno.helpers``)
+* Internal optimizations and more correct minimal version finding (#26)
+
+
 0.2.1 -- 2016-09-15
 -------------------
 * Fixed Python packaging (source distribution did not work), again

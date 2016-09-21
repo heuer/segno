@@ -14,6 +14,7 @@ Different output tests.
 """
 from __future__ import unicode_literals, absolute_import
 import io
+import pytest
 import segno
 try:
     from .test_eps import eps_as_matrix
@@ -46,27 +47,7 @@ _DATA = (
 )
 
 
-def test_data():
-    # Creates a QR Code, serializes it and checks if the serialization
-    # corresponds to the initial QR Code matrix.
-    def check(kind, buffer_factory, to_matrix_func, data, error, border, kw):
-        """\
-        :param str kind: "kind" parameter to serialize the QR code
-        :param buffer_factory: Callable to construct the output buffer.
-        :param to_matrix_func: Function to convert the buffer back to a matrix.
-        :param data: The input to construct the QR code.
-        :param error: ECC level
-        :param int border: Border size.
-        """
-        qr = segno.make_qr(data, error=error)
-        out = buffer_factory()
-        qr.save(out, kind=kind, border=border, **kw)
-        matrix = to_matrix_func(out, border)
-        assert len(qr.matrix) == len(matrix)
-        for i, row in enumerate(qr.matrix):
-            exptected_row = bytearray(matrix[i])
-            assert len(row) == len(exptected_row)
-            assert exptected_row == row, 'Error in row {0}'.format(i)
+def _make_test_data_input():
     for kind, buffer_factory, to_matrix_func, kw in (('eps', io.StringIO, eps_as_matrix, {}),
                                                      ('png', io.BytesIO, png_as_matrix, {}),
                                                      ('svg', io.BytesIO, svg_as_matrix, {}),
@@ -76,10 +57,32 @@ def test_data():
                                                      ('tex', io.StringIO, tex_as_matrix, {}),
                                                      ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True),)):
         for data, error, border in _DATA:
-            yield check, kind, buffer_factory, to_matrix_func, data, error, border, kw
+            yield kind, buffer_factory, to_matrix_func, data, error, border, kw
 
+
+@pytest.mark.parametrize('kind, buffer_factory, to_matrix_func, data, error, border, kw',
+                         _make_test_data_input())
+def test_data(kind, buffer_factory, to_matrix_func, data, error, border, kw):
+    # Creates a QR Code, serializes it and checks if the serialization
+    # corresponds to the initial QR Code matrix.
+    """\
+    :param str kind: "kind" parameter to serialize the QR code
+    :param buffer_factory: Callable to construct the output buffer.
+    :param to_matrix_func: Function to convert the buffer back to a matrix.
+    :param data: The input to construct the QR code.
+    :param error: ECC level
+    :param int border: Border size.
+    """
+    qr = segno.make_qr(data, error=error)
+    out = buffer_factory()
+    qr.save(out, kind=kind, border=border, **kw)
+    matrix = to_matrix_func(out, border)
+    assert len(qr.matrix) == len(matrix)
+    for i, row in enumerate(qr.matrix):
+        exptected_row = bytearray(matrix[i])
+        assert len(row) == len(exptected_row)
+        assert exptected_row == row, 'Error in row {0}'.format(i)
 
 if __name__ == '__main__':
-    import pytest
     pytest.main([__file__])
 

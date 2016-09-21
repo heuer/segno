@@ -72,8 +72,40 @@ def test_mecard_data():
     mecard = helpers.make_mecard_data(name='Mustermann,Max', country='Germany')
     assert 'MECARD:N:Mustermann,Max;ADR:,,,,,,Germany;;' == mecard
 
+
 def test_mecard():
     qr = helpers.make_mecard(name='Mustermann,Max')
+    assert qr
+
+
+def test_email_data():
+    data = helpers.make_make_email_data('me@example.org')
+    assert 'mailto:me@example.org' == data
+    data = helpers.make_make_email_data(('me@example.org', 'you@example.org'))
+    assert 'mailto:me@example.org,you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc='you@example.org')
+    assert 'mailto:me@example.org?cc:you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'))
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Test')
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject=Test' == data
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Subject', body='Body')
+    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject=Subject&body=Body' == data
+    data = helpers.make_make_email_data('me@example.org', subject='A subject', body='Hellöö')
+    assert 'mailto:me@example.org?subject=A%20subject&body=Hell%C3%B6%C3%B6' == data
+
+
+def test_email_data_illegal():
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data(None)
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data('')
+    with pytest.raises(ValueError):
+        helpers.make_make_email_data([])
+
+
+def test_email():
+    qr = helpers.make_email('me@example.org')
     assert qr
 
 

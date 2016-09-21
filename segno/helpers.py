@@ -16,10 +16,13 @@ a string which can be used as input for :py:func:`segno.make()`.
 from __future__ import absolute_import, unicode_literals
 import segno
 try:  # pragma: no cover
+    from urllib.parse import urlsplit, quote
+    str_type = str
+except ImportError:  # pragma: no cover
+    from urlparse import urlsplit
+    from urllib import quote
     str = unicode
     str_type = basestring
-except NameError:  # pragma: no cover
-    str_type = str
 
 
 _MECARD_ESCAPE = {
@@ -222,3 +225,59 @@ def make_geo(lat, lng):
     :rtype: segno.QRCode
     """
     return segno.make_qr(make_geo_data(lat, lng))
+
+
+def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
+    """\
+    Creates either a simple "mailto:" URL or complete e-mail message with
+    (blind) carbon copies and a subject and a body.
+
+    :param str|unicode|iterable to: The email address (recipient). Multiple
+            values are allowed.
+    :param str|unicode|iterable|None cc: The carbon copy recipient. Multiple
+            values are allowed.
+    :param str|unicode|iterable|None bcc: The blind carbon copy recipient.
+            Multiple values are allowed.
+    :param str|unicode|None subject: The subject.
+    :param str|unicode|None body: The message body.
+    """
+    def multi(val):
+        if not val:
+            return ()
+        if isinstance(val, str_type):
+            return (val,)
+        return tuple(val)
+
+    delim = '?'
+    data = ['mailto:']
+    if not to:
+        raise ValueError('"to" must not be empty or None')
+    data.append(','.join(multi(to)))
+    for key, val in (('cc', cc), ('bcc', bcc)):
+        vals = multi(val)
+        if vals:
+            data.append('{0}{1}:{2}'.format(delim, key, ','.join(vals)))
+            delim = '&'
+    for key, val in (('subject', subject), ('body', body)):
+        if val is not None:
+            data.append('{0}{1}={2}'.format(delim, key, quote(val.encode('utf-8'))))
+        delim = '&'
+    return ''.join(data)
+
+
+def make_email(to, cc=None, bcc=None, subject=None, body=None):
+    """\
+    Encodes either a simple e-mail address or a complete message with
+    (blind) carbon copies and a subject and a body.
+
+    :param str|unicode|iterable to: The email address (recipient). Multiple
+            values are allowed.
+    :param str|unicode|iterable|None cc: The carbon copy recipient. Multiple
+            values are allowed.
+    :param str|unicode|iterable|None bcc: The blind carbon copy recipient.
+            Multiple values are allowed.
+    :param str|unicode|None subject: The subject.
+    :param str|unicode|None body: The message body.
+    """
+    return segno.make_qr(make_make_email_data(to=to, cc=cc, bcc=bcc,
+                                              subject=subject, body=body))
