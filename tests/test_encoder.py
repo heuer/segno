@@ -28,7 +28,7 @@ def bits(s):
 
 
 def check_prepare_data(expected, data, mode, encoding):
-    assert expected == tuple(encoder.prepare_data(data, mode, encoding))
+    assert expected[1:] == tuple(encoder.prepare_data(data, mode, encoding))[1:]
 
 
 def test_version_as_str():
@@ -98,65 +98,73 @@ def test_prepare_data_byte(expected, data, mode, param_encoding):
 def test_prepare_data_multiple():
     test_data = ['a', '1']
     segments = encoder.prepare_data(test_data, None, None)
-    assert 2 == segments.data_length
-    assert (b'a', 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0]
-    assert (b'1', 1, consts.MODE_NUMERIC, None) == segments[1]
+    assert 2 == len(segments)
+    assert 12 == segments.bit_length
+    assert (1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0][1:]
+    assert (1, consts.MODE_NUMERIC, None) == segments[1][1:]
 
 
 def test_prepare_data_multiple2():
     test_data = ['a']
     segments = encoder.prepare_data(test_data, None, None)
-    assert 1 == segments.data_length
-    assert (b'a', 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0]
+    assert 1 == len(segments)
+    assert 8 == segments.bit_length
+    assert (1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0][1:]
 
 
 def test_prepare_data_multiple_int():
     test_data = [1]
     segments = encoder.prepare_data(test_data, None, None)
-    assert 1 == segments.data_length
-    assert (b'1', 1, consts.MODE_NUMERIC, None) == segments[0]
+    assert 1 == len(segments)
+    assert 4 == segments.bit_length
+    assert (1, consts.MODE_NUMERIC, None) == segments[0][1:]
 
 
 def test_prepare_data_multiple_override():
     test_data = [(1, consts.MODE_ALPHANUMERIC), 2]
     segments = encoder.prepare_data(test_data, None, None)
-    assert 2 == segments.data_length
-    assert (b'1', 1, consts.MODE_ALPHANUMERIC, None) == segments[0]
-    assert (b'2', 1, consts.MODE_NUMERIC, None) == segments[1]
+    assert 2 == len(segments)
+    assert 10 == segments.bit_length
+    assert (1, consts.MODE_ALPHANUMERIC, None) == segments[0][1:]
+    assert (1, consts.MODE_NUMERIC, None) == segments[1][1:]
 
 
 def test_prepare_data_multiple_mode_none():
     test_data = [(1, None), ('A', None)]
     segments = encoder.prepare_data(test_data, None, None)
-    assert 2 == segments.data_length
-    assert (b'1', 1, consts.MODE_NUMERIC, None) == segments[0]
-    assert (b'A', 1, consts.MODE_ALPHANUMERIC, None) == segments[1]
+    assert 2 == len(segments)
+    assert 10 == segments.bit_length
+    assert (1, consts.MODE_NUMERIC, None) == segments[0][1:]
+    assert (1, consts.MODE_ALPHANUMERIC, None) == segments[1][1:]
 
 
 def test_prepare_data_multiple_mode_none_ignore_encoding():
     test_data = [(1, None, consts.DEFAULT_BYTE_ENCODING), ('A', None, 'utf-8')]
     segments = encoder.prepare_data(test_data, None, None)
-    assert 2 == segments.data_length
-    assert (b'1', 1, consts.MODE_NUMERIC, None) == segments[0]
-    assert (b'A', 1, consts.MODE_ALPHANUMERIC, None) == segments[1]
+    assert 2 == len(segments)
+    assert 10 == segments.bit_length
+    assert (1, consts.MODE_NUMERIC, None) == segments[0][1:]
+    assert (1, consts.MODE_ALPHANUMERIC, None) == segments[1][1:]
 
 
 def test_prepare_data_multiple_mode_none_encoding():
     test_data = [('Ä', None, consts.DEFAULT_BYTE_ENCODING), ('Ä', None, 'utf-8'),
                  ('Ä', None, None)]
     segments = encoder.prepare_data(test_data, None, None)
-    assert 4 == segments.data_length  # 1 byte latin1 + 2 bytes UTF-8 + 1 byte latin1
-    assert ('Ä'.encode(consts.DEFAULT_BYTE_ENCODING), 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0]
-    assert ('Ä'.encode('utf-8'), 2, consts.MODE_BYTE, 'utf-8') == segments[1]
+    assert 3 == len(segments)
+    assert 32 == segments.bit_length
+    assert (1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0][1:]
+    assert (2, consts.MODE_BYTE, 'utf-8') == segments[1][1:]
     assert segments[0] == segments[2]  # Encoding detection should produce the same result as 1st tuple
 
 
 def test_prepare_data_multiple_tuple():
     test_data = ('a', '1')
     segments = encoder.prepare_data(test_data, None, None)
-    assert 2 == segments.data_length
-    assert (b'a', 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0]
-    assert (b'1', 1, consts.MODE_NUMERIC, None) == segments[1]
+    assert 2 == len(segments)
+    assert 12 == segments.bit_length
+    assert (1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0][1:]
+    assert (1, consts.MODE_NUMERIC, None) == segments[1][1:]
 
 
 def test_write_segment_eci_standard_value():
@@ -167,7 +175,7 @@ def test_write_segment_eci_standard_value():
     # (character values A1HEX, A2HEX, A3HEX, A4HEX, A5HEX) and result seems
     # to use the A...HEX values as well
     s = '\u2018\u2019\u00A3\u20AC\u20AF'.encode(encoding)
-    seg = encoder.Segment(s, len(s), consts.MODE_BYTE, encoding)
+    seg = encoder.make_segment(s, consts.MODE_BYTE, encoding)
     buff = Buffer()
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, True)
@@ -181,7 +189,7 @@ def test_write_segment_eci_standard_value():
 def test_write_segment_numeric_standard_value_example1(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE 1 (page 25)
     s = b'01234567'
-    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    seg = encoder.make_segment(s, consts.MODE_NUMERIC)
     buff = Buffer()
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
@@ -192,7 +200,7 @@ def test_write_segment_numeric_standard_value_example1(eci):
 def test_write_segment_numeric_standard_value_example2(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE 2 (page 25)
     s = b'0123456789012345'
-    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    seg = encoder.make_segment(s, consts.MODE_NUMERIC)
     buff = Buffer()
     v, vrange = consts.VERSION_M3, consts.VERSION_M3
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
@@ -203,7 +211,7 @@ def test_write_segment_numeric_standard_value_example2(eci):
 def test_write_segment_numeric_standard_value_i3(eci):
     # See ISO/IEC 18004:2006(E) -- I.3 Encoding a Micro QR Code symbol (page 96)
     s = b'01234567'
-    seg = encoder.Segment(s, len(s), consts.MODE_NUMERIC, None)
+    seg = encoder.make_segment(s, consts.MODE_NUMERIC)
     buff = Buffer()
     v, vrange = consts.VERSION_M2, consts.VERSION_M2
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
@@ -214,7 +222,7 @@ def test_write_segment_numeric_standard_value_i3(eci):
 def test_write_segment_alphanumeric_standard_value_example(eci):
     # See ISO/IEC 18004:2006(E) -- 6.4.3 Numeric mode - EXAMPLE (page 26)
     s = b'AC-42'
-    seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
+    seg = encoder.make_segment(s, consts.MODE_ALPHANUMERIC)
     buff = Buffer()
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
@@ -225,7 +233,7 @@ def test_write_segment_alphanumeric_standard_value_example(eci):
 def test_write_segment_alphanumeric_thonky(eci):
     # <http://www.thonky.com/qr-code-tutorial/data-encoding/#step-3-encode-using-the-selected-mode>
     s = b'HELLO WORLD'
-    seg = encoder.Segment(s, len(s), consts.MODE_ALPHANUMERIC, None)
+    seg = encoder.make_segment(s, consts.MODE_ALPHANUMERIC, None)
     buff = Buffer()
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, eci)
@@ -236,7 +244,7 @@ def test_write_segment_alphanumeric_thonky(eci):
 def test_write_segment_bytes_thonky(eci):
     # <http://www.thonky.com/qr-code-tutorial/byte-mode-encoding/>
     s = b'Hello, world!'
-    seg = encoder.Segment(s, len(s), consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING)
+    seg = encoder.make_segment(s, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING)
     buff = Buffer()
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
@@ -262,7 +270,7 @@ def test_write_terminator_thonky():
     buff = Buffer(data)
     version = 1
     v = None
-    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_Q][0]
+    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_Q]
     encoder.write_terminator(buff, capacity, v, len(data))
     assert data + bits('0000') == buff.getbits()
 
@@ -273,7 +281,7 @@ def test_write_terminator_standard_value_i2():
     buff = Buffer(data)
     version = 1
     v = None
-    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_M][0]
+    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_M]
     encoder.write_terminator(buff, capacity, v, len(data))
     assert data + bits('0000') == buff.getbits()
 
@@ -283,7 +291,7 @@ def test_write_terminator_standard_value_i3():
     data = bits('01000000000110001010110011000011')
     buff = Buffer(data)
     version = consts.VERSION_M2
-    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_L][0]
+    capacity = consts.SYMBOL_CAPACITY[version][consts.ERROR_LEVEL_L]
     encoder.write_terminator(buff, capacity, version, len(data))
     assert data + bits('00000') == buff.getbits()
 
@@ -318,7 +326,7 @@ def test_write_pad_codewords_standard_value_i2():
     buff = Buffer(data)
     version = 1
     error = consts.ERROR_LEVEL_M
-    capacity = consts.SYMBOL_CAPACITY[version][error][0]
+    capacity = consts.SYMBOL_CAPACITY[version][error]
     encoder.write_pad_codewords(buff, version, capacity, len(buff))
     assert data + bits('11101100000100011110110000010001111011000001000111101100000100011110110000010001') == buff.getbits()
 
@@ -329,7 +337,7 @@ def test_write_pad_codewords_standard_value_i3():
     buff = Buffer(data)
     version = consts.VERSION_M2
     error = consts.ERROR_LEVEL_L
-    capacity = consts.SYMBOL_CAPACITY[version][error][0]
+    capacity = consts.SYMBOL_CAPACITY[version][error]
     encoder.write_pad_codewords(buff, version, capacity, len(buff))
     assert data == buff.getbits()
 
@@ -535,7 +543,7 @@ _test_find_version_test_data = (
 @pytest.mark.parametrize('data, error, micro, expected_version', _test_find_version_test_data)
 def test_find_version(data, error, micro, expected_version):
     segments = encoder.prepare_data(data, None, None)
-    assert expected_version == encoder.find_version(segments, error, micro)
+    assert expected_version == encoder.find_version(segments, error, eci=False, micro=micro)
 
 
 def test_thonky_add_format_info():

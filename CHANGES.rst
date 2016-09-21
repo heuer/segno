@@ -5,6 +5,8 @@ Changes
 -------------------
 * Command line script reports Segno's version (``--ver``) and the version
   is also mentioned in the help message (``-h``) (#24)
+* Support for creating E-mail addresses or complete messages (``segno.helpers``)
+* Internal optimizations (#26)
 
 
 0.2.1 -- 2016-09-15

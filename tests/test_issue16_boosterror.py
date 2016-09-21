@@ -40,8 +40,8 @@ def test_boost_error_disabled_arg_error():
 def test_boost_error_M1():
     qr = segno.make('01234')
     assert qr.is_micro
-    assert qr.error is None
     assert 'M1' == qr.version
+    assert qr.error is None
 
 
 def test_boost_error_micro():
