@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2.2 -- 2016-mm-dd
+0.2.2 -- 2016-09-21
 -------------------
 * Command line script reports Segno's version (``--ver``) and the version
   is also mentioned in the help message (``-h``) (#24)
