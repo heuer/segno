@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.2.3 -- 2016-mm-dd
+-------------------
+* Fixed #27: E-mail URI is wrong if CC or BCC is used.
+
+
 0.2.2 -- 2016-09-21
 -------------------
 * Command line script reports Segno's version (``--ver``) and the version
