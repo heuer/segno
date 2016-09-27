@@ -75,8 +75,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
     :param out: Filename or a file-like object supporting to write bytes.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
-    :param int border: Integer / float indicating the size of the
-            quiet zone.
+    :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     :param color: Color of the modules (default: ``#000``). Any value
