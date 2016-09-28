@@ -4,6 +4,10 @@ Changes
 0.2.3 -- 2016-mm-dd
 -------------------
 * Fixed #27: E-mail URI is wrong if CC or BCC is used.
+* Deprecated ``writers.get_writable``; use ``writers.writable``
+  ``writers.writable`` closes file-like objects automatically (if necessary);
+  replace ``writable, must_close = writers.get_writable(filename_or_buffer, mode)``
+  with ``with writers.writable(filename_or_buffer, mode) as f``
 
 
 0.2.2 -- 2016-09-21
