@@ -24,6 +24,7 @@ from xml.sax.saxutils import quoteattr, escape
 from struct import pack
 from itertools import chain
 from functools import reduce
+from contextlib import contextmanager
 import time
 _PY2 = False
 try:  # pragma: no cover
@@ -54,6 +55,8 @@ def get_writable(file_or_path, mode, encoding=None):
     :param str mode: String indicating the writing mode (i.e. ``'wb'``)
     :rtype: tuple: fileobj, bool
     """
+    import warnings
+    warnings.warn('Use writable(file_or_path, mode) as f')
     try:
         file_or_path.write
         if encoding is None:
@@ -61,6 +64,34 @@ def get_writable(file_or_path, mode, encoding=None):
         return codecs.getwriter(encoding)(file_or_path), False
     except AttributeError:
         return open(file_or_path, mode, encoding=encoding), True
+
+
+@contextmanager
+def writable(file_or_path, mode, encoding=None):
+    """\
+    Returns a writable file-like object.
+
+    Usage::
+
+        with writable(file_name_or_path, 'wb') as f:
+            ...
+
+
+    :param file_or_path: Either a file-like object or a filename.
+    :param str mode: String indicating the writing mode (i.e. ``'wb'``)
+    """
+    f = file_or_path
+    must_close = False
+    try:
+        file_or_path.write
+        if encoding is not None:
+            f = codecs.getwriter(encoding)(file_or_path)
+    except AttributeError:
+        f = open(file_or_path, mode, encoding=encoding)
+        must_close = True
+    yield f
+    if must_close:
+        f.close()
 
 
 def write_svg(matrix, version, out, scale=1, border=None, color='#000',
@@ -114,72 +145,70 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
     if unit and omitsize:
         raise ValueError('The unit "{0}" has no effect if the size '
                          '(width and height) is omitted.'.format(unit))
-    f, must_close = get_writable(out, 'wt', encoding=encoding)
-    write = f.write
-    # Write the document header
-    if xmldecl:
-        write('<?xml version="1.0" encoding="{0}"?>\n'.format(encoding))
-    write('<svg')
-    if svgns:
-        write(' xmlns="http://www.w3.org/2000/svg"')
-    if svgversion is not None:
-        write(' version={0}'.format(quoteattr(str(svgversion))))
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
-    if not omitsize:
-        write(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
-    if omitsize or unit:
-        write(' viewBox="0 0 {0} {1}"'.format(width, height))
-    if svgid:
-        write(' id={0}'.format(quoteattr(svgid)))
-    if svgclass:
-        write(' class={0}'.format(quoteattr(svgclass)))
-    write('>')
-    if title is not None:
-        write('<title>{0}</title>'.format(escape(title)))
-    if desc is not None:
-        write('<desc>{0}</desc>'.format(escape(desc)))
-    allow_css3_colors = svgversion is not None and svgversion >= 2.0
-    if background is not None:
-        bg_color = color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
-        fill_opacity = ''
-        if isinstance(bg_color, tuple):
-            bg_color, opacity = bg_color
-            fill_opacity = ' fill-opacity={0}'.format(quoteattr(str(opacity)))
-        write('<path fill="{0}"{1} d="M0 0h{2}v{3}h-{2}z"/>'
-              .format(bg_color, fill_opacity, width, height))
-    write('<path')
-    if scale != 1:
-        write(' transform="scale({0})"'.format(scale))
-    if color is not None:
-        opacity = None
-        stroke_color = color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
-        if isinstance(stroke_color, tuple):
-            stroke_color, opacity = stroke_color
-        write(' stroke={0}'.format(quoteattr(stroke_color)))
-        if opacity is not None:
-            write(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
-    if lineclass:
-        write(' class={0}'.format(quoteattr(lineclass)))
-    write(' d="')
-    # Current pen pointer position
-    x, y = border, border + .5  # .5 == stroke-width / 2
-    line_iter = matrix_to_lines(matrix, x, y)
-    # 1st coord is absolute
-    (x1, y1), (x2, y2) = next(line_iter)
-    coord = ['M{0} {1}h{2}'.format(x1, y1, x2 - x1)]
-    append_coord = coord.append
-    x, y = x2, y2
-    for (x1, y1), (x2, y2) in line_iter:
-        append_coord('m{0} {1}h{2}'.format(x1 - x, int(y1 - y), x2 - x1))
+    with writable(out, 'wt', encoding=encoding) as f:
+        write = f.write
+        # Write the document header
+        if xmldecl:
+            write('<?xml version="1.0" encoding="{0}"?>\n'.format(encoding))
+        write('<svg')
+        if svgns:
+            write(' xmlns="http://www.w3.org/2000/svg"')
+        if svgversion is not None:
+            write(' version={0}'.format(quoteattr(str(svgversion))))
+        border = get_border(version, border)
+        width, height = get_symbol_size(version, scale, border)
+        if not omitsize:
+            write(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
+        if omitsize or unit:
+            write(' viewBox="0 0 {0} {1}"'.format(width, height))
+        if svgid:
+            write(' id={0}'.format(quoteattr(svgid)))
+        if svgclass:
+            write(' class={0}'.format(quoteattr(svgclass)))
+        write('>')
+        if title is not None:
+            write('<title>{0}</title>'.format(escape(title)))
+        if desc is not None:
+            write('<desc>{0}</desc>'.format(escape(desc)))
+        allow_css3_colors = svgversion is not None and svgversion >= 2.0
+        if background is not None:
+            bg_color = color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
+            fill_opacity = ''
+            if isinstance(bg_color, tuple):
+                bg_color, opacity = bg_color
+                fill_opacity = ' fill-opacity={0}'.format(quoteattr(str(opacity)))
+            write('<path fill="{0}"{1} d="M0 0h{2}v{3}h-{2}z"/>'
+                  .format(bg_color, fill_opacity, width, height))
+        write('<path')
+        if scale != 1:
+            write(' transform="scale({0})"'.format(scale))
+        if color is not None:
+            opacity = None
+            stroke_color = color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
+            if isinstance(stroke_color, tuple):
+                stroke_color, opacity = stroke_color
+            write(' stroke={0}'.format(quoteattr(stroke_color)))
+            if opacity is not None:
+                write(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
+        if lineclass:
+            write(' class={0}'.format(quoteattr(lineclass)))
+        write(' d="')
+        # Current pen pointer position
+        x, y = border, border + .5  # .5 == stroke-width / 2
+        line_iter = matrix_to_lines(matrix, x, y)
+        # 1st coord is absolute
+        (x1, y1), (x2, y2) = next(line_iter)
+        coord = ['M{0} {1}h{2}'.format(x1, y1, x2 - x1)]
+        append_coord = coord.append
         x, y = x2, y2
-    write(''.join(coord))
-    # Close path and doc
-    write('"/></svg>')
-    if nl:
-        write('\n')
-    if must_close:
-        f.close()
+        for (x1, y1), (x2, y2) in line_iter:
+            append_coord('m{0} {1}h{2}'.format(x1 - x, int(y1 - y), x2 - x1))
+            x, y = x2, y2
+        write(''.join(coord))
+        # Close path and doc
+        write('"/></svg>')
+        if nl:
+            write('\n')
 
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
@@ -257,28 +286,26 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         clr_mapping.update(color_mapping)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
-    f, must_close = get_writable(out, 'wt', encoding='utf-8')
-    legend = []
-    write = f.write
-    write('<?xml version="1.0" encoding="utf-8"?>\n')
-    write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
-    write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
-    write('<g transform="scale({0})">'.format(scale))
-    for i in range(len(matrix)):
-        y = i + border
-        for j in range(len(matrix)):
-            x = j + border
-            bit = matrix[i][j]
-            if add_legend and bit not in (0x0, 0x1):
-                legend.append((x, y, bit))
-            fill = clr_mapping.get(bit, fallback_color)
-            write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
-    # legend may be empty if add_legend == False
-    for x, y, val in legend:
-        write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
-    write('</g></svg>\n')
-    if must_close:
-        f.close()
+    with writable(out, 'wt', encoding='utf-8') as f:
+        legend = []
+        write = f.write
+        write('<?xml version="1.0" encoding="utf-8"?>\n')
+        write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
+        write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
+        write('<g transform="scale({0})">'.format(scale))
+        for i in range(len(matrix)):
+            y = i + border
+            for j in range(len(matrix)):
+                x = j + border
+                bit = matrix[i][j]
+                if add_legend and bit not in (0x0, 0x1):
+                    legend.append((x, y, bit))
+                fill = clr_mapping.get(bit, fallback_color)
+                write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
+        # legend may be empty if add_legend == False
+        for x, y, val in legend:
+            write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
+        write('</g></svg>\n')
 
 
 def write_eps(matrix, version, out, scale=1, border=None, color='#000',
@@ -332,52 +359,50 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
 
     check_valid_scale(scale)
     check_valid_border(border)
-    f, must_close = get_writable(out, 'wt')
-    writeline = partial(write_line, f.write)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
-    # Write common header
-    writeline('%!PS-Adobe-3.0 EPSF-3.0')
-    writeline('%%Creator: {0}'.format(CREATOR))
-    writeline('%%CreationDate: {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S")))
-    writeline('%%DocumentData: Clean7Bit')
-    writeline('%%BoundingBox: 0 0 {0} {1}'.format(width, height))
-    # Write the shortcuts
-    writeline('/m { rmoveto } bind def')
-    writeline('/l { rlineto } bind def')
-    stroke_color_is_black = color_is_black(color)
-    stroke_color = color if stroke_color_is_black else rgb_to_floats(color)
-    if background is not None:
-        writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
-                  .format(*rgb_to_floats(background)))
-        if stroke_color_is_black:
-            # Reset RGB color back to black iff stroke color is black
-            # In case stroke color != black set the RGB color later
-            writeline('0 0 0 setrgbcolor')
-    if not stroke_color_is_black:
-        writeline('{0:f} {1:f} {2:f} setrgbcolor'.format(*stroke_color))
-    if scale != 1:
-        writeline('{0} {0} scale'.format(scale))
-    writeline('newpath')
-    # Current pen position y-axis
-    # Note: 0, 0 = lower left corner in PS coordinate system
-    y = get_symbol_size(version, scale=1, border=0)[1] + border - .5  # .5 = linewidth / 2
-    line_iter = matrix_to_lines(matrix, border, y, incby=-1)
-    # EPS supports absolute coordinates as well, but relative coordinates
-    # are more compact and IMO nicer; so the 1st coordinate is absolute, all
-    # other coordinates are relative
-    (x1, y1), (x2, y2) = next(line_iter)
-    coord = ['{0} {1} moveto {2} 0 l'.format(x1, y1, x2 - x1)]
-    append_coord = coord.append
-    x = x2
-    for (x1, y1), (x2, y2) in line_iter:
-        append_coord(' {0} {1} m {2} 0 l'.format(x1 - x, int(y1 - y), x2 - x1))
-        x, y = x2, y2
-    writeline(''.join(coord))
-    writeline('stroke')
-    writeline('%%EOF')
-    if must_close:
-        f.close()
+    with writable(out, 'wt') as f:
+        writeline = partial(write_line, f.write)
+        border = get_border(version, border)
+        width, height = get_symbol_size(version, scale, border)
+        # Write common header
+        writeline('%!PS-Adobe-3.0 EPSF-3.0')
+        writeline('%%Creator: {0}'.format(CREATOR))
+        writeline('%%CreationDate: {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S")))
+        writeline('%%DocumentData: Clean7Bit')
+        writeline('%%BoundingBox: 0 0 {0} {1}'.format(width, height))
+        # Write the shortcuts
+        writeline('/m { rmoveto } bind def')
+        writeline('/l { rlineto } bind def')
+        stroke_color_is_black = color_is_black(color)
+        stroke_color = color if stroke_color_is_black else rgb_to_floats(color)
+        if background is not None:
+            writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
+                      .format(*rgb_to_floats(background)))
+            if stroke_color_is_black:
+                # Reset RGB color back to black iff stroke color is black
+                # In case stroke color != black set the RGB color later
+                writeline('0 0 0 setrgbcolor')
+        if not stroke_color_is_black:
+            writeline('{0:f} {1:f} {2:f} setrgbcolor'.format(*stroke_color))
+        if scale != 1:
+            writeline('{0} {0} scale'.format(scale))
+        writeline('newpath')
+        # Current pen position y-axis
+        # Note: 0, 0 = lower left corner in PS coordinate system
+        y = get_symbol_size(version, scale=1, border=0)[1] + border - .5  # .5 = linewidth / 2
+        line_iter = matrix_to_lines(matrix, border, y, incby=-1)
+        # EPS supports absolute coordinates as well, but relative coordinates
+        # are more compact and IMO nicer; so the 1st coordinate is absolute, all
+        # other coordinates are relative
+        (x1, y1), (x2, y2) = next(line_iter)
+        coord = ['{0} {1} moveto {2} 0 l'.format(x1, y1, x2 - x1)]
+        append_coord = coord.append
+        x = x2
+        for (x1, y1), (x2, y2) in line_iter:
+            append_coord(' {0} {1} m {2} 0 l'.format(x1 - x, int(y1 - y), x2 - x1))
+            x, y = x2, y2
+        writeline(''.join(coord))
+        writeline('stroke')
+        writeline('%%EOF')
 
 
 def write_png(matrix, version, out, scale=1, border=None, color='#000',
@@ -504,66 +529,64 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         invert_row = bg_color_idx > 0
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
-    f, must_close = get_writable(out, 'wb')
-    write = f.write
-    # PNG writing by "hand" since this lib should not rely on PIL/Pillow
-    # and PyPNG does not support PNG filters which leads to a suboptimal
-    # performance (and file size) if the PNG image should be scaled.
-    # I.e. a (unrealistic) scaling factor of 600 would require a 17400 x 17400
-    # matrix as input for PyPNG for a 21 x 21 QR Code (+ border = 4) while
-    # this algorithm works upon the primary 21 x 21 matrix.
-    write(b'\211PNG\r\n\032\n')  # Magic number
-    colortype = 3 if not is_greyscale else 0
-    if is_greyscale:
-        bg_color_idx = int(invert_row)
-    # Header:
-    # width, height, bitdepth, colortype, compression meth., filter, interlance
-    write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
-    if colortype == 3:  # Palette
-        write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
-        # <http://www.w3.org/TR/PNG/#11tRNS>
-        if len(palette[0]) > 3:  # Color with alpha is the first in the palette
-            f.write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
-        elif transparency:
-            f.write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
-    elif is_greyscale and transparency:  # Greyscale with alpha
-        # Greyscale with alpha channel
-        # <http://www.w3.org/TR/PNG/#11tRNS>
-        # 2 bytes for color type == 0 (greyscale)
-        write(chunk(b'tRNS', pack(b'>1H', trans_color)))  # 1 == "white"
-    horizontal_border, vertical_border = b'', b''
-    if border > 0:
-        # Calculate horizontal and vertical border
-        horizontal_border = scanline([bg_color_idx] * width) * border * scale
-        vertical_border = [bg_color_idx] * border * scale
-    # <http://www.w3.org/TR/PNG/#9Filters>
-    # This variable holds the "Up" filter which indicates that this scanline
-    # is equal to the above scanline (since it is filled with null bytes)
-    same_as_above = b''
-    row_filters = []
-    if invert_row:
-        row_filters.append(invert_row_bits)
-    if scale > 1:
-        # 2 == PNG Filter "Up"
-        # width / 8 = Filters work on bytes, not pixels
-        # <https://www.w3.org/TR/PNG/#9-table91>
-        same_as_above = bytearray((b'\2' + b'\0' * int(math.ceil(width / 8)))) * (scale - 1)
-        row_filters.append(scale_row_x_axis)
-    res = bytearray(horizontal_border)
-    for row in matrix:
-        row = reduce(lambda r, fn: fn(r), row_filters, row)
-        # Chain precalculated left border with row and right border
-        res += scanline(chain(vertical_border, row, vertical_border))
-        res += same_as_above  # This is b'' if no scaling factor was provided
-    res += horizontal_border
-    if _PY2:
-        res = bytes(res)
-    write(chunk(b'IDAT', zlib.compress(res, compresslevel)))
-    if addad:
-        write(chunk(b'tEXt', b'Software\x00' + CREATOR.encode('ascii')))
-    write(chunk(b'IEND', b''))
-    if must_close:
-        f.close()
+    with writable(out, 'wb') as f:
+        write = f.write
+        # PNG writing by "hand" since this lib should not rely on PIL/Pillow
+        # and PyPNG does not support PNG filters which leads to a suboptimal
+        # performance (and file size) if the PNG image should be scaled.
+        # I.e. a (unrealistic) scaling factor of 600 would require a 17400 x 17400
+        # matrix as input for PyPNG for a 21 x 21 QR Code (+ border = 4) while
+        # this algorithm works upon the primary 21 x 21 matrix.
+        write(b'\211PNG\r\n\032\n')  # Magic number
+        colortype = 3 if not is_greyscale else 0
+        if is_greyscale:
+            bg_color_idx = int(invert_row)
+        # Header:
+        # width, height, bitdepth, colortype, compression meth., filter, interlance
+        write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
+        if colortype == 3:  # Palette
+            write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
+            # <http://www.w3.org/TR/PNG/#11tRNS>
+            if len(palette[0]) > 3:  # Color with alpha is the first in the palette
+                f.write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
+            elif transparency:
+                f.write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
+        elif is_greyscale and transparency:  # Greyscale with alpha
+            # Greyscale with alpha channel
+            # <http://www.w3.org/TR/PNG/#11tRNS>
+            # 2 bytes for color type == 0 (greyscale)
+            write(chunk(b'tRNS', pack(b'>1H', trans_color)))  # 1 == "white"
+        horizontal_border, vertical_border = b'', b''
+        if border > 0:
+            # Calculate horizontal and vertical border
+            horizontal_border = scanline([bg_color_idx] * width) * border * scale
+            vertical_border = [bg_color_idx] * border * scale
+        # <http://www.w3.org/TR/PNG/#9Filters>
+        # This variable holds the "Up" filter which indicates that this scanline
+        # is equal to the above scanline (since it is filled with null bytes)
+        same_as_above = b''
+        row_filters = []
+        if invert_row:
+            row_filters.append(invert_row_bits)
+        if scale > 1:
+            # 2 == PNG Filter "Up"
+            # width / 8 = Filters work on bytes, not pixels
+            # <https://www.w3.org/TR/PNG/#9-table91>
+            same_as_above = bytearray((b'\2' + b'\0' * int(math.ceil(width / 8)))) * (scale - 1)
+            row_filters.append(scale_row_x_axis)
+        res = bytearray(horizontal_border)
+        for row in matrix:
+            row = reduce(lambda r, fn: fn(r), row_filters, row)
+            # Chain precalculated left border with row and right border
+            res += scanline(chain(vertical_border, row, vertical_border))
+            res += same_as_above  # This is b'' if no scaling factor was provided
+        res += horizontal_border
+        if _PY2:
+            res = bytes(res)
+        write(chunk(b'IDAT', zlib.compress(res, compresslevel)))
+        if addad:
+            write(chunk(b'tEXt', b'Software\x00' + CREATOR.encode('ascii')))
+        write(chunk(b'IEND', b''))
 
 
 def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
@@ -603,7 +626,6 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
 
     check_valid_scale(scale)
     check_valid_border(border)
-    f, must_close = get_writable(out, 'wb')
     width, height = get_symbol_size(version, scale, border)
     border = get_border(version, border)
     creation_date = "{0}{1:+03d}'{2:02d}'".format(time.strftime('%Y%m%d%H%M%S'),
@@ -623,30 +645,29 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
         append_cmd(' {0} {1} m {2} {1} l'.format(x1, y1, x2, y2))
     append_cmd(' S')
     graphic = zlib.compress((''.join(cmds)).encode('ascii'), compresslevel)
-    write = f.write
-    writestr = partial(write_string, write)
-    object_pos = []
-    write(b'%PDF-1.4\r%\xE2\xE3\xCF\xD3\r\n')
-    for obj in ('obj <</Type /Catalog /Pages 2 0 R>>\r\nendobj\r\n',
-                'obj <</Type /Pages /Kids [3 0 R] /Count 1>>\r\nendobj\r\n',
-                'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'.format(width, height),
-                'obj <</Length {0} /Filter /FlateDecode>>\r\nstream\r\n'.format(len(graphic))):
+    with writable(out, 'wb') as f:
+        write = f.write
+        writestr = partial(write_string, write)
+        object_pos = []
+        write(b'%PDF-1.4\r%\xE2\xE3\xCF\xD3\r\n')
+        for obj in ('obj <</Type /Catalog /Pages 2 0 R>>\r\nendobj\r\n',
+                    'obj <</Type /Pages /Kids [3 0 R] /Count 1>>\r\nendobj\r\n',
+                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'.format(width, height),
+                    'obj <</Length {0} /Filter /FlateDecode>>\r\nstream\r\n'.format(len(graphic))):
+            object_pos.append(f.tell())
+            writestr('{0} 0 {1}'.format(len(object_pos), obj))
+        write(graphic)
+        write(b'\r\nendstream\r\nendobj\r\n')
         object_pos.append(f.tell())
-        writestr('{0} 0 {1}'.format(len(object_pos), obj))
-    write(graphic)
-    write(b'\r\nendstream\r\nendobj\r\n')
-    object_pos.append(f.tell())
-    writestr('{0} 0 obj <</CreationDate(D:{1})/Producer({2})/Creator({2})\r\n>>\r\nendofbj\r\n' \
-             .format(len(object_pos), creation_date, CREATOR))
-    object_pos.append(f.tell())
-    xref_location = f.tell()
-    writestr('xref\r\n0 {0}\r\n0000000000 65535 f\r\n'.format(len(object_pos) + 1))
-    for pos in object_pos:
-        writestr('{0:010d} {1:05d} n\r\n'.format(pos, 0))
-    writestr('trailer <</Size {0}/Root 1 0 R/Info 5 0 R>>\r\n'.format(len(object_pos) + 1))
-    writestr('startxref\r\n{0}\r\n%%EOF\r\n'.format(xref_location))
-    if must_close:
-        f.close()
+        writestr('{0} 0 obj <</CreationDate(D:{1})/Producer({2})/Creator({2})\r\n>>\r\nendofbj\r\n' \
+                 .format(len(object_pos), creation_date, CREATOR))
+        object_pos.append(f.tell())
+        xref_location = f.tell()
+        writestr('xref\r\n0 {0}\r\n0000000000 65535 f\r\n'.format(len(object_pos) + 1))
+        for pos in object_pos:
+            writestr('{0:010d} {1:05d} n\r\n'.format(pos, 0))
+        writestr('trailer <</Size {0}/Root 1 0 R/Info 5 0 R>>\r\n'.format(len(object_pos) + 1))
+        writestr('startxref\r\n{0}\r\n%%EOF\r\n'.format(xref_location))
 
 
 def write_txt(matrix, version, out, border=None, color='1', background='0'):
@@ -664,13 +685,11 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
     """
     row_iter = matrix_iter(matrix, version, scale=1, border=border)
     colors = (str(background), str(color))
-    f, must_close = get_writable(out, 'wt')
-    write = f.write
-    for row in row_iter:
-        write(''.join([colors[i] for i in row]))
-        write('\n')
-    if must_close:
-        f.close()
+    with writable(out, 'wt') as f:
+        write = f.write
+        for row in row_iter:
+            write(''.join([colors[i] for i in row]))
+            write('\n')
 
 
 def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
@@ -696,21 +715,19 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
 
     width, height = get_symbol_size(version, scale=scale, border=border)
-    f, must_close = get_writable(out, 'wb')
-    write = f.write
-    kind = b'P4' if not plain else b'P1'
-    write(kind + '\n# Created by {0}\n{1} {2}\n' \
-          .format(CREATOR, width, height).encode('ascii'))
-    row_iter = matrix_iter(matrix, version, scale, border)
-    if not plain:
-        for row in row_iter:
-            write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
-    else:
-        for row in row_iter:
-            write(b''.join(str(i).encode('ascii') for i in row))
-            write(b'\n')
-    if must_close:
-        f.close()
+    with writable(out, 'wb') as f:
+        write = f.write
+        kind = b'P4' if not plain else b'P1'
+        write(kind + '\n# Created by {0}\n{1} {2}\n' \
+              .format(CREATOR, width, height).encode('ascii'))
+        row_iter = matrix_iter(matrix, version, scale, border)
+        if not plain:
+            for row in row_iter:
+                write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
+        else:
+            for row in row_iter:
+                write(b''.join(str(i).encode('ascii') for i in row))
+                write(b'\n')
 
 
 def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='pt', url=None):
@@ -741,24 +758,22 @@ def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='p
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(version, border)
-    f, must_close = get_writable(out, 'wt')
-    write = f.write
-    write('%% Creator:  {0}\n'.format(CREATOR))
-    write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
-    if url:
-        write('\href{{{0}}}{{'.format(url))
-    write('\\begin{pgfpicture}\n')
-    write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
-    if color and color != 'black':
-        write('  \color{{{0}}}\n'.format(color))
-    x, y = border, -border
-    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
-        write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
-        write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
-    write('  \pgfusepath{stroke}\n')
-    write('\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
-    if must_close:
-        f.close()
+    with writable(out, 'wt') as f:
+        write = f.write
+        write('%% Creator:  {0}\n'.format(CREATOR))
+        write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+        if url:
+            write('\href{{{0}}}{{'.format(url))
+        write('\\begin{pgfpicture}\n')
+        write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+        if color and color != 'black':
+            write('  \color{{{0}}}\n'.format(color))
+        x, y = border, -border
+        for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
+            write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
+            write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
+        write('  \pgfusepath{stroke}\n')
+        write('\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
 
 
 def write_terminal(matrix, version, out, border=None):
@@ -772,29 +787,27 @@ def write_terminal(matrix, version, out, border=None):
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
     """
-    f, must_close = get_writable(out, 'wt')
-    write = f.write
-    colors = ['\033[{0}m'.format(i) for i in (7, 49)]
-    for row in matrix_iter(matrix, version, scale=1, border=border):
-        prev_bit = -1
-        cnt = 0
-        for bit in row:
-            if bit == prev_bit:
-                cnt += 1
-            else:
-                if cnt:
-                    write(colors[prev_bit])
-                    write('  ' * cnt)
-                    write('\033[0m')  # reset color
-                prev_bit = bit
-                cnt = 1
-        if cnt:
-            write(colors[prev_bit])
-            write('  ' * cnt)
-            write('\033[0m')  # reset color
-        write('\n')
-    if must_close:
-        f.close()
+    with writable(out, 'wt') as f:
+        write = f.write
+        colors = ['\033[{0}m'.format(i) for i in (7, 49)]
+        for row in matrix_iter(matrix, version, scale=1, border=border):
+            prev_bit = -1
+            cnt = 0
+            for bit in row:
+                if bit == prev_bit:
+                    cnt += 1
+                else:
+                    if cnt:
+                        write(colors[prev_bit])
+                        write('  ' * cnt)
+                        write('\033[0m')  # reset color
+                    prev_bit = bit
+                    cnt = 1
+            if cnt:
+                write(colors[prev_bit])
+                write('  ' * cnt)
+                write('\033[0m')  # reset color
+            write('\n')
 
 
 def write_terminal_win(matrix, version, border=None):  # pragma: no cover
