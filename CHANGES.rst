@@ -8,6 +8,8 @@ Changes
   ``writers.writable`` closes file-like objects automatically (if necessary);
   replace ``writable, must_close = writers.get_writable(filename_or_buffer, mode)``
   with ``with writers.writable(filename_or_buffer, mode) as f``
+* Added option to PNG serializer to specify an optional DPI value
+  (thanks to Markus Ueberall for support)
 
 
 0.2.2 -- 2016-09-21
@@ -16,8 +18,7 @@ Changes
   is also mentioned in the help message (``-h``) (#24)
 * Support for creating E-mail addresses or complete messages (``segno.helpers``)
 * Internal optimizations and more correct minimal version finding (#26)
-* Added option to PNG serializer to specify an optional DPI value
-  (thanks to Markus Ueberall for support)
+
 
 
 0.2.1 -- 2016-09-15
