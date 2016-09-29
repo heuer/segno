@@ -408,7 +408,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
 
 
 def write_png(matrix, version, out, scale=1, border=None, color='#000',
-              background='#fff', compresslevel=9, addad=True):
+              background='#fff', compresslevel=9, dpi=None, addad=True):
     """\
     Serializes the QR Code as PNG image.
 
@@ -430,6 +430,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     :param background: Optional background color (default: white).
             See `color` for valid values. In addition, ``None`` is
             accepted which indicates a transparent background.
+    :param int dpi: Optional DPI setting. By default (``None``), the PNG won't
+            have any DPI information. Note that the DPI value is converted into
+            meters since PNG does not support any DPI information.
     :param int compresslevel: Integer indicating the compression level
             (default: 9). 1 is fastest and produces the least
             compression, 9 is slowest and produces the most.
@@ -531,6 +534,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         invert_row = bg_color_idx > 0
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
+    if dpi:
+        dpi //= 0.0254
     with writable(out, 'wb') as f:
         write = f.write
         # PNG writing by "hand" since this lib should not rely on PIL/Pillow
@@ -546,6 +551,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         # Header:
         # width, height, bitdepth, colortype, compression meth., filter, interlance
         write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
+        if dpi:
+            write(chunk(b'pHYs', pack(b'>LLB', dpi, dpi, 1)))
         if colortype == 3:  # Palette
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <http://www.w3.org/TR/PNG/#11tRNS>
