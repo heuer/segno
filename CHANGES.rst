@@ -16,6 +16,8 @@ Changes
   is also mentioned in the help message (``-h``) (#24)
 * Support for creating E-mail addresses or complete messages (``segno.helpers``)
 * Internal optimizations and more correct minimal version finding (#26)
+* Added option to PNG serializer to specify an optional DPI value
+  (thanks to Markus Ueberall for support)
 
 
 0.2.1 -- 2016-09-15
