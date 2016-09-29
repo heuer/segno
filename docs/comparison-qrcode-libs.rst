@@ -7,7 +7,7 @@ Features
 ============================================    ==================    ===================    ==================    ========
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
-Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
+Library license                                 `BSD`_                `BSD`_                 `MIT`_                `BSD`_
 Library version                                 5.3                   1.2.1                  1.0.0                 |version|
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
@@ -53,7 +53,7 @@ Default encoding in Byte mode                   UTF-8                 ISO/IEC 88
 Performance
 -----------
 
-Some performance indicators. The script `benchmark.py`_ ran on a
+Some performance indicators. The script `benchmarks.py`_ ran on a
 MacBook Air 2,13 Core2 Duo using CPython 2.7.10. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
@@ -111,4 +111,4 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _Pillow: https://python-pillow.github.io/
 .. _colorama: https://pypi.python.org/pypi/colorama
 .. _PIL plugin: https://github.com/heuer/segno-pil
-.. _benchmark.py: https://github.com/heuer/segno/sandbox/benchmark.py
+.. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py
