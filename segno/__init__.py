@@ -530,6 +530,11 @@ class QRCode(object):
                          for the ``IDAT`` (data) chunk.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
+        dpi              Default: None. Specifies the DPI value for the image.
+                         By default, the DPI value is unspecified. Please note
+                         that the DPI value is converted into meters (maybe with
+                         rounding errors) since PNG does not support the unit
+                         "dots per inch".
         addad            Boolean value (default: True) to (dis-)allow a "Software"
                          comment indicating that the file was created by Segno.
         =============    ==============================================================
