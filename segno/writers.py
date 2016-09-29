@@ -89,9 +89,13 @@ def writable(file_or_path, mode, encoding=None):
     except AttributeError:
         f = open(file_or_path, mode, encoding=encoding)
         must_close = True
-    yield f
-    if must_close:
-        f.close()
+    try:
+        yield f
+    except:
+        raise
+    finally:
+        if must_close:
+            f.close()
 
 
 def write_svg(matrix, version, out, scale=1, border=None, color='#000',

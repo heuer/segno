@@ -34,6 +34,15 @@ def test_writable_stream2():
     assert not buff.closed
 
 
+def test_writable_stream3():
+    buff = io.StringIO()
+    with pytest.raises(Exception):
+        with writers.writable(buff, 'wt') as f:
+            f.write('x')
+            raise Exception()
+    assert not f.closed
+
+
 def test_writable_not_stream():
     fn = tempfile.NamedTemporaryFile()
     name = fn.name
@@ -57,6 +66,17 @@ def test_writable_not_stream2():
         finally:
             os.remove(name)
 
+
+def test_writable_not_stream3():
+    fn = tempfile.NamedTemporaryFile()
+    name = fn.name
+    fn.close()
+    with pytest.raises(Exception):
+        with writers.writable(name, 'wb') as f:
+            assert name == f.name
+            f.write(b'Segno')
+            raise Exception()
+    assert f.closed
 
 
 if __name__ == '__main__':
