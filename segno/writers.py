@@ -91,8 +91,6 @@ def writable(file_or_path, mode, encoding=None):
         must_close = True
     try:
         yield f
-    except:
-        raise
     finally:
         if must_close:
             f.close()
