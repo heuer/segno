@@ -106,6 +106,8 @@ def make_parser():
     svg_group.add_argument('--encoding', help='Specifies the encoding of the document',
                            default='utf-8')
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
+    png_group.add_argument('--dpi', help='Sets the DPI value of the PNG file',
+                           type=int)
     png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
                            dest='addad',
                            action='store_false')
