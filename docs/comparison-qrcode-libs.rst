@@ -19,9 +19,9 @@ Mode Structured Append                          No                    No        
 Mixing modes                                    Yes                   No                     Yes                   Yes
 QR Codes version 1 - 40                         Yes                   Yes                    Yes                   Yes
 Micro QR Codes version M1 - M4                  No                    No                     No                    Yes
-Output acc. to ISO/IEC 18004:2015(E) Fig. 1     No                    No                     No                    Yes
+Output acc. to ISO/IEC 18004:2015(E) Fig. 1     Yes                   No                     No                    Yes
 Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not available)     No (not available)    Yes
-Find best error correction level                No                    No                     Yes                   Yes
+Find maximal error correction level             No                    No                     Yes                   Yes
 `PNG`_ output                                   Yes                   Yes                    No                    Yes
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
