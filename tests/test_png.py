@@ -160,12 +160,28 @@ def test_nodpi():
     assert b'pHYs' not in out.getvalue()
 
 
+def test_nodpi_zero():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='png', dpi=0)
+    out.seek(0)
+    assert b'pHYs' not in out.getvalue()
+
+
+def test_dpi_negative():
+    qr = segno.make('test')
+    out = io.BytesIO()
+    with pytest.raises(ValueError):
+        qr.save(out, kind='png', dpi=-3)
+
+
 def test_dpi():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='png', dpi=300)
     out.seek(0)
     assert b'pHYs' in out.getvalue()
+    # pHYs 11811 (11811 meters = 300 dpi / 0.0254)
     assert b'\x70\x48\x59\x73\x00\x00\x2E\x23\x00\x00\x2E\x23\x01\x78\xA5\x3F\x76' in out.getvalue()
 
 

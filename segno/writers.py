@@ -535,7 +535,10 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     if dpi:
-        dpi //= 0.0254
+        dpi = int(dpi)
+        if dpi < 0:
+            raise ValueError('DPI value must not be negative')
+        dpi = int(dpi // 0.0254)
     with writable(out, 'wb') as f:
         write = f.write
         # PNG writing by "hand" since this lib should not rely on PIL/Pillow
