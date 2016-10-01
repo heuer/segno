@@ -447,6 +447,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         Returns a PNG chunk with checksum.
         """
         chunk_head = name + data
+        # See <https://docs.python.org/2/library/zlib.html#zlib.crc32>
+        # why crc32() & 0xFFFFFFFF is necessary
         return pack(b'>I', len(data)) + chunk_head \
                + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
 
@@ -558,14 +560,14 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             write(chunk(b'pHYs', pack(b'>LLB', dpi, dpi, 1)))
         if colortype == 3:  # Palette
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
-            # <http://www.w3.org/TR/PNG/#11tRNS>
+            # <https://www.w3.org/TR/PNG/#11tRNS>
             if len(palette[0]) > 3:  # Color with alpha is the first in the palette
                 f.write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
                 f.write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
         elif is_greyscale and transparency:  # Greyscale with alpha
             # Greyscale with alpha channel
-            # <http://www.w3.org/TR/PNG/#11tRNS>
+            # <https://www.w3.org/TR/PNG/#11tRNS>
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', trans_color)))  # 1 == "white"
         horizontal_border, vertical_border = b'', b''
@@ -573,7 +575,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # Calculate horizontal and vertical border
             horizontal_border = scanline([bg_color_idx] * width) * border * scale
             vertical_border = [bg_color_idx] * border * scale
-        # <http://www.w3.org/TR/PNG/#9Filters>
+        # <https://www.w3.org/TR/PNG/#9Filters>
         # This variable holds the "Up" filter which indicates that this scanline
         # is equal to the above scanline (since it is filled with null bytes)
         same_as_above = b''
