@@ -569,7 +569,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # Greyscale with alpha channel
             # <https://www.w3.org/TR/PNG/#11tRNS>
             # 2 bytes for color type == 0 (greyscale)
-            write(chunk(b'tRNS', pack(b'>1H', trans_color)))  # 1 == "white"
+            write(chunk(b'tRNS', pack(b'>1H', trans_color)))
         horizontal_border, vertical_border = b'', b''
         if border > 0:
             # Calculate horizontal and vertical border
