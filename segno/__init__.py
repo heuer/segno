@@ -548,7 +548,7 @@ class QRCode(object):
         kind             "eps"
         scale            integer or float
         color            Default: "#000" (black)
-        background       Default value ``#fff`` (white)
+        background       Default value: ``None`` (no background)
         =============    ==============================================================
 
 
