@@ -471,7 +471,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns a single scanline.
         """
-        return bytearray(chain(b'\0',  # No filter
+        return bytearray(chain(b'\0',  # PNG filter type 0 = None
                                # Pack 8 px into one byte
                                (reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row))))
 
@@ -570,11 +570,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # <https://www.w3.org/TR/PNG/#11tRNS>
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', trans_color)))
-        horizontal_border, vertical_border = b'', b''
-        if border > 0:
-            # Calculate horizontal and vertical border
-            horizontal_border = scanline([bg_color_idx] * width) * border * scale
-            vertical_border = [bg_color_idx] * border * scale
         # <https://www.w3.org/TR/PNG/#9Filters>
         # This variable holds the "Up" filter which indicates that this scanline
         # is equal to the above scanline (since it is filled with null bytes)
@@ -588,6 +583,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # <https://www.w3.org/TR/PNG/#9-table91>
             same_as_above = bytearray((b'\2' + b'\0' * int(math.ceil(width / 8)))) * (scale - 1)
             row_filters.append(scale_row_x_axis)
+        horizontal_border, vertical_border = b'', b''
+        if border > 0:
+            # Calculate horizontal and vertical border
+            horizontal_border = scanline([bg_color_idx] * width) * border * scale
+            vertical_border = [bg_color_idx] * border * scale
         res = bytearray(horizontal_border)
         for row in matrix:
             row = reduce(lambda r, fn: fn(r), row_filters, row)
