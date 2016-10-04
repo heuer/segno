@@ -14,7 +14,6 @@ they just need a matrix (tuple of bytearrays) and the version constant.
 from __future__ import absolute_import, unicode_literals, division
 import io
 import re
-import math
 import zlib
 import codecs
 import base64
@@ -467,11 +466,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             for i in range(scale):
                 yield b
 
-    def scanline(row):
+    def scanline(row, filter_type=b'\0'):
         """\
         Returns a single scanline.
         """
-        return bytearray(chain(b'\0',  # PNG filter type 0 = None
+        return bytearray(chain(filter_type,
                                # Pack 8 px into one byte
                                (reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row))))
 
@@ -578,10 +577,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         if invert_row:
             row_filters.append(invert_row_bits)
         if scale > 1:
-            # 2 == PNG Filter "Up"
-            # width / 8 = Filters work on bytes, not pixels
-            # <https://www.w3.org/TR/PNG/#9-table91>
-            same_as_above = bytearray((b'\2' + b'\0' * int(math.ceil(width / 8)))) * (scale - 1)
+            # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
+            same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
             row_filters.append(scale_row_x_axis)
         horizontal_border, vertical_border = b'', b''
         if border > 0:
