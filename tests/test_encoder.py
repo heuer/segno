@@ -965,6 +965,18 @@ def test_encode_iso_i3():
     assert ref_matrix == qr.matrix
 
 
+def test_encode_iso_fig29():
+    # ISO/IEC 18004:2015(E) - page 60
+    # ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+    #TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                            error='m', mask=4, boost_error=False)
+    assert qr.mask == 4
+    ref_matrix = read_matrix('iso-fig-29')
+    assert ref_matrix == qr.matrix
+
+
 def test_codeword_placement_iso_i2():
     # ISO/IEC 18004:2015(E) - page 96
     # 01234567 as M2-L symbol
