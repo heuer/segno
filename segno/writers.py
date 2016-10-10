@@ -155,7 +155,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
         write('<svg')
         if svgns:
             write(' xmlns="http://www.w3.org/2000/svg"')
-        if svgversion is not None:
+        if svgversion is not None and svgversion < 2.0:
             write(' version={0}'.format(quoteattr(str(svgversion))))
         border = get_border(version, border)
         width, height = get_symbol_size(version, scale, border)
