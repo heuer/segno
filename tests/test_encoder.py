@@ -795,7 +795,7 @@ def test_split_into_blocks():
     ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
     assert ec_infos
     assert 2 == len(ec_infos)
-    blocks = encoder.make_data_blocks(ec_infos, codewords)
+    blocks, error_blocks = encoder.make_blocks(ec_infos, codewords)
     assert 4 == len(blocks)
     assert 15 == len(blocks[0])
     assert codewords[:15] == blocks[0]
