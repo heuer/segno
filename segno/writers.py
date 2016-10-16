@@ -518,16 +518,12 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     if not is_greyscale:
         # PLTE image
         if bg_is_transparent:
-            if len(stroke_color) == 3:
-                bg_color = invert_color(stroke_color)
-            else:
-                bg_color = invert_color(stroke_color[:3])
+            bg_color = invert_color(stroke_color[:3])
+            if len(stroke_color) == 4:
                 bg_color += (0,)
         elif stroke_is_transparent:
-            if len(bg_color) == 3:
-                stroke_color = invert_color(bg_color)
-            else:
-                stroke_color = invert_color(bg_color[:3])
+            stroke_color = invert_color(bg_color[:3])
+            if len(bg_color) == 4:
                 stroke_color += (0,)
         palette = sorted([bg_color, stroke_color], key=len, reverse=True)
         bg_color_idx = palette.index(bg_color)
@@ -706,7 +702,8 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
 
 def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     """\
-    Serializes the matrix in PBM format.
+    Serializes the matrix as `PBM <http://netpbm.sourceforge.net/doc/pbm.html>`_
+    image.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -716,8 +713,8 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param bool plain: Indicates if a P1 image should be created (default: False).
-            By default a P4 image is created.
+    :param bool plain: Indicates if a P1 (ASCII encoding) image should be
+            created (default: False). By default a (binary) P4 image is created.
     """
     def groups_of_eight(row):
         """\
@@ -726,20 +723,95 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         """
         return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
 
+    row_iter = matrix_iter(matrix, version, scale, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wb') as f:
         write = f.write
-        kind = b'P4' if not plain else b'P1'
-        write(kind + '\n# Created by {0}\n{1} {2}\n' \
-              .format(CREATOR, width, height).encode('ascii'))
-        row_iter = matrix_iter(matrix, version, scale, border)
+        write('{0}\n'
+              '# Created by {1}\n'
+              '{2} {3}\n'\
+              .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
                 write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
         else:
             for row in row_iter:
-                write(b''.join(str(i).encode('ascii') for i in row))
+                write(bytearray(row))
                 write(b'\n')
+
+
+def write_pam(matrix, version, out, scale=1, border=None, color='#000',
+              background='#fff'):
+    """\
+    Serializes the matrix as `PAM <http://netpbm.sourceforge.net/doc/pam.html>`_
+    image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: white).
+            See `color` for valid values. In addition, ``None`` is
+            accepted which indicates a transparent background.
+    """
+    def invert_row_bits(row):
+        """\
+        Inverts the row bits 0 -> 1, 1 -> 0
+        """
+        return bytearray([b ^ 0x1 for b in row])
+
+    def row_to_color_values(row, colors):
+        return b''.join([colors[b] for b in row])
+
+    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
+    transparency = False
+    stroke_color = color_to_rgb_or_rgba(color, alpha_float=False)
+    bg_color = color_to_rgb_or_rgba(background, alpha_float=False) if background is not None else None
+    colored_stroke = not (color_is_black(stroke_color) or color_is_white(stroke_color))
+    if bg_color is None:
+        tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
+        transparency = True
+        bg_color = invert_color(stroke_color[:3])
+        bg_color += (0,)
+        if len(stroke_color) != 4:
+            stroke_color += (255,)
+    elif colored_stroke or not (color_is_black(bg_color) or color_is_white(bg_color)):
+        tuple_type = 'RGB'
+    is_rgb = tuple_type.startswith('RGB')
+    colors = None
+    if not is_rgb and transparency:
+        depth = 2
+        colors = (b'\x01\x00', b'\x00\x01')
+    elif is_rgb:
+        maxval = max(chain(stroke_color, bg_color))
+        fmt = b'3B'
+        depth = 3
+        if transparency:
+            depth = 4
+            fmt = b'4B'
+        colors=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
+    row_filter = invert_row_bits if colors is None else partial(row_to_color_values, colors=colors)
+    with writable(out, 'wb') as f:
+        write = f.write
+        write('P7\n'
+              '# Created by {0}\n'
+              'WIDTH {1}\n'
+              'HEIGHT {2}\n'
+              'DEPTH {3}\n'
+              'MAXVAL {4}\n'
+              'TUPLTYPE {5}\n'
+              'ENDHDR\n'.format(CREATOR, width, height, depth, maxval, tuple_type).encode('ascii'))
+        for row in row_iter:
+            write(row_filter(row))
 
 
 def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='pt', url=None):
@@ -873,6 +945,7 @@ _VALID_SERIALISERS = {
     'pdf': write_pdf,
     'ans': write_terminal,
     'pbm': write_pbm,
+    'pam': write_pam,
     'tex': write_tex,
 }
 

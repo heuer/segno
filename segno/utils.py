@@ -123,12 +123,15 @@ def matrix_iter(matrix, version, scale=1, border=None):
     Returns an interator / generator over the provided matrix which includes
     the border and the scaling factor.
 
+    If either the `scale` or `border` value is invalid, a py:exc:`ValueError`
+    is raised.
+
     :param matrix: An iterable of bytearrays.
     :param int version: A version constant.
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
-    :raises: py:exc:`ValueError` if an illegal border value is provided
+    :raises: py:exc:`ValueError` if an illegal scale or border value is provided
     """
     check_valid_border(border)
     scale = int(scale)
