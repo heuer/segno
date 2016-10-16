@@ -736,7 +736,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
                 write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
         else:
             for row in row_iter:
-                write(bytearray(row))
+                write(b''.join(str(i).encode('ascii') for i in row))
                 write(b'\n')
 
 
@@ -770,6 +770,8 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
     def row_to_color_values(row, colors):
         return b''.join([colors[b] for b in row])
 
+    if not color:
+        raise ValueError('Invalid stroke color "{0}"'.format(color))
     row_iter = matrix_iter(matrix, version, scale, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
@@ -793,11 +795,8 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
         colors = (b'\x01\x00', b'\x00\x01')
     elif is_rgb:
         maxval = max(chain(stroke_color, bg_color))
-        fmt = b'3B'
-        depth = 3
-        if transparency:
-            depth = 4
-            fmt = b'4B'
+        depth = 3 if not transparency else 4
+        fmt = '>{0}B'.format(depth).encode('ascii')
         colors=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
     row_filter = invert_row_bits if colors is None else partial(row_to_color_values, colors=colors)
     with writable(out, 'wb') as f:
