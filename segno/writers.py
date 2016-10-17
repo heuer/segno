@@ -45,27 +45,6 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
 
-
-def get_writable(file_or_path, mode, encoding=None):
-    """\
-    Returns a writable stream and if the caller must close the writable
-    stream explicitly.
-
-    :param file_or_path: Either a file-like object or a filename.
-    :param str mode: String indicating the writing mode (i.e. ``'wb'``)
-    :rtype: tuple: fileobj, bool
-    """
-    import warnings
-    warnings.warn('Use writable(file_or_path, mode) as f')
-    try:
-        file_or_path.write
-        if encoding is None:
-            return file_or_path, False
-        return codecs.getwriter(encoding)(file_or_path), False
-    except AttributeError:
-        return open(file_or_path, mode, encoding=encoding), True
-
-
 @contextmanager
 def writable(file_or_path, mode, encoding=None):
     """\

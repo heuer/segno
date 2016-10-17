@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.2.4 -- 2016-mm-dd
+-------------------
+* Removed ``writers.get_writable`` (replaced by ``writers.writable``)
+
+
+
 0.2.3 -- 2016-10-17
 -------------------
 * Fixed #27: E-mail URI is wrong if CC or BCC is used.
