@@ -27,7 +27,8 @@ Find maximal error correction level             No                    No        
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
 `XPM`_ output                                   No                    Yes                    No                    No
-`PBM`_ output                                   No                    No                     No                    Yes
+`PBM`_ output                                   Yes                   No                     No                    Yes
+`PAM`_ output                                   No                    No                     No                    Yes
 `LaTeX`_ support                                No                    No                     No                    Yes
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
@@ -98,7 +99,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _EPS: https://en.wikipedia.org/wiki/Encapsulated_PostScript
 .. _PDF: https://en.wikipedia.org/wiki/Portable_Document_Format
 .. _XPM: https://en.wikipedia.org/wiki/X_PixMap
-.. _PBM: https://de.wikipedia.org/wiki/Portable_Bitmap
+.. _PBM: https://en.wikipedia.org/wiki/Netpbm_format
+.. _PAM: https://en.wikipedia.org/wiki/Netpbm#PAM_graphics_format
 .. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
 .. _data URI: https://en.wikipedia.org/wiki/Data_URI_scheme
 .. _ANSI: https://en.wikipedia.org/wiki/ANSI_escape_code
