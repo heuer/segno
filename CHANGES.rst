@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2.3 -- 2016-mm-dd
+0.2.3 -- 2016-10-17
 -------------------
 * Fixed #27: E-mail URI is wrong if CC or BCC is used.
 * Fixed #32: Don't add version attribute if SVG >= 2.0
