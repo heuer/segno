@@ -7,8 +7,8 @@ Features
 ============================================    ==================    ===================    ==================    ========
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
-Library license                                 `BSD`_                  `BSD`_               `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 0.2.2
+Library license                                 `BSD`_                `BSD`_                 `MIT`_                `BSD`_
+Library version                                 5.3                   1.2.1                  1.0.0                 |version|
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
@@ -19,15 +19,16 @@ Mode Structured Append                          No                    No        
 Mixing modes                                    Yes                   No                     Yes                   Yes
 QR Codes version 1 - 40                         Yes                   Yes                    Yes                   Yes
 Micro QR Codes version M1 - M4                  No                    No                     No                    Yes
-Output acc. to ISO/IEC 18004:2015(E) Fig. 1     No                    No                     No                    Yes
+Output acc. to ISO/IEC 18004:2015(E) Fig. 1     Yes                   No                     No                    Yes
 Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not available)     No (not available)    Yes
-Find best error correction level                No                    No                     Yes                   Yes
+Find maximal error correction level             No                    No                     Yes                   Yes
 `PNG`_ output                                   Yes                   Yes                    No                    Yes
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
 `XPM`_ output                                   No                    Yes                    No                    No
-`PBM`_ output                                   No                    No                     No                    Yes
+`PBM`_ output                                   Yes                   No                     No                    Yes
+`PAM`_ output                                   No                    No                     No                    Yes
 `LaTeX`_ support                                No                    No                     No                    Yes
 PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
@@ -53,7 +54,7 @@ Default encoding in Byte mode                   UTF-8                 ISO/IEC 88
 Performance
 -----------
 
-Some performance indicators. The script `benchmark.py`_ ran on a
+Some performance indicators. The script `benchmarks.py`_ ran on a
 MacBook Air 2,13 Core2 Duo using CPython 2.7.10. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
@@ -98,7 +99,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _EPS: https://en.wikipedia.org/wiki/Encapsulated_PostScript
 .. _PDF: https://en.wikipedia.org/wiki/Portable_Document_Format
 .. _XPM: https://en.wikipedia.org/wiki/X_PixMap
-.. _PBM: https://de.wikipedia.org/wiki/Portable_Bitmap
+.. _PBM: https://en.wikipedia.org/wiki/Netpbm_format
+.. _PAM: https://en.wikipedia.org/wiki/Netpbm#PAM_graphics_format
 .. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
 .. _data URI: https://en.wikipedia.org/wiki/Data_URI_scheme
 .. _ANSI: https://en.wikipedia.org/wiki/ANSI_escape_code
@@ -111,4 +113,4 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _Pillow: https://python-pillow.github.io/
 .. _colorama: https://pypi.python.org/pypi/colorama
 .. _PIL plugin: https://github.com/heuer/segno-pil
-.. _benchmark.py: https://github.com/heuer/segno/sandbox/benchmark.py
+.. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py

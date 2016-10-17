@@ -256,7 +256,7 @@ def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
     for key, val in (('cc', cc), ('bcc', bcc)):
         vals = multi(val)
         if vals:
-            data.append('{0}{1}:{2}'.format(delim, key, ','.join(vals)))
+            data.append('{0}{1}={2}'.format(delim, key, ','.join(vals)))
             delim = '&'
     for key, val in (('subject', subject), ('body', body)):
         if val is not None:

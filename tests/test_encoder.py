@@ -795,7 +795,7 @@ def test_split_into_blocks():
     ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
     assert ec_infos
     assert 2 == len(ec_infos)
-    blocks = encoder.make_data_blocks(ec_infos, codewords)
+    blocks, error_blocks = encoder.make_blocks(ec_infos, codewords)
     assert 4 == len(blocks)
     assert 15 == len(blocks[0])
     assert codewords[:15] == blocks[0]
@@ -962,6 +962,18 @@ def test_encode_iso_i3():
     assert consts.VERSION_M2 == qr.version
     assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
     ref_matrix = read_matrix('iso-i3')
+    assert ref_matrix == qr.matrix
+
+
+def test_encode_iso_fig29():
+    # ISO/IEC 18004:2015(E) - page 60
+    # ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+    #TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                            error='m', mask=4, boost_error=False)
+    assert qr.mask == 4
+    ref_matrix = read_matrix('iso-fig-29')
     assert ref_matrix == qr.matrix
 
 

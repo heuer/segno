@@ -45,8 +45,7 @@ if QRCode:
 
     def png_qrcode(data='QR Code Symbol'):
         """qrcode PNG"""
-        qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
-                    image_factory=SvgImage)
+        qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10)
         qr.add_data(data, optimize=False)
         qr.make_image().save('out/qrcode_%s.png' % data)
 
@@ -88,7 +87,7 @@ def svg_segno(data='QR Code Symbol'):
 
 def png_segno(data='QR Code Symbol'):
     """Segno PNG"""
-    segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10)
+    segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10, addad=False)
 
 
 def run_create_tests(which=None, number=200, table=None):

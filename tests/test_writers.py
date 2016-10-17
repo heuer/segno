@@ -20,52 +20,63 @@ import pytest
 from segno import writers
 
 
-def test_get_writable_stream():
+def test_writable_stream():
     buff = io.BytesIO()
-    writable, must_close = writers.get_writable(buff, 'wb')
-    assert buff == writable
-    assert not must_close
+    with writers.writable(buff, 'wb') as f:
+        f.write(b'x')
+    assert not buff.closed
 
 
-def test_get_writable_stream2():
+def test_writable_stream2():
     buff = io.StringIO()
-    writable, must_close = writers.get_writable(buff, 'wt')
-    assert buff == writable
-    assert not must_close
+    with writers.writable(buff, 'wt') as f:
+        f.write('x')
+    assert not buff.closed
 
 
-def test_get_writable_not_stream():
+def test_writable_stream3():
+    buff = io.StringIO()
+    with pytest.raises(Exception):
+        with writers.writable(buff, 'wt') as f:
+            f.write('x')
+            raise Exception()
+    assert not f.closed
+
+
+def test_writable_not_stream():
     fn = tempfile.NamedTemporaryFile()
     name = fn.name
     fn.close()
-    writable, must_close = writers.get_writable(name, 'wb')
-    try:
-        assert name == writable.name
-        writable.write(b'Segno')
-        assert must_close
-    finally:
+    with writers.writable(name, 'wb') as f:
         try:
-            writable.close()
-        except:
-            pass
-        os.remove(name)
+            assert name == f.name
+            f.write(b'Segno')
+        finally:
+            os.remove(name)
 
 
-def test_get_writable_not_stream2():
+def test_writable_not_stream2():
     fn = tempfile.NamedTemporaryFile()
     name = fn.name
     fn.close()
-    writable, must_close = writers.get_writable(name, 'wt')
-    try:
-        assert name == writable.name
-        writable.write('Segno')
-        assert must_close
-    finally:
+    with writers.writable(name, 'wt') as f:
         try:
-            writable.close()
-        except:
-            pass
-        os.remove(name)
+            assert name == f.name
+            f.write('Segno')
+        finally:
+            os.remove(name)
+
+
+def test_writable_not_stream3():
+    fn = tempfile.NamedTemporaryFile()
+    name = fn.name
+    fn.close()
+    with pytest.raises(Exception):
+        with writers.writable(name, 'wb') as f:
+            assert name == f.name
+            f.write(b'Segno')
+            raise Exception()
+    assert f.closed
 
 
 if __name__ == '__main__':

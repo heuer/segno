@@ -404,23 +404,6 @@ def add_codewords(matrix, codewords, is_micro):
                     idx += 1
 
 
-def make_data_blocks(ec_infos, codewords):
-    """\
-    Divides the `codewords` according to the `ec_infos` into blocks
-    of codewords and returns a list of blocks.
-
-    :param codewords: Iterable of codewords.
-    :param ec_infos: Iterable of Error Correction information
-    """
-    res = []
-    offset = 0
-    for ec_info in ec_infos:
-        for i in range(ec_info.num_blocks):
-            res.append(codewords[offset:offset + ec_info.num_data])
-            offset += ec_info.num_data
-    return res
-
-
 def make_final_message(version, error, codewords):
     """\
     Constructs the final message (codewords incl. error correction).

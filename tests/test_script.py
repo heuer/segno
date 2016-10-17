@@ -36,6 +36,7 @@ def test_defaults():
     assert args.boost_error
     # PNG
     assert args.addad
+    assert not args.dpi
     # SVG
     assert args.xmldecl
     assert not args.no_classes
@@ -240,6 +241,11 @@ def test_output(arg, ext, expected, mode):
 def test_noad():
     args = cmd.parse(['', '--no-ad'])
     assert not args.addad
+
+
+def test_dpi():
+    args = cmd.parse(['', '--dpi=300'])
+    assert 300 == args.dpi
 
 
 # -- SVG

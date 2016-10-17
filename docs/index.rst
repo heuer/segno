@@ -1,5 +1,5 @@
-Segno - Python QR Code and Micro QR Code generator
-==================================================
+Segno - Python QR Code and Micro QR Code encoder
+================================================
 
 Segno generates QR Codes and Micro QR Codes according to ``ISO/IEC 18004:2015(E)``.
 Aside from other Pyhton QR Code generators, Segno has no 3rd party dependencies

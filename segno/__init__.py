@@ -21,7 +21,7 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.2.2'
+__version__ = '0.2.3'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
@@ -530,6 +530,11 @@ class QRCode(object):
                          for the ``IDAT`` (data) chunk.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
+        dpi              Default: None. Specifies the DPI value for the image.
+                         By default, the DPI value is unspecified. Please note
+                         that the DPI value is converted into meters (maybe with
+                         rounding errors) since PNG does not support the unit
+                         "dots per inch".
         addad            Boolean value (default: True) to (dis-)allow a "Software"
                          comment indicating that the file was created by Segno.
         =============    ==============================================================
@@ -543,7 +548,7 @@ class QRCode(object):
         kind             "eps"
         scale            integer or float
         color            Default: "#000" (black)
-        background       Default value ``#fff`` (white)
+        background       Default value: ``None`` (no background)
         =============    ==============================================================
 
 
@@ -594,6 +599,19 @@ class QRCode(object):
         plain            Default: False. Boolean to switch between the P4 and P1 format.
                          If set to ``True``, the (outdated) P1 serialization format is
                          used.
+        =============    ==============================================================
+
+
+        **Portable Arbitrary Map (PAM)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "pam"
+        scale            integer
+        color            Default: "#000" (black).
+        background       Default value ``#fff`` (white). Use ``None`` for a transparent
+                         background.
         =============    ==============================================================
 
 

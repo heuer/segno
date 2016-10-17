@@ -84,13 +84,17 @@ def test_email_data():
     data = helpers.make_make_email_data(('me@example.org', 'you@example.org'))
     assert 'mailto:me@example.org,you@example.org' == data
     data = helpers.make_make_email_data('me@example.org', cc='you@example.org')
-    assert 'mailto:me@example.org?cc:you@example.org' == data
+    assert 'mailto:me@example.org?cc=you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', bcc='you@example.org')
+    assert 'mailto:me@example.org?bcc=you@example.org' == data
     data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'))
-    assert 'mailto:me@example.org?cc:me@example.org,you@example.org' == data
+    assert 'mailto:me@example.org?cc=me@example.org,you@example.org' == data
+    data = helpers.make_make_email_data('me@example.org', bcc=('me@example.org', 'you@example.org'))
+    assert 'mailto:me@example.org?bcc=me@example.org,you@example.org' == data
     data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Test')
-    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject=Test' == data
+    assert 'mailto:me@example.org?cc=me@example.org,you@example.org&subject=Test' == data
     data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Subject', body='Body')
-    assert 'mailto:me@example.org?cc:me@example.org,you@example.org&subject=Subject&body=Body' == data
+    assert 'mailto:me@example.org?cc=me@example.org,you@example.org&subject=Subject&body=Body' == data
     data = helpers.make_make_email_data('me@example.org', subject='A subject', body='Hellöö')
     assert 'mailto:me@example.org?subject=A%20subject&body=Hell%C3%B6%C3%B6' == data
 
