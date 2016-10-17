@@ -60,5 +60,46 @@ def test_rgba():
     assert b'RGB_ALPHA' in out.getvalue()
 
 
+_size = re.compile(br'^WIDTH\s+([0-9]+)$').match
+
+def _image_data(buff):
+    """\
+    Returns the image data and the size of the matrix.
+    """
+    seen_size = False
+    size = 0
+    code = buff.getvalue().splitlines()
+    code_iter = iter(code)
+    for l in code_iter:
+        if l.startswith(b'ENDHDR'):
+            break
+        if seen_size:
+            continue
+        m = _size(l)
+        if m:
+            size = int(m.group(1))
+            seen_size = True
+    return next(code_iter), size
+
+
+def pam_bw_as_matrix(buff, border):
+    """\
+    Returns the QR code as list of [0, 1] lists.
+
+    :param io.BytesIO buff: Buffer to read the matrix from.
+    """
+    res = []
+    data, size = _image_data(buff)
+    for i, offset in enumerate(range(0, len(data), size)):
+        if i < border:
+            continue
+        if i >= size - border:
+            break
+        row_data = bytearray(data[offset + border:offset + size - border])
+        # Invert bytes since PAM uses 0x0 = black, 0x1 = white
+        res.append([b ^ 0x1 for b in row_data])
+    return res
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
