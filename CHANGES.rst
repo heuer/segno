@@ -9,7 +9,7 @@ Changes
 
 0.2.3 -- 2016-10-17
 -------------------
-* Fixed #27: E-mail URI is wrong if CC or BCC is used.
+* Fixed #27: Email URI is wrong if CC or BCC is used.
 * Fixed #32: Don't add version attribute if SVG >= 2.0
 * Deprecated ``writers.get_writable``; use ``writers.writable``
   ``writers.writable`` closes file-like objects automatically (if necessary);
@@ -25,7 +25,7 @@ Changes
 -------------------
 * Command line script reports Segno's version (``--ver``) and the version
   is also mentioned in the help message (``-h``) (#24)
-* Support for creating E-mail addresses or complete messages (``segno.helpers``)
+* Support for creating email addresses or complete messages (``segno.helpers``)
 * Internal optimizations and more correct minimal version finding (#26)
 
 
