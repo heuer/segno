@@ -28,6 +28,10 @@ __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'DataOverflowError')
 
 
+# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
+__metaclass__ = type
+
+
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
          eci=False, micro=None, boost_error=True):
     """\
@@ -173,7 +177,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
                 encoding=encoding, micro=True, boost_error=boost_error)
 
 
-class QRCode(object):
+class QRCode:
     """\
     Represents a (Micro) QR Code.
     """
