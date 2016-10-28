@@ -792,6 +792,59 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
             write(row_filter(row))
 
 
+def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
+    """\
+    Serializes the matrix as XBM image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write text data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 in the provided unit per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param name: Prefix for the variable names. Default: "img".
+                 The prefix is used to construct the variable names:
+                 ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
+    """
+    def byte_iterable(row):
+        r = chain(left_right_border, chain(*([b] * scale for b in row)), left_right_border)
+        for bits in zip_longest(*[iter(r)] * 8, fillvalue=0x0):
+            # Reverse bits since XBM uses little endian
+            yield '0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1]))
+
+    def rows():
+        top_bottom_border = tuple([0x0] * (width // scale - 2 * border))
+        for x in range(0, border):
+            yield top_bottom_border
+        for row in matrix:
+            yield row
+        for x in range(0, border):
+            yield top_bottom_border
+
+    check_valid_scale(scale)
+    check_valid_border(border)
+    scale = int(scale)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    left_right_border = [0x0] * border * scale
+    with writable(out, 'wt') as f:
+        write = f.write
+        write('#define {0}_width {1}\n'
+              '#define {0}_height {2}\n'
+              'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
+        i = 0
+        for row in rows():
+            r = ', '.join(byte_iterable(row))
+            for s in range(0, scale):
+                i += 1
+                write('    ')
+                write(r)
+                write(',\n' if i < height else '\n')
+        write('};\n')
+
+
 def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='pt', url=None):
     """\
     Serializes the matrix as LaTeX PGF picture.
@@ -925,6 +978,7 @@ _VALID_SERIALISERS = {
     'pbm': write_pbm,
     'pam': write_pam,
     'tex': write_tex,
+    'xbm': write_xbm,
 }
 
 def save(matrix, version, out, kind=None, **kw):
