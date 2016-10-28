@@ -4,6 +4,7 @@ Changes
 0.2.4 -- 2016-mm-dd
 -------------------
 * Removed ``writers.get_writable`` (replaced by ``writers.writable``)
+* Added support for serializing QR Codes as XBM (X BitMap)
 
 
 

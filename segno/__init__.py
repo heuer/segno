@@ -634,6 +634,17 @@ class QRCode:
         =============    ==============================================================
 
 
+        **X BitMap (XBM)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "xbm"
+        scale            integer
+        name             Name of the variable (default: "img")
+        =============    ==============================================================
+
+
         :param out: A filename or a writable file-like object with a
                 ``name`` attribute. Use the `kind` parameter if `out` is
                 a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
