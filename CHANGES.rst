@@ -5,6 +5,9 @@ Changes
 -------------------
 * Removed ``writers.get_writable`` (replaced by ``writers.writable``)
 * Added support for serializing QR Codes as XBM (X BitMap)
+  (supports black / white images)
+* Added support for serializing QR Codes as XPM (X PixMap) (supports colors and
+  transparency)
 
 
 

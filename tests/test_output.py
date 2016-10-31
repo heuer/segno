@@ -26,6 +26,7 @@ try:
     from .test_pbm import pbm_p1_as_matrix
     from .test_pam import pam_bw_as_matrix
     from .test_tex import tex_as_matrix
+    from .test_xpm import xpm_as_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
@@ -36,6 +37,7 @@ except (ValueError, SystemError):  # Attempted relative import in non-package
     from test_pbm import pbm_p1_as_matrix
     from test_pam import pam_bw_as_matrix
     from test_tex import tex_as_matrix
+    from test_xpm import xpm_as_matrix
 
 
 _DATA = (
@@ -57,6 +59,7 @@ def _make_test_data_input():
                                                      ('pdf', io.BytesIO, pdf_as_matrix, {}),
                                                      ('ans', io.StringIO, terminal_as_matrix, {}),
                                                      ('tex', io.StringIO, tex_as_matrix, {}),
+                                                     ('xpm', io.StringIO, xpm_as_matrix, {}),
                                                      ('pam', io.BytesIO, pam_bw_as_matrix, {}),
                                                      ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True),)):
         for data, error, border in _DATA:

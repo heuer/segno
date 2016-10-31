@@ -55,6 +55,13 @@ def color_to_webcolor(color, allow_css3_colors=True, optimize=True):
     return hx if alpha_channel is None else (hx, alpha_channel)
 
 
+def color_to_rgb_hex(color):
+    """\
+
+    """
+    return '#{0:02x}{1:02x}{2:02x}'.format(*color_to_rgb(color))
+
+
 def color_is_black(color):
     """\
 

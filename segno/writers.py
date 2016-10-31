@@ -38,7 +38,7 @@ except ImportError:  # pragma: no cover
     str = unicode
     from io import open
 from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
-        color_to_webcolor, color_is_black, color_is_white
+        color_to_webcolor, color_is_black, color_is_white, color_to_rgb_hex
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter
 
@@ -792,9 +792,48 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
             write(row_filter(row))
 
 
+def write_xpm(matrix, version, out, scale=1, border=None, color='#000',
+              background='#fff', name='img'):
+    """\
+    Serializes the matrix as `XPM <https://en.wikipedia.org/wiki/X_PixMap>`_ image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: white).
+            See `color` for valid values. ``None`` indicates a transparent
+            background.
+    :param str name: Name of the image (must be a valid C-identifier).
+            Default: "img".
+    """
+    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    stroke_color = color_to_rgb_hex(color)
+    bg_color = color_to_rgb_hex(background) if background is not None else 'None'
+    with writable(out, 'wt') as f:
+        write = f.write
+        write('/* XPM */\n'
+              'static char *{0}[] = {{\n'
+              '"{1} {2} 2 1",\n'
+              '"  c {3}",\n'
+              '"X c {4}",\n'.format(name, width, height, bg_color, stroke_color))
+        for i, row in enumerate(row_iter):
+            write(''.join(chain(['"'],  (' ' if not b else 'X' for b in row),
+                                ['"{0}\n'.format(',' if i < height - 1 else '')])))
+        write('};\n')
+
+
 def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
     """\
-    Serializes the matrix as XBM image.
+    Serializes the matrix as `XBM <https://en.wikipedia.org/wiki/X_BitMap>`_ image.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -979,6 +1018,7 @@ _VALID_SERIALISERS = {
     'pam': write_pam,
     'tex': write_tex,
     'xbm': write_xbm,
+    'xpm': write_xpm,
 }
 
 def save(matrix, version, out, kind=None, **kw):
