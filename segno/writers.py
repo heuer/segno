@@ -431,13 +431,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         return pack(b'>I', len(data)) + chunk_head \
                + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
 
-    def groups_of_eight(row):
-        """\
-        Returns 8 columns from the iterable. If the iterable is of uneven
-        length, missing values will be filled-up with ``0x0``.
-        """
-        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
-
     def scale_row_x_axis(row):
         """\
         Returns each pixel `scale` times.
@@ -450,9 +443,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns a single scanline.
         """
-        return bytearray(chain(filter_type,
-                               # Pack 8 px into one byte
-                               (reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row))))
+        return bytearray(chain(filter_type, _pack_bits_into_byte(row)))
 
     def invert_row_bits(row):
         """\
@@ -695,13 +686,6 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
-    def groups_of_eight(row):
-        """\
-        Returns 8 columns from the iterable. If the iterable is of uneven
-        length, missing values will be filled-up with ``0x0``.
-        """
-        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
-
     row_iter = matrix_iter(matrix, version, scale, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wb') as f:
@@ -712,7 +696,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
-                write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
+                write(bytearray(_pack_bits_into_byte(row)))
         else:
             for row in row_iter:
                 write(b''.join(str(i).encode('ascii') for i in row))
@@ -1004,6 +988,17 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
             write('  ' * cnt)
         set_color(default_color)  # reset color
         write('\n')
+
+
+def _pack_bits_into_byte(iterable):
+    """\
+    Packs eight bits into one byte.
+
+    If the length of the iterable is not a multiple of eight, ``0x0`` is used
+    to fill-up the missing values.
+    """
+    return (reduce(lambda x, y: (x << 1) + y, e)
+            for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
 _VALID_SERIALISERS = {
