@@ -5,7 +5,7 @@
 Tests against <https://github.com/mnooner256/pyqrcode/issues/50>
 
 This test was created by Martijn van Rheenen <https://github.com/rheenen>
-for PyQRCode. Adapted to Segno to check if this problem also occurs here as well.
+for PyQRCode. Adapted to Segno to check if it has the same problem.
 """
 from __future__ import unicode_literals
 import pytest
