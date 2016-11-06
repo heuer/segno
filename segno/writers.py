@@ -37,8 +37,7 @@ except ImportError:  # pragma: no cover
     range = xrange
     str = unicode
     from io import open
-from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
-        color_to_webcolor, color_is_black, color_is_white, color_to_rgb_hex
+from . import colors
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter
 
@@ -153,7 +152,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
             write('<desc>{0}</desc>'.format(escape(desc)))
         allow_css3_colors = svgversion is not None and svgversion >= 2.0
         if background is not None:
-            bg_color = color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
+            bg_color = colors.color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
             fill_opacity = ''
             if isinstance(bg_color, tuple):
                 bg_color, opacity = bg_color
@@ -165,7 +164,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
             write(' transform="scale({0})"'.format(scale))
         if color is not None:
             opacity = None
-            stroke_color = color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
+            stroke_color = colors.color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
             if isinstance(stroke_color, tuple):
                 stroke_color, opacity = stroke_color
             write(' stroke={0}'.format(quoteattr(stroke_color)))
@@ -336,7 +335,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
                                  .format(c))
             return 1/255.0 * c if c != 1 else c
 
-        return tuple([to_float(i) for i in color_to_rgb(clr)])
+        return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
 
     check_valid_scale(scale)
     check_valid_border(border)
@@ -353,7 +352,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
         # Write the shortcuts
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
-        stroke_color_is_black = color_is_black(color)
+        stroke_color_is_black = colors.color_is_black(color)
         stroke_color = color if stroke_color_is_black else rgb_to_floats(color)
         if background is not None:
             writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
@@ -419,7 +418,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     """
 
     def png_color(clr):
-        return color_to_rgb_or_rgba(clr, alpha_float=False)
+        return colors.color_to_rgb_or_rgba(clr, alpha_float=False)
 
     def chunk(name, data):
         """\
@@ -465,13 +464,13 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     stroke_is_black, stroke_is_white = False, False
     bg_is_white, bg_is_black = False, False
     if not stroke_is_transparent:
-        stroke_is_black = color_is_black(stroke_color)
+        stroke_is_black = colors.color_is_black(stroke_color)
         if not stroke_is_black:
-            stroke_is_white = color_is_white(stroke_color)
+            stroke_is_white = colors.color_is_white(stroke_color)
     if not bg_is_transparent:
-        bg_is_white = color_is_white(bg_color)
+        bg_is_white = colors.color_is_white(bg_color)
         if not bg_is_white:
-            bg_is_black = color_is_black(bg_color)
+            bg_is_black = colors.color_is_black(bg_color)
     transparency = stroke_is_transparent or bg_is_transparent
     is_greyscale = False
     invert_row = False
@@ -488,11 +487,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     if not is_greyscale:
         # PLTE image
         if bg_is_transparent:
-            bg_color = invert_color(stroke_color[:3])
+            bg_color = colors.invert_color(stroke_color[:3])
             if len(stroke_color) == 4:
                 bg_color += (0,)
         elif stroke_is_transparent:
-            stroke_color = invert_color(bg_color[:3])
+            stroke_color = colors.invert_color(bg_color[:3])
             if len(bg_color) == 4:
                 stroke_color += (0,)
         palette = sorted([bg_color, stroke_color], key=len, reverse=True)
@@ -662,11 +661,11 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
     :param background: Character to use for the white modules (default: '0')
     """
     row_iter = matrix_iter(matrix, version, scale=1, border=border)
-    colors = (str(background), str(color))
+    colours = (str(background), str(color))
     with writable(out, 'wt') as f:
         write = f.write
         for row in row_iter:
-            write(''.join([colors[i] for i in row]))
+            write(''.join([colours[i] for i in row]))
             write('\n')
 
 
@@ -730,8 +729,8 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
         """
         return bytearray([b ^ 0x1 for b in row])
 
-    def row_to_color_values(row, colors):
-        return b''.join([colors[b] for b in row])
+    def row_to_color_values(row, colours):
+        return b''.join([colours[b] for b in row])
 
     if not color:
         raise ValueError('Invalid stroke color "{0}"'.format(color))
@@ -739,29 +738,29 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
     width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
-    stroke_color = color_to_rgb_or_rgba(color, alpha_float=False)
-    bg_color = color_to_rgb_or_rgba(background, alpha_float=False) if background is not None else None
-    colored_stroke = not (color_is_black(stroke_color) or color_is_white(stroke_color))
+    stroke_color = colors.color_to_rgb_or_rgba(color, alpha_float=False)
+    bg_color = colors.color_to_rgb_or_rgba(background, alpha_float=False) if background is not None else None
+    colored_stroke = not (colors.color_is_black(stroke_color) or colors.color_is_white(stroke_color))
     if bg_color is None:
         tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
         transparency = True
-        bg_color = invert_color(stroke_color[:3])
+        bg_color = colors.invert_color(stroke_color[:3])
         bg_color += (0,)
         if len(stroke_color) != 4:
             stroke_color += (255,)
-    elif colored_stroke or not (color_is_black(bg_color) or color_is_white(bg_color)):
+    elif colored_stroke or not (colors.color_is_black(bg_color) or colors.color_is_white(bg_color)):
         tuple_type = 'RGB'
     is_rgb = tuple_type.startswith('RGB')
-    colors = None
+    colours = None
     if not is_rgb and transparency:
         depth = 2
-        colors = (b'\x01\x00', b'\x00\x01')
+        colours = (b'\x01\x00', b'\x00\x01')
     elif is_rgb:
         maxval = max(chain(stroke_color, bg_color))
         depth = 3 if not transparency else 4
         fmt = '>{0}B'.format(depth).encode('ascii')
-        colors=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
-    row_filter = invert_row_bits if colors is None else partial(row_to_color_values, colors=colors)
+        colours=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
+    row_filter = invert_row_bits if colours is None else partial(row_to_color_values, colours=colours)
     with writable(out, 'wb') as f:
         write = f.write
         write('P7\n'
@@ -800,8 +799,8 @@ def write_xpm(matrix, version, out, scale=1, border=None, color='#000',
     """
     row_iter = matrix_iter(matrix, version, scale, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
-    stroke_color = color_to_rgb_hex(color)
-    bg_color = color_to_rgb_hex(background) if background is not None else 'None'
+    stroke_color = colors.color_to_rgb_hex(color)
+    bg_color = colors.color_to_rgb_hex(background) if background is not None else 'None'
     with writable(out, 'wt') as f:
         write = f.write
         write('/* XPM */\n'
