@@ -281,7 +281,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     adr_properties = (pobox, street, city, region, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
-        data.append('ADR:{0};;{1};{2};{3};{4};{5};{6}'.format(*adr_data))
+        data.append('ADR:{0};;{1};{2};{3};{4};{5};'.format(*adr_data))
     if birthday:
         try:
             birthday = birthday.strftime('%Y-%m-%d')
