@@ -106,4 +106,10 @@ Other QR Code generators
 * <https://pypi.python.org/pypi/qrcode/>
 * <https://pypi.python.org/pypi/qrcodegen/>
 
-.. _Segno's documentation: http://segno.readthedocs.io/en/latest/
+
+Documentation
+-------------
+<https://segno.readthedocs.io/>
+
+
+.. _Segno's documentation: https://segno.readthedocs.io/
