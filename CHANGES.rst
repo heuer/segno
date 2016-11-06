@@ -8,6 +8,8 @@ Changes
   (supports black / white images)
 * Added support for serializing QR Codes as XPM (X PixMap) (supports colors and
   transparency)
+* Added support for encoding contact information as vCard version 3.0
+  (``segno.helpers``)
 
 
 
