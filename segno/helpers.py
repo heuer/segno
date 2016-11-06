@@ -25,9 +25,6 @@ except ImportError:  # pragma: no cover
     str = unicode
     str_type = basestring
 
-# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
-__metaclass__ = type
-
 
 _MECARD_ESCAPE = {
     ord('\\'): '\\\\',
