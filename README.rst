@@ -100,16 +100,9 @@ All factory functions use the same parameters to specify the desired error
 level, version, data mask etc., see `Segno's documentation`_ for details.
 
 
-Other QR Code generators
-------------------------
-* <https://pypi.python.org/pypi/PyQRCode/>
-* <https://pypi.python.org/pypi/qrcode/>
-* <https://pypi.python.org/pypi/qrcodegen/>
-
-
 Documentation
 -------------
-<https://segno.readthedocs.io/>
+Read the online documentation at <https://segno.readthedocs.io/>
 
 
 .. _Segno's documentation: https://segno.readthedocs.io/
