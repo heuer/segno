@@ -6,13 +6,14 @@ Segno is a QR Code and Micro QR Code encoder which has no further dependencies.
 This package implements main parts of ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015(E)
 and produces Micro QR Codes and QR Codes with nearly no effort.
 
-Segno provides several serialization formats like SVG, EPS, PNG, PDF, PBM,
-LaTeX (PGF/TikZ) or text output. None of these serializers require an external
-lib. Segno could provide more serialization formats via a plugin architecture.
+Segno provides several serialization formats like Scalable Vector Graphics (SVG),
+Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
+Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (PAM),
+LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
+serializers require an external lib. Segno could provide more serialization
+formats via a plugin architecture.
 Further, it provides several high level function to create QR Codes which encode
-contact data (MeCard) or WIFI configurations.
-
-It requires Python 2.6, 2.7 or Python 3 and works with PyPy.
+contact data (MeCard, vCard) or WIFI configurations.
 
 
 Installation
