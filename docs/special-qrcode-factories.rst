@@ -68,6 +68,9 @@ available.
 Creating a QR Code encoding contact information
 -----------------------------------------------
 
+MeCard
+^^^^^^
+
 The function ``make_mecard`` returns a QR Code which encodes contact information
 as MeCard.
 
@@ -93,3 +96,33 @@ A factory function which returns the MeCard as string is available as well.
     >>> qr = segno.make(mecard, error='H')
     >>> qr.designator
     '6-H'
+
+
+vCard
+^^^^^
+
+The function ``make_vcard`` returns a QR Code which encodes contact information
+as vCard version 3.0.
+
+.. code-block:: python
+
+    >>> from segno import helpers
+    >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email='me@example.org', phone='+1234567')
+    >>> qr.designator
+    '6-M'
+    >>> # Some params accept multiple values, like email, phone, url
+    >>> qr = helpers.make_vcard(name='Doe,John', displayname='John Doe', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
+    >>> qr.save('my-vcard.svg')
+
+A factory function which returns the vCard as string is available as well.
+
+.. code-block:: python
+
+    >>> import segno
+    >>> from segno import helpers
+    >>> vcard = helpers.make_vcard_data(name='Doe,John', displayname='John Doe', email='me@example.org', phone='+1234567')
+    >>> vcard
+    'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe,John\r\nFN:John Doe\r\nEMAIL:me@example.org\r\nTEL:+1234567\r\nEND:VCARD\r\n'
+    >>> qr = segno.make(vcard, error='H')
+    >>> qr.designator
+    '9-H'
