@@ -8,12 +8,15 @@
 """\
 Color utility functions.
 """
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 
 def color_to_rgb_or_rgba(color, alpha_float=True):
     """\
 
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
     """
     rgba = color_to_rgba(color, alpha_float=alpha_float)
     if rgba[3] in (1.0, 255):
@@ -57,14 +60,24 @@ def color_to_webcolor(color, allow_css3_colors=True, optimize=True):
 
 def color_to_rgb_hex(color):
     """\
+    Returns the provided color in hexadecimal representation.
 
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :returns: ``#RRGGBB``.
     """
     return '#{0:02x}{1:02x}{2:02x}'.format(*color_to_rgb(color))
 
 
 def color_is_black(color):
     """\
+    Returns if the provided color represents "black".
 
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :return: ``True`` if color is represents black, otherwise ``False``.
     """
     try:
         color = color.lower()
@@ -76,7 +89,12 @@ def color_is_black(color):
 
 def color_is_white(color):
     """\
+    Returns if the provided color represents "black".
 
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :return: ``True`` if color is represents white, otherwise ``False``.
     """
     try:
         color = color.lower()
@@ -93,6 +111,7 @@ def color_to_rgb(color):
 
     :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
             (``#RGB`` or ``#RRGGBB``) or a RGB tuple (i.e. ``(R, G, B)``))
+    :return: ``(R, G, B)`` tuple.
     """
     rgb = color_to_rgb_or_rgba(color)
     if len(rgb) != 3:
@@ -104,6 +123,10 @@ def color_to_rgb(color):
 def color_to_rgba(color, alpha_float=True):
     """\
 
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :return: ``(R, G, B, A)`` tuple.
     """
     res = []
     alpha_channel = (1.0,) if alpha_float else (255,)
