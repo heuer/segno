@@ -3,8 +3,9 @@ Segno -- Python QR Code and Micro QR Code encoder
 
 Segno is a QR Code and Micro QR Code encoder which has no further dependencies.
 
-This package implements main parts of ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015(E)
-and produces Micro QR Codes and QR Codes with nearly no effort.
+This package implements ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015(E) "QR Code bar
+code symbology specification" and produces Micro QR Codes and QR Codes with
+nearly no effort.
 
 Segno provides several serialization formats like Scalable Vector Graphics (SVG),
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
