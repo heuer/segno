@@ -10,7 +10,7 @@ API.
 A completely different API is possible by utilizing
 :py:func:`segno.encoder.encode` which returns just a tuple:
 ``(matrix, version, error, mask, segments)``. The module
-:py:mod:`segno.writers` is idependent of the :py:mod:`segno.encoder`
+:py:mod:`segno.writers` is independent of the :py:mod:`segno.encoder`
 module and vice versa.
 
 
