@@ -47,24 +47,24 @@ def test_writable_not_stream():
     fn = tempfile.NamedTemporaryFile()
     name = fn.name
     fn.close()
-    with writers.writable(name, 'wb') as f:
-        try:
+    try:
+        with writers.writable(name, 'wb') as f:
             assert name == f.name
             f.write(b'Segno')
-        finally:
-            os.remove(name)
+    finally:
+        os.remove(name)
 
 
 def test_writable_not_stream2():
     fn = tempfile.NamedTemporaryFile()
     name = fn.name
     fn.close()
-    with writers.writable(name, 'wt') as f:
-        try:
+    try:
+        with writers.writable(name, 'wt') as f:
             assert name == f.name
             f.write('Segno')
-        finally:
-            os.remove(name)
+    finally:
+        os.remove(name)
 
 
 def test_writable_not_stream3():
