@@ -10,10 +10,6 @@
 Command line script to generate QR Codes with Segno.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
 import sys
@@ -80,6 +76,7 @@ def make_parser():
                         )
     parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
                         dest='boost_error', action='store_false')
+    # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
                            action='store_true')
@@ -105,6 +102,7 @@ def make_parser():
                            type=float)
     svg_group.add_argument('--encoding', help='Specifies the encoding of the document',
                            default='utf-8')
+    # PNG
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
     png_group.add_argument('--dpi', help='Sets the DPI value of the PNG file',
                            type=int)
