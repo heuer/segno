@@ -15,6 +15,7 @@ Terminal output related tests.
 from __future__ import absolute_import, unicode_literals, division
 import io
 import re
+import pytest
 import segno
 
 
@@ -52,6 +53,4 @@ def terminal_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import pytest
     pytest.main([__file__])
-
