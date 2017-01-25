@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -8,10 +8,6 @@
 """\
 Test against issue #23.
 <https://github.com/heuer/segno/issues/23>
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import unicode_literals, absolute_import
 import segno
