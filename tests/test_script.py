@@ -229,7 +229,12 @@ def test_background_transparent2():
                                                  ('svgz', b'\x1f\x8b\x08', 'rb'),
                                                  ('txt', '000000', 'rt'),
                                                  ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
-                                                 ('ans', '\033[7m       ', 'rt')])
+                                                 ('ans', '\033[7m       ', 'rt'),
+                                                 ('pam', b'P7', 'rb'),
+                                                 ('pbm', 'P4\n', 'rb'),
+                                                 ('xbm', '#define ', 'rt'),
+                                                 ('xpm', '/* XPM */', 'rt'),
+                                                 ('tex', '%% Creator: ', 'rt'),])
 def test_output(arg, ext, expected, mode):
     f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
     f.close()
