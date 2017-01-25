@@ -59,6 +59,12 @@ def test_segno_version():
         assert 0 == e.exception.code
 
 
+def test_segno_version_shortcut():
+    with pytest.raises(SystemExit) as e:
+        cmd.parse(['', '-V'])
+        assert 0 == e.exception.code
+
+
 def test_error():
     args = cmd.parse(['', '-e', 'm'])
     assert args.error == 'M'

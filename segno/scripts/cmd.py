@@ -109,7 +109,7 @@ def make_parser():
     png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
                            dest='addad',
                            action='store_false')
-    parser.add_mutually_exclusive_group().add_argument('--ver', help="Shows Segno's version",
+    parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
                                                        version='Segno {0}'.format(segno.__version__))
     return parser
