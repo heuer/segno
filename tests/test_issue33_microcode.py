@@ -11,8 +11,13 @@ Tests against issue 33
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
+import segno
 from segno import consts
 from segno import encoder
+try:
+    from .utils import read_matrix
+except (ValueError, SystemError):  # Attempted relative import in non-package
+    from utils import read_matrix
 
 
 def test_format_info_figure25():
@@ -31,6 +36,15 @@ def test_format_info_figure26():
     error = None
     # 100101100011100
     assert 0x4b1c == encoder.calc_format_info(version, error, mask_pattern)
+
+
+@pytest.mark.parametrize('data', ['50041', 50041])
+def test_m1_50041(data):
+    qr = segno.make(data, version='m1')
+    assert 'M1' == qr.designator
+    ref_matrix = read_matrix('issue-33-m1-50041')
+    assert ref_matrix == qr.matrix
+
 
 
 if __name__ == '__main__':
