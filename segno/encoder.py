@@ -393,11 +393,16 @@ def add_codewords(matrix, codewords, is_micro):
         for vertical in range(matrix_size):
             for z in range(2):
                 j = right - z
-                upwards = ((right & 2) == 0) ^ (not is_micro and j < 6)
+                upwards = (right & 2) == 0
+                if not is_micro:
+                    upwards ^=  j < 6
                 i = (matrix_size - 1 - vertical) if upwards else vertical
                 if matrix[i][j] == 0x2 and idx < len(codewords):
                     matrix[i][j] = codewords[idx]
                     idx += 1
+    if idx != len(codewords):
+        raise QRCodeError('Internal error: Adding codewords to matrix failed. '
+                          'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
 
 def make_final_message(version, error, codewords):
@@ -749,14 +754,47 @@ def evaluate_micro_mask(matrix, matrix_size):
     return sum1 * 16 + sum2 if sum1 <= sum2 else sum2 * 16 + sum1
 
 
+def calc_format_info(version, error, mask_pattern):
+    """\
+    Returns the format information for the provided error level and mask patttern.
+
+    ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
+    ISO/IEC 18004:2015(E) -- Table C.1 — Valid format information bit sequences (page 80)
+
+    :param int version: Version constant
+    :param int error: Error level constant.
+    :param int mask_pattern: Mask pattern number.
+    """
+    fmt = mask_pattern
+    if version > 0:
+        if error == consts.ERROR_LEVEL_L:
+            fmt += 0x08
+        elif error == consts.ERROR_LEVEL_H:
+            fmt += 0x10
+        elif error == consts.ERROR_LEVEL_Q:
+            fmt += 0x18
+        format_info = consts.FORMAT_INFO[fmt]
+    else:
+        fmt += consts.ERROR_LEVEL_TO_MICRO_MAPPING[version][error] << 2
+        format_info = consts.FORMAT_INFO_MICRO[fmt]
+    return format_info
+
+
 def add_format_info(matrix, version, error, mask_pattern):
     """\
+    Adds the format information into the provided matrix.
+
     ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     ISO/IEC 18004:2015(E) -- 7.9.1 QR Code symbols
     ISO/IEC 18004:2015(E) -- 7.9.2 Micro QR Code symbols
+
+    :param matrix: The matrix.
+    :param int version: Version constant
+    :param int error: Error level constant.
+    :param int mask_pattern: Mask pattern number.
     """
     # 14: most significant bit
-    #  0: lest significant bit
+    #  0: least significant bit
     #
     # QR Code format info:                                          Micro QR format info
     # col 0                col 7              col matrix[-1]      col 1
@@ -781,14 +819,7 @@ def add_format_info(matrix, version, error, mask_pattern):
     #                       14
     is_micro = version < 1
     offset = int(is_micro)
-    fmt = mask_pattern
-    if error == consts.ERROR_LEVEL_L:
-        fmt += (0x08 if not is_micro else 0x4)
-    elif error == consts.ERROR_LEVEL_H:
-        fmt += (0x10 if not is_micro else 0xe)
-    elif error == consts.ERROR_LEVEL_Q:
-        fmt += (0x18 if not is_micro else 0x14)
-    format_info = consts.FORMAT_INFO[fmt] if not is_micro else consts.FORMAT_INFO_MICRO[fmt]
+    format_info = calc_format_info(version, error, mask_pattern)
     for i in range(8):
         bit = (format_info >> i) & 0x01
         if i == 6 and not is_micro:  # Timing pattern
