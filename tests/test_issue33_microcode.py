@@ -46,6 +46,15 @@ def test_m1_50041(data):
     assert ref_matrix == qr.matrix
 
 
+@pytest.mark.parametrize('data', ['1234', 1234])
+def test_m1_1234(data):
+    qr = segno.make(data, version='m1')
+    assert 'M1' == qr.designator
+    ref_matrix = read_matrix('issue-33-m1-1234')
+    assert ref_matrix == qr.matrix
+
+
+
 
 if __name__ == '__main__':
     pytest.main([__file__])
