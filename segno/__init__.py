@@ -48,8 +48,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             not support error correction. If an explicit error level is used,
             a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
-            correction level "L"), "L", "M", "Q", "H" (error correction level
-            "H" isn't available for Micro QR Codes).
+            correction level "L" or better see ``boost_error``), "L", "M", "Q",
+            "H" (error correction level "H" isn't available for Micro QR Codes).
 
             =====================================   ===========================
             Error correction level                  Error correction capability
