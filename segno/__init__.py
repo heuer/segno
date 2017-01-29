@@ -66,13 +66,13 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             The `error` parameter is case insensitive.
 
             See also the `boost_error` parameter.
-    :type error: str or None
+    :type error: str, unicode or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
             Valid values: "M1", "M2", "M3", "M4" (for Micro QR Codes) or an
             integer between 1 and 40 (for QR Codes).
             The `version` parameter is case insensitive.
-    :type version: int, str or None.
+    :type version: int, str, unicode or None.
     :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
             ``None`` (default) the appropriate mode will automatically be
             determined.
@@ -90,7 +90,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
             The `mode` parameter is case insensitive.
 
-    :type mode: unicode|str|None
+    :type mode: str, unicode, or None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is choosen automatically. If the `mask`
             parameter if provided, this function may raise a :py:exc:`MaskError`
