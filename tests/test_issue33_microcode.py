@@ -54,6 +54,12 @@ def test_m1_1234(data):
     assert ref_matrix == qr.matrix
 
 
+def test_m3_wikipedia():
+    qr = segno.make('Wikipedia', version='m3', error='l')
+    assert 'M3-L' == qr.designator
+    ref_matrix = read_matrix('issue-33-m3-l-wikipedia')
+    assert ref_matrix == qr.matrix
+
 
 
 if __name__ == '__main__':
