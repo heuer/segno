@@ -36,6 +36,9 @@ del sys
 __all__ = ('encode', 'QRCodeError', 'VersionError', 'ModeError',
            'ErrorLevelError', 'MaskError', 'DataOverflowError')
 
+# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
+__metaclass__ = type
+
 
 class QRCodeError(ValueError):
     """\
@@ -152,7 +155,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     # ISO/IEC 18004:2015 -- 6.3.6 Alignment patterns (page 17)
     add_alignment_patterns(matrix, version)
     # ISO/IEC 18004:2015 -- 7.7 Codeword placement in matrix (page 46)
-    add_codewords(matrix, buff, is_micro)
+    add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
     matrix, mask = find_best_mask(matrix, version, is_micro, mask)
@@ -269,13 +272,12 @@ def write_pad_codewords(buff, version, capacity, length):
     # character position in Micro QR Code versions M1 and M3 symbols shall be
     # represented as 0000.
     write = buff.extend
-    padword_length = 8
-    pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
     if version in (consts.VERSION_M1, consts.VERSION_M3):
-        padword_length = 4
-        pad_codewords = ((0, 0, 0, 0), (0, 0, 0, 0))
-    for i in range(capacity // padword_length - length // padword_length):
-        write(pad_codewords[i % 2])
+        buff.extend([0] * (capacity - length))
+    else:
+        pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
+        for i in range(capacity // 8 - length // 8):
+            write(pad_codewords[i % 2])
 
 
 def add_finder_patterns(matrix, is_micro):
@@ -376,7 +378,7 @@ def add_alignment_patterns(matrix, version):
                 matrix[row + r][col:col+5] = _ALIGNMENT_PATTERN[r]
 
 
-def add_codewords(matrix, codewords, is_micro):
+def add_codewords(matrix, codewords, version):
     """\
     Adds the codewords (data and error correction) to the provided matrix.
 
@@ -386,6 +388,8 @@ def add_codewords(matrix, codewords, is_micro):
     :param codewords: Sequence of ints
     """
     matrix_size = len(matrix)
+    is_micro = version < 1
+    inc = 0 if version not in (consts.VERSION_M1, consts.VERSION_M3) else 2
     idx = 0
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
@@ -393,9 +397,9 @@ def add_codewords(matrix, codewords, is_micro):
         for vertical in range(matrix_size):
             for z in range(2):
                 j = right - z
-                upwards = (right & 2) == 0
+                upwards = ((right + inc) & 2) == 0
                 if not is_micro:
-                    upwards ^=  j < 6
+                    upwards ^= j < 6
                 i = (matrix_size - 1 - vertical) if upwards else vertical
                 if matrix[i][j] == 0x2 and idx < len(codewords):
                     matrix[i][j] = codewords[idx]
@@ -425,7 +429,10 @@ def make_final_message(version, error, codewords):
         for block in data_blocks:
             if i >= len(block):
                 continue
-            append_int(block[i])
+            if i + 1 == len(block) and version in (consts.VERSION_M1, consts.VERSION_M3):
+                buff.append_bits(block[i], 4)
+            else:
+                append_int(block[i])
     # Write error words
     for i in range(max(info.num_total - info.num_data for info in ec_infos)):
         for block in error_blocks:
@@ -1446,7 +1453,7 @@ def get_data_mask_functions(is_micro):
     return fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7
 
 
-class Segments(object):
+class Segments:
     """\
     Represents a sequence of `Segment` instances.
 
@@ -1506,7 +1513,6 @@ class Segments(object):
         return overhead + self.bit_length
 
 
-
 class _Segment(tuple):
     """\
     Represents a data segment.
@@ -1530,8 +1536,7 @@ class _Segment(tuple):
     encoding = property(itemgetter(3))
 
 
-
-class Buffer(object):
+class Buffer:
     """\
     Wraps a bytearray and provides some useful methods to add bits.
     """
@@ -1551,16 +1556,23 @@ class Buffer(object):
         """\
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
+
+
         """
         def grouper(iterable, n, fillvalue=None):
             "Collect data into fixed-length chunks or blocks"
             # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
             return zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue)
-        return [int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0)]
+
+        last_is_four = len(self._data) % 8 == 4
+        data = self._data if not last_is_four else self._data[:-4]
+        l = [int(''.join(map(str, group)), 2) for group in grouper(data, 8, 0)]
+        if last_is_four:
+            l.extend([int(''.join(map(str, group)), 2) for group in grouper(self._data[-4:], 4, 0)])
+        return l
 
     def __len__(self):
         return len(self._data)
 
     def __getitem__(self, item):
         return self._data[item]
-
