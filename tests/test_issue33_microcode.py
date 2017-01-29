@@ -61,6 +61,5 @@ def test_m3_wikipedia():
     assert ref_matrix == qr.matrix
 
 
-
 if __name__ == '__main__':
     pytest.main([__file__])

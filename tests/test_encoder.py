@@ -985,7 +985,7 @@ def test_codeword_placement_iso_i2():
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
     encoder.add_finder_patterns(matrix, is_micro=False)
-    encoder.add_codewords(matrix, buff, is_micro=False)
+    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
     ref_matrix = read_matrix('iso-i2_code_placement')
     assert ref_matrix == matrix
 
@@ -1002,7 +1002,7 @@ def test_codeword_placement_iso_i3():
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
     encoder.add_finder_patterns(matrix, is_micro=True)
-    encoder.add_codewords(matrix, buff, is_micro=True)
+    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
     ref_matrix = read_matrix('iso-i3_code_placement')
     assert ref_matrix == matrix
 
