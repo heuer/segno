@@ -62,7 +62,7 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
     'M4-M'
     >>> qr = segno.make_qr('The Beatles')  # Same content but as QR Code
     >>> qr.designator
-    '1-M'
+    '1-Q'
 
 
 If the provided content is too large, a :py:class:`segno.DataOverflowError` is thrown:
@@ -97,7 +97,7 @@ It's possible to specify the desired version for the provided ``content``.
 Error Correction Level
 ----------------------
 
-By default, Segno uses the error correction level "M" to encode the (Micro) QR
+By default, Segno uses the error correction level "L" to encode the (Micro) QR
 Code. Use the parameter ``error`` to change the error correction level.
 The ``error`` parameter is case-insensitive; to specify the error correction
 level "L", "l" and "L" are valid values. Available error correction levels are
