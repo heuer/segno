@@ -125,7 +125,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
                                 .format(get_version_name(version),
                                         get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
-        error = consts.ERROR_LEVEL_M
+        error = consts.ERROR_LEVEL_L
     if boost_error:
         error = boost_error_level(version, error, segments, eci)
     is_micro = version < 1
@@ -1301,7 +1301,7 @@ def find_version(segments, error, eci, micro):
         min_version = consts.VERSION_M2
     for version in range(min_version, max_version + 1):
         if error is None and version != consts.VERSION_M1:
-            error = consts.ERROR_LEVEL_M
+            error = consts.ERROR_LEVEL_L
         found = False
         try:
             found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci)

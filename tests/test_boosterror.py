@@ -20,7 +20,7 @@ def test_boost_error_automatic():
 
 def test_boost_error_automatic_disabled():
     qr = segno.make_qr('ABCDEF', boost_error=False)
-    assert '1-M' == qr.designator
+    assert '1-L' == qr.designator
 
 
 def test_boost_error_automatic_arg_error():

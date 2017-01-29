@@ -14,18 +14,28 @@ import segno
 
 
 def test_boost_error_automatic():
-    qr = segno.make('http://www.example.org/bla/bla/')
-    assert '3-Q' == qr.designator
+    qr = segno.make('http://www.example.org/')
+    assert '2-M' == qr.designator
 
 
 def test_boost_error_disabled():
-    qr = segno.make('http://www.example.org/bla/bla/', error='q', boost_error=False)
+    qr = segno.make('http://www.example.org/', error='q', boost_error=False)
     assert '3-Q' == qr.designator
 
 
+def test_boost_error_automatic2():
+    qr = segno.make('http://www.example.org/', error='q')
+    assert '3-H' == qr.designator
+
+
 def test_boost_error_disabled2():
-    qr = segno.make('http://www.example.org/bla/bla/', error='h', boost_error=False)
-    assert '4-H' == qr.designator
+    qr = segno.make('http://www.example.org/', error='l', boost_error=False)
+    assert '2-L' == qr.designator
+
+
+def test_boost_error_disabled3():
+    qr = segno.make('http://www.example.org/', error='h')
+    assert '3-H' == qr.designator
 
 
 if __name__ == '__main__':
