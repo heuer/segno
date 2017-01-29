@@ -404,7 +404,7 @@ def add_codewords(matrix, codewords, version):
                 if matrix[i][j] == 0x2 and idx < len(codewords):
                     matrix[i][j] = codewords[idx]
                     idx += 1
-    if idx != len(codewords):
+    if idx != len(codewords):  # pragma: no cover
         raise QRCodeError('Internal error: Adding codewords to matrix failed. '
                           'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
