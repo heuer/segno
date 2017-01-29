@@ -391,6 +391,11 @@ def add_codewords(matrix, codewords, version):
     is_micro = version < 1
     inc = 0 if version not in (consts.VERSION_M1, consts.VERSION_M3) else 2
     idx = 0
+    # ISO/IEC 18004:2015(E) - page 48
+    # [...] An alternative method for placement in the symbol [...] is to regard
+    # the interleaved codeword sequence as a single bit stream, which is placed
+    # (starting with the most significant bit) in the two-module wide columns
+    # alternately upwards and downwards from the right to left of the symbol. [...]
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1

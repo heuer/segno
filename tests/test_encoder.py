@@ -974,8 +974,8 @@ def test_encode_iso_fig29():
 
 
 def test_codeword_placement_iso_i2():
-    # ISO/IEC 18004:2015(E) - page 96
-    # 01234567 as M2-L symbol
+    # ISO/IEC 18004:2015(E) - page 94
+    # 01234567 as 1-M symbol
     s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
     codewords = Buffer(bits(s)).toints()
     version = 1
@@ -984,8 +984,8 @@ def test_codeword_placement_iso_i2():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=False)
-    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i2_code_placement')
     assert ref_matrix == matrix
 
@@ -1001,8 +1001,8 @@ def test_codeword_placement_iso_i3():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=True)
-    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i3_code_placement')
     assert ref_matrix == matrix
 
