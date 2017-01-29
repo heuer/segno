@@ -143,7 +143,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     # ISO/IEC 18004:2015(E) -- 7.4.9 Terminator (page 32)
     write_terminator(buff, capacity, ver, len(buff))
     #  ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
-    write_padding_bits(buff, len(buff))
+    write_padding_bits(buff, version, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence (page 45)
@@ -235,7 +235,7 @@ def write_terminator(buff, capacity, ver, length):
     buff.extend([0] * min(capacity - length, consts.TERMINATOR_LENGTH[ver]))
 
 
-def write_padding_bits(buff, length):
+def write_padding_bits(buff, version, length):
     """\
     Writes padding bits if the data stream does not meet the codeword boundary.
 
@@ -250,7 +250,8 @@ def write_padding_bits(buff, length):
     # codeword boundary, padding bits with binary value 0 shall be added after
     # the final bit (least significant bit) of the data stream to extend it
     # to the codeword boundary. [...]
-    buff.extend([0] * (8 - (length % 8)))
+    if version not in (consts.VERSION_M1, consts.VERSION_M3):
+        buff.extend([0] * (8 - (length % 8)))
 
 
 def write_pad_codewords(buff, version, capacity, length):
@@ -273,7 +274,7 @@ def write_pad_codewords(buff, version, capacity, length):
     # represented as 0000.
     write = buff.extend
     if version in (consts.VERSION_M1, consts.VERSION_M3):
-        buff.extend([0] * (capacity - length))
+        write([0] * (capacity - length))
     else:
         pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
         for i in range(capacity // 8 - length // 8):
@@ -391,6 +392,11 @@ def add_codewords(matrix, codewords, version):
     is_micro = version < 1
     inc = 0 if version not in (consts.VERSION_M1, consts.VERSION_M3) else 2
     idx = 0
+    # ISO/IEC 18004:2015(E) - page 48
+    # [...] An alternative method for placement in the symbol [...] is to regard
+    # the interleaved codeword sequence as a single bit stream, which is placed
+    # (starting with the most significant bit) in the two-module wide columns
+    # alternately upwards and downwards from the right to left of the symbol. [...]
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
@@ -424,12 +430,13 @@ def make_final_message(version, error, codewords):
     data_blocks, error_blocks = make_blocks(ec_infos, codewords)
     buff = Buffer()
     append_int = partial(buff.append_bits, length=8)
+    last_cw_four = version in (consts.VERSION_M1, consts.VERSION_M3)
     # Write code words
     for i in range(max(info.num_data for info in ec_infos)):
         for block in data_blocks:
             if i >= len(block):
                 continue
-            if i + 1 == len(block) and version in (consts.VERSION_M1, consts.VERSION_M3):
+            if i + 1 == len(block) and last_cw_four:
                 buff.append_bits(block[i], 4)
             else:
                 append_int(block[i])
@@ -825,8 +832,8 @@ def add_format_info(matrix, version, error, mask_pattern):
     #                       13
     #                       14
     is_micro = version < 1
-    offset = int(is_micro)
     format_info = calc_format_info(version, error, mask_pattern)
+    offset = int(is_micro)
     for i in range(8):
         bit = (format_info >> i) & 0x01
         if i == 6 and not is_micro:  # Timing pattern
@@ -1557,7 +1564,7 @@ class Buffer:
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
 
-
+        If the data is not divisible by 8, the last number is of length 4.
         """
         def grouper(iterable, n, fillvalue=None):
             "Collect data into fixed-length chunks or blocks"
@@ -1568,7 +1575,7 @@ class Buffer:
         data = self._data if not last_is_four else self._data[:-4]
         l = [int(''.join(map(str, group)), 2) for group in grouper(data, 8, 0)]
         if last_is_four:
-            l.extend([int(''.join(map(str, group)), 2) for group in grouper(self._data[-4:], 4, 0)])
+            l.append(int(''.join(map(str, self._data[-4:])), 2))
         return l
 
     def __len__(self):
