@@ -1562,7 +1562,7 @@ class Buffer:
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
 
-
+        If the data is not divisible by 8, the last number is of length 4.
         """
         def grouper(iterable, n, fillvalue=None):
             "Collect data into fixed-length chunks or blocks"
@@ -1573,7 +1573,7 @@ class Buffer:
         data = self._data if not last_is_four else self._data[:-4]
         l = [int(''.join(map(str, group)), 2) for group in grouper(data, 8, 0)]
         if last_is_four:
-            l.extend([int(''.join(map(str, group)), 2) for group in grouper(self._data[-4:], 4, 0)])
+            l.append(int(''.join(map(str, self._data[-4:])), 2))
         return l
 
     def __len__(self):
