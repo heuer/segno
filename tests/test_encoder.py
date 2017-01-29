@@ -296,7 +296,8 @@ def test_write_padding_bits_iso_i2():
     # See ISO/IEC 18004:2006(E) -- I.2 Encoding a QR Code symbol (page 94)
     data = bits('0001 0000001000 0000001100 0101011001 1000011 0000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('00010000 00100000 00001100 01010110 01100001 10000000') == buff.getbits()
 
 
@@ -304,7 +305,8 @@ def test_write_padding_bits_iso_i3():
     # See ISO/IEC 18004:2006(E) -- I.3 Encoding a Micro QR Code symbol (page 96)
     data = bits('0 1000 0000001100 0101011001 1000011 00000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = consts.VERSION_M2
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('01000000 00011000 10101100 11000011 00000000') == buff.getbits()
 
 
@@ -312,7 +314,8 @@ def test_write_padding_bits_thonky():
     # <http://www.thonky.com/qr-code-tutorial/data-encoding>
     data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 010000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000') == buff.getbits()
 
 
