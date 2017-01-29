@@ -84,7 +84,7 @@ def test_illegal_error_level_micro():
         segno.make('test', error='H', micro=True)
 
 
-@pytest.mark.parametrize('data,version', [('abcdefghijklmno', 1), (123456, 'M1')])
+@pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
 def test_data_too_large(data, version):
     with pytest.raises(DataOverflowError):
         segno.make(data, version=version)

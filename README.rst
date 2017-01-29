@@ -56,7 +56,7 @@ Library
     >>> qr.version
     2
     >>> qr.error
-    'M'
+    'Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
     >>> qr.save('up-jumped-the-devil-3.png', background=None)  # Transparent background

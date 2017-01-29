@@ -512,14 +512,15 @@ def test_normalize_errorlevel_illegal2():
 _test_find_version_test_data = (
     # data, error, micro, expected version
     ('12345', None, True, consts.VERSION_M1),
-    ('12345', consts.ERROR_LEVEL_M, True, consts.VERSION_M2),
+    ('12345', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
     # Error level Q isn't suppoted by M1 - M3
     ('12345', consts.ERROR_LEVEL_Q, True, consts.VERSION_M4),
     # Error level H isn't supported by Micro QR Codes
     ('12345', consts.ERROR_LEVEL_H, None, 1),
     ('12345', None, False, 1),
     (12345, None, True, consts.VERSION_M1),
-    (-12345, None, True, consts.VERSION_M3),  # Negative number
+    (-12345, None, True, consts.VERSION_M2),  # Negative number
+    (-12345, consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Negative number
     (12345, None, False, 1),
     ('123456', None, True, consts.VERSION_M2),
     ('123456', None, False, 1),
@@ -529,10 +530,11 @@ _test_find_version_test_data = (
     ('ABCDEF', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
     ('ABCDEF', consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Too much data for error level M and version M2
     ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
-    ('ABCDEF', consts.ERROR_LEVEL_M, False, 1),
+    ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
     ('Märchenbuch', None, True, consts.VERSION_M4),
     ('Märchenbücher', None, False, 1),
-    ('Märchenbücherei', None, None, 2),
+    ('Märchenbücherei', None, None, consts.VERSION_M4),
+    ('Märchenbücherei', consts.ERROR_LEVEL_M, None, 2),
 )
 
 
@@ -984,8 +986,8 @@ def test_codeword_placement_iso_i2():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=False)
-    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i2_code_placement')
     assert ref_matrix == matrix
 
@@ -1001,8 +1003,8 @@ def test_codeword_placement_iso_i3():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=True)
-    encoder.add_codewords(matrix, buff, version=consts.VERSION_M2)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i3_code_placement')
     assert ref_matrix == matrix
 

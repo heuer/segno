@@ -44,18 +44,18 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             used to specify the used encoding.
     :type content: str, int, bytes
     :param error: Error correction level. If ``None`` (default), error
-            correction level ``M`` is used (note: Micro QR Code version M1 does
+            correction level ``L`` is used (note: Micro QR Code version M1 does
             not support error correction. If an explicit error level is used,
             a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
-            correction level "M"), "L", "M", "Q", "H" (error correction level
+            correction level "L"), "L", "M", "Q", "H" (error correction level
             "H" isn't available for Micro QR Codes).
 
             =====================================   ===========================
             Error correction level                  Error correction capability
             =====================================   ===========================
-            L                                       recovers  7% of data
-            M (Segno's default unless version M1)   recovers 15% of data
+            L (Segno's default unless version M1)   recovers  7% of data
+            M                                       recovers 15% of data
             Q                                       recovers 25% of data
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================

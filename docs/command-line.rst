@@ -45,7 +45,7 @@ Micro QR Code::
 Error correction level
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The default error correction level is "M", use the ``error`` parameter to change
+The default error correction level is "L", use the ``error`` parameter to change
 it::
 
     $ segno "Ain't no grave" --error=q
