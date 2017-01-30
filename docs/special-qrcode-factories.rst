@@ -4,7 +4,7 @@ Special QR Code factory functions
 The ``helpers`` module provides factory functions to create common QR Codes
 for encoding WIFI configurations, MeCards or geographic locations.
 
-The created QR Codes use at minimum the error correction level "M". If a better
+The created QR Codes use at minimum the error correction level "L". If a better
 error correction level is possible without changing the QR Code version, the
 better error correction level will be used.
 
@@ -14,10 +14,10 @@ Create a QR Code for a WIFI configuration
 .. code-block:: python
 
     >>> from segno import helpers
-    >>> # Create a WIFI config with min. error level "M" or better
+    >>> # Create a WIFI config with min. error level "L" or better
     >>> qr = helpers.make_wifi(ssid='My network', password='secret', security='WPA')
     >>> qr.designator
-    '3-Q'
+    '3-M'
 
 
 If you want more control over the creation of the QR Code (i.e. using a specific
@@ -46,7 +46,7 @@ Create a QR Code encoding geographic information
     >>> latitude, longitude = 38.8976763,-77.0365297
     >>> qr = helpers.make_geo(latitude, longitude)
     >>> qr.designator
-    '2-Q'
+    '2-M'
 
 A factory function for encoding the geographic information as string is also
 available.
@@ -79,7 +79,7 @@ as MeCard.
     >>> from segno import helpers
     >>> qr = helpers.make_mecard(name='Doe,John', email='me@example.org', phone='+1234567')
     >>> qr.designator
-    '4-Q'
+    '3-L'
     >>> # Some params accept multiple values, like email, phone, url
     >>> qr = helpers.make_mecard(name='Doe,John', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
     >>> qr.save('my-mecard.svg')
@@ -109,7 +109,7 @@ as vCard version 3.0.
     >>> from segno import helpers
     >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email='me@example.org', phone='+1234567')
     >>> qr.designator
-    '6-M'
+    '5-L'
     >>> # Some params accept multiple values, like email, phone, url
     >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
     >>> qr.save('my-vcard.svg')
