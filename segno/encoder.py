@@ -390,13 +390,16 @@ def add_codewords(matrix, codewords, version):
     """
     matrix_size = len(matrix)
     is_micro = version < 1
+    # Necessary for M1 and M3: The algorithm would start at the upper right
+    # corner, see <https://github.com/heuer/segno/issues/36>
     inc = 0 if version not in (consts.VERSION_M1, consts.VERSION_M3) else 2
-    idx = 0
+    idx = 0  # Pointer to the current codeword
     # ISO/IEC 18004:2015(E) - page 48
     # [...] An alternative method for placement in the symbol [...] is to regard
     # the interleaved codeword sequence as a single bit stream, which is placed
     # (starting with the most significant bit) in the two-module wide columns
-    # alternately upwards and downwards from the right to left of the symbol. [...]
+    # alternately upwards and downwards from the right to left of the symbol.
+    # [...]
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
@@ -427,20 +430,26 @@ def make_final_message(version, error, codewords):
     :return: Byte buffer representing the final message.
     """
     ec_infos = consts.ECC[version][error]
+    last_cw_is_four = version in (consts.VERSION_M1, consts.VERSION_M3)
     data_blocks, error_blocks = make_blocks(ec_infos, codewords)
+    if last_cw_is_four:
+        # All codewords are 8 bit by default, M1 and M3 symbols use 4 bits
+        # to represent the last last codeword
+        # datablocks[0] is save since Micro QR Codes use just one datablock and
+        # one error block
+        data_blocks[0][-1] >>= 4
     buff = Buffer()
     append_int = partial(buff.append_bits, length=8)
-    last_cw_four = version in (consts.VERSION_M1, consts.VERSION_M3)
-    # Write code words
+    # Write codewords
     for i in range(max(info.num_data for info in ec_infos)):
         for block in data_blocks:
             if i >= len(block):
                 continue
-            if i + 1 == len(block) and last_cw_four:
+            if last_cw_is_four and i + 1 == len(block):
                 buff.append_bits(block[i], 4)
             else:
                 append_int(block[i])
-    # Write error words
+    # Write error codewords
     for i in range(max(info.num_total - info.num_data for info in ec_infos)):
         for block in error_blocks:
             if i >= len(block):
@@ -1563,20 +1572,12 @@ class Buffer:
         """\
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
-
-        If the data is not divisible by 8, the last number is of length 4.
         """
         def grouper(iterable, n, fillvalue=None):
             "Collect data into fixed-length chunks or blocks"
             # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
             return zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue)
-
-        last_is_four = len(self._data) % 8 == 4
-        data = self._data if not last_is_four else self._data[:-4]
-        l = [int(''.join(map(str, group)), 2) for group in grouper(data, 8, 0)]
-        if last_is_four:
-            l.append(int(''.join(map(str, self._data[-4:])), 2))
-        return l
+        return [int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0)]
 
     def __len__(self):
         return len(self._data)

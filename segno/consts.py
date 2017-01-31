@@ -535,7 +535,7 @@ ALIGNMENT_POS = (
 # ISO/IEC 18004:2015 -- Annex A - Error detection and correction generator polynomials
 # Table A.1 — Generator polynomials for Reed-Solomon error correction codewords (page 73)
 GEN_POLY = {
-    2: (25, 2),
+    2: (25, 1),
     5: (113, 164, 166, 119, 10),
     6: (166, 0, 134, 5, 176, 15),
     7: (87, 229, 146, 149, 238, 102, 21),
