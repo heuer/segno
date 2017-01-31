@@ -227,7 +227,7 @@ def test_background_transparent2():
                                                  ('eps', '%!PS-Adobe-3.0 EPSF-3.0', 'rt'),
                                                  ('ans', '\033[7m       ', 'rt'),
                                                  ('pam', b'P7', 'rb'),
-                                                 ('pbm', 'P4\n', 'rb'),
+                                                 ('pbm', b'P4\n', 'rb'),
                                                  ('xbm', '#define ', 'rt'),
                                                  ('xpm', '/* XPM */', 'rt'),
                                                  ('tex', '%% Creator: ', 'rt'),])
