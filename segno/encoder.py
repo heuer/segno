@@ -534,8 +534,6 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     :rtype: tuple
     :return: A tuple of the best matrix and best data mask pattern index.
     """
-    best_matrix = None
-    best_pattern = None
     matrix_size = len(matrix)
     # ISO/IEC 18004:2015 -- 7.8.3.1 Evaluation of QR Code symbols (page 53/54)
     # The data mask pattern which results in the lowest penalty score shall
@@ -561,18 +559,24 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     def is_encoding_region(i, j):
         return function_matrix[i][j] == 0x2
 
-    for mask_number, mask_pattern in enumerate(get_data_mask_functions(is_micro)):
+    mask_patterns = get_data_mask_functions(is_micro)
+
+    # If the user supplied a mask pattern, the evaluation step is skipped
+    if proposed_mask is not None:
+        apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
+                   is_encoding_region)
+        return matrix, proposed_mask
+
+    for mask_number, mask_pattern in enumerate(mask_patterns):
         masked_matrix = deepcopy(matrix)
         apply_mask(masked_matrix, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
         score = eval_mask(masked_matrix, matrix_size)
-        if is_better(score, best_score) or mask_number == proposed_mask:
+        if is_better(score, best_score):
             best_score = score
             best_matrix = masked_matrix
             best_pattern = mask_number
-            if mask_number == proposed_mask:
-                break
     return best_matrix, best_pattern
 
 
