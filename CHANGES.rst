@@ -1,6 +1,10 @@
 Changes
 =======
 
+0.2.5 -- 2017-mm-dd
+-------------------
+
+
 0.2.4 -- 2017-01-31
 -------------------
 * Fixed #33: Some Micro QR Codes may be unreadable due to wrong
