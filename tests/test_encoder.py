@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
 #
 """\
 Tests against the encoder module.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
@@ -300,7 +296,8 @@ def test_write_padding_bits_iso_i2():
     # See ISO/IEC 18004:2006(E) -- I.2 Encoding a QR Code symbol (page 94)
     data = bits('0001 0000001000 0000001100 0101011001 1000011 0000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('00010000 00100000 00001100 01010110 01100001 10000000') == buff.getbits()
 
 
@@ -308,7 +305,8 @@ def test_write_padding_bits_iso_i3():
     # See ISO/IEC 18004:2006(E) -- I.3 Encoding a Micro QR Code symbol (page 96)
     data = bits('0 1000 0000001100 0101011001 1000011 00000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = consts.VERSION_M2
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('01000000 00011000 10101100 11000011 00000000') == buff.getbits()
 
 
@@ -316,7 +314,8 @@ def test_write_padding_bits_thonky():
     # <http://www.thonky.com/qr-code-tutorial/data-encoding>
     data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 010000')
     buff = Buffer(data)
-    encoder.write_padding_bits(buff, len(buff))
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
     assert bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000') == buff.getbits()
 
 
@@ -516,14 +515,15 @@ def test_normalize_errorlevel_illegal2():
 _test_find_version_test_data = (
     # data, error, micro, expected version
     ('12345', None, True, consts.VERSION_M1),
-    ('12345', consts.ERROR_LEVEL_M, True, consts.VERSION_M2),
+    ('12345', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
     # Error level Q isn't suppoted by M1 - M3
     ('12345', consts.ERROR_LEVEL_Q, True, consts.VERSION_M4),
     # Error level H isn't supported by Micro QR Codes
     ('12345', consts.ERROR_LEVEL_H, None, 1),
     ('12345', None, False, 1),
     (12345, None, True, consts.VERSION_M1),
-    (-12345, None, True, consts.VERSION_M3),  # Negative number
+    (-12345, None, True, consts.VERSION_M2),  # Negative number
+    (-12345, consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Negative number
     (12345, None, False, 1),
     ('123456', None, True, consts.VERSION_M2),
     ('123456', None, False, 1),
@@ -533,10 +533,11 @@ _test_find_version_test_data = (
     ('ABCDEF', consts.ERROR_LEVEL_L, True, consts.VERSION_M2),
     ('ABCDEF', consts.ERROR_LEVEL_M, True, consts.VERSION_M3),  # Too much data for error level M and version M2
     ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
-    ('ABCDEF', consts.ERROR_LEVEL_M, False, 1),
+    ('ABCDEF', consts.ERROR_LEVEL_L, False, 1),
     ('Märchenbuch', None, True, consts.VERSION_M4),
     ('Märchenbücher', None, False, 1),
-    ('Märchenbücherei', None, None, 2),
+    ('Märchenbücherei', None, None, consts.VERSION_M4),
+    ('Märchenbücherei', consts.ERROR_LEVEL_M, None, 2),
 )
 
 
@@ -978,8 +979,8 @@ def test_encode_iso_fig29():
 
 
 def test_codeword_placement_iso_i2():
-    # ISO/IEC 18004:2015(E) - page 96
-    # 01234567 as M2-L symbol
+    # ISO/IEC 18004:2015(E) - page 94
+    # 01234567 as 1-M symbol
     s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
     codewords = Buffer(bits(s)).toints()
     version = 1
@@ -988,8 +989,8 @@ def test_codeword_placement_iso_i2():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=False)
-    encoder.add_codewords(matrix, buff, is_micro=False)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i2_code_placement')
     assert ref_matrix == matrix
 
@@ -1005,8 +1006,8 @@ def test_codeword_placement_iso_i3():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
-    encoder.add_finder_patterns(matrix, is_micro=True)
-    encoder.add_codewords(matrix, buff, is_micro=True)
+    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i3_code_placement')
     assert ref_matrix == matrix
 

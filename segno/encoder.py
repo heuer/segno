@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -9,10 +9,6 @@
 QR Code and Micro QR Code encoder.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt
@@ -39,6 +35,9 @@ del sys
 
 __all__ = ('encode', 'QRCodeError', 'VersionError', 'ModeError',
            'ErrorLevelError', 'MaskError', 'DataOverflowError')
+
+# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
+__metaclass__ = type
 
 
 class QRCodeError(ValueError):
@@ -126,7 +125,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
                                 .format(get_version_name(version),
                                         get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
-        error = consts.ERROR_LEVEL_M
+        error = consts.ERROR_LEVEL_L
     if boost_error:
         error = boost_error_level(version, error, segments, eci)
     is_micro = version < 1
@@ -144,7 +143,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     # ISO/IEC 18004:2015(E) -- 7.4.9 Terminator (page 32)
     write_terminator(buff, capacity, ver, len(buff))
     #  ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
-    write_padding_bits(buff, len(buff))
+    write_padding_bits(buff, version, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence (page 45)
@@ -156,7 +155,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     # ISO/IEC 18004:2015 -- 6.3.6 Alignment patterns (page 17)
     add_alignment_patterns(matrix, version)
     # ISO/IEC 18004:2015 -- 7.7 Codeword placement in matrix (page 46)
-    add_codewords(matrix, buff, is_micro)
+    add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
     matrix, mask = find_best_mask(matrix, version, is_micro, mask)
@@ -236,7 +235,7 @@ def write_terminator(buff, capacity, ver, length):
     buff.extend([0] * min(capacity - length, consts.TERMINATOR_LENGTH[ver]))
 
 
-def write_padding_bits(buff, length):
+def write_padding_bits(buff, version, length):
     """\
     Writes padding bits if the data stream does not meet the codeword boundary.
 
@@ -251,7 +250,8 @@ def write_padding_bits(buff, length):
     # codeword boundary, padding bits with binary value 0 shall be added after
     # the final bit (least significant bit) of the data stream to extend it
     # to the codeword boundary. [...]
-    buff.extend([0] * (8 - (length % 8)))
+    if version not in (consts.VERSION_M1, consts.VERSION_M3):
+        buff.extend([0] * (8 - (length % 8)))
 
 
 def write_pad_codewords(buff, version, capacity, length):
@@ -273,13 +273,12 @@ def write_pad_codewords(buff, version, capacity, length):
     # character position in Micro QR Code versions M1 and M3 symbols shall be
     # represented as 0000.
     write = buff.extend
-    padword_length = 8
-    pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
     if version in (consts.VERSION_M1, consts.VERSION_M3):
-        padword_length = 4
-        pad_codewords = ((0, 0, 0, 0), (0, 0, 0, 0))
-    for i in range(capacity // padword_length - length // padword_length):
-        write(pad_codewords[i % 2])
+        write([0] * (capacity - length))
+    else:
+        pad_codewords = ((1, 1, 1, 0, 1, 1, 0, 0), (0, 0, 0, 1, 0, 0, 0, 1))
+        for i in range(capacity // 8 - length // 8):
+            write(pad_codewords[i % 2])
 
 
 def add_finder_patterns(matrix, is_micro):
@@ -380,7 +379,7 @@ def add_alignment_patterns(matrix, version):
                 matrix[row + r][col:col+5] = _ALIGNMENT_PATTERN[r]
 
 
-def add_codewords(matrix, codewords, is_micro):
+def add_codewords(matrix, codewords, version):
     """\
     Adds the codewords (data and error correction) to the provided matrix.
 
@@ -390,18 +389,33 @@ def add_codewords(matrix, codewords, is_micro):
     :param codewords: Sequence of ints
     """
     matrix_size = len(matrix)
-    idx = 0
+    is_micro = version < 1
+    # Necessary for M1 and M3: The algorithm would start at the upper right
+    # corner, see <https://github.com/heuer/segno/issues/36>
+    inc = 0 if version not in (consts.VERSION_M1, consts.VERSION_M3) else 2
+    idx = 0  # Pointer to the current codeword
+    # ISO/IEC 18004:2015(E) - page 48
+    # [...] An alternative method for placement in the symbol [...] is to regard
+    # the interleaved codeword sequence as a single bit stream, which is placed
+    # (starting with the most significant bit) in the two-module wide columns
+    # alternately upwards and downwards from the right to left of the symbol.
+    # [...]
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
         for vertical in range(matrix_size):
             for z in range(2):
                 j = right - z
-                upwards = ((right & 2) == 0) ^ (not is_micro and j < 6)
+                upwards = ((right + inc) & 2) == 0
+                if not is_micro:
+                    upwards ^= j < 6
                 i = (matrix_size - 1 - vertical) if upwards else vertical
                 if matrix[i][j] == 0x2 and idx < len(codewords):
                     matrix[i][j] = codewords[idx]
                     idx += 1
+    if idx != len(codewords):  # pragma: no cover
+        raise QRCodeError('Internal error: Adding codewords to matrix failed. '
+                          'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
 
 def make_final_message(version, error, codewords):
@@ -416,16 +430,26 @@ def make_final_message(version, error, codewords):
     :return: Byte buffer representing the final message.
     """
     ec_infos = consts.ECC[version][error]
+    last_cw_is_four = version in (consts.VERSION_M1, consts.VERSION_M3)
     data_blocks, error_blocks = make_blocks(ec_infos, codewords)
+    if last_cw_is_four:
+        # All codewords are 8 bit by default, M1 and M3 symbols use 4 bits
+        # to represent the last last codeword
+        # datablocks[0] is save since Micro QR Codes use just one datablock and
+        # one error block
+        data_blocks[0][-1] >>= 4
     buff = Buffer()
     append_int = partial(buff.append_bits, length=8)
-    # Write code words
+    # Write codewords
     for i in range(max(info.num_data for info in ec_infos)):
         for block in data_blocks:
             if i >= len(block):
                 continue
-            append_int(block[i])
-    # Write error words
+            if last_cw_is_four and i + 1 == len(block):
+                buff.append_bits(block[i], 4)
+            else:
+                append_int(block[i])
+    # Write error codewords
     for i in range(max(info.num_total - info.num_data for info in ec_infos)):
         for block in error_blocks:
             if i >= len(block):
@@ -510,8 +534,6 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     :rtype: tuple
     :return: A tuple of the best matrix and best data mask pattern index.
     """
-    best_matrix = None
-    best_pattern = None
     matrix_size = len(matrix)
     # ISO/IEC 18004:2015 -- 7.8.3.1 Evaluation of QR Code symbols (page 53/54)
     # The data mask pattern which results in the lowest penalty score shall
@@ -537,18 +559,24 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     def is_encoding_region(i, j):
         return function_matrix[i][j] == 0x2
 
-    for mask_number, mask_pattern in enumerate(get_data_mask_functions(is_micro)):
+    mask_patterns = get_data_mask_functions(is_micro)
+
+    # If the user supplied a mask pattern, the evaluation step is skipped
+    if proposed_mask is not None:
+        apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
+                   is_encoding_region)
+        return matrix, proposed_mask
+
+    for mask_number, mask_pattern in enumerate(mask_patterns):
         masked_matrix = deepcopy(matrix)
         apply_mask(masked_matrix, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
         score = eval_mask(masked_matrix, matrix_size)
-        if is_better(score, best_score) or mask_number == proposed_mask:
+        if is_better(score, best_score):
             best_score = score
             best_matrix = masked_matrix
             best_pattern = mask_number
-            if mask_number == proposed_mask:
-                break
     return best_matrix, best_pattern
 
 
@@ -753,14 +781,47 @@ def evaluate_micro_mask(matrix, matrix_size):
     return sum1 * 16 + sum2 if sum1 <= sum2 else sum2 * 16 + sum1
 
 
+def calc_format_info(version, error, mask_pattern):
+    """\
+    Returns the format information for the provided error level and mask patttern.
+
+    ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
+    ISO/IEC 18004:2015(E) -- Table C.1 — Valid format information bit sequences (page 80)
+
+    :param int version: Version constant
+    :param int error: Error level constant.
+    :param int mask_pattern: Mask pattern number.
+    """
+    fmt = mask_pattern
+    if version > 0:
+        if error == consts.ERROR_LEVEL_L:
+            fmt += 0x08
+        elif error == consts.ERROR_LEVEL_H:
+            fmt += 0x10
+        elif error == consts.ERROR_LEVEL_Q:
+            fmt += 0x18
+        format_info = consts.FORMAT_INFO[fmt]
+    else:
+        fmt += consts.ERROR_LEVEL_TO_MICRO_MAPPING[version][error] << 2
+        format_info = consts.FORMAT_INFO_MICRO[fmt]
+    return format_info
+
+
 def add_format_info(matrix, version, error, mask_pattern):
     """\
+    Adds the format information into the provided matrix.
+
     ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     ISO/IEC 18004:2015(E) -- 7.9.1 QR Code symbols
     ISO/IEC 18004:2015(E) -- 7.9.2 Micro QR Code symbols
+
+    :param matrix: The matrix.
+    :param int version: Version constant
+    :param int error: Error level constant.
+    :param int mask_pattern: Mask pattern number.
     """
     # 14: most significant bit
-    #  0: lest significant bit
+    #  0: least significant bit
     #
     # QR Code format info:                                          Micro QR format info
     # col 0                col 7              col matrix[-1]      col 1
@@ -784,15 +845,8 @@ def add_format_info(matrix, version, error, mask_pattern):
     #                       13
     #                       14
     is_micro = version < 1
+    format_info = calc_format_info(version, error, mask_pattern)
     offset = int(is_micro)
-    fmt = mask_pattern
-    if error == consts.ERROR_LEVEL_L:
-        fmt += (0x08 if not is_micro else 0x4)
-    elif error == consts.ERROR_LEVEL_H:
-        fmt += (0x10 if not is_micro else 0xe)
-    elif error == consts.ERROR_LEVEL_Q:
-        fmt += (0x18 if not is_micro else 0x14)
-    format_info = consts.FORMAT_INFO[fmt] if not is_micro else consts.FORMAT_INFO_MICRO[fmt]
     for i in range(8):
         bit = (format_info >> i) & 0x01
         if i == 6 and not is_micro:  # Timing pattern
@@ -1124,13 +1178,16 @@ def normalize_mask(mask, is_micro):
     """
     if mask is None:
         return None
-    mask = int(mask)
+    try:
+        mask = int(mask)
+    except ValueError:
+        raise MaskError('Invalid data mask "{0}". Must be an integer or a string which represents an integer value.'.format(mask))
     if is_micro:
-        if not 0 <= mask <= 4:
-            raise MaskError('Invalid data mask "{0}" for Micro QR Code'.format(mask))
+        if not 0 <= mask < 4:
+            raise MaskError('Invalid data mask "{0}" for Micro QR Code. Must be in range 0 .. 3'.format(mask))
     else:
-        if not 0 <= mask <= 8:
-            raise MaskError('Invalid data mask "{0}"'.format(mask))
+        if not 0 <= mask < 8:
+            raise MaskError('Invalid data mask "{0}". Must be in range 0 .. 7'.format(mask))
     return mask
 
 
@@ -1264,7 +1321,7 @@ def find_version(segments, error, eci, micro):
         min_version = consts.VERSION_M2
     for version in range(min_version, max_version + 1):
         if error is None and version != consts.VERSION_M1:
-            error = consts.ERROR_LEVEL_M
+            error = consts.ERROR_LEVEL_L
         found = False
         try:
             found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci)
@@ -1416,7 +1473,7 @@ def get_data_mask_functions(is_micro):
     return fn0, fn1, fn2, fn3, fn4, fn5, fn6, fn7
 
 
-class Segments(object):
+class Segments:
     """\
     Represents a sequence of `Segment` instances.
 
@@ -1476,7 +1533,6 @@ class Segments(object):
         return overhead + self.bit_length
 
 
-
 class _Segment(tuple):
     """\
     Represents a data segment.
@@ -1500,8 +1556,7 @@ class _Segment(tuple):
     encoding = property(itemgetter(3))
 
 
-
-class Buffer(object):
+class Buffer:
     """\
     Wraps a bytearray and provides some useful methods to add bits.
     """
@@ -1533,4 +1588,3 @@ class Buffer(object):
 
     def __getitem__(self, item):
         return self._data[item]
-

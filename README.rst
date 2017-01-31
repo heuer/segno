@@ -3,16 +3,18 @@ Segno -- Python QR Code and Micro QR Code encoder
 
 Segno is a QR Code and Micro QR Code encoder which has no further dependencies.
 
-This package implements main parts of ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015(E)
-and produces Micro QR Codes and QR Codes with nearly no effort.
+This package implements ISO/IEC 18004:2006(E) / ISO/IEC 18004:2015(E) "QR Code bar
+code symbology specification" and produces Micro QR Codes and QR Codes with
+nearly no effort.
 
-Segno provides several serialization formats like SVG, EPS, PNG, PDF, PBM,
-LaTeX (PGF/TikZ) or text output. None of these serializers require an external
-lib. Segno could provide more serialization formats via a plugin architecture.
+Segno provides several serialization formats like Scalable Vector Graphics (SVG),
+Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
+Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (PAM),
+LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
+serializers require an external lib. Segno could provide more serialization
+formats via a plugin architecture.
 Further, it provides several high level function to create QR Codes which encode
-contact data (MeCard) or WIFI configurations.
-
-It requires Python 2.6, 2.7 or Python 3 and works with PyPy.
+contact data (MeCard, vCard) or WIFI configurations.
 
 
 Installation
@@ -54,7 +56,7 @@ Library
     >>> qr.version
     2
     >>> qr.error
-    'M'
+    'Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
     >>> qr.save('up-jumped-the-devil-3.png', background=None)  # Transparent background
@@ -100,10 +102,9 @@ All factory functions use the same parameters to specify the desired error
 level, version, data mask etc., see `Segno's documentation`_ for details.
 
 
-Other QR Code generators
-------------------------
-* <https://pypi.python.org/pypi/PyQRCode/>
-* <https://pypi.python.org/pypi/qrcode/>
-* <https://pypi.python.org/pypi/qrcodegen/>
+Documentation
+-------------
+Read the online documentation at <https://segno.readthedocs.io/>
 
-.. _Segno's documentation: http://segno.readthedocs.io/en/latest/
+
+.. _Segno's documentation: https://segno.readthedocs.io/

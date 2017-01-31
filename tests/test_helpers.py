@@ -1,16 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
 #
 """\
 Tests against the helper factory functions.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
+Issue <https://github.com/heuer/segno/issues/19>
 """
 from __future__ import unicode_literals, absolute_import
 import pytest
@@ -75,6 +72,41 @@ def test_mecard_data():
 
 def test_mecard():
     qr = helpers.make_mecard(name='Mustermann,Max')
+    assert qr
+
+
+def test_vcard_data():
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', org='ABC, Inc.')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nORG:ABC\, Inc.\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.', 'John Stevenson')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.\r\nFN:John Stevenson\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='Street', city='City', zipcode='123456')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;Street;City;;123456;\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='123 Main Street', city='Any Town',
+                                    region='CA', zipcode='91921-1234', country='Nummerland')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;123 Main Street;Any Town;CA;91921-1234;Nummerland\r\nEND:VCARD\r\n' == vcard
+
+
+def test_vcard_data_invalid_bday():
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='19760919')
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='1976-09-19TZ')
+
+
+def test_vcard_data_invalid_rev():
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='19760919')
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19TZ')
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19T-06')
+
+
+def test_vcard():
+    qr = helpers.make_vcard(name='Mustermann;Max', displayname='Max Mustermann')
     assert qr
 
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -9,10 +9,6 @@
 QR Code and Micro QR Code implementation.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
 import sys
@@ -21,11 +17,15 @@ from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
 
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
            'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
            'DataOverflowError')
+
+
+# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
+__metaclass__ = type
 
 
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
@@ -44,18 +44,18 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             used to specify the used encoding.
     :type content: str, int, bytes
     :param error: Error correction level. If ``None`` (default), error
-            correction level ``M`` is used (note: Micro QR Code version M1 does
+            correction level ``L`` is used (note: Micro QR Code version M1 does
             not support error correction. If an explicit error level is used,
             a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
-            correction level "M"), "L", "M", "Q", "H" (error correction level
-            "H" isn't available for Micro QR Codes).
+            correction level "L" or better see ``boost_error``), "L", "M", "Q",
+            "H" (error correction level "H" isn't available for Micro QR Codes).
 
             =====================================   ===========================
             Error correction level                  Error correction capability
             =====================================   ===========================
-            L                                       recovers  7% of data
-            M (Segno's default unless version M1)   recovers 15% of data
+            L (Segno's default unless version M1)   recovers  7% of data
+            M                                       recovers 15% of data
             Q                                       recovers 25% of data
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================
@@ -66,13 +66,13 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             The `error` parameter is case insensitive.
 
             See also the `boost_error` parameter.
-    :type error: str or None
+    :type error: str, unicode or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
             Valid values: "M1", "M2", "M3", "M4" (for Micro QR Codes) or an
             integer between 1 and 40 (for QR Codes).
             The `version` parameter is case insensitive.
-    :type version: int, str or None.
+    :type version: int, str, unicode or None.
     :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
             ``None`` (default) the appropriate mode will automatically be
             determined.
@@ -90,7 +90,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
             The `mode` parameter is case insensitive.
 
-    :type mode: unicode|str|None
+    :type mode: str, unicode, or None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is choosen automatically. If the `mask`
             parameter if provided, this function may raise a :py:exc:`MaskError`
@@ -173,7 +173,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
                 encoding=encoding, micro=True, boost_error=boost_error)
 
 
-class QRCode(object):
+class QRCode:
     """\
     Represents a (Micro) QR Code.
     """
@@ -627,6 +627,31 @@ class QRCode(object):
                          has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
                          point to. Requires the hyperref package.
+        =============    ==============================================================
+
+
+        **X BitMap (XBM)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "xbm"
+        scale            integer
+        name             Name of the variable (default: "img")
+        =============    ==============================================================
+
+
+        **X PixMap (XPM)**
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        kind             "xpm"
+        scale            integer
+        color            Default: "#000" (black).
+        background       Default value ``#fff`` (white)
+                         ``None`` indicates a transparent background.
+        name             Name of the variable (default: "img")
         =============    ==============================================================
 
 

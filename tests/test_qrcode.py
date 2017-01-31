@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
 #
 """\
 QR Code tests.
-
-:author:       Lars Heuer (heuer[at]semagia.com)
-:organization: Semagia - http://www.semagia.com/
-:license:      BSD License
 """
 from __future__ import absolute_import, unicode_literals
 import os
@@ -88,7 +84,7 @@ def test_illegal_error_level_micro():
         segno.make('test', error='H', micro=True)
 
 
-@pytest.mark.parametrize('data,version', [('abcdefghijklmno', 1), (123456, 'M1')])
+@pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
 def test_data_too_large(data, version):
     with pytest.raises(DataOverflowError):
         segno.make(data, version=version)

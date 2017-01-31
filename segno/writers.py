@@ -37,34 +37,12 @@ except ImportError:  # pragma: no cover
     range = xrange
     str = unicode
     from io import open
-from .colors import invert_color, color_to_rgb, color_to_rgb_or_rgba, \
-        color_to_webcolor, color_is_black, color_is_white
+from . import colors
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
-
-
-def get_writable(file_or_path, mode, encoding=None):
-    """\
-    Returns a writable stream and if the caller must close the writable
-    stream explicitly.
-
-    :param file_or_path: Either a file-like object or a filename.
-    :param str mode: String indicating the writing mode (i.e. ``'wb'``)
-    :rtype: tuple: fileobj, bool
-    """
-    import warnings
-    warnings.warn('Use writable(file_or_path, mode) as f')
-    try:
-        file_or_path.write
-        if encoding is None:
-            return file_or_path, False
-        return codecs.getwriter(encoding)(file_or_path), False
-    except AttributeError:
-        return open(file_or_path, mode, encoding=encoding), True
-
 
 @contextmanager
 def writable(file_or_path, mode, encoding=None):
@@ -174,7 +152,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
             write('<desc>{0}</desc>'.format(escape(desc)))
         allow_css3_colors = svgversion is not None and svgversion >= 2.0
         if background is not None:
-            bg_color = color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
+            bg_color = colors.color_to_webcolor(background, allow_css3_colors=allow_css3_colors)
             fill_opacity = ''
             if isinstance(bg_color, tuple):
                 bg_color, opacity = bg_color
@@ -186,7 +164,7 @@ def write_svg(matrix, version, out, scale=1, border=None, color='#000',
             write(' transform="scale({0})"'.format(scale))
         if color is not None:
             opacity = None
-            stroke_color = color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
+            stroke_color = colors.color_to_webcolor(color, allow_css3_colors=allow_css3_colors)
             if isinstance(stroke_color, tuple):
                 stroke_color, opacity = stroke_color
             write(' stroke={0}'.format(quoteattr(stroke_color)))
@@ -357,7 +335,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
                                  .format(c))
             return 1/255.0 * c if c != 1 else c
 
-        return tuple([to_float(i) for i in color_to_rgb(clr)])
+        return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
 
     check_valid_scale(scale)
     check_valid_border(border)
@@ -374,7 +352,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
         # Write the shortcuts
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
-        stroke_color_is_black = color_is_black(color)
+        stroke_color_is_black = colors.color_is_black(color)
         stroke_color = color if stroke_color_is_black else rgb_to_floats(color)
         if background is not None:
             writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
@@ -440,7 +418,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     """
 
     def png_color(clr):
-        return color_to_rgb_or_rgba(clr, alpha_float=False)
+        return colors.color_to_rgb_or_rgba(clr, alpha_float=False)
 
     def chunk(name, data):
         """\
@@ -451,13 +429,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         # why crc32() & 0xFFFFFFFF is necessary
         return pack(b'>I', len(data)) + chunk_head \
                + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
-
-    def groups_of_eight(row):
-        """\
-        Returns 8 columns from the iterable. If the iterable is of uneven
-        length, missing values will be filled-up with ``0x0``.
-        """
-        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
 
     def scale_row_x_axis(row):
         """\
@@ -471,9 +442,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns a single scanline.
         """
-        return bytearray(chain(filter_type,
-                               # Pack 8 px into one byte
-                               (reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row))))
+        return bytearray(chain(filter_type, _pack_bits_into_byte(row)))
 
     def invert_row_bits(row):
         """\
@@ -495,13 +464,13 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     stroke_is_black, stroke_is_white = False, False
     bg_is_white, bg_is_black = False, False
     if not stroke_is_transparent:
-        stroke_is_black = color_is_black(stroke_color)
+        stroke_is_black = colors.color_is_black(stroke_color)
         if not stroke_is_black:
-            stroke_is_white = color_is_white(stroke_color)
+            stroke_is_white = colors.color_is_white(stroke_color)
     if not bg_is_transparent:
-        bg_is_white = color_is_white(bg_color)
+        bg_is_white = colors.color_is_white(bg_color)
         if not bg_is_white:
-            bg_is_black = color_is_black(bg_color)
+            bg_is_black = colors.color_is_black(bg_color)
     transparency = stroke_is_transparent or bg_is_transparent
     is_greyscale = False
     invert_row = False
@@ -518,11 +487,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     if not is_greyscale:
         # PLTE image
         if bg_is_transparent:
-            bg_color = invert_color(stroke_color[:3])
+            bg_color = colors.invert_color(stroke_color[:3])
             if len(stroke_color) == 4:
                 bg_color += (0,)
         elif stroke_is_transparent:
-            stroke_color = invert_color(bg_color[:3])
+            stroke_color = colors.invert_color(bg_color[:3])
             if len(bg_color) == 4:
                 stroke_color += (0,)
         palette = sorted([bg_color, stroke_color], key=len, reverse=True)
@@ -692,11 +661,11 @@ def write_txt(matrix, version, out, border=None, color='1', background='0'):
     :param background: Character to use for the white modules (default: '0')
     """
     row_iter = matrix_iter(matrix, version, scale=1, border=border)
-    colors = (str(background), str(color))
+    colours = (str(background), str(color))
     with writable(out, 'wt') as f:
         write = f.write
         for row in row_iter:
-            write(''.join([colors[i] for i in row]))
+            write(''.join([colours[i] for i in row]))
             write('\n')
 
 
@@ -716,13 +685,6 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
-    def groups_of_eight(row):
-        """\
-        Returns 8 columns from the iterable. If the iterable is of uneven
-        length, missing values will be filled-up with ``0x0``.
-        """
-        return zip_longest(*[iter(row)] * 8, fillvalue=0x0)
-
     row_iter = matrix_iter(matrix, version, scale, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wb') as f:
@@ -733,7 +695,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
-                write(bytearray(reduce(lambda x, y: (x << 1) + y, e) for e in groups_of_eight(row)))
+                write(bytearray(_pack_bits_into_byte(row)))
         else:
             for row in row_iter:
                 write(b''.join(str(i).encode('ascii') for i in row))
@@ -767,8 +729,8 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
         """
         return bytearray([b ^ 0x1 for b in row])
 
-    def row_to_color_values(row, colors):
-        return b''.join([colors[b] for b in row])
+    def row_to_color_values(row, colours):
+        return b''.join([colours[b] for b in row])
 
     if not color:
         raise ValueError('Invalid stroke color "{0}"'.format(color))
@@ -776,29 +738,29 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
     width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
-    stroke_color = color_to_rgb_or_rgba(color, alpha_float=False)
-    bg_color = color_to_rgb_or_rgba(background, alpha_float=False) if background is not None else None
-    colored_stroke = not (color_is_black(stroke_color) or color_is_white(stroke_color))
+    stroke_color = colors.color_to_rgb_or_rgba(color, alpha_float=False)
+    bg_color = colors.color_to_rgb_or_rgba(background, alpha_float=False) if background is not None else None
+    colored_stroke = not (colors.color_is_black(stroke_color) or colors.color_is_white(stroke_color))
     if bg_color is None:
         tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
         transparency = True
-        bg_color = invert_color(stroke_color[:3])
+        bg_color = colors.invert_color(stroke_color[:3])
         bg_color += (0,)
         if len(stroke_color) != 4:
             stroke_color += (255,)
-    elif colored_stroke or not (color_is_black(bg_color) or color_is_white(bg_color)):
+    elif colored_stroke or not (colors.color_is_black(bg_color) or colors.color_is_white(bg_color)):
         tuple_type = 'RGB'
     is_rgb = tuple_type.startswith('RGB')
-    colors = None
+    colours = None
     if not is_rgb and transparency:
         depth = 2
-        colors = (b'\x01\x00', b'\x00\x01')
+        colours = (b'\x01\x00', b'\x00\x01')
     elif is_rgb:
         maxval = max(chain(stroke_color, bg_color))
         depth = 3 if not transparency else 4
         fmt = '>{0}B'.format(depth).encode('ascii')
-        colors=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
-    row_filter = invert_row_bits if colors is None else partial(row_to_color_values, colors=colors)
+        colours=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
+    row_filter = invert_row_bits if colours is None else partial(row_to_color_values, colours=colours)
     with writable(out, 'wb') as f:
         write = f.write
         write('P7\n'
@@ -811,6 +773,98 @@ def write_pam(matrix, version, out, scale=1, border=None, color='#000',
               'ENDHDR\n'.format(CREATOR, width, height, depth, maxval, tuple_type).encode('ascii'))
         for row in row_iter:
             write(row_filter(row))
+
+
+def write_xpm(matrix, version, out, scale=1, border=None, color='#000',
+              background='#fff', name='img'):
+    """\
+    Serializes the matrix as `XPM <https://en.wikipedia.org/wiki/X_PixMap>`_ image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: white).
+            See `color` for valid values. ``None`` indicates a transparent
+            background.
+    :param str name: Name of the image (must be a valid C-identifier).
+            Default: "img".
+    """
+    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    stroke_color = colors.color_to_rgb_hex(color)
+    bg_color = colors.color_to_rgb_hex(background) if background is not None else 'None'
+    with writable(out, 'wt') as f:
+        write = f.write
+        write('/* XPM */\n'
+              'static char *{0}[] = {{\n'
+              '"{1} {2} 2 1",\n'
+              '"  c {3}",\n'
+              '"X c {4}",\n'.format(name, width, height, bg_color, stroke_color))
+        for i, row in enumerate(row_iter):
+            write(''.join(chain(['"'],  (' ' if not b else 'X' for b in row),
+                                ['"{0}\n'.format(',' if i < height - 1 else '')])))
+        write('};\n')
+
+
+def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
+    """\
+    Serializes the matrix as `XBM <https://en.wikipedia.org/wiki/X_BitMap>`_ image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write text data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 in the provided unit per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param name: Prefix for the variable names. Default: "img".
+                 The prefix is used to construct the variable names:
+                 ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
+    """
+    def byte_iterable(row):
+        r = chain(left_right_border, chain(*([b] * scale for b in row)), left_right_border)
+        for bits in zip_longest(*[iter(r)] * 8, fillvalue=0x0):
+            # Reverse bits since XBM uses little endian
+            yield '0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1]))
+
+    def rows():
+        top_bottom_border = tuple([0x0] * (width // scale - 2 * border))
+        for x in range(0, border):
+            yield top_bottom_border
+        for row in matrix:
+            yield row
+        for x in range(0, border):
+            yield top_bottom_border
+
+    check_valid_scale(scale)
+    check_valid_border(border)
+    scale = int(scale)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale=scale, border=border)
+    left_right_border = [0x0] * border * scale
+    with writable(out, 'wt') as f:
+        write = f.write
+        write('#define {0}_width {1}\n'
+              '#define {0}_height {2}\n'
+              'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
+        i = 0
+        for row in rows():
+            r = ', '.join(byte_iterable(row))
+            for s in range(0, scale):
+                i += 1
+                write('    ')
+                write(r)
+                write(',\n' if i < height else '\n')
+        write('};\n')
 
 
 def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='pt', url=None):
@@ -935,6 +989,17 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
         write('\n')
 
 
+def _pack_bits_into_byte(iterable):
+    """\
+    Packs eight bits into one byte.
+
+    If the length of the iterable is not a multiple of eight, ``0x0`` is used
+    to fill-up the missing values.
+    """
+    return (reduce(lambda x, y: (x << 1) + y, e)
+            for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
+
+
 _VALID_SERIALISERS = {
     'svg': write_svg,
     'svg_debug': write_svg_debug,
@@ -946,6 +1011,8 @@ _VALID_SERIALISERS = {
     'pbm': write_pbm,
     'pam': write_pam,
     'tex': write_tex,
+    'xbm': write_xbm,
+    'xpm': write_xpm,
 }
 
 def save(matrix, version, out, kind=None, **kw):

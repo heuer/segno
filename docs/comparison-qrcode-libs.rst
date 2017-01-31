@@ -26,7 +26,8 @@ Find maximal error correction level             No                    No        
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
-`XPM`_ output                                   No                    Yes                    No                    No
+`XBM`_ output                                   No                    Yes                    No                    Yes
+`XPM`_ output                                   No                    No                     No                    Yes
 `PBM`_ output                                   Yes                   No                     No                    Yes
 `PAM`_ output                                   No                    No                     No                    Yes
 `LaTeX`_ support                                No                    No                     No                    Yes
@@ -98,7 +99,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _SVG: https://en.wikipedia.org/wiki/Scalable_Vector_Graphics
 .. _EPS: https://en.wikipedia.org/wiki/Encapsulated_PostScript
 .. _PDF: https://en.wikipedia.org/wiki/Portable_Document_Format
-.. _XPM: https://en.wikipedia.org/wiki/X_PixMap
+.. _XBM: https://en.wikipedia.org/wiki/X_BitMap
+.. _XPM: https://de.wikipedia.org/wiki/X_PixMap
 .. _PBM: https://en.wikipedia.org/wiki/Netpbm_format
 .. _PAM: https://en.wikipedia.org/wiki/Netpbm#PAM_graphics_format
 .. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
