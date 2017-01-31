@@ -6,8 +6,9 @@
 # License: BSD License
 #
 """\
-Tests against issue 33
+Tests against issue 33 and 37
 <https://github.com/heuer/segno/issues/33>
+<https://github.com/heuer/segno/issues/37>
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
@@ -54,10 +55,39 @@ def test_m1_1234(data):
     assert ref_matrix == qr.matrix
 
 
+@pytest.mark.parametrize('data', ['12345', 12345])
+def test_m1_12345(data):
+    qr = segno.make(data)
+    assert 'M1' == qr.designator
+    ref_matrix = read_matrix('issue-33-m1-12345')
+    assert ref_matrix == qr.matrix
+
+
 def test_m3_wikipedia():
     qr = segno.make('Wikipedia', version='m3', error='l')
     assert 'M3-L' == qr.designator
     ref_matrix = read_matrix('issue-33-m3-l-wikipedia')
+    assert ref_matrix == qr.matrix
+
+
+def test_m3_max_numeric():
+    qr = segno.make('12345678901234567890123', version='m3', error='l')
+    assert 'M3-L' == qr.designator
+    ref_matrix = read_matrix('issue-33-m3-l-12345678901234567890123')
+    assert ref_matrix == qr.matrix
+
+
+def test_jump_from_m3_to_m4_dont_boost_error():
+    qr = segno.make('123456789012345678901234', boost_error=False)
+    assert 'M4-L' == qr.designator
+    ref_matrix = read_matrix('issue-33-m3-l-to-m4-l-jump')
+    assert ref_matrix == qr.matrix
+
+
+def test_jump_from_m3_to_m4_boost_error():
+    qr = segno.make('123456789012345678901234')
+    assert 'M4-M' == qr.designator
+    ref_matrix = read_matrix('issue-33-m3-l-to-m4-m-jump')
     assert ref_matrix == qr.matrix
 
 
