@@ -1,16 +1,34 @@
 Changes
 =======
 
-0.2.4 -- 2016-mm-dd
+0.2.4 -- 2017-mm-dd
 -------------------
+* Fixed #33: Some Micro QR Codes may be unreadable due to wrong
+  format information. Further, M1 and M3 codes may be wrong due to wrong
+  encoding of final data symbol character (8 bits instead of (correct) 4 bits).
+  Thanks to Nicolas Boullis for the bug report, initial fix, tests and patience.
+* Fixed #34: Change default error level from "M" to "L" to avoid surprises that
+  the content does not fit into the provided version. This change is somewhat
+  backwards incompatible.
+* Fixed #35: Check of user supplied mask pattern index was wrong.
+* Fixed #36: Wrong placement of codeword in M1 and M3 symbols.
+* Fixed #37: Generation of M1 / M3 symbols fail if the data modules are
+  completely filled.
+* Fixed #38: Optimized mask pattern choosing algorithm: If the user supplied
+  a preferred mask, the mask evaluation step is skipped and the preferred mask
+  is chosen
+* Added more internal checks to ensure correct (Micro) QR Codes; provided
+  helpful exceptions
 * Removed ``writers.get_writable`` (replaced by ``writers.writable``)
-* Added support for serializing QR Codes as XBM (X BitMap)
-  (supports black / white images)
+* Added support for serializing QR Codes as XBM (X BitMap) (supports
+  black / white images)
 * Added support for serializing QR Codes as XPM (X PixMap) (supports colors and
   transparency)
 * Added support for encoding contact information as vCard version 3.0
   (``segno.helpers``)
-
+* Added -V shortcut to Segno's command line script to show version information
+* Better test coverage for command line script
+* Better test coverage for M1 and M3 symbols
 
 
 0.2.3 -- 2016-10-17
@@ -33,7 +51,6 @@ Changes
   is also mentioned in the help message (``-h``) (#24)
 * Support for creating email addresses or complete messages (``segno.helpers``)
 * Internal optimizations and more correct minimal version finding (#26)
-
 
 
 0.2.1 -- 2016-09-15
