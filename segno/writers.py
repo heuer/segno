@@ -44,6 +44,7 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
 # Standard creator name
 CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
 
+
 @contextmanager
 def writable(file_or_path, mode, encoding=None):
     """\
@@ -926,7 +927,7 @@ def write_terminal(matrix, version, out, border=None):
     """
     with writable(out, 'wt') as f:
         write = f.write
-        colors = ['\033[{0}m'.format(i) for i in (7, 49)]
+        colours = ['\033[{0}m'.format(i) for i in (7, 49)]
         for row in matrix_iter(matrix, version, scale=1, border=border):
             prev_bit = -1
             cnt = 0
@@ -935,13 +936,13 @@ def write_terminal(matrix, version, out, border=None):
                     cnt += 1
                 else:
                     if cnt:
-                        write(colors[prev_bit])
+                        write(colours[prev_bit])
                         write('  ' * cnt)
                         write('\033[0m')  # reset color
                     prev_bit = bit
                     cnt = 1
             if cnt:
-                write(colors[prev_bit])
+                write(colours[prev_bit])
                 write('  ' * cnt)
                 write('\033[0m')  # reset color
             write('\n')
@@ -969,7 +970,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
                       'Not running on the command line?')
     default_color = struct.unpack(b'hhhhHhhhhhh', csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
-    colors = (240, default_color)
+    colours = (240, default_color)
     for row in matrix_iter(matrix, version, scale=1, border=border):
         prev_bit = -1
         cnt = 0
@@ -978,12 +979,12 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
                 cnt += 1
             else:
                 if cnt:
-                    set_color(colors[prev_bit])
+                    set_color(colours[prev_bit])
                     write('  ' * cnt)
                 prev_bit = bit
                 cnt = 1
         if cnt:
-            set_color(colors[prev_bit])
+            set_color(colours[prev_bit])
             write('  ' * cnt)
         set_color(default_color)  # reset color
         write('\n')
