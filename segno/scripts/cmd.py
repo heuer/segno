@@ -47,7 +47,7 @@ def make_parser():
     parser.add_argument('content', help='The content to encode')
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
-    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%%, "M": 15%% (default), "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
+    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
                         choices=('L', 'M', 'Q', 'H', '-'),
                         default=None,
                         type=lambda x: x.upper())
