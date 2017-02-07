@@ -107,4 +107,9 @@ Documentation
 Read the online documentation at <https://segno.readthedocs.io/>
 
 
+Trademark
+---------
+"QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
+
+
 .. _Segno's documentation: https://segno.readthedocs.io/
