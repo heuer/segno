@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Segno'
-copyright = '2016 - {0} Lars Heuer'.format(datetime.datetime.now().year)
+copyright = '2016 - {0} Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.'.format(datetime.datetime.now().year)
 author = 'Lars Heuer'
 
 # The version info for the project you're documenting, acts as replacement for
