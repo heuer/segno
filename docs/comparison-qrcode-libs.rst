@@ -39,6 +39,7 @@ Text output                                     Yes                   Yes       
 Other output formats (i.e. `JPEG`_)             Yes                   No                     No                    No, but via `PIL plugin`_
 Black and white QR Codes                        Yes                   Yes                    Yes                   Yes
 Colored QR Codes                                No                    Yes                    No                    Yes
+Animated QR Codes (`GIF`_, `APNG`_)             No                    No                     No                    No
 Changing size of modules (scaling factor)       Yes                   Yes                    No                    Yes
 Command line script                             Yes                   No                     No                    Yes
 Plugins                                         No                    No                     No                    Yes
@@ -117,3 +118,5 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _colorama: https://pypi.python.org/pypi/colorama
 .. _PIL plugin: https://github.com/heuer/segno-pil
 .. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py
+.. _GIF: https://en.wikipedia.org/wiki/GIF#Animated_GIF
+.. _APNG: https://en.wikipedia.org/wiki/Animated_Portable_Network_Graphics
