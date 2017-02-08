@@ -27,7 +27,7 @@ Optimize QR Codes                               Yes                   No        
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
 `PDF`_ output                                   Yes                   No                     No                    Yes
-`XBM`_ output                                   No                    Yes                    No                    Yes
+`XBM`_ output                                   Yes                   Yes                    No                    Yes
 `XPM`_ output                                   No                    No                     No                    Yes
 `PBM`_ output                                   Yes                   No                     No                    Yes
 `PAM`_ output                                   No                    No                     No                    Yes
