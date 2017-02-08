@@ -22,6 +22,7 @@ Micro QR Codes version M1 - M4                  No                    No        
 Output acc. to ISO/IEC 18004:2015(E) Fig. 1     Yes                   No                     No                    Yes
 Output acc. to ISO/IEC 18004:2015(E) I.3.       No (not available)    No (not available)     No (not available)    Yes
 Find maximal error correction level             No                    No                     Yes                   Yes
+Optimize QR Codes                               Yes                   No                     No                    No
 `PNG`_ output                                   Yes                   Yes                    No                    Yes
 `SVG`_ output                                   Yes                   Yes                    Yes                   Yes
 `EPS`_ output                                   Yes                   Yes                    No                    Yes
