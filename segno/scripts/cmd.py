@@ -44,7 +44,6 @@ def make_parser():
 
     parser = argparse.ArgumentParser(prog='segno',
                                      description='Segno QR Code and Micro QR Code generator version {0}'.format(segno.__version__))
-    parser.add_argument('content', help='The content to encode')
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
     parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
@@ -112,6 +111,7 @@ def make_parser():
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
                                                        version='Segno {0}'.format(segno.__version__))
+    parser.add_argument('content', nargs='+', help='The content to encode')
     return parser
 
 
@@ -170,7 +170,7 @@ def build_config(config, filename=None):
 
 
 def make_code(config):
-    return segno.make(config.pop('content'), mode=config.pop('mode'),
+    return segno.make(' '.join(config.pop('content')), mode=config.pop('mode'),
                       error=config.pop('error'), version=config.pop('version'),
                       mask=config.pop('pattern'), micro=config.pop('micro'),
                       boost_error=config.pop('boost_error'))

@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# All rights reserved.
+#
+# License: BSD License
+#
+"""\
+Tests against issue 39
+<https://github.com/heuer/segno/issues/39>
+"""
+from __future__ import absolute_import, unicode_literals
+import os
+import io
+import tempfile
+import pytest
+import segno
+from segno.scripts import cmd
+
+
+def test_output():
+    out = io.BytesIO()
+    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10, color='red')
+    f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
+    f.close()
+    cmd.main(['-e=M', '--scale=10', '--color=red', '--output={0}'.format(f.name), 'Good Times'])
+    f = open(f.name, 'rb')
+    content = f.read()
+    f.close()
+    os.unlink(f.name)
+    assert out.getvalue() == content
+
+
+if __name__ == '__main__':
+    pytest.main([__file__])
