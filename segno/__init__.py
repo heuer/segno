@@ -24,8 +24,8 @@ except NameError:  # pragma: no cover
 __version__ = '0.2.5dev0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeError', 'ErrorLevelError', 'ModeError', 'MaskError',
-           'VersionError', 'DataOverflowError')
+           'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
+           'MaskError', 'VersionError', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -178,12 +178,12 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
 
 
 def make_sequence(content, error=None, version=None, mode=None, mask=None,
-                  encoding=None, boost_error=True, max_no=None):
+                  encoding=None, boost_error=True):
     """\
     Creates a sequence of QR Codes.
 
-    If the content fits into one QR Code and neither `version` nor `min_no`
-    is provided, it this function may return a sequence with one QR Code which
+    If the content fits into one QR Code and neither `version` is not provided,
+    this function may return a sequence with one QR Code which
     does not use the Structured Append mode. Otherwise a sequence of 2 .. n
     (max. n = 16) QR Codes is returned which use the Structured Append mode.
 
@@ -200,10 +200,7 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
         for qrcode in segno.make_sequence(data):
              qrcode.save('seq.svg', scale=10, color='darkblue')
 
-    The returned number of QR Codes is determined by the `version` parameter
-    and by the `max_no` parameter.
-
-    :param int max_no: The maximum number of QR Codes.
+    The returned number of QR Codes is determined by the `version` parameter.
 
     See :py:func:`make` for a description of the other parameters.
 
@@ -214,8 +211,7 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
                                                       version=version,
                                                       mode=mode, mask=mask,
                                                       encoding=encoding,
-                                                      boost_error=boost_error,
-                                                      max_no=max_no)))
+                                                      boost_error=boost_error)))
 
 
 class QRCode:
