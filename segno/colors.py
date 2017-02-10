@@ -34,6 +34,7 @@ def color_to_rgb_or_rgba(color, alpha_float=True):
 
 def color_to_webcolor(color, allow_css3_colors=True, optimize=True):
     """\
+    Returns either a hexadecimal code or a color name.
 
     :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
             (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
@@ -132,6 +133,7 @@ def color_to_rgb(color):
 
 def color_to_rgba(color, alpha_float=True):
     """\
+    Returns a (R, G, B, A) tuple.
 
     :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
             (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
