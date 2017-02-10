@@ -171,7 +171,6 @@ def color_to_rgba(color, alpha_float=True):
                 return clr
             else:
                 return clr + alpha_channel
-
         except ValueError:
             raise ValueError('Unsupported color "{0}". Neither a known web '
                              'color name nor a color in hexadecimal format.'
