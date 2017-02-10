@@ -31,5 +31,18 @@ def test_output():
     assert out.getvalue() == content
 
 
+def test_output2():
+    out = io.BytesIO()
+    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10, color='red')
+    f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
+    f.close()
+    cmd.main(['-e=M', '--scale=10', '--color=red', '--output={0}'.format(f.name), 'Good', 'Times'])
+    f = open(f.name, 'rb')
+    content = f.read()
+    f.close()
+    os.unlink(f.name)
+    assert out.getvalue() == content
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
