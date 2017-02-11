@@ -15,7 +15,7 @@ Mode Byte                                       Yes                   Yes       
 Mode Kanji                                      No                    Yes                    No                    Yes
 Mode ECI                                        No                    No                     Yes                   Yes
 Mode FNC1                                       No                    No                     No                    No
-Mode Structured Append                          No                    No                     No                    No
+Mode Structured Append                          No                    No                     No                    Yes
 Mixing modes                                    Yes                   No                     Yes                   Yes
 QR Codes version 1 - 40                         Yes                   Yes                    Yes                   Yes
 Micro QR Codes version M1 - M4                  No                    No                     No                    Yes
