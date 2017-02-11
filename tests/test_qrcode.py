@@ -329,6 +329,7 @@ def test_save_svg_debug():
     os.unlink(f.name)
     assert b'<?xml ' == val[:6]
     assert b'<rect' in val
+    assert b'<path' not in val
 
 
 def test_save_pdf_filestream():
