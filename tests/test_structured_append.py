@@ -92,9 +92,7 @@ def test_encode_single2():
     assert '1-M' == seq.designator
     ref_matrix = read_matrix('iso-fig-1')
     assert ref_matrix == seq.matrix
-
     qr = seq[0]
-
     assert '1-M' == qr.designator
     ref_matrix = read_matrix('iso-fig-1')
     assert ref_matrix == qr.matrix
