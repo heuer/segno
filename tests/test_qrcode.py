@@ -318,6 +318,19 @@ def test_save_svgz_filename():
     assert b'<?xml ' == content
 
 
+def test_save_svg_debug():
+    qr = segno.make_qr('test')
+    f = tempfile.NamedTemporaryFile('wb', suffix='.svg', delete=False)
+    f.close()
+    qr.save(f.name, debug=True)
+    f = open(f.name, mode='rb')
+    val = f.read()
+    f.close()
+    os.unlink(f.name)
+    assert b'<?xml ' == val[:6]
+    assert b'<rect' in val
+
+
 def test_save_pdf_filestream():
     qr = segno.make_qr('test')
     f = tempfile.NamedTemporaryFile('wb', suffix='.pdf', delete=False)

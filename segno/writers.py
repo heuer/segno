@@ -267,6 +267,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         clr_mapping.update(color_mapping)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
+    matrix_size = get_symbol_size(version, scale=1, border=0)[0]
     with writable(out, 'wt', encoding='utf-8') as f:
         legend = []
         write = f.write
@@ -274,9 +275,9 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
         write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
         write('<g transform="scale({0})">'.format(scale))
-        for i in range(width):
+        for i in range(matrix_size):
             y = i + border
-            for j in range(height):
+            for j in range(matrix_size):
                 x = j + border
                 bit = matrix[i][j]
                 if add_legend and bit not in (0x0, 0x1):
