@@ -11,9 +11,10 @@ QR Code and Micro QR Code encoder.
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
 from __future__ import absolute_import, division
-from operator import itemgetter, gt, lt
-from functools import partial
+from operator import itemgetter, gt, lt, xor
+from functools import partial, reduce
 import re
+import math
 import codecs
 from copy import deepcopy
 from collections import namedtuple
@@ -33,8 +34,8 @@ import sys
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
-__all__ = ('encode', 'QRCodeError', 'VersionError', 'ModeError',
-           'ErrorLevelError', 'MaskError', 'DataOverflowError')
+__all__ = ('encode', 'encode_sequence', 'QRCodeError', 'VersionError',
+           'ModeError', 'ErrorLevelError', 'MaskError', 'DataOverflowError')
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
 __metaclass__ = type
@@ -126,16 +127,104 @@ def encode(content, error=None, version=None, mode=None, mask=None,
                                         get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_L
-    if boost_error:
-        error = boost_error_level(version, error, segments, eci)
     is_micro = version < 1
     mask = normalize_mask(mask, is_micro)
+    return _encode(segments, error, version, mask, eci, boost_error)
+
+
+def encode_sequence(content, error=None, version=None, mode=None,
+                    mask=None, encoding=None, eci=False, boost_error=True):
+    """\
+    EXPERIMENTAL: Creates a sequence of QR Codes in Structured Append mode.
+
+    :return: Iterable of named tuples, see :py:func:`encode` for details.
+    """
+    def one_item_segments(chunk, mode):
+        """\
+        Creates a Segments sequence with one item.
+        """
+        segs = Segments()
+        segs.add_segment(make_segment(chunk, mode=mode, encoding=encoding))
+        return segs
+
+    def divide_by_version(content, version, error, mode):
+        """\
+
+        """
+        content_len = len(content)
+        capacity = consts.SYMBOL_CAPACITY_DATA[version][error][mode]
+        num_symbols = math.ceil(content_len / capacity)
+        avg = content_len / num_symbols
+        l = []
+        last = .0
+        while last < content_len:
+            l.append(one_item_segments(content[int(last):int(last + avg)], mode))
+            last += avg
+        return l
+
+    version = normalize_version(version)
+    if version is not None:
+        if version < 1:
+            raise VersionError('This function does not accept Micro QR Code versions. '
+                               'Provided: "{0}"'.format(get_version_name(version)))
+    else:
+        raise ValueError('Please provide a QR Code version')
+    error = normalize_errorlevel(error, accept_none=True)
+    if error is None:
+        error = consts.ERROR_LEVEL_L
+    mode = normalize_mode(mode)
+    mask = normalize_mask(mask, is_micro=False)
+    segments = prepare_data(content, mode, encoding, version)
+    guessed_version = None
+    try:
+        # Try to find a version which fits without using Structured Append
+        guessed_version = find_version(segments, error, eci=eci, micro=False)
+    except DataOverflowError:
+        # Data does fit into a usual QR Code but ignore the error silently,
+        # guessed_version is None
+        pass
+    if guessed_version and guessed_version <= (version or guessed_version):
+        # Return iterable of size 1
+        return [_encode(segments, error=error, version=(version or guessed_version),
+                        mask=mask, eci=eci, boost_error=boost_error)]
+    if len(segments.modes) > 1:
+        raise ValueError('This function cannot handle more than one mode (yet). Sorry.')
+    mode = segments.modes[0]  # CHANGE iff more than one mode is supported!
+    # Creating one QR code failed or max_no is not None
+    if isinstance(content, int):
+        content = str(content)
+    segment_seq = divide_by_version(content, version, error, mode)
+    if len(segment_seq) > 16:
+        raise DataOverflowError('Cannot encode the content as sequence')
+    sa_parity_data = calc_structured_append_parity(content)
+    sa_info = partial(_StructuredAppendInfo, total=len(segment_seq) - 1,
+                      parity=sa_parity_data)
+    return [_encode(segments, error=error, version=version,
+                    mask=mask, eci=eci, boost_error=boost_error,
+                    sa_info=sa_info(i)) for i, segments in enumerate(segment_seq)]
+
+
+def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
+    """\
+    Creates a (Micro) QR Code.
+
+    NOTE: This function does not check if the input is valid and does not belong
+    to the public API.
+    """
+    is_micro = version < 1
     buff = Buffer()
     ver = version
     ver_range = version
     if not is_micro:
         ver = None
         ver_range = version_range(version)
+    if boost_error:
+        error = boost_error_level(version, error, segments, eci)
+    if sa_info is not None:
+        # ISO/IEC 18004:2015(E) -- 8 Structured Append (page 59)
+        for i in sa_info[:3]:
+            buff.append_bits(i, 4)
+        buff.append_bits(sa_info.parity, 8)
     # ISO/IEC 18004:2015(E) -- 7.4 Data encoding (page 22)
     for segment in segments:
         write_segment(buff, segment, ver, ver_range, eci)
@@ -1308,7 +1397,7 @@ def find_mode(data):
     return consts.MODE_BYTE
 
 
-def find_version(segments, error, eci, micro):
+def find_version(segments, error, eci, micro, is_sa=False):
     """\
 
     """
@@ -1324,7 +1413,7 @@ def find_version(segments, error, eci, micro):
             error = consts.ERROR_LEVEL_L
         found = False
         try:
-            found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci)
+            found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci, is_sa)
         except KeyError:
             pass
         if found:
@@ -1350,6 +1439,27 @@ def calc_matrix_size(ver):
     :rtype: int
     """
     return ver * 4 + 17 if ver > 0 else (ver + 4) * 2 + 9
+
+
+def calc_structured_append_parity(content):
+    """\
+    Calculates the parity data for the Structured Append mode.
+
+    :param str content: The content.
+    :rtype: int
+    """
+    if not isinstance(content, str_type):
+        content = str(content)
+    try:
+        data = content.encode('iso-8859-1')
+    except UnicodeError:
+        try:
+            data = content.encode('shift-jis')
+        except (LookupError, UnicodeError):
+            data = content.encode('utf-8')
+    if _PY2:
+        data = (ord(c) for c in data)
+    return reduce(xor, data)
 
 
 def is_mode_supported(mode, ver):
@@ -1515,13 +1625,17 @@ class Segments:
     def __iter__(self):
         return iter(self.segments)
 
-    def bit_length_with_overhead(self, version, eci):
+    def bit_length_with_overhead(self, version, eci, is_sa=False):
         overhead = 0
         # ECI overhead
         if eci:
             no_eci_indicators = sum([1 for segment in self.segments if segment.mode == consts.MODE_BYTE and segment.encoding != consts.DEFAULT_BYTE_ENCODING])
             overhead += no_eci_indicators * 4  # ECI indicator
             overhead += no_eci_indicators * 8  # ECI assignment no
+        if is_sa:
+            # 4 bit for mode, 4 bit for the position, 4 bit for total number of symbols
+            # 8 bit for parity data
+            overhead += 5 * 4
         # Mode indicator overhead
         if version > 0:  # QR Code
             overhead += len(self.modes) * 4
@@ -1588,3 +1702,31 @@ class Buffer:
 
     def __getitem__(self, item):
         return self._data[item]
+
+
+class _StructuredAppendInfo(tuple):
+    """\
+    Represents Structured Append information.
+
+    Note: This class provides the Structured Append header information in
+    correct order (incl. Structured Append mode indicator); cf.
+    ISO/IEC 18004:2015(E) -- 8 Structured Append (page 59).
+    """
+    def __new__(cls, number, total, parity):
+        """\
+        :param int number: Symbol number ``[0 .. 15]``
+        :param int total: Total symbol count ``[2 .. 15]``
+        :param int parity: Parity data.
+        """
+        if not (0 <= number < 16):
+            raise ValueError('Invalid Structured Append sequence number: {0}'.format(number))
+        if total > 15 or number > total:
+            raise ValueError('Invalid Structured Append symbol count: {0}'.format(total))
+        if parity < 0:
+            raise ValueError('Invalid Structured Append parity data')
+        return super(_StructuredAppendInfo, cls).__new__(cls, (consts.MODE_STRUCTURED_APPEND, number, total, parity))
+
+    mode = property(itemgetter(0))
+    number = property(itemgetter(1))
+    total = property(itemgetter(2))
+    parity = property(itemgetter(3))
