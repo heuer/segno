@@ -193,10 +193,10 @@ def encode_sequence(content, error=None, version=None, mode=None,
     # Creating one QR code failed or max_no is not None
     if isinstance(content, int):
         content = str(content)
+    sa_parity_data = calc_structured_append_parity(content)
     segment_seq = divide_by_version(content, version, error, mode)
     if len(segment_seq) > 16:
-        raise DataOverflowError('Cannot encode the content as sequence')
-    sa_parity_data = calc_structured_append_parity(content)
+        raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
     sa_info = partial(_StructuredAppendInfo, total=len(segment_seq) - 1,
                       parity=sa_parity_data)
     return [_encode(segments, error=error, version=version,
@@ -212,6 +212,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     to the public API.
     """
     is_micro = version < 1
+    sa_mode = sa_info is not None
     buff = Buffer()
     ver = version
     ver_range = version
@@ -219,8 +220,8 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
         ver = None
         ver_range = version_range(version)
     if boost_error:
-        error = boost_error_level(version, error, segments, eci)
-    if sa_info is not None:
+        error = boost_error_level(version, error, segments, eci, is_sa=sa_mode)
+    if sa_mode:
         # ISO/IEC 18004:2015(E) -- 8 Structured Append (page 59)
         for i in sa_info[:3]:
             buff.append_bits(i, 4)
@@ -255,7 +256,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     return Code(matrix, version, error, mask, segments)
 
 
-def boost_error_level(version, error, segments, eci):
+def boost_error_level(version, error, segments, eci, is_sa=False):
     """\
     Increases the error level if possible.
 
@@ -271,7 +272,7 @@ def boost_error_level(version, error, segments, eci):
             levels.pop()  # H isn't support by Micro QR Codes
             if version < consts.VERSION_M4:
                 levels.pop()  # Error level Q isn't supported by M2 and M3
-        data_length = segments.bit_length_with_overhead(version, eci)
+        data_length = segments.bit_length_with_overhead(version, eci, is_sa=is_sa)
         for level in levels[levels.index(error)+1:]:
             try:
                 found = consts.SYMBOL_CAPACITY[version][level] >= data_length
