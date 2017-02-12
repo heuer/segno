@@ -147,20 +147,16 @@ def encode_sequence(content, error=None, version=None, mode=None,
         segs.add_segment(make_segment(chunk, mode=mode, encoding=encoding))
         return segs
 
-    def divide_by_version(content, version, error, mode):
+    def divide_into_chunks(data, num):
+        k, m = divmod(len(data), num)
+        return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(num)]
+
+    def number_of_symbols_by_version(content, version, error, mode):
         """\
 
         """
-        content_len = len(content)
         capacity = consts.SYMBOL_CAPACITY_DATA[version][error][mode]
-        num_symbols = math.ceil(content_len / capacity)
-        avg = content_len / num_symbols
-        l = []
-        last = .0
-        while last < content_len:
-            l.append(one_item_segments(content[int(last):int(last + avg)], mode))
-            last += avg
-        return l
+        return int(math.ceil(len(content) / capacity))
 
     version = normalize_version(version)
     if version is not None:
@@ -194,14 +190,17 @@ def encode_sequence(content, error=None, version=None, mode=None,
     if isinstance(content, int):
         content = str(content)
     sa_parity_data = calc_structured_append_parity(content)
-    segment_seq = divide_by_version(content, version, error, mode)
-    if len(segment_seq) > 16:
+    num_symbols = 16
+    if version is not None:
+        num_symbols = number_of_symbols_by_version(content, version, error, mode)
+    if num_symbols > 16:
         raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
-    sa_info = partial(_StructuredAppendInfo, total=len(segment_seq) - 1,
+    chunks = divide_into_chunks(content, num_symbols)
+    sa_info = partial(_StructuredAppendInfo, total=len(chunks) - 1,
                       parity=sa_parity_data)
-    return [_encode(segments, error=error, version=version,
+    return [_encode(one_item_segments(chunk, mode), error=error, version=version,
                     mask=mask, eci=eci, boost_error=boost_error,
-                    sa_info=sa_info(i)) for i, segments in enumerate(segment_seq)]
+                    sa_info=sa_info(i)) for i, chunk in enumerate(chunks)]
 
 
 def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
