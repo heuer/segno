@@ -10,6 +10,9 @@ Test against issue #29.
 <https://github.com/heuer/segno/issues/29>
 """
 from __future__ import absolute_import, unicode_literals
+import os
+import tempfile
+import shutil
 import pytest
 import segno
 from segno import encoder
@@ -147,6 +150,32 @@ def test_int():
     data = int('1' * 42)
     seq = segno.make_sequence(data, version=1)
     assert 2 == len(seq)
+
+
+def test_save_one():
+    directory = tempfile.mkdtemp()
+    assert 0 == len(os.listdir(directory))
+    seq = segno.make_sequence('ABC', version=1)
+    assert 1 == len(seq)
+    seq.save(os.path.join(directory, 'test.svg'))
+    number_of_files = len(os.listdir(directory))
+    shutil.rmtree(directory)
+    assert 1 == number_of_files
+
+
+def test_save_multiple():
+    directory = tempfile.mkdtemp()
+    assert 0 == len(os.listdir(directory))
+    seq = segno.make_sequence('ABCDEFGHIJKLMN'
+                              'OPQRSTUVWXYZ0123'
+                              '456789ABCDEFGHIJ'
+                              'KLMNOPQRSTUVWXYZ', version=1, error='m')
+    assert 4 == len(seq)
+    seq.save(os.path.join(directory, 'test.svg'))
+    number_of_files = len(os.listdir(directory))
+    shutil.rmtree(directory)
+    assert 4 == number_of_files
+
 
 
 if __name__ == '__main__':
