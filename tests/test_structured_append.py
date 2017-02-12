@@ -120,5 +120,34 @@ def test_too_much_for_one_qrcode():
 #     seq = segno.make_sequence(data)
 
 
+def test_dataoverflow():
+    data = 'A' * 25 * 16  # Version 1: max. 25 alphanumeric chars, 16 symbols
+    seq = segno.make_sequence(data, version=1)
+    assert 16 == len(seq)
+    data += 'B'  # Should be too much data for 16 symbols using version 1
+    with pytest.raises(segno.DataOverflowError):
+        segno.make_sequence(data, version=1)
+
+
+def test_dataoverflow2():
+    data = 'A' * 4296  # Version 40: max. 4296 alphanumeric chars
+    seq = segno.make_sequence(data, version=40)
+    assert 1 == len(seq)
+    data += 'B'
+    seq = segno.make_sequence(data, version=40)
+    assert 2 == len(seq)
+
+
+def test_no_version_provided():
+    with pytest.raises(ValueError):
+        segno.make_sequence('A')
+
+
+def test_int():
+    data = int('1' * 42)
+    seq = segno.make_sequence(data, version=1)
+    assert 2 == len(seq)
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
