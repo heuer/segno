@@ -23,10 +23,13 @@ _PY2 = False
 try:  # pragma: no cover
     from itertools import zip_longest
     str_type = str
+    numeric = int
 except ImportError:  # pragma: no cover
     _PY2 = True
     from itertools import izip_longest as zip_longest
     str_type = basestring
+    from numbers import Number
+    numeric = Number
     str = unicode
     range = xrange
 
@@ -153,7 +156,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
 
     def number_of_symbols_by_version(content, version, error, mode):
         """\
-
+        Returns the number of symbols for the provided version.
         """
         capacity = consts.SYMBOL_CAPACITY_DATA[version][error][mode]
         return int(math.ceil(len(content) / capacity))
@@ -187,7 +190,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
         raise ValueError('This function cannot handle more than one mode (yet). Sorry.')
     mode = segments.modes[0]  # CHANGE iff more than one mode is supported!
     # Creating one QR code failed or max_no is not None
-    if isinstance(content, int):
+    if mode == consts.MODE_NUMERIC:
         content = str(content)
     sa_parity_data = calc_structured_append_parity(content)
     num_symbols = 16
@@ -263,6 +266,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
     :param int|None error: Error level constant or ``None``
     :param Segments segments: Instance of :py:class:`Segments`
     :param bool eci: Indicates if ECI designator should be written.
+    :param bool is_sa: Indicates if Structured Append mode ist used.
     """
     if error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
         levels = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M,
@@ -1018,7 +1022,7 @@ def prepare_data(content, mode, encoding, version=None):
     """
     segments = Segments()
     add_segment = segments.add_segment
-    if isinstance(content, (str_type, bytes, int)):
+    if isinstance(content, (str_type, bytes, numeric)):
         add_segment(make_segment(content, mode, encoding))
         return segments
     for item in content:
@@ -1421,7 +1425,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
     help_txt = ''
     if micro is None:
         help_txt = '(Micro) '
-    elif micro is True:
+    elif micro:
         help_txt = 'Micro '
     raise DataOverflowError('Data too large. No {0}QR Code can handle the '
                             'provided data'.format(help_txt))
