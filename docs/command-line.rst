@@ -73,6 +73,7 @@ If the resulting QR Code is too small, ``scale`` can be used to create a more
 appropriate output::
 
     $ segno --scale=10 --output=money-talks.png "Money Talks"
+    $ segno -s 10 --output=private-investigations.svg Private Investigations
 
 If the serializer does not support a scaling factor (i.e. text output), this
 parameter is ignored.
@@ -86,6 +87,7 @@ symbol. To change the size of the border, ``border`` can be utilized::
 
     $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
     $ segno --border=10 --output=diamond.png "Shine On You Crazy Diamond"
+    $ segno --b 0 --output=boom-boom.svg Boom Boom
 
 
 Colors

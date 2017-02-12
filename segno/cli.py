@@ -58,10 +58,10 @@ def make_parser():
                         required=False,
                         default=None,
                         type=int)
-    parser.add_argument('--scale', help='Scaling factor',
+    parser.add_argument('--scale', '-s', help='Scaling factor',
                         default=1,
                         type=_convert_scale)
-    parser.add_argument('--border', help='Size of the border / quiet zone',
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone',
                         default=None,
                         type=int)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',

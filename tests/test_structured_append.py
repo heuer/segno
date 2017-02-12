@@ -11,6 +11,7 @@ Test against issue #29.
 """
 from __future__ import absolute_import, unicode_literals
 import os
+import io
 import tempfile
 import shutil
 import pytest
@@ -175,6 +176,29 @@ def test_save_multiple():
     number_of_files = len(os.listdir(directory))
     shutil.rmtree(directory)
     assert 4 == number_of_files
+
+
+def save_terminal_one():
+    out_multiple = io.BytesIO()
+    data = 'QR Code Symbol'
+    seq = segno.make_sequence(data, version=1)
+    assert 1 == len(seq)
+    seq.terminal(out_multiple)
+    qr = segno.make_qr(data, version=1)
+    out_single = io.BytesIO()
+    qr.terminal(out_single)
+    assert out_single.getvalue() == out_multiple.getvalue()
+
+
+def save_terminal_multiple():
+    out_multiple = io.BytesIO()
+    data = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    seq = segno.make_sequence(data, version=1, error='m')
+    assert 4 == len(seq)
+    out_single = io.BytesIO()
+    for qr in seq:
+        qr.terminal(out_single)
+    assert out_single.getvalue() == out_multiple.getvalue()
 
 
 

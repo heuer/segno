@@ -192,6 +192,11 @@ def test_border():
     assert args.border == 0
 
 
+def test_border_shortcut():
+    args = cli.parse(['-b', '10', ''])
+    assert args.border == 10
+
+
 def test_scale():
     args = cli.parse(['--scale=1.6', ''])
     assert args.scale == 1.6
@@ -201,6 +206,11 @@ def test_scale2():
     args = cli.parse(['--scale=2.0', ''])
     assert args.scale == 2
     assert isinstance(args.scale, int)
+
+
+def test_scale_shortcut():
+    args = cli.parse(['-s=1.6', ''])
+    assert args.scale == 1.6
 
 
 def test_color():
