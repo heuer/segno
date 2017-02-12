@@ -5,9 +5,9 @@ Changes
 -------------------
 * Added experimental support for Structured Append (divide content into max.
   16 QR Code symbols)
-* Internal refactoring (i.e. segno/script/cmd.py -> segno/cli.py)
-* Added -s shortcut to Segno's command line interface to provide the scaling factor
-* Added -b shortcut to Segno's command line interface to provide the border / quiet zone
+* Internal refactoring (i.e. segno/scripts/cmd.py -> segno/cli.py)
+* Added ``-s`` shortcut to Segno's command line interface to provide the scaling factor
+* Added ``-b`` shortcut to Segno's command line interface to provide the border / quiet zone
 * CLI accepts unquoted, whitespace separated content:
   ``segno "Comfortably Numb"`` can be written as ``segno Comfortably Numb``
 
