@@ -202,6 +202,5 @@ def test_save_terminal_multiple():
     assert out_single.getvalue() == out_multiple.getvalue()
 
 
-
 if __name__ == '__main__':
     pytest.main([__file__])

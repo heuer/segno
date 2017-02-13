@@ -273,6 +273,12 @@ def test_output(arg, ext, expected, mode):
         os.unlink(f.name)
 
 
+def test_terminal(capsys):
+    cli.main(['test'])
+    out, err = capsys.readouterr()
+    assert out
+
+
 # -- PNG
 def test_noad():
     args = cli.parse(['--no-ad', ''])
