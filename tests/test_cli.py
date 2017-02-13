@@ -12,6 +12,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import tempfile
 import gzip
+import shutil
 import pytest
 from segno import cli
 
@@ -30,6 +31,7 @@ def test_defaults():
     assert args.color is None
     assert args.background is None
     assert args.boost_error
+    assert not args.seq
     # PNG
     assert args.addad
     assert not args.dpi
@@ -217,6 +219,20 @@ def test_scale2():
 def test_scale_shortcut():
     args = cli.parse(['-s=1.6', ''])
     assert args.scale == 1.6
+
+
+def test_sequence():
+    args = cli.parse(['--seq', '-v 1', ''])
+    assert args.seq
+
+
+def test_sequence_output():
+    directory = tempfile.mkdtemp()
+    assert 0 == len(os.listdir(directory))
+    cli.main(['--seq', '-v=1', '-e=m', '-o=' + os.path.join(directory, 'test.svg'), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'])
+    number_of_files = len(os.listdir(directory))
+    shutil.rmtree(directory)
+    assert 4 == number_of_files
 
 
 def test_color():

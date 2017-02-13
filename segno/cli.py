@@ -75,6 +75,8 @@ def make_parser():
                         )
     parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
                         dest='boost_error', action='store_false')
+    parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version must be provided',
+                        dest='seq', action='store_true')
     # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
@@ -173,10 +175,15 @@ def build_config(config, filename=None):
 
 
 def make_code(config):
-    return segno.make(' '.join(config.pop('content')), mode=config.pop('mode'),
-                      error=config.pop('error'), version=config.pop('version'),
-                      mask=config.pop('pattern'), micro=config.pop('micro'),
-                      boost_error=config.pop('boost_error'))
+    make = segno.make
+    kw = dict(mode=config.pop('mode'), error=config.pop('error'),
+              version=config.pop('version'), mask=config.pop('pattern'),
+              boost_error=config.pop('boost_error'))
+    if config.pop('seq'):
+        make = segno.make_sequence
+    else:
+        kw['micro'] = config.pop('micro')
+    return make(' '.join(config.pop('content')), **kw)
 
 
 def main(args=sys.argv[1:]):
