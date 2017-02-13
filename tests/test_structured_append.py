@@ -110,6 +110,14 @@ def test_encode_multi_by_version():
                               'KLMNOPQRSTUVWXYZ',
                               version=1, error='m', mask=4, boost_error=False)
     assert 4 == len(seq)
+    ref_matrix = read_matrix('seq-iso-04-01')
+    assert ref_matrix == seq[0].matrix
+    ref_matrix = read_matrix('seq-iso-04-02')
+    assert ref_matrix == seq[1].matrix
+    ref_matrix = read_matrix('seq-iso-04-03')
+    assert ref_matrix == seq[2].matrix
+    ref_matrix = read_matrix('seq-iso-04-04')
+    assert ref_matrix == seq[3].matrix
 
 
 def test_too_much_for_one_qrcode():
@@ -200,6 +208,13 @@ def test_save_terminal_multiple():
     for qr in seq:
         qr.terminal(out_single)
     assert out_single.getvalue() == out_multiple.getvalue()
+
+
+def test_boosterror_noop():
+    seq = segno.make_sequence('I read the news today oh boy', version=1)
+    assert 2 == len(seq)
+    assert 'L' == seq[0].error
+    assert 'L' == seq[1].error
 
 
 if __name__ == '__main__':
