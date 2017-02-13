@@ -115,10 +115,14 @@ def make_parser():
     return parser
 
 
-def parse(parser, args):
+def parse(args):
     """\
     Parses the arguments and returns the result.
     """
+    parser = make_parser()
+    if not len(args):
+        parser.print_help()
+        sys.exit(1)
     parsed_args = parser.parse_args(args)
     if parsed_args.error == '-':
         parsed_args.error = None
@@ -176,11 +180,7 @@ def make_code(config):
 
 
 def main(args=sys.argv[1:]):
-    parser = make_parser()
-    if not len(args):
-        parser.print_help()
-        sys.exit(1)
-    config = parse(parser, args)
+    config = parse(args)
     qr = make_code(config)
     output = config.pop('output')
     if output is None:
