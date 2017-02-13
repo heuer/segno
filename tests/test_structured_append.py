@@ -178,24 +178,25 @@ def test_save_multiple():
     assert 4 == number_of_files
 
 
-def save_terminal_one():
-    out_multiple = io.BytesIO()
+def test_save_terminal_one():
+    out_multiple = io.StringIO()
     data = 'QR Code Symbol'
     seq = segno.make_sequence(data, version=1)
     assert 1 == len(seq)
     seq.terminal(out_multiple)
     qr = segno.make_qr(data, version=1)
-    out_single = io.BytesIO()
+    out_single = io.StringIO()
     qr.terminal(out_single)
     assert out_single.getvalue() == out_multiple.getvalue()
 
 
-def save_terminal_multiple():
-    out_multiple = io.BytesIO()
+def test_save_terminal_multiple():
+    out_multiple = io.StringIO()
     data = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     seq = segno.make_sequence(data, version=1, error='m')
     assert 4 == len(seq)
-    out_single = io.BytesIO()
+    seq.terminal(out_multiple)
+    out_single = io.StringIO()
     for qr in seq:
         qr.terminal(out_single)
     assert out_single.getvalue() == out_multiple.getvalue()
