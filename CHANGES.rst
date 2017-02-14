@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.2.5 -- 2017-mm-dd
+0.2.5 -- 2017-02-14
 -------------------
 * Added experimental support for Structured Append (divide content into max.
   16 QR Code symbols)
