@@ -197,14 +197,15 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
 
     .. code-block:: python
 
-        for qrcode in segno.make_sequence(data):
+        for qrcode in segno.make_sequence(data, symbol_count=2):
              qrcode.save('seq.svg', scale=10, color='darkblue')
 
-    The returned number of QR Codes is determined by the `version` and / or
+    The returned number of QR Codes is determined by the `version` or
     `symbol_count` parameter
 
     See :py:func:`make` for a description of the other parameters.
 
+    :param int symbol_count: Number of symbols.
     :rtype: QRCodeSequence
     """
     return QRCodeSequence(map(QRCode,

@@ -105,3 +105,18 @@ set the value to "transparent"::
 If the serializer does not support ``color`` or ``background``, these arguments
 are ignored.
 
+
+Structured Append
+^^^^^^^^^^^^^^^^^
+
+The :doc:`Structured Append <structured-append>` mode can be used to split a
+message across multiple (max. 16) QR Codes.
+
+To create a sequence of QR Codes, the ``seq`` argument must be provided.
+Additonally, either the QR Code version or the desired number of symbols must be
+provided::
+
+
+    $ segno --seq -v 1 "Well you should see Polythene Pam"
+    $ segno --seq --symbol-count=2 "We all live in a yellow submarine"
+    $ segno --seq -sc 2 "Half of what I say is meaningless"

@@ -12,6 +12,7 @@ Contents:
 
     command-line
     make
+    structured-append
     special-qrcode-factories
     colors
     serializers
