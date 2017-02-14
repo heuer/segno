@@ -23,10 +23,6 @@ except (ValueError, SystemError):  # Attempted relative import in non-package
     from utils import read_matrix
 
 
-def test_iso_figure29():
-    pass
-
-
 def test_seq_behave_like_qrcode():
     qr = segno.make_qr('Something')
     sa = segno.QRCodeSequence([qr])
