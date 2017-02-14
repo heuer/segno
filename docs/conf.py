@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import os
 import sys
 import sphinx_rtd_theme
+import datetime
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -54,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Segno'
-copyright = '2016, Lars Heuer'
+copyright = '2016 - {0} Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.'.format(datetime.datetime.now().year)
 author = 'Lars Heuer'
 
 # The version info for the project you're documenting, acts as replacement for

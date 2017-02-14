@@ -24,10 +24,10 @@ class FakeString(str):
     def __new__(cls, *args, **kw):
         return str.__new__(cls, *args, **kw)
 
-    def encode(self, encoding=None, errors=None):
+    def encode(self, encoding=None, errors='strict'):
         if encoding == 'shiftjis':
             raise LookupError("unknown encoding: shiftjis")
-        return self.encode(encoding, errors)
+        return super(FakeString, self).encode(encoding, errors)
 
 
 def test_constructing_without_shiftjis_encoding_available():

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2017 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -44,10 +44,9 @@ def make_parser():
 
     parser = argparse.ArgumentParser(prog='segno',
                                      description='Segno QR Code and Micro QR Code generator version {0}'.format(segno.__version__))
-    parser.add_argument('content', help='The content to encode')
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
-    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%%, "M": 15%% (default), "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
+    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
                         choices=('L', 'M', 'Q', 'H', '-'),
                         default=None,
                         type=lambda x: x.upper())
@@ -59,10 +58,10 @@ def make_parser():
                         required=False,
                         default=None,
                         type=int)
-    parser.add_argument('--scale', help='Scaling factor',
+    parser.add_argument('--scale', '-s', help='Scaling factor',
                         default=1,
                         type=_convert_scale)
-    parser.add_argument('--border', help='Size of the border / quiet zone',
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone',
                         default=None,
                         type=int)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
@@ -76,6 +75,11 @@ def make_parser():
                         )
     parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
                         dest='boost_error', action='store_false')
+    parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version or symbol count must be provided',
+                        dest='seq', action='store_true')
+    parser.add_argument('--symbol-count', '-sc', help='Number of symbols to create',
+                        default=None,
+                        type=int)
     # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
@@ -112,6 +116,7 @@ def make_parser():
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
                                                        version='Segno {0}'.format(segno.__version__))
+    parser.add_argument('content', nargs='+', help='The content to encode')
     return parser
 
 
@@ -120,6 +125,9 @@ def parse(args):
     Parses the arguments and returns the result.
     """
     parser = make_parser()
+    if not len(args):
+        parser.print_help()
+        sys.exit(1)
     parsed_args = parser.parse_args(args)
     if parsed_args.error == '-':
         parsed_args.error = None
@@ -170,10 +178,16 @@ def build_config(config, filename=None):
 
 
 def make_code(config):
-    return segno.make(config.pop('content'), mode=config.pop('mode'),
-                      error=config.pop('error'), version=config.pop('version'),
-                      mask=config.pop('pattern'), micro=config.pop('micro'),
-                      boost_error=config.pop('boost_error'))
+    make = segno.make
+    kw = dict(mode=config.pop('mode'), error=config.pop('error'),
+              version=config.pop('version'), mask=config.pop('pattern'),
+              boost_error=config.pop('boost_error'))
+    if config.pop('seq'):
+        make = segno.make_sequence
+        kw['symbol_count'] = config.pop('symbol_count')
+    else:
+        kw['micro'] = config.pop('micro')
+    return make(' '.join(config.pop('content')), **kw)
 
 
 def main(args=sys.argv[1:]):

@@ -16,12 +16,16 @@ from . import encoder
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
+try:  # pragma: no cover
+    str_type = basestring
+except NameError:  # pragma: no cover
+    str_type = str
 
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 
-__all__ = ('make', 'make_qr', 'make_micro', 'QRCode', 'QRCodeError',
-           'ErrorLevelError', 'ModeError', 'MaskError', 'VersionError',
-           'DataOverflowError')
+__all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
+           'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
+           'MaskError', 'VersionError', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -171,6 +175,46 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
                 encoding=encoding, micro=True, boost_error=boost_error)
+
+
+def make_sequence(content, error=None, version=None, mode=None, mask=None,
+                  encoding=None, boost_error=True, symbol_count=None):
+    """\
+    Creates a sequence of QR Codes.
+
+    If the content fits into one QR Code and neither `version` is not provided,
+    this function may return a sequence with one QR Code which
+    does not use the Structured Append mode. Otherwise a sequence of 2 .. n
+    (max. n = 16) QR Codes is returned which use the Structured Append mode.
+
+    The Structured Append mode allows to split the content over a number
+    (max. 16) QR Codes.
+
+    The Structured Append mode isn't available for Micro QR Codes, therefor
+    the returned sequence contains QR Codes, only.
+
+    Since this function returns an iterable object, it may be used as follows:
+
+    .. code-block:: python
+
+        for qrcode in segno.make_sequence(data, symbol_count=2):
+             qrcode.save('seq.svg', scale=10, color='darkblue')
+
+    The returned number of QR Codes is determined by the `version` or
+    `symbol_count` parameter
+
+    See :py:func:`make` for a description of the other parameters.
+
+    :param int symbol_count: Number of symbols.
+    :rtype: QRCodeSequence
+    """
+    return QRCodeSequence(map(QRCode,
+                              encoder.encode_sequence(content, error=error,
+                                                      version=version,
+                                                      mode=mode, mask=mask,
+                                                      encoding=encoding,
+                                                      boost_error=boost_error,
+                                                      symbol_count=symbol_count)))
 
 
 class QRCode:
@@ -685,3 +729,70 @@ class QRCode:
                 return partial(plugin, self)
         raise AttributeError('{0} object has no attribute {1}'
                              .format(self.__class__, name))
+
+
+class QRCodeSequence(tuple):
+    """\
+    Represents a sequence of  1 .. n (max. n = 16) :py:class:`QRCode` instances.
+
+    Iff this sequence represents only one item, it behaves like
+    :py:class:`QRCode`.
+    """
+    def __new__(cls, qrcodes):
+        return super(QRCodeSequence, cls).__new__(cls, qrcodes)
+
+    def terminal(self, out=None, border=None):
+        """\
+        Serializes the sequence of QR Codes as ANSI escape code.
+
+        See :py:meth:`QRCode.terminal()` for details.
+        """
+        for qrcode in self:
+            qrcode.terminal(out=out, border=border)
+
+    def save(self, out, kind=None, **kw):
+        """\
+        Saves the sequence of QR Code to `out`.
+
+        If `out` is a filename, this method modifies the filename and adds
+        ``<Number of QR Codes>-<Current QR Code>`` to it.
+        ``structured-append.svg`` becomes (if the sequence contains two QR Codes):
+        ``structured-append-02-01.svg`` and ``structured-append-02-02.svg``
+
+        Please note that using a file or file-like object may result into an
+        invalid serialization format since all QR Codes are written to the same
+        output.
+
+        See :py:meth:`QRCode.save()` for a detailed enumeration of options.
+        """
+        m = len(self)
+
+        def prepare_fn_noop(o, n):
+            """\
+            Function to enumerate file names, does nothing by default
+            """
+            return o
+
+        def prepare_filename(o, n):
+            """\
+            Function to enumerate file names.
+            """
+            return o.format(m, n)
+
+        prepare_fn = prepare_fn_noop
+        if m > 1 and isinstance(out, str_type):
+            dot_idx = out.rfind('.')
+            if dot_idx > -1:
+                out = out[:dot_idx] + '-{0:02d}-{1:02d}' + out[dot_idx:]
+                prepare_fn = prepare_filename
+        for n, qrcode in enumerate(self, start=1):
+            qrcode.save(prepare_fn(out, n), kind=kind, **kw)
+
+    def __getattr__(self, item):
+        """\
+        Behaves like :py:class:`QRCode` iff this sequence contains a single item.
+        """
+        if len(self) == 1:
+            return getattr(self[0], item)
+        raise AttributeError("{0} object has no attribute '{1}'"
+                             .format(self.__class__, item))

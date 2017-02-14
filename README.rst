@@ -38,9 +38,9 @@ The command line script prints the QR Code to the terminal::
 
 To serialize the QR Code, use the "output" argument::
 
-    $ segno "Famous Blue Raincoat" -o=raincoat.svg
-    $ segno "Who by Fire" --scale=10 --color=darkblue --border=0 --output=fire.svg
-    $ segno "Waiting for the Miracle" --scale=10 --background=transparent --output=miracle.png
+    $ segno -o=raincoat.svg "Famous Blue Raincoat"
+    $ segno  --scale=10 --color=darkblue --border=0 --output=fire.svg "Who by Fire"
+    $ segno --scale=10 --background=transparent --output=miracle.png "Waiting for the Miracle"
 
 
 
@@ -105,6 +105,11 @@ level, version, data mask etc., see `Segno's documentation`_ for details.
 Documentation
 -------------
 Read the online documentation at <https://segno.readthedocs.io/>
+
+
+Trademark
+---------
+"QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 
 
 .. _Segno's documentation: https://segno.readthedocs.io/
