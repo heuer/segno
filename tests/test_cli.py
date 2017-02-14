@@ -32,6 +32,7 @@ def test_defaults():
     assert args.background is None
     assert args.boost_error
     assert not args.seq
+    assert args.symbol_count is None
     # PNG
     assert args.addad
     assert not args.dpi
@@ -222,8 +223,21 @@ def test_scale_shortcut():
 
 
 def test_sequence():
-    args = cli.parse(['--seq', '-v 1', ''])
+    args = cli.parse(['--seq', '-v=1', ''])
     assert args.seq
+    assert '1' == args.version
+
+
+def test_sequence_symbol_count():
+    args = cli.parse(['--seq', '--symbol-count=4', ''])
+    assert args.seq
+    assert 4 == args.symbol_count
+
+
+def test_sequence_symbol_count_shortcut():
+    args = cli.parse(['--seq', '-sc=8', ''])
+    assert args.seq
+    assert 8 == args.symbol_count
 
 
 def test_sequence_output():
