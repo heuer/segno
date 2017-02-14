@@ -136,7 +136,8 @@ def encode(content, error=None, version=None, mode=None, mask=None,
 
 
 def encode_sequence(content, error=None, version=None, mode=None,
-                    mask=None, encoding=None, eci=False, boost_error=True):
+                    mask=None, encoding=None, eci=False, boost_error=True,
+                    symbol_count=None):
     """\
     EXPERIMENTAL: Creates a sequence of QR Codes in Structured Append mode.
 
@@ -154,20 +155,55 @@ def encode_sequence(content, error=None, version=None, mode=None,
         k, m = divmod(len(data), num)
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(num)]
 
+    def calc_qrcode_bit_length(char_count, ver_range, mode, encoding=None,
+                               is_eci=False, is_sa=False):
+        overhead = 4  # Mode indicator for QR Codes, only
+        # Number of bits in character count indicator
+        overhead += consts.CHAR_COUNT_INDICATOR_LENGTH[mode][ver_range]
+        if is_eci and mode == consts.MODE_BYTE and encoding != consts.DEFAULT_BYTE_ENCODING:
+            overhead += 4  # ECI indicator
+            overhead += 8  # ECI assignment no
+        if is_sa:
+            # 4 bit for mode, 4 bit for the position, 4 bit for total number of symbols
+            # 8 bit for parity data
+            overhead += 5 * 4
+        bits = 0
+        if mode == consts.MODE_NUMERIC:
+            num, remainder = divmod(char_count, 3)
+            bits += num * 10 + (4 if remainder == 1 else 7)
+        elif mode == consts.MODE_ALPHANUMERIC:
+            num, remainder = divmod(char_count, 2)
+            bits += num * 11 + (6 if remainder else 0)
+        elif mode == consts.MODE_BYTE:
+            bits += char_count * 8
+        elif mode == consts.MODE_KANJI:
+            bits += char_count * 13
+        return overhead + bits
+
     def number_of_symbols_by_version(content, version, error, mode):
         """\
         Returns the number of symbols for the provided version.
         """
-        capacity = consts.SYMBOL_CAPACITY_DATA[version][error][mode]
-        return int(math.ceil(len(content) / capacity))
+        length = len(content)
+        ver_range = version_range(version)
+        bit_length = calc_qrcode_bit_length(length, ver_range, mode, encoding,
+                                            is_eci=eci, is_sa=True)
+        capacity = consts.SYMBOL_CAPACITY[version][error]
+        # Initial result does not contain the overhead of SA mode for all QR Codes
+        cnt = int(math.ceil(bit_length / capacity))
+        # Overhead of SA mode for all QR Codes
+        bit_length += 5 * 4 * (cnt - 1) + (12 * (cnt - 1) if eci else 0)
+        return int(math.ceil(bit_length / capacity))
 
     version = normalize_version(version)
     if version is not None:
         if version < 1:
             raise VersionError('This function does not accept Micro QR Code versions. '
                                'Provided: "{0}"'.format(get_version_name(version)))
-    else:
-        raise ValueError('Please provide a QR Code version')
+    elif symbol_count is None:
+        raise ValueError('Please provide a QR Code version or the symbol count')
+    if symbol_count is not None and not 1 <= symbol_count <= 16:
+        raise ValueError('The symbol count must be in range 1 .. 16')
     error = normalize_errorlevel(error, accept_none=True)
     if error is None:
         error = consts.ERROR_LEVEL_L
@@ -175,30 +211,36 @@ def encode_sequence(content, error=None, version=None, mode=None,
     mask = normalize_mask(mask, is_micro=False)
     segments = prepare_data(content, mode, encoding, version)
     guessed_version = None
-    try:
-        # Try to find a version which fits without using Structured Append
-        guessed_version = find_version(segments, error, eci=eci, micro=False)
-    except DataOverflowError:
-        # Data does fit into a usual QR Code but ignore the error silently,
-        # guessed_version is None
-        pass
-    if guessed_version and guessed_version <= (version or guessed_version):
-        # Return iterable of size 1
-        return [_encode(segments, error=error, version=(version or guessed_version),
-                        mask=mask, eci=eci, boost_error=boost_error)]
+    if symbol_count is None:
+        try:
+            # Try to find a version which fits without using Structured Append
+            guessed_version = find_version(segments, error, eci=eci, micro=False)
+        except DataOverflowError:
+            # Data does fit into a usual QR Code but ignore the error silently,
+            # guessed_version is None
+            pass
+        if guessed_version and guessed_version <= (version or guessed_version):
+            # Return iterable of size 1
+            return [_encode(segments, error=error, version=(version or guessed_version),
+                            mask=mask, eci=eci, boost_error=boost_error)]
     if len(segments.modes) > 1:
         raise ValueError('This function cannot handle more than one mode (yet). Sorry.')
     mode = segments.modes[0]  # CHANGE iff more than one mode is supported!
     # Creating one QR code failed or max_no is not None
     if mode == consts.MODE_NUMERIC:
         content = str(content)
+    if symbol_count is not None and len(content) < symbol_count:
+        raise ValueError('The content is not long enough to be divided into {0} symbols'.format(symbol_count))
     sa_parity_data = calc_structured_append_parity(content)
-    num_symbols = 16
+    num_symbols = symbol_count or 16
     if version is not None:
         num_symbols = number_of_symbols_by_version(content, version, error, mode)
     if num_symbols > 16:
         raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
     chunks = divide_into_chunks(content, num_symbols)
+    if symbol_count is not None:
+        segments = one_item_segments(max(chunks, key=len), mode)
+        version = find_version(segments, error, eci=eci, micro=False, is_sa=True)
     sa_info = partial(_StructuredAppendInfo, total=len(chunks) - 1,
                       parity=sa_parity_data)
     return [_encode(one_item_segments(chunk, mode), error=error, version=version,

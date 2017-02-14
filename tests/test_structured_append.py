@@ -72,23 +72,7 @@ def test_illegal_version():
         segno.make_sequence('ABCD', version='M4')
 
 
-# @pytest.mark.skipif(True, reason='TODO')
-# def test_encode_single():
-#     # ISO/IEC 18004:2015(E) - page 60
-#     seq = segno.make_sequence('ABCDEFGHIJKLMN'
-#                               'OPQRSTUVWXYZ0123'
-#                               '456789ABCDEFGHIJ'
-#                               'KLMNOPQRSTUVWXYZ',
-#                               error='m', mask=4, boost_error=False)
-#     assert 1 == len(seq)
-#     ref_matrix = read_matrix('iso-fig-29')
-#     qr = seq[0]
-#     assert ref_matrix == qr.matrix
-#     assert 4 == qr.version
-#     assert '4-M' == qr.designator
-
-
-def test_encode_single2():
+def test_encode_single():
     # ISO/IEC 18004:2015(E) - page 7
     # 'QR Code Symbol' as 1-M symbol
     seq = segno.make_sequence('QR Code Symbol', version=1, error='M',
@@ -102,13 +86,15 @@ def test_encode_single2():
     assert ref_matrix == qr.matrix
 
 
-def test_encode_multi_by_version():
+@pytest.mark.parametrize('version,symbol_count', [(None, 4), (1, None)])
+def test_encode_multi_by_version_or_symbol_count(version, symbol_count):
     # ISO/IEC 18004:2015(E) - page 60
     seq = segno.make_sequence('ABCDEFGHIJKLMN'
                               'OPQRSTUVWXYZ0123'
                               '456789ABCDEFGHIJ'
                               'KLMNOPQRSTUVWXYZ',
-                              version=1, error='m', mask=4, boost_error=False)
+                              version=version, symbol_count=symbol_count,
+                              error='m', mask=4, boost_error=False)
     assert 4 == len(seq)
     ref_matrix = read_matrix('seq-iso-04-01')
     assert ref_matrix == seq[0].matrix
@@ -126,22 +112,7 @@ def test_too_much_for_one_qrcode():
         segno.make(data)
 
 
-# @pytest.mark.skipif(True, reason='Cannot divide content automatically, yet')
-# def test_too_much_for_one_qrcode_but_fits_into_seq():
-#     data = 'A' * 4300  # Version 40 supports max. 4296 alphanumeric chars (40-L)
-#     seq = segno.make_sequence(data)
-
-
 def test_dataoverflow():
-    data = 'A' * 25 * 16  # Version 1: max. 25 alphanumeric chars, 16 symbols
-    seq = segno.make_sequence(data, version=1)
-    assert 16 == len(seq)
-    data += 'B'  # Should be too much data for 16 symbols using version 1
-    with pytest.raises(segno.DataOverflowError):
-        segno.make_sequence(data, version=1)
-
-
-def test_dataoverflow2():
     data = 'A' * 4296  # Version 40: max. 4296 alphanumeric chars
     seq = segno.make_sequence(data, version=40)
     assert 1 == len(seq)
@@ -215,6 +186,34 @@ def test_boosterror_noop():
     assert 2 == len(seq)
     assert 'L' == seq[0].error
     assert 'L' == seq[1].error
+
+
+def test_boosterror():
+    seq = segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', version=2)
+    assert 3 == len(seq)
+    assert 'M' == seq[0].error
+    assert 'M' == seq[1].error
+    assert 'M' == seq[2].error
+
+
+def test_boosterror2():
+    seq = segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', symbol_count=4)
+    assert 4 == len(seq)
+    assert '2-Q' == seq[0].designator
+    assert '2-Q' == seq[1].designator
+    assert '2-Q' == seq[2].designator
+    assert '2-Q' == seq[3].designator
+
+
+def test_toomany_symbols():
+    with pytest.raises(ValueError):
+        segno.make_sequence('ABCDEF', symbol_count=16)
+
+
+@pytest.mark.parametrize('symbol_count', [0, -1, 17])
+def test_illegal_symbolcount(symbol_count):
+    with pytest.raises(ValueError):
+        segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', symbol_count=symbol_count)
 
 
 if __name__ == '__main__':

@@ -178,7 +178,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
 
 
 def make_sequence(content, error=None, version=None, mode=None, mask=None,
-                  encoding=None, boost_error=True):
+                  encoding=None, boost_error=True, symbol_count=None):
     """\
     Creates a sequence of QR Codes.
 
@@ -200,7 +200,8 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
         for qrcode in segno.make_sequence(data):
              qrcode.save('seq.svg', scale=10, color='darkblue')
 
-    The returned number of QR Codes is determined by the `version` parameter.
+    The returned number of QR Codes is determined by the `version` and / or
+    `symbol_count` parameter
 
     See :py:func:`make` for a description of the other parameters.
 
@@ -211,7 +212,8 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
                                                       version=version,
                                                       mode=mode, mask=mask,
                                                       encoding=encoding,
-                                                      boost_error=boost_error)))
+                                                      boost_error=boost_error,
+                                                      symbol_count=symbol_count)))
 
 
 class QRCode:
