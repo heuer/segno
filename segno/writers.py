@@ -234,7 +234,7 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
                     fallback_color='fuchsia', color_mapping=None,
-                    add_legend=True):  # pragma: no cover
+                    add_legend=True):
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
