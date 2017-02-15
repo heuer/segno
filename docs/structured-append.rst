@@ -55,3 +55,6 @@ QR Code version is automatically determined by the number of symbols.
     >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=2)
     >>> [qr.designator for qr in seq]
     ['2-Q', '2-Q']
+    >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=6)
+    >>> [qr.designator for qr in seq]
+    ['1-Q', '1-Q', '1-H', '1-H', '1-H', '1-H']
