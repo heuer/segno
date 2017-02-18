@@ -1,7 +1,7 @@
 Structured Append
 =================
 
-The Structured Append mode can be used to split a message accross several
+The Structured Append mode can be used to split a message across several
 QR Codes (it's not available for Micro QR Codes).
 
 Segno provides a special factory function to create a sequence of (up to 16)
