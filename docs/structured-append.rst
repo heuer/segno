@@ -4,8 +4,9 @@ Structured Append
 The Structured Append mode can be used to split a message across several
 QR Codes (it's not available for Micro QR Codes).
 
-Segno provides a special factory function to create a sequence of (up to 16)
-QR Codes. The factory function returns instances of :py:class:`segno.QRCodeSequence`.
+Segno provides a special factory function, :py:func:`segno.make_sequence`, to
+create a sequence of (up to 16) QR Codes. The function returns instances of
+:py:class:`segno.QRCodeSequence`.
 
 
 Structured Append by QR Code version
