@@ -87,7 +87,7 @@ symbol. To change the size of the border, ``border`` can be utilized::
 
     $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
     $ segno --border=10 --output=diamond.png "Shine On You Crazy Diamond"
-    $ segno --b 0 --output=boom-boom.svg Boom Boom
+    $ segno -b 0 --output=boom-boom.svg Boom Boom
 
 
 Colors
