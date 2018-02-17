@@ -16,10 +16,16 @@ Output the QR Code to the terminal::
 
     $ segno "Little wing"
 
+.. image:: _static/qr-little-wing-terminal.png
+    :alt: QR Code for "Little wing".
+
 
 Same content, but as Micro QR Code (M4)::
 
     $ segno --micro "Little wing"
+
+.. image:: _static/micro-qr-little-wing-terminal.png
+    :alt: Micro QR Code for "Little wing".
 
 
 Version
@@ -36,10 +42,18 @@ enforces version 5::
     $ segno -v=5 Layla
 
 
+.. image:: _static/qr-layla-version-5.png
+    :alt: QR Code version 5 for "Layla".
+
+
 Micro QR Code::
 
     $ segno -v m4 Layla
     $ segno --version M4 Layla
+
+
+.. image:: _static/micro-qr-layla-version-m4.png
+    :alt: Micro QR Code version M4 for "Layla".
 
 
 Error correction level
@@ -59,11 +73,31 @@ Printing the QR Codes to the terminal is nice but the ``output`` parameter
 serializes the QR Code in one of the supported file formats::
 
     $ segno --output=white-room.png "White Room"
+
+.. image:: _static/white-room.png
+    :alt: QR Code "White Room".
+
+::
+
     $ segno -o=satellite.svg "Satellite Of Love"
+
+.. image:: _static/satellite.svg
+    :alt: QR Code "Satellite Of Love".
+
+
+::
+
     $ segno --output=mrs.eps "Mrs. Robinson"
     $ segno --output=dedodo.pdf "De Do Do Do, De Da Da Da"
     $ segno --output=tin-pan-alley.svgz "Tin Pan Alley"
+
+
+::
+
     $ segno --output=thrill-gone.txt "The Thrill Is Gone"
+
+.. include:: _static/thrill-gone.txt
+    :literal:
 
 
 Scaling QR Codes
@@ -73,7 +107,17 @@ If the resulting QR Code is too small, ``scale`` can be used to create a more
 appropriate output::
 
     $ segno --scale=10 --output=money-talks.png "Money Talks"
+
+.. image:: _static/money-talks.png
+    :alt: QR Code "Money Talks".
+
+::
+
     $ segno -s 10 --output=private-investigations.svg Private Investigations
+
+.. image:: _static/private-investigations.svg
+    :alt: QR Code "Private Investigations".
+
 
 If the serializer does not support a scaling factor (i.e. text output), this
 parameter is ignored.
@@ -86,8 +130,24 @@ The generated QR Codes will have a recommended quiet zone / border around the
 symbol. To change the size of the border, ``border`` can be utilized::
 
     $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
+
+.. image:: _static/black-magic-woman.svg
+    :alt: QR Code "Black Magic Woman" using quiet zone of zero.
+
+::
+
     $ segno --border=10 --output=diamond.png "Shine On You Crazy Diamond"
+
+.. image:: _static/diamond.png
+    :alt: QR Code "Shine On You Crazy Diamond" using quiet zone of ten.
+
+
+::
+
     $ segno -b 0 --output=boom-boom.svg Boom Boom
+
+.. image:: _static/diamond.png
+    :alt: QR Code "Boom Boom" using quiet zone of zero.
 
 
 Colors
@@ -95,12 +155,31 @@ Colors
 
 Usually, all QR Codes are serialized in black and white. Use ``color``
 to change the color of the dark modules and ``background`` to change the
-color of the light modules. If the color or background should be transparent,
-set the value to "transparent"::
+color of the light modules.
+
+Change the foreground color to darkblue::
 
     $ segno --color=darkblue --output=excited.png "So Excited"
+
+.. image:: _static/excited.png
+    :alt: QR Code "So Excited" with foreground color "darkblue"
+
+
+Change the background color to transparent::
+
     $ segno --background=transparent --output=hotel.png "Hotel California"
-    $ segno --color=transparent --output=dontgiveup.svg "Don't Give Up"
+
+.. image:: _static/hotel.png
+    :alt: QR Code "Hotel California" with background color "transparent"
+
+
+Change the foreground color to yellow and background to red::
+
+    $ segno --color=yellow --background=red --output=dontgiveup.svg "Don't Give Up"
+
+.. image:: _static/dontgiveup.svg
+    :alt: QR Code "Don't Give Up" with foreground color "transparent"
+
 
 If the serializer does not support ``color`` or ``background``, these arguments
 are ignored.
