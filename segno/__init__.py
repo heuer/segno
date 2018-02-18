@@ -182,10 +182,11 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
     """\
     Creates a sequence of QR Codes.
 
-    If the content fits into one QR Code and neither `version` is not provided,
-    this function may return a sequence with one QR Code which
-    does not use the Structured Append mode. Otherwise a sequence of 2 .. n
-    (max. n = 16) QR Codes is returned which use the Structured Append mode.
+    If the content fits into one QR Code and neither ``version`` nor
+    ``symbol_count`` is provided, this function may return a sequence with
+    one QR Code which does not use the Structured Append mode. Otherwise a
+    sequence of 2 .. n  (max. n = 16) QR Codes is returned which use the
+    Structured Append mode.
 
     The Structured Append mode allows to split the content over a number
     (max. 16) QR Codes.
@@ -197,8 +198,8 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
 
     .. code-block:: python
 
-        for qrcode in segno.make_sequence(data, symbol_count=2):
-             qrcode.save('seq.svg', scale=10, color='darkblue')
+        for i, qrcode in enumerate(segno.make_sequence(data, symbol_count=2)):
+             qrcode.save('seq-%d.svg' % i, scale=10, color='darkblue')
 
     The returned number of QR Codes is determined by the `version` or
     `symbol_count` parameter
