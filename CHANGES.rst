@@ -1,6 +1,12 @@
 Changes
 =======
 
+0.2.6 -- 2017-02-18
+-------------------
+* Updated and fixed docs
+* Added PyPy 3 to test environment
+
+
 0.2.5 -- 2017-02-14
 -------------------
 * Added experimental support for Structured Append (divide content into max.
