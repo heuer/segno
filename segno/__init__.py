@@ -662,6 +662,10 @@ class QRCode:
 
         **LaTeX / PGF/TikZ**
 
+        To use the output of this serializer, the ``PGF/TikZ`` (and optionally
+        ``hyperref``) package is required in the LaTeX environment. The
+        serializer itself does not depend on any external packages.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -671,7 +675,8 @@ class QRCode:
                          "at it is", so ensure that the color is a standard color or it
                          has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
-                         point to. Requires the hyperref package.
+                         point to. Requires the ``hyperref`` package in your LaTeX
+                         environment.
         =============    ==============================================================
 
 
