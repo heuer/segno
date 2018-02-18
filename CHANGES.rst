@@ -1,7 +1,12 @@
 Changes
 =======
 
-0.2.6 -- 2017-02-18
+0.2.7 -- 2018-02-18
+-------------------
+* Fixed dist package
+
+
+0.2.6 -- 2018-02-18
 -------------------
 * Updated and fixed docs
 * Added PyPy 3 to test environment
