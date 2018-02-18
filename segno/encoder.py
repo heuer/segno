@@ -1764,12 +1764,6 @@ class _StructuredAppendInfo(tuple):
         :param int total: Total symbol count ``[2 .. 15]``
         :param int parity: Parity data.
         """
-        if not (0 <= number < 16):
-            raise ValueError('Invalid Structured Append sequence number: {0}'.format(number))
-        if total > 15 or number > total:
-            raise ValueError('Invalid Structured Append symbol count: {0}'.format(total))
-        if parity < 0:
-            raise ValueError('Invalid Structured Append parity data')
         return super(_StructuredAppendInfo, cls).__new__(cls, (consts.MODE_STRUCTURED_APPEND, number, total, parity))
 
     mode = property(itemgetter(0))

@@ -234,7 +234,7 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
                     fallback_color='fuchsia', color_mapping=None,
-                    add_legend=True):  # pragma: no cover
+                    add_legend=True):
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
@@ -332,9 +332,6 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
                     raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
                                      .format(c))
                 return c
-            if not 0 <= c <= 255:
-                raise ValueError('Invalid color "{0}". Not in range 0 .. 255'
-                                 .format(c))
             return 1/255.0 * c if c != 1 else c
 
         return tuple([to_float(i) for i in colors.color_to_rgb(clr)])

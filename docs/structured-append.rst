@@ -1,11 +1,12 @@
 Structured Append
 =================
 
-The Structured Append mode can be used to split a message accross several
+The Structured Append mode can be used to split a message across several
 QR Codes (it's not available for Micro QR Codes).
 
-Segno provides a special factory function to create a sequence of (up to 16)
-QR Codes.
+Segno provides a special factory function, :py:func:`segno.make_sequence`, to
+create a sequence of (up to 16) QR Codes. The function returns instances of
+:py:class:`segno.QRCodeSequence`.
 
 
 Structured Append by QR Code version
@@ -55,3 +56,6 @@ QR Code version is automatically determined by the number of symbols.
     >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=2)
     >>> [qr.designator for qr in seq]
     ['2-Q', '2-Q']
+    >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=6)
+    >>> [qr.designator for qr in seq]
+    ['1-Q', '1-Q', '1-H', '1-H', '1-H', '1-H']
