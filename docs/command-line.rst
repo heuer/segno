@@ -66,6 +66,18 @@ it::
     $ segno -e=h "Heart of Gold"
 
 
+"Heart of Gold" using error level "L":
+
+.. image:: _static/qr-heart-of-gold-error-l.png
+    :alt: QR Code "Heart of Gold" using error level L
+
+
+"Heart of Gold" using error level "H":
+
+.. image:: _static/qr-heart-of-gold-error-h.png
+    :alt: QR Code "Heart of Gold" using error level H
+
+
 QR Code serialization
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -144,10 +156,10 @@ symbol. To change the size of the border, ``border`` can be utilized::
 
 ::
 
-    $ segno -b 0 --output=boom-boom.svg Boom Boom
+    $ segno -b=30 --output=boom-boom.svg Boom Boom
 
-.. image:: _static/diamond.png
-    :alt: QR Code "Boom Boom" using quiet zone of zero.
+.. image:: _static/boom-boom.svg
+    :alt: QR Code "Boom Boom" using quiet zone of 30.
 
 
 Colors
@@ -173,9 +185,9 @@ Change the background color to transparent::
     :alt: QR Code "Hotel California" with background color "transparent"
 
 
-Change the foreground color to yellow and background to red::
+Change the foreground color to darkblue and background to yellow::
 
-    $ segno --color=yellow --background=red --output=dontgiveup.svg "Don't Give Up"
+    $ segno --color=darkblue --background=yellow --output=dontgiveup.svg "Don't Give Up"
 
 .. image:: _static/dontgiveup.svg
     :alt: QR Code "Don't Give Up" with foreground color "transparent"
