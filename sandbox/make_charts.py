@@ -40,7 +40,7 @@ def create_charts():
                                   (svg_data, 'Create a 1-M QR Code and write SVG', 'out/chart_svg.svg'),
                                   (png_data, 'Create a 1-M QR Code and write PNG', 'out/chart_png.svg')):
         create_chart(title,
-                     [(name, [{'value': float(val), 'color': color_map[name], 'label': name}]) for name, val in data],
+                     [(name, [{'value': float(val), 'color': color_map[name], 'label': name}]) for name, val in sorted(data, key=lambda t: t[1])],
                      filename)
 
 
