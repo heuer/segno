@@ -9,9 +9,7 @@
 XBM related tests.
 """
 from __future__ import unicode_literals, absolute_import
-import re
 import io
-from itertools import islice
 import pytest
 import segno
 
