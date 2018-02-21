@@ -16,9 +16,9 @@ import segno
 from segno import consts
 from segno import encoder
 try:
-    from .utils import read_matrix
+    from .tutils import read_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
-    from utils import read_matrix
+    from tutils import read_matrix
 
 
 def test_format_info_figure25():
