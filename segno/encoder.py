@@ -1221,14 +1221,14 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
         if version > 6:
             # Reserve version pattern areas
             for i in range(6):
-                # Lower left
-                matrix[-11][i] = 0x0
-                matrix[-10][i] = 0x0
-                matrix[-9][i] = 0x0
                 # Upper right
                 matrix[i][-11] = 0x0
                 matrix[i][-10] = 0x0
                 matrix[i][-9] = 0x0
+                # Lower left
+                matrix[-11][i] = 0x0
+                matrix[-10][i] = 0x0
+                matrix[-9][i] = 0x0
         # Reserve format pattern areas
         for i in range(9):
             matrix[i][8] = 0x0  # Upper left

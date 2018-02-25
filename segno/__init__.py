@@ -15,6 +15,11 @@ import sys
 from . import encoder
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
+from .consts import TYPE_FINDER_PATTERN_DARK, TYPE_FINDER_PATTERN_LIGHT, \
+    TYPE_ALIGNMENT_PATTERN_DARK, TYPE_ALIGNMENT_PATTERN_LIGHT, TYPE_DARKMODULE, \
+    TYPE_FORMAT_DARK, TYPE_FORMAT_LIGHT, TYPE_TIMING_DARK, TYPE_TIMING_LIGHT, \
+    TYPE_VERSION_DARK, TYPE_VERSION_LIGHT, TYPE_DATA_DARK, TYPE_DATA_LIGHT, \
+    TYPE_QUIET_ZONE, TYPE_SEPARATOR
 from . import writers, utils
 try:  # pragma: no cover
     str_type = basestring
@@ -23,9 +28,9 @@ except NameError:  # pragma: no cover
 
 __version__ = '0.2.8dev0'
 
-__all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
-           'MaskError', 'VersionError', 'DataOverflowError')
+__all__ = ('make', 'make_q', 'make_micro', 'make_sequence', 'QRCode',
+           'QRCodeSequence', 'QRCodeErro', 'ErrorLevelErro', 'ModeErro',
+           'MaskErro', 'VersionErro', 'DataOverflowErro')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
