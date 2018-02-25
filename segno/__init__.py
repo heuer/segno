@@ -28,9 +28,9 @@ except NameError:  # pragma: no cover
 
 __version__ = '0.2.8dev0'
 
-__all__ = ('make', 'make_q', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence', 'QRCodeErro', 'ErrorLevelErro', 'ModeErro',
-           'MaskErro', 'VersionErro', 'DataOverflowErro')
+__all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
+           'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
+           'MaskError', 'VersionError', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
