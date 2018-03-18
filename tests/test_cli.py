@@ -283,6 +283,13 @@ def test_background_transparent2():
     assert cli.build_config(args)['background'] is None
 
 
+def test_error_code():
+    with pytest.raises(SystemExit) as e:
+        cli.main(['--version=M1', '--seq', '"This is a test"'])
+        assert 1 == e.exception.code
+        assert e.exception.message
+
+
 @pytest.mark.parametrize('arg', ['-o', '--output'])
 @pytest.mark.parametrize('ext, expected, mode', [('svg', b'<?xml ', 'rb'),
                                                  ('pdf', b'%PDF-', 'rb'),
@@ -313,6 +320,7 @@ def test_terminal(capsys):
     cli.main(['test'])
     out, err = capsys.readouterr()
     assert out
+    assert '' == err
 
 
 # -- PNG
@@ -503,7 +511,8 @@ def test_png_svg_command():
 def test_output_svgz():
     f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
     f.close()
-    cli.main(['--scale=10', '--color=red', '--output={0}'.format(f.name), 'test'])
+    res = cli.main(['--scale=10', '--color=red', '--output={0}'.format(f.name), 'test'])
+    assert 0 == res
     f = gzip.open(f.name)
     content = f.read()
     f.close()
