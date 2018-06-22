@@ -97,7 +97,6 @@ def test_separator_mqr():
     res = []
     for row in utils.matrix_iter_detail(qr.matrix, qr.version, border=0):
         res.append(bytearray([(0x2, 0x0)[v == consts.TYPE_SEPARATOR] for v in row]))
-    writers.write_svg_debug(res, qr.version, '/Users/lars/Desktop/xy_tests.svg', scale=10, border=0)
     expected = read_matrix('m2-separator')
     assert expected == res
 
