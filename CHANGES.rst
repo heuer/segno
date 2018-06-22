@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.2.8 -- 2018-mm-dd
+-------------------
+* Fixed #45: CLI does not raise exceptions but indicates errors with return code 1 and
+  writes the error message to ``sys.stderr``
+* Added experimental ``utils.matrix_iter_detail()`` function which returns an iterator over
+  the matrix to distinguish different dark and light modules by their function (i.e. separator,
+  finder pattern etc.)
+
+
 0.2.7 -- 2018-02-18
 -------------------
 * Fixed dist package
