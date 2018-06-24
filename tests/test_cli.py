@@ -252,6 +252,7 @@ def test_sequence_output():
 def test_color():
     args = cli.parse(['--color', 'green', ''])
     assert args.color == 'green'
+    assert cli.build_config(args)['color'] == 'green'
 
 
 def test_color_transparent():
