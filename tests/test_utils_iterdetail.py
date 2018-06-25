@@ -12,7 +12,7 @@ from __future__ import absolute_import, unicode_literals, print_function
 import io
 import os
 import pytest
-from segno import consts, encoder, utils, writers
+from segno import encoder, utils
 
 
 def read_matrix(name):
