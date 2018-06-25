@@ -149,6 +149,68 @@ def matrix_iter(matrix, version, scale=1, border=None):
             yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, width + border)))
 
 
+# Constants for detailed iterator, see utils.matrix_iter_detail
+TYPE_FINDER_PATTERN_LIGHT = 6
+"""\
+Light finder module
+"""
+TYPE_FINDER_PATTERN_DARK = TYPE_FINDER_PATTERN_LIGHT << 8
+"""\
+Dark finder module.
+"""
+TYPE_SEPARATOR = 8
+"""\
+Separator around the finder patterns (light module)
+"""
+TYPE_ALIGNMENT_PATTERN_LIGHT = 10
+"""\
+Light alignment pattern module.
+"""
+TYPE_ALIGNMENT_PATTERN_DARK = TYPE_ALIGNMENT_PATTERN_LIGHT << 8
+"""\
+Dark alignment pattern module.
+"""
+TYPE_TIMING_LIGHT = 12
+"""\
+Light timing pattern module.
+"""
+TYPE_TIMING_DARK = TYPE_TIMING_LIGHT << 8
+"""\
+Dark timing patten module.
+"""
+TYPE_FORMAT_LIGHT = 14
+"""\
+Light format information module.
+"""
+TYPE_FORMAT_DARK = TYPE_FORMAT_LIGHT << 8
+"""\
+Dark format information module.
+"""
+TYPE_VERSION_LIGHT = 16
+"""\
+Light version information module.
+"""
+TYPE_VERSION_DARK = TYPE_VERSION_LIGHT << 8
+"""\
+Dark version information module.
+"""
+TYPE_DARKMODULE = 512
+"""\
+A single dark module which occurs in QR Codes (but not in Micro QR Codes).
+"""
+TYPE_DATA_LIGHT = 4
+"""\
+Light module in the encoding area (either a data module or an error correction module).
+"""
+TYPE_DATA_DARK = TYPE_DATA_LIGHT << 8
+"""\
+Dark module in the encoding area (either a data module or an error correction module).
+"""
+TYPE_QUIET_ZONE = 18
+"""\
+Border of light modules.
+"""
+
 def matrix_iter_detail(matrix, version, scale=1, border=None):
     """\
     Returns an interator / generator over the provided matrix which includes
@@ -189,35 +251,35 @@ def matrix_iter_detail(matrix, version, scale=1, border=None):
                 # Alignment pattern
                 alignment_val = alignment_matrix[i][j]
                 if alignment_val != 0x2:
-                    return (consts.TYPE_ALIGNMENT_PATTERN_LIGHT, consts.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
+                    return (TYPE_ALIGNMENT_PATTERN_LIGHT, TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
                 if version > 6:  # Version information
                     if i < 6 and width - 12 < j < width - 8 \
                             or height - 12 < i < height - 8 and j < 6:
-                        return (consts.TYPE_VERSION_LIGHT, consts.TYPE_VERSION_DARK)[val]
+                        return (TYPE_VERSION_LIGHT, TYPE_VERSION_DARK)[val]
                 # Dark module
                 if i == height - 8 and j == 8:
-                    return consts.TYPE_DARKMODULE
+                    return TYPE_DARKMODULE
             # Timing - IMPORTANT: Check alignment (see above) in advance!
             if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
                     or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
-                return (consts.TYPE_TIMING_LIGHT, consts.TYPE_TIMING_DARK)[val]
+                return (TYPE_TIMING_LIGHT, TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
             if i == 8 and (j < 9 or (not is_micro and j > width - 10)) \
                     or j == 8 and (i < 8 or not is_micro and i > height - 9):
-                return (consts.TYPE_FORMAT_LIGHT, consts.TYPE_FORMAT_DARK)[val]
+                return (TYPE_FORMAT_LIGHT, TYPE_FORMAT_DARK)[val]
             # Finder pattern
             # top left             top right
             if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
                 or not is_micro and i > height - 8 and j < 7:  # bottom left
-                return (consts.TYPE_FINDER_PATTERN_LIGHT, consts.TYPE_FINDER_PATTERN_DARK)[val]
+                return (TYPE_FINDER_PATTERN_LIGHT, TYPE_FINDER_PATTERN_DARK)[val]
             # Separator
             # top left              top right
             if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
                 or not is_micro and (i > height - 9 and j < 8):  # bottom left
-                return consts.TYPE_SEPARATOR
-            return (consts.TYPE_DATA_LIGHT, consts.TYPE_DATA_DARK)[val]
+                return TYPE_SEPARATOR
+            return (TYPE_DATA_LIGHT, TYPE_DATA_DARK)[val]
         else:
-            return consts.TYPE_QUIET_ZONE
+            return TYPE_QUIET_ZONE
 
     for i in range(-border, height + border):
         for s in range(scale):
