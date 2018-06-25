@@ -492,6 +492,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
         color            Default: "#000" (black)
@@ -565,6 +566,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "png"
         scale            integer
         color            Default: "#000" (black)
@@ -590,6 +592,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "eps"
         scale            integer or float
         color            Default: "#000" (black)
@@ -602,6 +605,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pdf"
         scale            integer or float
         compresslevel    Default: 9. Integer indicating the compression level.
@@ -617,6 +621,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "txt"
         color            Default: "1"
         background       Default: "0"
@@ -639,6 +644,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pbm"
         scale            integer
         plain            Default: False. Boolean to switch between the P4 and P1 format.
@@ -652,6 +658,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pam"
         scale            integer
         color            Default: "#000" (black).
@@ -669,6 +676,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "tex"
         scale            integer or float
         color            LaTeX color name (default: "black"). The color is written
@@ -685,6 +693,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "xbm"
         scale            integer
         name             Name of the variable (default: "img")
@@ -696,6 +705,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "xpm"
         scale            integer
         color            Default: "#000" (black).
