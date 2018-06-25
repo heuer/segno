@@ -8,6 +8,14 @@ Module contents
     :members:
 
 
+Utilities
+---------
+
+.. automodule:: segno.utils
+    :members:
+
+
+
 High level QR Code factories
 ----------------------------
 
