@@ -122,7 +122,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
 
 def matrix_iter(matrix, version, scale=1, border=None):
     """\
-    Returns an interator / generator over the provided matrix which includes
+    Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
 
     If either the `scale` or `border` value is invalid, a py:exc:`ValueError`
@@ -213,7 +213,7 @@ Border of light modules.
 
 def matrix_iter_detail(matrix, version, scale=1, border=None):
     """\
-    Returns an interator / generator over the provided matrix which includes
+    Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
 
     This iterator / generator returns different values for dark / light modules
