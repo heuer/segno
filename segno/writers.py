@@ -19,10 +19,10 @@ import zlib
 import codecs
 import base64
 import gzip
-from functools import partial
 from xml.sax.saxutils import quoteattr, escape
 from struct import pack
 from itertools import chain
+from functools import partial
 from functools import reduce
 from contextlib import contextmanager
 import time
@@ -837,12 +837,10 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
         write('#define {0}_width {1}\n'
               '#define {0}_height {2}\n'
               'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
-        i = 0
-        for row in row_iter:
+        for i, row in enumerate(row_iter, start=1):
             iter_ = zip_longest(*[iter(row)] * 8, fillvalue=0x0)
             # Reverse bits since XBM uses little endian
             bits = ['0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1])) for bits in iter_]
-            i += 1
             write('    ')
             write(', '.join(bits))
             write(',\n' if i < height else '\n')
