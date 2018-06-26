@@ -829,40 +829,25 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
-    def byte_iterable(row):
-        r = chain(left_right_border, chain(*([b] * scale for b in row)), left_right_border)
-        for bits in zip_longest(*[iter(r)] * 8, fillvalue=0x0):
-            # Reverse bits since XBM uses little endian
-            yield '0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1]))
-
-    def rows():
-        top_bottom_border = tuple([0x0] * (width // scale - 2 * border))
-        for x in range(0, border):
-            yield top_bottom_border
-        for row in matrix:
-            yield row
-        for x in range(0, border):
-            yield top_bottom_border
-
     check_valid_scale(scale)
     check_valid_border(border)
     scale = int(scale)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
-    left_right_border = [0x0] * border * scale
     with writable(out, 'wt') as f:
         write = f.write
         write('#define {0}_width {1}\n'
               '#define {0}_height {2}\n'
               'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
         i = 0
-        for row in rows():
-            r = ', '.join(byte_iterable(row))
-            for s in range(0, scale):
-                i += 1
-                write('    ')
-                write(r)
-                write(',\n' if i < height else '\n')
+        for row in matrix_iter(matrix, version, scale, border):
+            iter_ = zip_longest(*[iter(row)] * 8, fillvalue=0x0)
+            # Reverse bits since XBM uses little endian
+            bits = ['0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1])) for bits in iter_]
+            i += 1
+            write('    ')
+            write(', '.join(bits))
+            write(',\n' if i < height else '\n')
         write('};\n')
 
 
