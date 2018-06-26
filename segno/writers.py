@@ -829,8 +829,6 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
-    check_valid_scale(scale)
-    check_valid_border(border)
     scale = int(scale)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
