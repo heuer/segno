@@ -829,7 +829,7 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
-    scale = int(scale)
+    row_iter = matrix_iter(matrix, version, scale, border)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wt') as f:
@@ -838,7 +838,7 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
               '#define {0}_height {2}\n'
               'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
         i = 0
-        for row in matrix_iter(matrix, version, scale, border):
+        for row in row_iter:
             iter_ = zip_longest(*[iter(row)] * 8, fillvalue=0x0)
             # Reverse bits since XBM uses little endian
             bits = ['0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1])) for bits in iter_]
