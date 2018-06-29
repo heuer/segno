@@ -1028,7 +1028,8 @@ def test_figure22_mask0():
     # Figure 22 - Mask 0
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=0)
+    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=0)
+    assert 0 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1043,7 +1044,8 @@ def test_figure22_mask1():
     # Figure 22 - Mask 1
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=1)
+    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=1)
+    assert 1 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1058,7 +1060,8 @@ def test_figure22_mask2():
     # Figure 22 - Mask 2
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=2)
+    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=2)
+    assert 2 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1073,7 +1076,8 @@ def test_figure22_mask3():
     # Figure 22 - Mask 3
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    matrix, mask = encoder.find_best_mask(matrix, version, True, proposed_mask=3)
+    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=3)
+    assert 3 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
@@ -1087,10 +1091,10 @@ def test_fig23_best_mask():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 23
     matrix = read_matrix('fig-23-unmasked')
-    masked_matrix, mask = encoder.find_best_mask(matrix, 1, is_micro=False)
+    mask = encoder.find_and_apply_best_mask(matrix, 1, is_micro=False)
     assert 0 == mask
     ref_matrix = read_matrix('fig-23-mask-0')
-    assert ref_matrix == masked_matrix
+    assert ref_matrix == matrix
 
 
 def test_format_info_figure26():
