@@ -8,6 +8,8 @@ Changes
 * Added experimental ``utils.matrix_iter_detail()`` function which returns an iterator over
   the matrix to distinguish different dark and light modules by their function (i.e. separator,
   finder pattern etc.)
+* Minor performance improvements
+* Removed Python 2.6 from test environment
 
 
 0.2.7 -- 2018-02-18
