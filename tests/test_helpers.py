@@ -87,6 +87,11 @@ def test_vcard_data():
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='123 Main Street', city='Any Town',
                                     region='CA', zipcode='91921-1234', country='Nummerland')
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;123 Main Street;Any Town;CA;91921-1234;Nummerland\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', title='Python wrangler')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
+                                    title=['Python wrangler', 'Snake charmer'])
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nTITLE:Snake charmer\r\nEND:VCARD\r\n' == vcard
 
 
 def test_vcard_data_invalid_bday():
