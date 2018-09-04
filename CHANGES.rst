@@ -10,6 +10,7 @@ Changes
   finder pattern etc.)
 * Minor performance improvements
 * Removed Python 2.6 from test environment
+* Added support for vCard TITLE attribute, contributed by Stefano Borini
 
 
 0.2.7 -- 2018-02-18
