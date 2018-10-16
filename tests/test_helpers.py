@@ -92,6 +92,12 @@ def test_vcard_data():
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
                                     title=['Python wrangler', 'Snake charmer'])
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nTITLE:Snake charmer\r\nEND:VCARD\r\n' == vcard
+    photo_uri = 'https://www.example.org/image.jpg'
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uri)
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nEND:VCARD\r\n'.format(photo_uri) == vcard
+    photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
 
 
 def test_vcard_title_escape():

@@ -226,7 +226,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
                     videophone=None, memo=None, nickname=None, birthday=None,
                     url=None, pobox=None, street=None, city=None, region=None,
                     zipcode=None, country=None, org=None, lat=None, lng=None,
-                    source=None, rev=None, title=None):
+                    source=None, rev=None, title=None, photo_uri=None):
     """\
     Creates a string encoding the contact information as vCard 3.0.
 
@@ -257,6 +257,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     :param str source: URL where to obtain the vCard.
     :param str|date rev: Revision of the vCard / last modification date.
     :param str|iterable|None title: Job Title. Multiple values are allowed.
+    :param str|iterable|None photo_uri: Photo URI. Multiple values are allowed.
     :rtype: str
     """
     def make_multifield(name, val):
@@ -278,6 +279,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     data.extend(make_multifield('TEL;TYPE=VIDEO', videophone))
     data.extend(make_multifield('URL', url))
     data.extend(make_multifield('TITLE', title))
+    data.extend(make_multifield('PHOTO;VALUE=uri', photo_uri))
     if nickname:
         data.append('NICKNAME:{0}'.format(escape(nickname)))
     adr_properties = (pobox, street, city, region, zipcode, country)
