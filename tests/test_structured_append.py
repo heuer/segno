@@ -18,9 +18,9 @@ import pytest
 import segno
 from segno import encoder
 try:
-    from .utils import read_matrix
+    from .tutils import read_matrix
 except (ValueError, SystemError):  # Attempted relative import in non-package
-    from utils import read_matrix
+    from tutils import read_matrix
 
 
 def test_seq_behave_like_qrcode():

@@ -13,9 +13,9 @@ from __future__ import unicode_literals, absolute_import
 import io
 import segno
 try:
-    from .utils import matrix_looks_valid
+    from .tutils import matrix_looks_valid
 except (ValueError, SystemError):  # Attempted relative import in non-package
-    from utils import matrix_looks_valid
+    from tutils import matrix_looks_valid
 
 
 def test_issue_3():

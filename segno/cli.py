@@ -12,6 +12,7 @@ Command line script to generate QR Codes with Segno.
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
 from __future__ import absolute_import, unicode_literals
+import os
 import sys
 import argparse
 import segno
@@ -192,12 +193,17 @@ def make_code(config):
 
 def main(args=sys.argv[1:]):
     config = parse(args)
-    qr = make_code(config)
+    try:
+        qr = make_code(config)
+    except segno.QRCodeError as ex:
+        sys.stderr.writelines([str(ex), os.linesep])
+        return sys.exit(1)
     output = config.pop('output')
     if output is None:
         qr.terminal(border=config['border'])
     else:
         qr.save(output, **build_config(config, filename=output))
+    return 0
 
 
 class _AttrDict(dict):

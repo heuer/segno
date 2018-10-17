@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright (c) 2016 - 2018 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# All rights reserved.
+#
+# License: BSD License
+#
+"""\
+Test against issue <https://github.com/mnooner256/pyqrcode/issues/17#issuecomment-419731805>
+and <https://github.com/heuer/pyqrcode/issues/10>
+"""
+from __future__ import unicode_literals, absolute_import
+import segno
+
+
+def test_issue_10_17():
+    qr = segno.make_qr('John’s Pizza')
+    assert 1 == qr.version
+    assert 'byte' == qr.mode
+    assert 'M' == qr.error
+
+if __name__ == '__main__':
+    import pytest
+    pytest.main([__file__])
+

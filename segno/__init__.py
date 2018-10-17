@@ -21,7 +21,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.2.7'
+__version__ = '0.2.8'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
@@ -182,10 +182,11 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
     """\
     Creates a sequence of QR Codes.
 
-    If the content fits into one QR Code and neither `version` is not provided,
-    this function may return a sequence with one QR Code which
-    does not use the Structured Append mode. Otherwise a sequence of 2 .. n
-    (max. n = 16) QR Codes is returned which use the Structured Append mode.
+    If the content fits into one QR Code and neither ``version`` nor
+    ``symbol_count`` is provided, this function may return a sequence with
+    one QR Code which does not use the Structured Append mode. Otherwise a
+    sequence of 2 .. n  (max. n = 16) QR Codes is returned which use the
+    Structured Append mode.
 
     The Structured Append mode allows to split the content over a number
     (max. 16) QR Codes.
@@ -197,8 +198,8 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
 
     .. code-block:: python
 
-        for qrcode in segno.make_sequence(data, symbol_count=2):
-             qrcode.save('seq.svg', scale=10, color='darkblue')
+        for i, qrcode in enumerate(segno.make_sequence(data, symbol_count=2)):
+             qrcode.save('seq-%d.svg' % i, scale=10, color='darkblue')
 
     The returned number of QR Codes is determined by the `version` or
     `symbol_count` parameter
@@ -491,6 +492,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
         color            Default: "#000" (black)
@@ -564,6 +566,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "png"
         scale            integer
         color            Default: "#000" (black)
@@ -589,6 +592,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "eps"
         scale            integer or float
         color            Default: "#000" (black)
@@ -601,6 +605,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pdf"
         scale            integer or float
         compresslevel    Default: 9. Integer indicating the compression level.
@@ -616,6 +621,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "txt"
         color            Default: "1"
         background       Default: "0"
@@ -638,6 +644,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pbm"
         scale            integer
         plain            Default: False. Boolean to switch between the P4 and P1 format.
@@ -651,6 +658,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.BytesIO
         kind             "pam"
         scale            integer
         color            Default: "#000" (black).
@@ -661,16 +669,22 @@ class QRCode:
 
         **LaTeX / PGF/TikZ**
 
+        To use the output of this serializer, the ``PGF/TikZ`` (and optionally
+        ``hyperref``) package is required in the LaTeX environment. The
+        serializer itself does not depend on any external packages.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "tex"
         scale            integer or float
         color            LaTeX color name (default: "black"). The color is written
                          "at it is", so ensure that the color is a standard color or it
                          has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
-                         point to. Requires the hyperref package.
+                         point to. Requires the ``hyperref`` package in your LaTeX
+                         environment.
         =============    ==============================================================
 
 
@@ -679,6 +693,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "xbm"
         scale            integer
         name             Name of the variable (default: "img")
@@ -690,6 +705,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or io.StringIO
         kind             "xpm"
         scale            integer
         color            Default: "#000" (black).

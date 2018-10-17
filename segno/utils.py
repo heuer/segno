@@ -9,6 +9,7 @@
 Utility functions useful for writers or QR Code objects.
 """
 from __future__ import absolute_import, unicode_literals
+from . import consts
 from itertools import chain
 try:  # pragma: no cover
     range = xrange
@@ -66,7 +67,7 @@ def get_symbol_size(version, scale=1, border=None):
 
 def check_valid_scale(scale):
     """\
-    Raises a ValueError iff `scale` is negative or zero.
+    Raises a :py:exc:`ValueError` iff `scale` is negative or zero.
 
     :param scale: float or integer indicating a scaling factor.
     """
@@ -94,6 +95,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
     The path starts at the 1st row of the matrix and moves down to the last
     row.
 
+    :param matrix: An iterable of bytearrays.
     :param x: Initial position on the x-axis.
     :param y: Initial position on the y-axis.
     :param incby: Value to move along the y-axis (default: 1).
@@ -120,8 +122,104 @@ def matrix_to_lines(matrix, x, y, incby=1):
 
 def matrix_iter(matrix, version, scale=1, border=None):
     """\
-    Returns an interator / generator over the provided matrix which includes
+    Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
+
+    If either the `scale` or `border` value is invalid, a :py:exc:`ValueError`
+    is raised.
+
+    :param matrix: An iterable of bytearrays.
+    :param int version: A version constant.
+    :param int scale: The scaling factor (default: ``1``).
+    :param int border: The border size or ``None`` to specify the
+            default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
+    :raises: :py:exc:`ValueError` if an illegal scale or border value is provided
+    """
+    check_valid_border(border)
+    scale = int(scale)
+    check_valid_scale(scale)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale=1, border=0)
+
+    def get_bit(i, j):
+        return 0x1 if (0 <= i < height and 0 <= j < width and matrix[i][j]) else 0x0
+
+    for i in range(-border, height + border):
+        for s in range(scale):
+            yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, width + border)))
+
+
+# Constants for detailed iterator, see utils.matrix_iter_detail
+TYPE_FINDER_PATTERN_LIGHT = 6
+"""\
+Light finder module
+"""
+TYPE_FINDER_PATTERN_DARK = TYPE_FINDER_PATTERN_LIGHT << 8
+"""\
+Dark finder module.
+"""
+TYPE_SEPARATOR = 8
+"""\
+Separator around the finder patterns (light module)
+"""
+TYPE_ALIGNMENT_PATTERN_LIGHT = 10
+"""\
+Light alignment pattern module.
+"""
+TYPE_ALIGNMENT_PATTERN_DARK = TYPE_ALIGNMENT_PATTERN_LIGHT << 8
+"""\
+Dark alignment pattern module.
+"""
+TYPE_TIMING_LIGHT = 12
+"""\
+Light timing pattern module.
+"""
+TYPE_TIMING_DARK = TYPE_TIMING_LIGHT << 8
+"""\
+Dark timing patten module.
+"""
+TYPE_FORMAT_LIGHT = 14
+"""\
+Light format information module.
+"""
+TYPE_FORMAT_DARK = TYPE_FORMAT_LIGHT << 8
+"""\
+Dark format information module.
+"""
+TYPE_VERSION_LIGHT = 16
+"""\
+Light version information module.
+"""
+TYPE_VERSION_DARK = TYPE_VERSION_LIGHT << 8
+"""\
+Dark version information module.
+"""
+TYPE_DARKMODULE = 512
+"""\
+A single dark module which occurs in QR Codes (but not in Micro QR Codes).
+"""
+TYPE_DATA_LIGHT = 4
+"""\
+Light module in the encoding area (either a data module or an error correction module).
+"""
+TYPE_DATA_DARK = TYPE_DATA_LIGHT << 8
+"""\
+Dark module in the encoding area (either a data module or an error correction module).
+"""
+TYPE_QUIET_ZONE = 18
+"""\
+Border of light modules.
+"""
+
+def matrix_iter_detail(matrix, version, scale=1, border=None):
+    """\
+    Returns an iterator / generator over the provided matrix which includes
+    the border and the scaling factor.
+
+    This iterator / generator returns different values for dark / light modules
+    and therefor the different parts (like the finder patterns, alignment patterns etc.)
+    are distinguishable. If this information isn't necessary, use the
+    :py:func:`matrix_iter()` function because it is much cheaper and faster.
 
     If either the `scale` or `border` value is invalid, a py:exc:`ValueError`
     is raised.
@@ -131,17 +229,58 @@ def matrix_iter(matrix, version, scale=1, border=None):
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
-    :raises: py:exc:`ValueError` if an illegal scale or border value is provided
+    :raises: :py:exc:`ValueError` if an illegal scale or border value is provided
+
     """
+    from segno import encoder
     check_valid_border(border)
     scale = int(scale)
     check_valid_scale(scale)
     border = get_border(version, border)
-    size = get_symbol_size(version, scale=1, border=0)[0]
+    width, height = get_symbol_size(version, scale=1, border=0)
+    is_micro = version < 1
+    # Create an empty matrix with invalid 0x2 values
+    alignment_matrix = encoder.make_matrix(version, reserve_regions=False, add_timing=False)
+    encoder.add_alignment_patterns(alignment_matrix, version)
 
     def get_bit(i, j):
-        return 0x1 if (0 <= i < size and 0 <= j < size and matrix[i][j]) else 0x0
+        # Check if we operate upon the matrix or the "virtual" border
+        if 0 <= i < height and 0 <= j < width:
+            val = matrix[i][j]
+            if not is_micro:
+                # Alignment pattern
+                alignment_val = alignment_matrix[i][j]
+                if alignment_val != 0x2:
+                    return (TYPE_ALIGNMENT_PATTERN_LIGHT, TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
+                if version > 6:  # Version information
+                    if i < 6 and width - 12 < j < width - 8 \
+                            or height - 12 < i < height - 8 and j < 6:
+                        return (TYPE_VERSION_LIGHT, TYPE_VERSION_DARK)[val]
+                # Dark module
+                if i == height - 8 and j == 8:
+                    return TYPE_DARKMODULE
+            # Timing - IMPORTANT: Check alignment (see above) in advance!
+            if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
+                    or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
+                return (TYPE_TIMING_LIGHT, TYPE_TIMING_DARK)[val]
+            # Format - IMPORTANT: Check timing (see above) in advance!
+            if i == 8 and (j < 9 or (not is_micro and j > width - 10)) \
+                    or j == 8 and (i < 8 or not is_micro and i > height - 9):
+                return (TYPE_FORMAT_LIGHT, TYPE_FORMAT_DARK)[val]
+            # Finder pattern
+            # top left             top right
+            if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
+                or not is_micro and i > height - 8 and j < 7:  # bottom left
+                return (TYPE_FINDER_PATTERN_LIGHT, TYPE_FINDER_PATTERN_DARK)[val]
+            # Separator
+            # top left              top right
+            if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
+                or not is_micro and (i > height - 9 and j < 8):  # bottom left
+                return TYPE_SEPARATOR
+            return (TYPE_DATA_LIGHT, TYPE_DATA_DARK)[val]
+        else:
+            return TYPE_QUIET_ZONE
 
-    for i in range(-border, size + border):
+    for i in range(-border, height + border):
         for s in range(scale):
-            yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, size + border)))
+            yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, width + border)))

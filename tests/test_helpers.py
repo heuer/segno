@@ -87,6 +87,23 @@ def test_vcard_data():
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='123 Main Street', city='Any Town',
                                     region='CA', zipcode='91921-1234', country='Nummerland')
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;123 Main Street;Any Town;CA;91921-1234;Nummerland\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', title='Python wrangler')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nEND:VCARD\r\n' == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
+                                    title=['Python wrangler', 'Snake charmer'])
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nTITLE:Snake charmer\r\nEND:VCARD\r\n' == vcard
+    photo_uri = 'https://www.example.org/image.jpg'
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uri)
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nEND:VCARD\r\n'.format(photo_uri) == vcard
+    photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
+
+
+def test_vcard_title_escape():
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
+                                    title='Director, Research and Development')
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Director\, Research and Development\r\nEND:VCARD\r\n' == vcard
 
 
 def test_vcard_data_invalid_bday():

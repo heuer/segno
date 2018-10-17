@@ -16,7 +16,6 @@ from functools import partial, reduce
 import re
 import math
 import codecs
-from copy import deepcopy
 from collections import namedtuple
 from . import consts
 _PY2 = False
@@ -292,7 +291,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    matrix, mask = find_best_mask(matrix, version, is_micro, mask)
+    mask = find_and_apply_best_mask(matrix, version, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -652,7 +651,7 @@ def make_error_block(ec_info, data_block):
     return error_block[len_data:]
 
 
-def find_best_mask(matrix, version, is_micro, proposed_mask=None):
+def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
     """\
     Applies all mask patterns against the provided QR Code matrix and returns
     the best matrix and best pattern.
@@ -700,19 +699,20 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     if proposed_mask is not None:
         apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
                    is_encoding_region)
-        return matrix, proposed_mask
+        return proposed_mask
 
     for mask_number, mask_pattern in enumerate(mask_patterns):
-        masked_matrix = deepcopy(matrix)
-        apply_mask(masked_matrix, mask_pattern, matrix_size, is_encoding_region)
+        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
-        score = eval_mask(masked_matrix, matrix_size)
+        score = eval_mask(matrix, matrix_size)
         if is_better(score, best_score):
             best_score = score
-            best_matrix = masked_matrix
             best_pattern = mask_number
-    return best_matrix, best_pattern
+        # Undo mask
+        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
+    apply_mask(matrix, mask_patterns[best_pattern], matrix_size, is_encoding_region)
+    return best_pattern
 
 
 def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
@@ -1221,14 +1221,14 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
         if version > 6:
             # Reserve version pattern areas
             for i in range(6):
-                # Lower left
-                matrix[-11][i] = 0x0
-                matrix[-10][i] = 0x0
-                matrix[-9][i] = 0x0
                 # Upper right
                 matrix[i][-11] = 0x0
                 matrix[i][-10] = 0x0
                 matrix[i][-9] = 0x0
+                # Lower left
+                matrix[-11][i] = 0x0
+                matrix[-10][i] = 0x0
+                matrix[-9][i] = 0x0
         # Reserve format pattern areas
         for i in range(9):
             matrix[i][8] = 0x0  # Upper left

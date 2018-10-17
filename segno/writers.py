@@ -19,10 +19,10 @@ import zlib
 import codecs
 import base64
 import gzip
-from functools import partial
 from xml.sax.saxutils import quoteattr, escape
 from struct import pack
 from itertools import chain
+from functools import partial
 from functools import reduce
 from contextlib import contextmanager
 import time
@@ -829,40 +829,21 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
-    def byte_iterable(row):
-        r = chain(left_right_border, chain(*([b] * scale for b in row)), left_right_border)
-        for bits in zip_longest(*[iter(r)] * 8, fillvalue=0x0):
-            # Reverse bits since XBM uses little endian
-            yield '0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1]))
-
-    def rows():
-        top_bottom_border = tuple([0x0] * (width // scale - 2 * border))
-        for x in range(0, border):
-            yield top_bottom_border
-        for row in matrix:
-            yield row
-        for x in range(0, border):
-            yield top_bottom_border
-
-    check_valid_scale(scale)
-    check_valid_border(border)
-    scale = int(scale)
+    row_iter = matrix_iter(matrix, version, scale, border)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=scale, border=border)
-    left_right_border = [0x0] * border * scale
     with writable(out, 'wt') as f:
         write = f.write
         write('#define {0}_width {1}\n'
               '#define {0}_height {2}\n'
               'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
-        i = 0
-        for row in rows():
-            r = ', '.join(byte_iterable(row))
-            for s in range(0, scale):
-                i += 1
-                write('    ')
-                write(r)
-                write(',\n' if i < height else '\n')
+        for i, row in enumerate(row_iter, start=1):
+            iter_ = zip_longest(*[iter(row)] * 8, fillvalue=0x0)
+            # Reverse bits since XBM uses little endian
+            bits = ['0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1])) for bits in iter_]
+            write('    ')
+            write(', '.join(bits))
+            write(',\n' if i < height else '\n')
         write('};\n')
 
 
@@ -889,27 +870,27 @@ def write_tex(matrix, version, out, scale=1, border=None, color='black', unit='p
             "hyperref" package. Default: ``None``.
     """
     def point(x, y):
-        return '\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+        return '\\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
 
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(version, border)
     with writable(out, 'wt') as f:
         write = f.write
-        write('%% Creator:  {0}\n'.format(CREATOR))
-        write('%% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+        write('% Creator:  {0}\n'.format(CREATOR))
+        write('% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
         if url:
-            write('\href{{{0}}}{{'.format(url))
+            write('\\href{{{0}}}{{'.format(url))
         write('\\begin{pgfpicture}\n')
-        write('  \pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+        write('  \\pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
         if color and color != 'black':
-            write('  \color{{{0}}}\n'.format(color))
+            write('  \\color{{{0}}}\n'.format(color))
         x, y = border, -border
         for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
-            write('  \pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
-            write('  \pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
-        write('  \pgfusepath{stroke}\n')
-        write('\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
+            write('  \\pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
+            write('  \\pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
+        write('  \\pgfusepath{stroke}\n')
+        write('\\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
 
 
 def write_terminal(matrix, version, out, border=None):

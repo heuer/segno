@@ -8,7 +8,7 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ==================    ========
 Library license                                 `BSD`_                `BSD`_                 `MIT`_                `BSD`_
-Library version                                 5.3                   1.2.1                  1.0.0                 |version|
+Library version                                 6.0                   1.3.0                  1.2.0                 |version|
 Mode Numeric                                    Yes                   Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                   Yes
@@ -32,16 +32,16 @@ Optimize QR Codes                               Yes                   No        
 `PBM`_ output                                   Yes                   No                     No                    Yes
 `PAM`_ output                                   No                    No                     No                    Yes
 `LaTeX`_ support                                No                    No                     No                    Yes
-PNG `data URI`_                                 No                    kind of (not a URI)    No                    Yes
+PNG `data URI`_                                 No                    Yes                    No                    Yes
 SVG data URI                                    No                    No                     No                    Yes
 Text output                                     Yes                   Yes                    No                    Yes
 `ANSI`_ escape code output                      Yes                   Yes                    No                    Yes
 Other output formats (i.e. `JPEG`_)             Yes                   No                     No                    No, but via `PIL plugin`_
 Black and white QR Codes                        Yes                   Yes                    Yes                   Yes
-Colored QR Codes                                No                    Yes                    No                    Yes
+Colored QR Codes                                Yes                   Yes                    No                    Yes
 Animated QR Codes (`GIF`_, `APNG`_)             No                    No                     No                    No
 Changing size of modules (scaling factor)       Yes                   Yes                    No                    Yes
-Command line script                             Yes                   No                     No                    Yes
+Command line script                             Yes                   Yes                    No                    Yes
 Plugins                                         No                    No                     No                    Yes
 Default encoding in Byte mode                   UTF-8                 ISO/IEC 8859-1         UTF-8                 ISO/IEC 8859-1
                                                                       or UTF-8                                     or UTF-8
@@ -58,7 +58,7 @@ Performance
 -----------
 
 Some performance indicators. The script `benchmarks.py`_ ran on a
-MacBook Air 2,13 Core2 Duo using CPython 2.7.10. Each SVG / PNG image uses a
+Mac Mini 2,26 Core2 Duo using CPython 2.7.14. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 

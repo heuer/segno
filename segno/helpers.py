@@ -8,8 +8,8 @@
 """\
 Additional factory functions for common QR Codes.
 
-The factory functions which return a QR Code use the minimum error correction
-level "L" or better. To create a (Micro) QR Code which should use a specific
+The factory functions which return a QR Code with the minimum error correction
+level "L" (or better). To create a (Micro) QR Code which should use a specific
 error correction level or version etc., use the "_data" factory functions which
 return a string which can be used as input for :py:func:`segno.make()`.
 """
@@ -226,7 +226,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
                     videophone=None, memo=None, nickname=None, birthday=None,
                     url=None, pobox=None, street=None, city=None, region=None,
                     zipcode=None, country=None, org=None, lat=None, lng=None,
-                    source=None, rev=None):
+                    source=None, rev=None, title=None, photo_uri=None):
     """\
     Creates a string encoding the contact information as vCard 3.0.
 
@@ -256,6 +256,8 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     :param float lng: Longitude.
     :param str source: URL where to obtain the vCard.
     :param str|date rev: Revision of the vCard / last modification date.
+    :param str|iterable|None title: Job Title. Multiple values are allowed.
+    :param str|iterable|None photo_uri: Photo URI. Multiple values are allowed.
     :rtype: str
     """
     def make_multifield(name, val):
@@ -276,6 +278,8 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     data.extend(make_multifield('TEL;TYPE=FAX', fax))
     data.extend(make_multifield('TEL;TYPE=VIDEO', videophone))
     data.extend(make_multifield('URL', url))
+    data.extend(make_multifield('TITLE', title))
+    data.extend(make_multifield('PHOTO;VALUE=uri', photo_uri))
     if nickname:
         data.append('NICKNAME:{0}'.format(escape(nickname)))
     adr_properties = (pobox, street, city, region, zipcode, country)
@@ -311,7 +315,7 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
                videophone=None, memo=None, nickname=None, birthday=None,
                url=None, pobox=None, street=None, city=None, region=None,
                zipcode=None, country=None, org=None, lat=None, lng=None,
-               source=None, rev=None):
+               source=None, rev=None, title=None):
     """\
     Creates a QR Code which encodes a `vCard <https://en.wikipedia.org/wiki/VCard>`_
     version 3.0.
@@ -342,6 +346,7 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
     :param float lng: Longitude.
     :param str source: URL where to obtain the vCard.
     :param str|date rev: Revision of the vCard / last modification date.
+    :param str|iterable|None title: Job Title. Multiple values are allowed.
 
     :rtype: segno.QRCode
     """
@@ -353,7 +358,7 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
                                          city=city, region=region,
                                          zipcode=zipcode, country=country,
                                          org=org, lat=lat, lng=lng,
-                                         source=source, rev=rev))
+                                         source=source, rev=rev, title=title))
 
 
 def make_geo_data(lat, lng):

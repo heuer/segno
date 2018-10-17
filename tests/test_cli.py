@@ -252,6 +252,7 @@ def test_sequence_output():
 def test_color():
     args = cli.parse(['--color', 'green', ''])
     assert args.color == 'green'
+    assert cli.build_config(args)['color'] == 'green'
 
 
 def test_color_transparent():
@@ -281,6 +282,13 @@ def test_background_transparent2():
     args = cli.parse(['--background=trans', '-output=x.png', ''])
     assert args.background == 'trans'
     assert cli.build_config(args)['background'] is None
+
+
+def test_error_code():
+    with pytest.raises(SystemExit) as e:
+        cli.main(['--version=M1', '--seq', '"This is a test"'])
+        assert 1 == e.exception.code
+        assert e.exception.message
 
 
 @pytest.mark.parametrize('arg', ['-o', '--output'])
@@ -313,6 +321,7 @@ def test_terminal(capsys):
     cli.main(['test'])
     out, err = capsys.readouterr()
     assert out
+    assert '' == err
 
 
 # -- PNG
@@ -503,7 +512,8 @@ def test_png_svg_command():
 def test_output_svgz():
     f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
     f.close()
-    cli.main(['--scale=10', '--color=red', '--output={0}'.format(f.name), 'test'])
+    res = cli.main(['--scale=10', '--color=red', '--output={0}'.format(f.name), 'test'])
+    assert 0 == res
     f = gzip.open(f.name)
     content = f.read()
     f.close()
