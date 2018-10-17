@@ -6,7 +6,7 @@ Changes
 
 
 
-0.2.8 -- 2018-19-17
+0.2.8 -- 2018-10-17
 -------------------
 * Fixed #45: CLI does not raise exceptions but indicates errors with return code 1 and
   writes the error message to ``sys.stderr``
