@@ -67,7 +67,7 @@ def get_symbol_size(version, scale=1, border=None):
 
 def check_valid_scale(scale):
     """\
-    Raises a ValueError iff `scale` is negative or zero.
+    Raises a :py:exc:`ValueError` iff `scale` is negative or zero.
 
     :param scale: float or integer indicating a scaling factor.
     """
@@ -125,7 +125,7 @@ def matrix_iter(matrix, version, scale=1, border=None):
     Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
 
-    If either the `scale` or `border` value is invalid, a py:exc:`ValueError`
+    If either the `scale` or `border` value is invalid, a :py:exc:`ValueError`
     is raised.
 
     :param matrix: An iterable of bytearrays.
@@ -133,7 +133,7 @@ def matrix_iter(matrix, version, scale=1, border=None):
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
-    :raises: py:exc:`ValueError` if an illegal scale or border value is provided
+    :raises: :py:exc:`ValueError` if an illegal scale or border value is provided
     """
     check_valid_border(border)
     scale = int(scale)
@@ -219,7 +219,7 @@ def matrix_iter_detail(matrix, version, scale=1, border=None):
     This iterator / generator returns different values for dark / light modules
     and therefor the different parts (like the finder patterns, alignment patterns etc.)
     are distinguishable. If this information isn't necessary, use the
-    :py:func:matrix_iter() function because it is much cheaper and faster.
+    :py:func:`matrix_iter()` function because it is much cheaper and faster.
 
     If either the `scale` or `border` value is invalid, a py:exc:`ValueError`
     is raised.
@@ -229,7 +229,7 @@ def matrix_iter_detail(matrix, version, scale=1, border=None):
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
-    :raises: py:exc:`ValueError` if an illegal scale or border value is provided
+    :raises: :py:exc:`ValueError` if an illegal scale or border value is provided
 
     """
     from segno import encoder
