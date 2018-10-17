@@ -97,4 +97,3 @@ def tex_as_matrix(buff, border):
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
-
