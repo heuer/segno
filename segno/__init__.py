@@ -21,7 +21,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.2.8'
+__version__ = '0.2.9.dev0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
