@@ -70,5 +70,20 @@ for details.
     >>> qr.save('neil-young-5.svgz', color=(8, 90, 117))
 
 
+If the QR Code should be serialized to a buffer, use the ``kind`` parameter
+to specify the output format.
+
+.. code-block:: python
+
+    >>> import segno
+    >>> import io
+    >>> qr = segno.make('Neil Young')
+    >>> buff = io.BytesIO()
+    >>> qr.save(buff, kind='svg')
+    >>> # All other serializer parameters are supported as well
+    >>> buff = io.BytesIO()
+    >>> qr.save(buff, kind='svg', color='#ccc', background='green')
+
+
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
 accepted by the specific serializer.
