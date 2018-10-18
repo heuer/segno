@@ -895,7 +895,7 @@ def score_n4(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 4) of the matrix.
     """
-    dark_modules = sum([sum(row) for row in matrix])
+    dark_modules = sum(map(sum, matrix))
     total_modules = matrix_size ** 2
     k = int(abs(dark_modules * 2 - total_modules) * 10 // total_modules)
     return 10 * k  # N4 = 10
