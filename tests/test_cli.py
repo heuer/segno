@@ -303,7 +303,7 @@ def test_error_code():
                                                  ('pbm', b'P4\n', 'rb'),
                                                  ('xbm', '#define ', 'rt'),
                                                  ('xpm', '/* XPM */', 'rt'),
-                                                 ('tex', '%% Creator: ', 'rt'),])
+                                                 ('tex', '% Creator: ', 'rt'),])
 def test_output(arg, ext, expected, mode):
     f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
     f.close()
