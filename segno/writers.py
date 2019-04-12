@@ -579,7 +579,7 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
-def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
+def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9, color='#000', background='white'):
     """\
     Serializes the QR Code as PDF document.
 
@@ -595,6 +595,12 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
             (default: 9). 1 is fastest and produces the least
             compression, 9 is slowest and produces the most.
             0 is no compression.
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: white).
+            See `color` for valid values. In addition, ``None`` is
+            accepted which indicates a transparent background.
     """
 
     def write_string(writemeth, s):
@@ -609,6 +615,16 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
                                                   abs(time.timezone) % 60)
     cmds = []
     append_cmd = cmds.append
+    # Set background
+    if background:
+        bg_color = colors.color_to_rgb_or_rgba(background)
+        append_cmd('{} {} {} rg '.format(bg_color[0] / 255, bg_color[1] / 255, bg_color[2] / 255))
+        append_cmd('0 0 {} {} re '.format(width, height))
+        append_cmd('f q ')
+    # Set color
+    stroke_color = colors.color_to_rgb_or_rgba(color)
+    append_cmd('{} {} {} RG '.format(stroke_color[0] / 255, stroke_color[1] / 255, stroke_color[2] / 255))
+    # Set scale
     if scale > 1:
         append_cmd('{0} 0 0 {0} 0 0 cm  '.format(scale))
     # Current pen position y-axis
