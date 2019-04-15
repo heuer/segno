@@ -579,7 +579,7 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
-def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9, color='#000', background='white'):
+def write_pdf(matrix, version, out, scale=1, border=None, color='#000', background='#fff', compresslevel=9):
     """\
     Serializes the QR Code as PDF document.
 
