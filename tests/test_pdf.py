@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2018 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2019 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -40,6 +40,56 @@ def test_scale_float():
     scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
     qr.save(out, kind='pdf', scale=scale, compresslevel=0)
     assert scale_cmd in _find_graphic(out)
+
+
+def test_background_none():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf')
+    graphic = _find_graphic(out)
+    assert 'rg' not in graphic
+    assert 're' not in graphic
+
+
+def test_background_set():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf', background='yellow')
+    graphic = _find_graphic(out)
+    assert 'rg' in graphic
+    assert 're' in graphic
+
+
+def test_stokecolor_default():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf')
+    graphic = _find_graphic(out)
+    assert 'RG' not in graphic
+
+
+def test_stokecolor_black():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf', color='black')
+    graphic = _find_graphic(out)
+    assert 'RG' not in graphic
+
+
+def test_stokecolor_black2():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf', color='#000')
+    graphic = _find_graphic(out)
+    assert 'RG' not in graphic
+
+
+def test_stokecolor_set():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='pdf', color='#EEE')
+    graphic = _find_graphic(out)
+    assert 'RG' in graphic
 
 
 def _find_graphic(out):

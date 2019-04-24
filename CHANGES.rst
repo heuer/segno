@@ -1,7 +1,14 @@
 Changes
 =======
 
-0.2.8 -- 2018-19-17
+0.2.9 -- 2019-04-24
+-------------------
+* Fixed typos
+* PDF serializer: Added support for stroke and background color,
+  initial code contributed by Serge Morel (pr #52).
+
+
+0.2.8 -- 2018-10-17
 -------------------
 * Fixed #45: CLI does not raise exceptions but indicates errors with return code 1 and
   writes the error message to ``sys.stderr``
