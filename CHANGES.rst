@@ -1,9 +1,11 @@
 Changes
 =======
 
-0.2.9 -- yyyy-mm-dd
+0.2.9 -- 2019-04-24
 -------------------
-
+* Fixed typos
+* PDF serializer: Added support for stroke and background color,
+  initial code contributed by Serge Morel (pr #52).
 
 
 0.2.8 -- 2018-10-17
