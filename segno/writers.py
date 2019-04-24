@@ -332,7 +332,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
                     raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
                                      .format(c))
                 return c
-            return 1/255.0 * c if c != 1 else c
+            return 1 / 255.0 * c if c != 1 else c
 
         return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
 
@@ -579,7 +579,8 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
-def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
+def write_pdf(matrix, version, out, scale=1, border=None, color='#000',
+              background=None, compresslevel=9):
     """\
     Serializes the QR Code as PDF document.
 
@@ -591,6 +592,11 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    :param color: Color of the modules (default: black). The
+            color can be provided as ``(R, G, B)`` tuple, as web color name
+            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+    :param background: Optional background color (default: ``None`` = no
+            background color). See `color` for valid values.
     :param int compresslevel: Integer indicating the compression level
             (default: 9). 1 is fastest and produces the least
             compression, 9 is slowest and produces the most.
@@ -599,6 +605,20 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
 
     def write_string(writemeth, s):
         writemeth(s.encode('ascii'))
+
+    def to_pdf_color(clr):
+        """\
+        Converts the provided color into an acceptable format for PDF's
+        "DeviceRGB" color space.
+         """
+        def to_float(c):
+            if isinstance(c, float):
+                if not 0.0 <= c <= 1.0:
+                    raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
+                                     .format(c))
+                return c
+            return 1 / 255.0 * c if c != 1 else c
+        return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
 
     check_valid_scale(scale)
     check_valid_border(border)
@@ -610,7 +630,15 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
     cmds = []
     append_cmd = cmds.append
     if scale > 1:
-        append_cmd('{0} 0 0 {0} 0 0 cm  '.format(scale))
+        append_cmd('{0} 0 0 {0} 0 0 cm'.format(scale))
+    if background is not None:
+        # If the background color is defined, a rect is drawn in the background
+        append_cmd('{} {} {} rg'.format(*to_pdf_color(background)))
+        append_cmd('0 0 {} {} re'.format(width, height))
+        append_cmd('f q')
+    # Set the stroke color only iff it is not black (default)
+    if not colors.color_is_black(color):
+        append_cmd('{} {} {} RG'.format(*to_pdf_color(color)))
     # Current pen position y-axis
     # Note: 0, 0 = lower left corner in PDF coordinate system
     y = get_symbol_size(version, scale=1, border=0)[1] + border - .5
@@ -618,9 +646,9 @@ def write_pdf(matrix, version, out, scale=1, border=None, compresslevel=9):
     append_cmd('1 0 0 1 {0} {1} cm'.format(border, y))
     # PDF supports absolute coordinates, only
     for (x1, y1), (x2, y2) in matrix_to_lines(matrix, 0, 0, incby=-1):
-        append_cmd(' {0} {1} m {2} {1} l'.format(x1, y1, x2, y2))
-    append_cmd(' S')
-    graphic = zlib.compress((''.join(cmds)).encode('ascii'), compresslevel)
+        append_cmd('{0} {1} m {2} {1} l'.format(x1, y1, x2, y2))
+    append_cmd('S')
+    graphic = zlib.compress((' '.join(cmds)).encode('ascii'), compresslevel)
     with writable(out, 'wb') as f:
         write = f.write
         writestr = partial(write_string, write)
