@@ -1,12 +1,12 @@
-PyQRCode create,30.10
-qrcodegen create,16.76
-qrcode create,12.29
-Segno create,13.46
-PyQRCode SVG,31.62
-qrcodegen SVG,17.97
-qrcode SVG path,60.00
-qrcode SVG rects,53.79
-Segno SVG,14.25
-PyQRCode PNG,119.23
-qrcode PNG,17.16
-Segno PNG,19.01
+PyQRCode create,28.89
+qrcodegen create,16.72
+qrcode create,12.44
+Segno create,13.14
+PyQRCode SVG,35.06
+qrcodegen SVG,18.51
+qrcode SVG path,61.90
+qrcode SVG rects,55.35
+Segno SVG,15.85
+PyQRCode PNG,120.46
+qrcode PNG,17.84
+Segno PNG,19.80
