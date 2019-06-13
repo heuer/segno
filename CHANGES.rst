@@ -1,13 +1,24 @@
 Changes
 =======
 
-0.2.8 -- 2018-mm-dd
+0.2.9 -- 2019-04-24
+-------------------
+* Fixed typos
+* PDF serializer: Added support for stroke and background color,
+  initial code contributed by Serge Morel (pr #52).
+
+
+0.2.8 -- 2018-10-17
 -------------------
 * Fixed #45: CLI does not raise exceptions but indicates errors with return code 1 and
   writes the error message to ``sys.stderr``
 * Added experimental ``utils.matrix_iter_detail()`` function which returns an iterator over
   the matrix to distinguish different dark and light modules by their function (i.e. separator,
   finder pattern etc.)
+* Minor performance improvements
+* Removed Python 2.6 from test environment
+* Added support for vCard TITLE attribute, contributed by Stefano Borini
+* Added support for vCard PHOTO URI attribute, suggested by Arthur Reinhart
 
 
 0.2.7 -- 2018-02-18

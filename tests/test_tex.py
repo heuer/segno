@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2018 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2019 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -19,7 +19,7 @@ def test_write_tex():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='tex', border=4)
-    assert '\pgfpathmoveto{\pgfqpoint{4pt}{-4pt}}' in out.getvalue()
+    assert r'\pgfpathmoveto{\pgfqpoint{4pt}{-4pt}}' in out.getvalue()
 
 
 def test_write_tex_url():
@@ -27,7 +27,7 @@ def test_write_tex_url():
     out = io.StringIO()
     url = 'http://www.example.org/~xxx#aaa'
     qr.save(out, kind='tex', border=4, url=url)
-    assert '\href{' + url + '}' in out.getvalue()
+    assert r'\href{' + url + '}' in out.getvalue()
 
 
 def test_write_tex_omit_url():
@@ -35,28 +35,28 @@ def test_write_tex_omit_url():
     out = io.StringIO()
     url = ''
     qr.save(out, kind='tex', border=4, url=url)
-    assert '\href' not in out.getvalue()
+    assert r'\href' not in out.getvalue()
 
 
 def test_write_tex_omit_url2():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='tex', border=4)
-    assert '\href' not in out.getvalue()
+    assert r'\href' not in out.getvalue()
 
 
 def test_write_tex_color():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='tex', border=4)
-    assert '\color' not in out.getvalue()
+    assert r'\color' not in out.getvalue()
 
 
 def test_write_tex_color2():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='tex', border=4, color='green')
-    assert '\color{green}' in out.getvalue()
+    assert r'\color{green}' in out.getvalue()
 
 
 _COMMAND_PATTERN = re.compile(r'pgfpath(move|line)to\{\\pgfqpoint\{(\-?[0-9]+)pt\}\{(\-?[0-9]+)pt\}')
@@ -97,4 +97,3 @@ def tex_as_matrix(buff, border):
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
-

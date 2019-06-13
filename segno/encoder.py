@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2018 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2019 -- Lars Heuer - Semagia <http://www.semagia.com/>.
 # All rights reserved.
 #
 # License: BSD License
@@ -16,7 +16,6 @@ from functools import partial, reduce
 import re
 import math
 import codecs
-from copy import deepcopy
 from collections import namedtuple
 from . import consts
 _PY2 = False
@@ -26,7 +25,7 @@ try:  # pragma: no cover
     numeric = int
 except ImportError:  # pragma: no cover
     _PY2 = True
-    from itertools import izip_longest as zip_longest
+    from itertools import izip_longest as zip_longest, imap as map
     str_type = basestring
     from numbers import Number
     numeric = Number
@@ -292,7 +291,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    matrix, mask = find_best_mask(matrix, version, is_micro, mask)
+    mask = find_and_apply_best_mask(matrix, version, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -652,7 +651,7 @@ def make_error_block(ec_info, data_block):
     return error_block[len_data:]
 
 
-def find_best_mask(matrix, version, is_micro, proposed_mask=None):
+def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
     """\
     Applies all mask patterns against the provided QR Code matrix and returns
     the best matrix and best pattern.
@@ -700,19 +699,20 @@ def find_best_mask(matrix, version, is_micro, proposed_mask=None):
     if proposed_mask is not None:
         apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
                    is_encoding_region)
-        return matrix, proposed_mask
+        return proposed_mask
 
     for mask_number, mask_pattern in enumerate(mask_patterns):
-        masked_matrix = deepcopy(matrix)
-        apply_mask(masked_matrix, mask_pattern, matrix_size, is_encoding_region)
+        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
-        score = eval_mask(masked_matrix, matrix_size)
+        score = eval_mask(matrix, matrix_size)
         if is_better(score, best_score):
             best_score = score
-            best_matrix = masked_matrix
             best_pattern = mask_number
-    return best_matrix, best_pattern
+        # Undo mask
+        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
+    apply_mask(matrix, mask_patterns[best_pattern], matrix_size, is_encoding_region)
+    return best_pattern
 
 
 def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
@@ -895,7 +895,7 @@ def score_n4(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 4) of the matrix.
     """
-    dark_modules = sum([sum(row) for row in matrix])
+    dark_modules = sum(map(sum, matrix))
     total_modules = matrix_size ** 2
     k = int(abs(dark_modules * 2 - total_modules) * 10 // total_modules)
     return 10 * k  # N4 = 10

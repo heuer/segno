@@ -14,7 +14,7 @@ Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (P
 LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
 serializers require an external lib. Segno could provide more serialization
 formats via a plugin architecture.
-Further, it provides several high level function to create QR Codes which encode
+Further, it provides several high level functions to create QR Codes which encode
 contact data (MeCard, vCard) or WIFI configurations.
 
 
