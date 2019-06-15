@@ -138,6 +138,6 @@ if __name__ == '__main__':
     run_create_tests(table=table)
     run_svg_tests(table=table)
     run_png_tests(table=table)
-    with open('out/results.csv', 'wb') as f:
+    with open('out/results.csv', 'w') as f:
         writer = csv.writer(f)
         writer.writerows(table)
