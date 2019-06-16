@@ -534,6 +534,7 @@ def add_codewords(matrix, codewords, version):
     # (starting with the most significant bit) in the two-module wide columns
     # alternately upwards and downwards from the right to left of the symbol.
     # [...]
+    codeword_length = len(codewords)
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
@@ -544,8 +545,9 @@ def add_codewords(matrix, codewords, version):
                 if not is_micro:
                     upwards ^= j < 6
                 i = (matrix_size - 1 - vertical) if upwards else vertical
-                if matrix[i][j] == 0x2 and idx < len(codewords):
-                    matrix[i][j] = codewords[idx]
+                row = matrix[i]
+                if row[j] == 0x2 and idx < codeword_length:
+                    row[j] = codewords[idx]
                     idx += 1
     if idx != len(codewords):  # pragma: no cover
         raise QRCodeError('Internal error: Adding codewords to matrix failed. '
@@ -727,8 +729,9 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
     :param is_encoding_region: A function which returns ``True`` iff the
             row index / col index belongs to the data region.
     """
-    for i in range(matrix_size):
-        for j in range(matrix_size):
+    module_range = range(matrix_size)
+    for i in module_range:
+        for j in module_range:
             if is_encoding_region(i, j):
                 matrix[i][j] ^= mask_pattern(i, j)
 
@@ -766,12 +769,14 @@ def score_n1(matrix, matrix_size):
     :return int: The penalty score (feature 1) of the matrix.
     """
     score = 0
-    for i in range(matrix_size):
+    module_range = range(matrix_size)
+    for i in module_range:
         prev_bit_row, prev_bit_col = -1, -1
         row_counter, col_counter = 0, 0
-        for j in range(matrix_size):
+        row = matrix[i]
+        for j in module_range:
             # Row-wise
-            bit = matrix[i][j]
+            bit = row[j]
             if bit == prev_bit_row:
                 row_counter += 1
             else:
@@ -814,13 +819,14 @@ def score_n2(matrix, matrix_size):
     :return int: The penalty score (feature 2) of the matrix.
     """
     score = 0
-    for i in range(matrix_size - 1):
-        for j in range(matrix_size - 1):
-            bit = matrix[i][j]
-            if bit == matrix[i][j + 1] and bit == matrix[i + 1][j] \
-                and bit == matrix[i + 1][j + 1]:
-                score += 1
-    return score * 3  # N2 == 3
+    module_range = range(matrix_size - 1)  # Note: -1 since we look +1 ahead
+    for i in module_range:
+        row = matrix[i]
+        row_next = matrix[i + 1]
+        for j in module_range:
+            if row[j] == row[j + 1] == row_next[j] == row_next[j + 1]:
+                score += 3
+    return score
 
 
 _N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
@@ -849,7 +855,7 @@ def score_n3(matrix, matrix_size):
         start = max(start, 0)
         end = min(end, matrix_size)
         for i in range(start, end):
-            if seq[i] == 0x1:
+            if seq[i]:
                 return False
         return True
 
@@ -871,9 +877,10 @@ def score_n3(matrix, matrix_size):
         return count
 
     score = 0
-    for i in range(matrix_size):
+    module_range = range(matrix_size)
+    for i in module_range:
         score += find_occurrences(matrix[i])
-        score += find_occurrences(bytearray([matrix[y][i] for y in range(matrix_size)]))
+        score += find_occurrences(bytearray([matrix[y][i] for y in module_range]))
     return score * 40  # N3 = 40
 
 
@@ -896,8 +903,8 @@ def score_n4(matrix, matrix_size):
     :return int: The penalty score (feature 4) of the matrix.
     """
     dark_modules = sum(map(sum, matrix))
-    total_modules = matrix_size ** 2
-    k = int(abs(dark_modules * 2 - total_modules) * 10 // total_modules)
+    percent = float(dark_modules) / (matrix_size **2)
+    k = int(abs(percent * 100 - 50) / 5)
     return 10 * k  # N4 = 10
 
 
@@ -1039,9 +1046,10 @@ def add_version_info(matrix, version):
         matrix[-10][i] = bit2
         matrix[-9][i] = bit3
         # Upper right
-        matrix[i][-11] = bit1
-        matrix[i][-10] = bit2
-        matrix[i][-9] = bit3
+        row = matrix[i]
+        row[-11] = bit1
+        row[-10] = bit2
+        row[-9] = bit3
 
 
 def prepare_data(content, mode, encoding, version=None):
