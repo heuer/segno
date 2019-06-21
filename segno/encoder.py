@@ -750,6 +750,7 @@ def evaluate_mask(matrix, matrix_size):
     return sum(mask_scores(matrix, matrix_size))
 
 
+_N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 def mask_scores(matrix, matrix_size):
     """\
     Returns the penalty score features of the matrix.
@@ -781,22 +782,54 @@ def mask_scores(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: A tuple of penalty scores.
     """
+
+    def is_match(seq, start, end):
+        start = max(start, 0)
+        end = min(end, matrix_size)
+        for i in range(start, end):
+            if seq[i]:
+                return False
+        return True
+
+    def find_occurrences(seq):
+        count = 0
+        idx = seq.find(_N3_PATTERN)
+        while idx != -1:
+            offset = idx + 7
+            if is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
+                count += 40  # N3 = 40
+            else:
+                # Found no / not enough light modules, start at next possible
+                # match:
+                #                   v
+                # dark light dark dark dark light dark
+                #                   ^
+                offset = idx + 4
+            idx = seq.find(_N3_PATTERN, offset)
+        return count
+
     s_n1 = 0
     s_n2 = 0
     s_n3 = 0
     module_range = range(matrix_size)
     dark_modules = 0
     last_row = None
+    col = [0x2] * matrix_size
+    columns = [bytearray(col) for i in module_range]
     for i in module_range:
         row = matrix[i]
+        col = columns[i]
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
         row_cnt = 0
         col_cnt = 0
+        # N3
+        s_n3 += find_occurrences(row)
         for j in module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
+            col[j] = col_current_bit
             dark_modules += row_current_bit
             # N1 -- row-wise
             if row_current_bit == row_prev_bit:
@@ -823,66 +856,14 @@ def mask_scores(matrix, matrix_size):
             s_n1 += row_cnt - 2
         if col_cnt >= 5:
             s_n1 += col_cnt - 2
+
+    # N3
+    s_n3 += sum([find_occurrences(columns[i]) for i in module_range])
+
     # N4
     percent = float(dark_modules) / (matrix_size ** 2)
     s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
-    s_n3 = _score_n3(matrix, matrix_size)
     return s_n1, s_n2, s_n3, s_n4
-
-
-_N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
-def _score_n3(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 3.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    =========================================   ========================   ======
-    Feature                                     Evaluation condition       Points
-    =========================================   ========================   ======
-    1 : 1 : 3 : 1 : 1 ratio                     Existence of the pattern   N3
-    (dark:light:dark:light:dark) pattern in
-    row/column, preceded or followed by light
-    area 4 modules wide
-    =========================================   ========================   ======
-
-    N3 = 40
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 3) of the matrix.
-    """
-    def is_match(seq, start, end):
-        start = max(start, 0)
-        end = min(end, matrix_size)
-        for i in range(start, end):
-            if seq[i]:
-                return False
-        return True
-
-    def find_occurrences(seq):
-        count = 0
-        idx = seq.find(_N3_PATTERN)
-        while idx != -1:
-            offset = idx + 7
-            if is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
-                count += 1
-            else:
-                # Found no / not enough light patterns, start at next possible
-                # match:
-                #                   v
-                # dark light dark dark dark light dark
-                #                   ^
-                offset = idx + 4
-            idx = seq.find(_N3_PATTERN, offset)
-        return count
-
-    score = 0
-    module_range = range(matrix_size)
-    for i in module_range:
-        score += find_occurrences(matrix[i])
-        score += find_occurrences(bytearray([matrix[y][i] for y in module_range]))
-    return score * 40  # N3 = 40
 
 
 def score_n1(matrix, matrix_size):
