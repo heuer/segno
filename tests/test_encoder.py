@@ -585,26 +585,31 @@ def make_thonky_score_matrix():
 
 def test_score_n1():
     matrix, matrix_size = make_thonky_score_matrix()
-    score = encoder.score_n1(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[0]
     assert 180 == score
 
 
 def test_score_n2():
     matrix, matrix_size = make_thonky_score_matrix()
-    score = encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[1]
     assert 90 == score
 
 
 def test_score_n3():
     matrix, matrix_size = make_thonky_score_matrix()
-    score = encoder.score_n3(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[2]
     # Thonky: 80
     assert 760 == score
 
 
 def test_score_n4():
     matrix = read_matrix('thonky_datamasking-2')
-    score = encoder.score_n4(matrix, len(matrix))
+    matrix_size = len(matrix)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[3]
     assert 0 == score
 
 
@@ -612,11 +617,12 @@ def test_thonky_pattern_0():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-0')
     matrix_size = len(matrix)
-    assert 180 == encoder.score_n1(matrix, matrix_size)
-    assert 90 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 180 == scores[0]
+    assert 90 == scores[1]
     # Thonky: 80
-    assert 760 == encoder.score_n3(matrix, matrix_size)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 760 == scores[2]
+    assert 0 == scores[3]
     # See score 3
     assert 350 - 80 + 760 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -625,11 +631,12 @@ def test_thonky_pattern_1():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-1')
     matrix_size = len(matrix)
-    assert 172 == encoder.score_n1(matrix, matrix_size)
-    assert 129 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 172 == scores[0]
+    assert 129 == scores[1]
     # Thonky: 120
-    assert 760 == encoder.score_n3(matrix, matrix_size)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 760 == scores[2]
+    assert 0 == scores[3]
     # See score 3
     assert 421 - 120 + 760 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -638,11 +645,12 @@ def test_thonky_pattern_2():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-2')
     matrix_size = len(matrix)
-    assert 206 == encoder.score_n1(matrix, matrix_size)
-    assert 141 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 206 == scores[0]
+    assert 141 == scores[1]
     # Thonky: 160
-    assert 800 == encoder.score_n3(matrix, matrix_size)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 800 == scores[2]
+    assert 0 == scores[3]
     assert 507 - 160 + 800 == encoder.evaluate_mask(matrix, matrix_size)
 
 
@@ -650,12 +658,13 @@ def test_thonky_pattern_3():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-3')
     matrix_size = len(matrix)
-    assert 180 == encoder.score_n1(matrix, matrix_size)
-    assert 141 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 180 == scores[0]
+    assert 141 == scores[1]
     # Thonky: 120
-    assert 760 == encoder.score_n3(matrix, matrix_size)
+    assert 760 == scores[2]
     # Thonky: 2, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 0 == scores[3]
     assert 443 - 2 - 120 + 760 == encoder.evaluate_mask(matrix, matrix_size)
 
 
@@ -663,11 +672,12 @@ def test_thonky_pattern_4():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-4')
     matrix_size = len(matrix)
-    assert 195 == encoder.score_n1(matrix, matrix_size)
-    assert 138 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 195 == scores[0]
+    assert 138 == scores[1]
     # Thonky: 200
-    assert 800 == encoder.score_n3(matrix, matrix_size)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 800 == scores[2]
+    assert 0 == scores[3]
     # See score 3
     assert 533 - 200 + 800 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -676,12 +686,13 @@ def test_thonky_pattern_5():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-5')
     matrix_size = len(matrix)
-    assert 189 == encoder.score_n1(matrix, matrix_size)
-    assert 156 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 189 == scores[0]
+    assert 156 == scores[1]
     # Thonky: 200
-    assert 800 == encoder.score_n3(matrix, matrix_size)
+    assert 800 == scores[2]
     # Thonky: 2, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 0 == scores[3]
     # See score 3 and 4
     assert 547 - 2 - 200 + 800 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -690,12 +701,13 @@ def test_thonky_pattern_6():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-6')
     matrix_size = len(matrix)
-    assert 171 == encoder.score_n1(matrix, matrix_size)
-    assert 102 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 171 == scores[0]
+    assert 102 == scores[1]
     # Thonky: 80
-    assert 840 == encoder.score_n3(matrix, matrix_size)
+    assert 840 == scores[2]
     # Thonky: 4, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 0 == scores[3]
     # See score 3 and 4
     assert 357 - 4 - 80 + 840 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -704,11 +716,12 @@ def test_thonky_pattern_7():
     # http://www.thonky.com/qr-code-tutorial/data-masking
     matrix = read_matrix('thonky_datamasking_mask-7')
     matrix_size = len(matrix)
-    assert 197 == encoder.score_n1(matrix, matrix_size)
-    assert 123 == encoder.score_n2(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    assert 197 == scores[0]
+    assert 123 == scores[1]
     # Thonky: 200
-    assert 720 == encoder.score_n3(matrix, matrix_size)
-    assert 0 == encoder.score_n4(matrix, matrix_size)
+    assert 720 == scores[2]
+    assert 0 == scores[3]
     # See score 3
     assert 520 - 200 + 720 == encoder.evaluate_mask(matrix, matrix_size)
 
@@ -717,7 +730,9 @@ def test_score_n1_iso():
     # For example, impose 5 penalty points on the block of “dark:dark:dark:dark:dark:dark:dark”
     # module pattern, where a series of seven consecutive modules is counted as one block
     matrix = tuple(bytearray([1] * 7) for i in range(7))
-    score = encoder.score_n1(matrix, len(matrix))
+    matrix_size = len(matrix)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[0]
     assert 5 * 7 * 2 == score
 
 
@@ -727,11 +742,15 @@ def test_score_n2_iso():
     # be included in this block, the penalty applied to this block shall be
     # calculated as 4 (blocks) x 3 (points) = 12 points.
     matrix = (bytearray([1,1,1]), bytearray([1,1,1]), bytearray([1,1,1]))
-    score = encoder.score_n2(matrix, len(matrix))
+    matrix_size = len(matrix)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[1]
     assert 12 == score
 
     matrix = (bytearray([0,0,0]), bytearray([0,0,0]), bytearray([0,0,0]))
-    score = encoder.score_n2(matrix, len(matrix))
+    matrix_size = len(matrix)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[1]
     assert 12 == score
 
 
@@ -774,7 +793,10 @@ def test_score_n4_iso(score, percent):
 
     matrix = make_matrix()
     fill_matrix(matrix, percent)
-    assert score == encoder.score_n4(matrix, len(matrix))
+    matrix_size = len(matrix)
+    scores = encoder.mask_scores(matrix, matrix_size)
+    score = scores[3]
+    assert score == score
 
 
 def test_binary_sequence_to_integers():
@@ -1028,7 +1050,7 @@ def test_figure22_mask0():
     # Figure 22 - Mask 0
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=0)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=0)
     assert 0 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1044,7 +1066,7 @@ def test_figure22_mask1():
     # Figure 22 - Mask 1
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=1)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=1)
     assert 1 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1060,7 +1082,7 @@ def test_figure22_mask2():
     # Figure 22 - Mask 2
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=2)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=2)
     assert 2 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1076,7 +1098,7 @@ def test_figure22_mask3():
     # Figure 22 - Mask 3
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=3)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=3)
     assert 3 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1091,7 +1113,7 @@ def test_fig23_best_mask():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 23
     matrix = read_matrix('fig-23-unmasked')
-    mask = encoder.find_and_apply_best_mask(matrix, 1, is_micro=False)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, 1, is_micro=False)
     assert 0 == mask
     ref_matrix = read_matrix('fig-23-mask-0')
     assert ref_matrix == matrix

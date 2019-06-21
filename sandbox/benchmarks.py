@@ -8,7 +8,7 @@ import timeit
 import segno
 try:
     import qrcode
-    from qrcode import QRCode, ERROR_CORRECT_M
+    from qrcode import QRCode, ERROR_CORRECT_M, ERROR_CORRECT_L, ERROR_CORRECT_H
     from qrcode.image.svg import SvgImage, SvgPathImage
 except ImportError:
     QRCode = None
@@ -24,8 +24,14 @@ except ImportError:
 
 if QRCode:
     def create_qrcode(data='QR Code Symbol'):
-        """qrcode create"""
+        """qrcode create 1-M"""
         qr = QRCode(error_correction=ERROR_CORRECT_M)
+        qr.add_data(data, optimize=False)
+        qr.make()
+
+    def createbig_qrcode(data='QR Code Symbol'):
+        """qrcode create 30-H"""
+        qr = QRCode(error_correction=ERROR_CORRECT_H, version=30)
         qr.add_data(data, optimize=False)
         qr.make()
 
@@ -52,8 +58,12 @@ if QRCode:
 
 if pyqrcode:
     def create_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode create"""
+        """PyQRCode create 1-M"""
         pyqrcode.create(data, error='m')
+
+    def createbig_pyqrcode(data='QR Code Symbol'):
+        """PyQRCode create 30-H"""
+        pyqrcode.create(data, error='h', version=30)
 
     def svg_pyqrcode(data='QR Code Symbol'):
         """PyQRCode SVG"""
@@ -66,7 +76,7 @@ if pyqrcode:
 
 if QrCode:
     def create_qrcodegen(data='QR Code Symbol'):
-        """qrcodegen create"""
+        """qrcodegen create 1-M"""
         QrCode.encode_text(data, QrCode.Ecc.MEDIUM)
 
     def svg_qrcodegen(data='QR Code Symbol'):
@@ -76,8 +86,13 @@ if QrCode:
 
 
 def create_segno(data='QR Code Symbol'):
-    """Segno create"""
-    segno.make_qr(data, error='m')
+    """Segno create 1-M"""
+    segno.make_qr(data, error='m', boost_error=False)
+
+
+def createbig_segno(data='QR Code Symbol'):
+    """Segno create 30-H"""
+    segno.make_qr(data, error='h', version=30, boost_error=False)
 
 
 def svg_segno(data='QR Code Symbol'):
@@ -95,6 +110,14 @@ def run_create_tests(which=None, number=200, table=None):
              'create_qrcode', 'create_segno',)
     if which:
         tests = filter(lambda n: n[len('create_'):] in which, tests)
+    _run_tests(tests, number, table)
+
+
+def run_createbig_tests(which=None, number=200, table=None):
+    tests = ('createbig_pyqrcode',
+             'createbig_qrcode', 'createbig_segno',)
+    if which:
+        tests = filter(lambda n: n[len('createbig_'):] in which, tests)
     _run_tests(tests, number, table)
 
 
@@ -136,6 +159,7 @@ if __name__ == '__main__':
     import csv
     table = []
     run_create_tests(table=table)
+    run_createbig_tests(table=table)
     run_svg_tests(table=table)
     run_png_tests(table=table)
     with open('out/results.csv', 'w') as f:

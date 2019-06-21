@@ -13,6 +13,7 @@ QR Code and Micro QR Code encoder.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
+import warnings
 import re
 import math
 import codecs
@@ -291,7 +292,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    mask = find_and_apply_best_mask(matrix, version, is_micro, mask)
+    mask, matrix = find_and_apply_best_mask(matrix, version, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -696,25 +697,25 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         return function_matrix[i][j] == 0x2
 
     mask_patterns = get_data_mask_functions(is_micro)
-
     # If the user supplied a mask pattern, the evaluation step is skipped
     if proposed_mask is not None:
         apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
                    is_encoding_region)
-        return proposed_mask
+        return proposed_mask, matrix
 
+    best_matrix = None
     for mask_number, mask_pattern in enumerate(mask_patterns):
-        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
+        # A lot(!!!) faster than m = copy.deepcopy(matrix)
+        m = [bytearray(ba) for ba in matrix]
+        apply_mask(m, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
-        score = eval_mask(matrix, matrix_size)
+        score = eval_mask(m, matrix_size)
         if is_better(score, best_score):
             best_score = score
             best_pattern = mask_number
-        # Undo mask
-        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
-    apply_mask(matrix, mask_patterns[best_pattern], matrix_size, is_encoding_region)
-    return best_pattern
+            best_matrix = tuple(m)
+    return best_pattern, best_matrix
 
 
 def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
@@ -746,91 +747,91 @@ def evaluate_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    return score_n1(matrix, matrix_size) + score_n2(matrix, matrix_size) \
-           + score_n3(matrix, matrix_size) + score_n4(matrix, matrix_size)
+    return sum(mask_scores(matrix, matrix_size))
 
 
-def score_n1(matrix, matrix_size):
+def mask_scores(matrix, matrix_size):
     """\
-    Implements the penalty score feature 1.
+    Returns the penalty score features of the matrix.
+
+    The returned value is a tuple of all penalty scores (N1, N2, N3, N4).
+    Use :py:func:`evaluate_mask` for a single value (sum of all scores).
+
 
     ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
 
-    ============================================   ========================    ======
-    Feature                                        Evaluation condition        Points
-    ============================================   ========================    ======
-    Adjacent modules in row/column in same color   No. of modules = (5 + i)    N1 + i
-    ============================================   ========================    ======
+    ============================================   ====================================   ===============
+    Feature                                        Evaluation condition                   Points
+    ============================================   ====================================   ===============
+    Adjacent modules in row/column in same color   No. of modules = (5 + i)               N1 + i
+    Block of modules in same color                 Block size = m × n                     N2 ×(m-1)×(n-1)
+    1 : 1 : 3 : 1 : 1 ratio                        Existence of the pattern               N3
+    (dark:light:dark:light:dark) pattern in
+    row/column, preceded or followed by light
+    area 4 modules wide
+    Proportion of dark modules in entire symbol    50 × (5 × k)% to 50 × (5 × (k + 1))%   N4 × k
+    ============================================   ====================================   ===============
 
     N1 = 3
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 1) of the matrix.
-    """
-    score = 0
-    module_range = range(matrix_size)
-    for i in module_range:
-        prev_bit_row, prev_bit_col = -1, -1
-        row_counter, col_counter = 0, 0
-        row = matrix[i]
-        for j in module_range:
-            # Row-wise
-            bit = row[j]
-            if bit == prev_bit_row:
-                row_counter += 1
-            else:
-                if row_counter >= 5:
-                    score += row_counter - 2  # N1 == 3
-                row_counter = 1
-                prev_bit_row = bit
-            # Col-wise
-            bit = matrix[j][i]
-            if bit == prev_bit_col:
-                col_counter += 1
-            else:
-                if col_counter >= 5:
-                    score += col_counter - 2  # N1 == 3
-                col_counter = 1
-                prev_bit_col = bit
-        if row_counter >= 5:
-            score += row_counter - 2  # N1 == 3
-        if col_counter >= 5:
-            score += col_counter - 2  # N1 == 3
-    return score
-
-
-def score_n2(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 2.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    ==============================   ====================   ===============
-    Feature                          Evaluation condition   Points
-    ==============================   ====================   ===============
-    Block of modules in same color   Block size = m × n     N2 ×(m-1)×(n-1)
-    ==============================   ====================   ===============
-
     N2 = 3
+    N3 = 40
+    N4 = 10
 
     :param matrix: The matrix to evaluate
     :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 2) of the matrix.
+    :return int: A tuple of penalty scores.
     """
-    score = 0
-    module_range = range(matrix_size - 1)  # Note: -1 since we look +1 ahead
+    s_n1 = 0
+    s_n2 = 0
+    s_n3 = 0
+    module_range = range(matrix_size)
+    dark_modules = 0
+    last_row = None
     for i in module_range:
         row = matrix[i]
-        row_next = matrix[i + 1]
+        row_prev_bit = -1
+        col_prev_bit = -1
+        # N1
+        row_cnt = 0
+        col_cnt = 0
         for j in module_range:
-            if row[j] == row[j + 1] == row_next[j] == row_next[j + 1]:
-                score += 3
-    return score
+            row_current_bit = row[j]
+            col_current_bit = matrix[j][i]
+            dark_modules += row_current_bit
+            # N1 -- row-wise
+            if row_current_bit == row_prev_bit:
+                row_cnt += 1
+            else:
+                if row_cnt >= 5:
+                    s_n1 += row_cnt - 2
+                row_cnt = 1
+            # N1 -- col-wise
+            if col_current_bit == col_prev_bit:
+                col_cnt += 1
+            else:
+                if col_cnt >= 5:
+                    s_n1 += col_cnt - 2
+                col_cnt = 1
+            # N2
+            if last_row and j > 0 and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
+                s_n2 += 3
+            row_prev_bit = row_current_bit
+            col_prev_bit = col_current_bit
+        last_row = row
+        # N1
+        if row_cnt >= 5:
+            s_n1 += row_cnt - 2
+        if col_cnt >= 5:
+            s_n1 += col_cnt - 2
+    # N4
+    percent = float(dark_modules) / (matrix_size ** 2)
+    s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
+    s_n3 = _score_n3(matrix, matrix_size)
+    return s_n1, s_n2, s_n3, s_n4
 
 
 _N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
-def score_n3(matrix, matrix_size):
+def _score_n3(matrix, matrix_size):
     """\
     Implements the penalty score feature 3.
 
@@ -884,6 +885,75 @@ def score_n3(matrix, matrix_size):
     return score * 40  # N3 = 40
 
 
+def score_n1(matrix, matrix_size):
+    """\
+    Implements the penalty score feature 1.
+
+    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
+
+    ============================================   ========================    ======
+    Feature                                        Evaluation condition        Points
+    ============================================   ========================    ======
+    Adjacent modules in row/column in same color   No. of modules = (5 + i)    N1 + i
+    ============================================   ========================    ======
+
+    N1 = 3
+
+    :param matrix: The matrix to evaluate
+    :param matrix_size: The width (or height) of the matrix.
+    :return int: The penalty score (feature 1) of the matrix.
+    """
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[0]
+
+
+def score_n2(matrix, matrix_size):
+    """\
+    Implements the penalty score feature 2.
+
+    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
+
+    ==============================   ====================   ===============
+    Feature                          Evaluation condition   Points
+    ==============================   ====================   ===============
+    Block of modules in same color   Block size = m × n     N2 ×(m-1)×(n-1)
+    ==============================   ====================   ===============
+
+    N2 = 3
+
+    :param matrix: The matrix to evaluate
+    :param matrix_size: The width (or height) of the matrix.
+    :return int: The penalty score (feature 2) of the matrix.
+    """
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[1]
+
+
+def score_n3(matrix, matrix_size):
+    """\
+    Implements the penalty score feature 3.
+
+    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
+
+    =========================================   ========================   ======
+    Feature                                     Evaluation condition       Points
+    =========================================   ========================   ======
+    1 : 1 : 3 : 1 : 1 ratio                     Existence of the pattern   N3
+    (dark:light:dark:light:dark) pattern in
+    row/column, preceded or followed by light
+    area 4 modules wide
+    =========================================   ========================   ======
+
+    N3 = 40
+
+    :param matrix: The matrix to evaluate
+    :param matrix_size: The width (or height) of the matrix.
+    :return int: The penalty score (feature 3) of the matrix.
+    """
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[2]
+
+
 def score_n4(matrix, matrix_size):
     """\
     Implements the penalty score feature 4.
@@ -902,10 +972,8 @@ def score_n4(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 4) of the matrix.
     """
-    dark_modules = sum(map(sum, matrix))
-    percent = float(dark_modules) / (matrix_size **2)
-    k = int(abs(percent * 100 - 50) / 5)
-    return 10 * k  # N4 = 10
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[3]
 
 
 def evaluate_micro_mask(matrix, matrix_size):
@@ -918,8 +986,8 @@ def evaluate_micro_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    sum1 = sum(matrix[i][-1] == 0x1 for i in range(1, matrix_size))
-    sum2 = sum(matrix[-1][i] == 0x1 for i in range(1, matrix_size))
+    sum1 = sum(matrix[i][-1] for i in range(1, matrix_size))
+    sum2 = sum(matrix[-1][i] for i in range(1, matrix_size))
     return sum1 * 16 + sum2 if sum1 <= sum2 else sum2 * 16 + sum1
 
 
@@ -1728,6 +1796,8 @@ class Buffer:
     """\
     Wraps a bytearray and provides some useful methods to add bits.
     """
+    __slots__ = ['_data']
+
     def __init__(self, iterable=()):
         self._data = bytearray(iterable)
 
@@ -1766,6 +1836,8 @@ class _StructuredAppendInfo(tuple):
     correct order (incl. Structured Append mode indicator); cf.
     ISO/IEC 18004:2015(E) -- 8 Structured Append (page 59).
     """
+    __slots__ = ()
+
     def __new__(cls, number, total, parity):
         """\
         :param int number: Symbol number ``[0 .. 15]``
