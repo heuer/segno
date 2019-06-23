@@ -140,10 +140,6 @@ def matrix_iter(matrix, version, scale=1, border=None):
     check_valid_scale(scale)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=1, border=0)
-
-    def get_bit(j):
-        return 0x1 if 0 <= j < width and row[j] else 0x0
-
     border_row = [0x0] * width
     for i in range(-border, height + border):
         if 0 <= i < height:
@@ -151,7 +147,8 @@ def matrix_iter(matrix, version, scale=1, border=None):
         else:
             row = border_row
         for s in range(scale):
-            yield chain.from_iterable(([get_bit(j)] * scale for j in range(-border, width + border)))
+            yield chain.from_iterable(([0x1 if 0 <= j < width and row[j] else 0x0] * scale
+                                       for j in range(-border, width + border)))
 
 
 # Constants for detailed iterator, see utils.matrix_iter_detail
