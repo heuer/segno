@@ -732,9 +732,10 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
     """
     module_range = range(matrix_size)
     for i in module_range:
+        row = matrix[i]
         for j in module_range:
             if is_encoding_region(i, j):
-                matrix[i][j] ^= mask_pattern(i, j)
+                row[j] ^= mask_pattern(i, j)
 
 
 def evaluate_mask(matrix, matrix_size):
@@ -967,8 +968,10 @@ def evaluate_micro_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    sum1 = sum(matrix[i][-1] for i in range(1, matrix_size))
-    sum2 = sum(matrix[-1][i] for i in range(1, matrix_size))
+    module_range = range(1, matrix_size)
+    last_row = matrix[-1]
+    sum1 = sum(matrix[i][-1] for i in module_range)
+    sum2 = sum(last_row[i] for i in module_range)
     return sum1 * 16 + sum2 if sum1 <= sum2 else sum2 * 16 + sum1
 
 
