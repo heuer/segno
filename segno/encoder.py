@@ -478,10 +478,11 @@ def add_timing_pattern(matrix, is_micro):
         should be added.
     """
     bit = 0x1
-    y, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
-    for x in range(8, stop):
-        matrix[x][y] = bit
-        matrix[y][x] = bit
+    j, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
+    col = matrix[j]
+    for i in range(8, stop):
+        matrix[i][j] = bit
+        col[i] = bit
         bit ^= 0x1
 
 
@@ -1040,26 +1041,24 @@ def add_format_info(matrix, version, error, mask_pattern):
     #                       14
     is_micro = version < 1
     format_info = calc_format_info(version, error, mask_pattern)
-    offset = int(is_micro)
+    voffset = int(is_micro)
+    hoffset = voffset
+    col = matrix[8]
     for i in range(8):
-        bit = (format_info >> i) & 0x01
+        vbit = (format_info >> i) & 0x01
+        hbit = (format_info >> (14 - i)) & 0x01
         if i == 6 and not is_micro:  # Timing pattern
-            offset += 1
+            voffset += 1
+            hoffset = 1
         # vertical row, upper left corner
-        matrix[i + offset][8] = bit
+        matrix[i + voffset][8] = vbit
+        # horizontal row, upper left corner
+        col[i + hoffset] = hbit
         if not is_micro:
             # horizontal row, upper right corner
-            matrix[8][-1 - i] = bit
-    offset = int(is_micro)
-    for i in range(8):
-        bit = (format_info >> (14 - i)) & 0x01
-        if i == 6 and not is_micro:  # Timing pattern
-            offset = 1
-        # horizontal row, upper left corner
-        matrix[8][i + offset] = bit
-        if not is_micro:
+            col[-1 - i] = vbit
             # vertical row, bottom left corner
-            matrix[-1 - i][8] = bit
+            matrix[-1 - i][8] = hbit
     if not is_micro:
         # Dark module
         matrix[-8][8] = 0x1
@@ -1281,10 +1280,11 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
         if version > 6:
             # Reserve version pattern areas
             for i in range(6):
+                row = matrix[i]
                 # Upper right
-                matrix[i][-11] = 0x0
-                matrix[i][-10] = 0x0
-                matrix[i][-9] = 0x0
+                row[-11] = 0x0
+                row[-10] = 0x0
+                row[-9] = 0x0
                 # Lower left
                 matrix[-11][i] = 0x0
                 matrix[-10][i] = 0x0
