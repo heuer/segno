@@ -433,8 +433,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns each pixel `scale` times.
         """
+        scale_range = range(scale)
         for b in row:
-            for i in range(scale):
+            for i in scale_range:
                 yield b
 
     def scanline(row, filter_type=b'\0'):
@@ -459,7 +460,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     # Background color index
     bg_color_idx = 0
     trans_color = 1  # white
-    stroke_is_transparent, bg_is_transparent = color is None, background is None
+    stroke_is_transparent = color is None
+    bg_is_transparent = background is None
     stroke_color = png_color(color) if not stroke_is_transparent else None
     bg_color = png_color(background) if not bg_is_transparent else None
     if stroke_color == bg_color:
@@ -530,9 +532,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <https://www.w3.org/TR/PNG/#11tRNS>
             if len(palette[0]) > 3:  # Color with alpha is the first in the palette
-                f.write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
+                write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
-                f.write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
+                write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
         elif is_greyscale and transparency:  # Greyscale with alpha
             # Greyscale with alpha channel
             # <https://www.w3.org/TR/PNG/#11tRNS>
@@ -551,7 +553,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             row_filters.append(scale_row_x_axis)
         row_filters = tuple(row_filters)
         res = bytearray(horizontal_border)
-
         for r in (row(r) for r in matrix):
             # Chain precalculated left border with row and right border
             res += scanline(chain(vertical_border, r, vertical_border))
@@ -1022,6 +1023,7 @@ _VALID_SERIALISERS = {
     'xbm': write_xbm,
     'xpm': write_xpm,
 }
+
 
 def save(matrix, version, out, kind=None, **kw):
     """\

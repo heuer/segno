@@ -5,6 +5,7 @@ Changes
 -------------------
 * Performance improvements (evaluation of mask scores)
 * Faster PNG output
+* Faster ``utils.matrix_iter`` (which improves several writers, i.e. PNG)
 * Deprecation of ``encoder.score_n1``, ``encoder.score_n2``, ``encoder.score_n3``,
   and ``encoder.score_n4``.
   Use ``encoder.mask_scores`` or ``encoder.evaluate_mask``.
