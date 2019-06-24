@@ -58,7 +58,7 @@ Performance
 -----------
 
 Some performance indicators. The script `benchmarks.py`_ ran on a
-Mac Mini 2,26 Core2 Duo using CPython 2.7.14. Each SVG / PNG image uses a
+Mac Mini 2,26 Core2 Duo using CPython 2.7.15. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 
