@@ -24,20 +24,24 @@ def create_charts():
         'qrcodegen': '#009688',
         'Segno': '#FFC107',
     }
-    create_data = []
+    create_1m_data = []
+    create_30h_data = []
     svg_data = []
     png_data = []
     with open('out/results.csv') as f:
         reader = csv.reader(f)
         for row in reader:
             name, val = row
-            if name.endswith(' create'):
-                create_data.append((name.replace(' create', ''), val))
+            if name.endswith(' create 1-M'):
+                create_1m_data.append((name.replace(' create 1-M', ''), val))
+            elif name.endswith(' create 30-H'):
+                create_30h_data.append((name.replace(' create 30-H', ''), val))
             elif name.endswith(' PNG'):
                 png_data.append((name.replace(' PNG', ''), val))
             elif ' SVG' in name:
                 svg_data.append((name.replace(' SVG', ''), val))
-    for data, title, filename in ((create_data, 'Create a 1-M QR Code', 'out/chart_create.svg'),
+    for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', 'out/chart_create_1m.svg'),
+                                  (create_30h_data, 'Create a 30-H QR Code', 'out/chart_create_30h.svg'),
                                   (svg_data, 'Create a 1-M QR Code and write SVG', 'out/chart_svg.svg'),
                                   (png_data, 'Create a 1-M QR Code and write PNG', 'out/chart_png.svg')):
         create_chart(title,

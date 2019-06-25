@@ -13,6 +13,7 @@ QR Code and Micro QR Code encoder.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
+import warnings
 import re
 import math
 import codecs
@@ -291,7 +292,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    mask = find_and_apply_best_mask(matrix, version, is_micro, mask)
+    mask, matrix = find_and_apply_best_mask(matrix, version, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -477,10 +478,11 @@ def add_timing_pattern(matrix, is_micro):
         should be added.
     """
     bit = 0x1
-    y, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
-    for x in range(8, stop):
-        matrix[x][y] = bit
-        matrix[y][x] = bit
+    j, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
+    col = matrix[j]
+    for i in range(8, stop):
+        matrix[i][j] = bit
+        col[i] = bit
         bit ^= 0x1
 
 
@@ -534,6 +536,7 @@ def add_codewords(matrix, codewords, version):
     # (starting with the most significant bit) in the two-module wide columns
     # alternately upwards and downwards from the right to left of the symbol.
     # [...]
+    codeword_length = len(codewords)
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
@@ -544,8 +547,9 @@ def add_codewords(matrix, codewords, version):
                 if not is_micro:
                     upwards ^= j < 6
                 i = (matrix_size - 1 - vertical) if upwards else vertical
-                if matrix[i][j] == 0x2 and idx < len(codewords):
-                    matrix[i][j] = codewords[idx]
+                row = matrix[i]
+                if row[j] == 0x2 and idx < codeword_length:
+                    row[j] = codewords[idx]
                     idx += 1
     if idx != len(codewords):  # pragma: no cover
         raise QRCodeError('Internal error: Adding codewords to matrix failed. '
@@ -694,25 +698,25 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         return function_matrix[i][j] == 0x2
 
     mask_patterns = get_data_mask_functions(is_micro)
-
     # If the user supplied a mask pattern, the evaluation step is skipped
     if proposed_mask is not None:
         apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
                    is_encoding_region)
-        return proposed_mask
+        return proposed_mask, matrix
 
+    best_matrix = None
     for mask_number, mask_pattern in enumerate(mask_patterns):
-        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
+        # A lot(!!!) faster than m = copy.deepcopy(matrix)
+        m = [bytearray(ba) for ba in matrix]
+        apply_mask(m, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
-        score = eval_mask(matrix, matrix_size)
+        score = eval_mask(m, matrix_size)
         if is_better(score, best_score):
             best_score = score
             best_pattern = mask_number
-        # Undo mask
-        apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region)
-    apply_mask(matrix, mask_patterns[best_pattern], matrix_size, is_encoding_region)
-    return best_pattern
+            best_matrix = tuple(m)
+    return best_pattern, best_matrix
 
 
 def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
@@ -727,10 +731,12 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
     :param is_encoding_region: A function which returns ``True`` iff the
             row index / col index belongs to the data region.
     """
-    for i in range(matrix_size):
-        for j in range(matrix_size):
+    module_range = range(matrix_size)
+    for i in module_range:
+        row = matrix[i]
+        for j in module_range:
             if is_encoding_region(i, j):
-                matrix[i][j] ^= mask_pattern(i, j)
+                row[j] ^= mask_pattern(i, j)
 
 
 def evaluate_mask(matrix, matrix_size):
@@ -743,8 +749,123 @@ def evaluate_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    return score_n1(matrix, matrix_size) + score_n2(matrix, matrix_size) \
-           + score_n3(matrix, matrix_size) + score_n4(matrix, matrix_size)
+    return sum(mask_scores(matrix, matrix_size))
+
+
+_N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
+def mask_scores(matrix, matrix_size):
+    """\
+    Returns the penalty score features of the matrix.
+
+    The returned value is a tuple of all penalty scores (N1, N2, N3, N4).
+    Use :py:func:`evaluate_mask` for a single value (sum of all scores).
+
+
+    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
+
+    ============================================   ====================================   ===============
+    Feature                                        Evaluation condition                   Points
+    ============================================   ====================================   ===============
+    Adjacent modules in row/column in same color   No. of modules = (5 + i)               N1 + i
+    Block of modules in same color                 Block size = m × n                     N2 ×(m-1)×(n-1)
+    1 : 1 : 3 : 1 : 1 ratio                        Existence of the pattern               N3
+    (dark:light:dark:light:dark) pattern in
+    row/column, preceded or followed by light
+    area 4 modules wide
+    Proportion of dark modules in entire symbol    50 × (5 × k)% to 50 × (5 × (k + 1))%   N4 × k
+    ============================================   ====================================   ===============
+
+    N1 = 3
+    N2 = 3
+    N3 = 40
+    N4 = 10
+
+    :param matrix: The matrix to evaluate
+    :param matrix_size: The width (or height) of the matrix.
+    :return int: A tuple of penalty scores.
+    """
+
+    def is_match(seq, start, end):
+        start = max(start, 0)
+        end = min(end, matrix_size)
+        for i in range(start, end):
+            if seq[i]:
+                return False
+        return True
+
+    def find_occurrences(seq):
+        count = 0
+        idx = seq.find(_N3_PATTERN)
+        while idx != -1:
+            offset = idx + 7
+            if is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
+                count += 40  # N3 = 40
+            else:
+                # Found no / not enough light modules, start at next possible
+                # match:
+                #                   v
+                # dark light dark dark dark light dark
+                #                   ^
+                offset = idx + 4
+            idx = seq.find(_N3_PATTERN, offset)
+        return count
+
+    s_n1 = 0
+    s_n2 = 0
+    s_n3 = 0
+    module_range = range(matrix_size)
+    dark_modules = 0
+    last_row = None
+    col = [0x2] * matrix_size
+    columns = [bytearray(col) for i in module_range]
+    for i in module_range:
+        row = matrix[i]
+        col = columns[i]
+        row_prev_bit = -1
+        col_prev_bit = -1
+        # N1
+        row_cnt = 0
+        col_cnt = 0
+        # N3
+        s_n3 += find_occurrences(row)
+        for j in module_range:
+            row_current_bit = row[j]
+            col_current_bit = matrix[j][i]
+            col[j] = col_current_bit
+            dark_modules += row_current_bit
+            # N1 -- row-wise
+            if row_current_bit == row_prev_bit:
+                row_cnt += 1
+            else:
+                if row_cnt >= 5:
+                    s_n1 += row_cnt - 2
+                row_cnt = 1
+            # N1 -- col-wise
+            if col_current_bit == col_prev_bit:
+                col_cnt += 1
+            else:
+                if col_cnt >= 5:
+                    s_n1 += col_cnt - 2
+                col_cnt = 1
+            # N2
+            if last_row and j > 0 and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
+                s_n2 += 3
+            row_prev_bit = row_current_bit
+            col_prev_bit = col_current_bit
+        last_row = row
+        # N1
+        if row_cnt >= 5:
+            s_n1 += row_cnt - 2
+        if col_cnt >= 5:
+            s_n1 += col_cnt - 2
+
+    # N3
+    s_n3 += sum([find_occurrences(columns[i]) for i in module_range])
+
+    # N4
+    percent = float(dark_modules) / (matrix_size ** 2)
+    s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
+    return s_n1, s_n2, s_n3, s_n4
 
 
 def score_n1(matrix, matrix_size):
@@ -765,34 +886,8 @@ def score_n1(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 1) of the matrix.
     """
-    score = 0
-    for i in range(matrix_size):
-        prev_bit_row, prev_bit_col = -1, -1
-        row_counter, col_counter = 0, 0
-        for j in range(matrix_size):
-            # Row-wise
-            bit = matrix[i][j]
-            if bit == prev_bit_row:
-                row_counter += 1
-            else:
-                if row_counter >= 5:
-                    score += row_counter - 2  # N1 == 3
-                row_counter = 1
-                prev_bit_row = bit
-            # Col-wise
-            bit = matrix[j][i]
-            if bit == prev_bit_col:
-                col_counter += 1
-            else:
-                if col_counter >= 5:
-                    score += col_counter - 2  # N1 == 3
-                col_counter = 1
-                prev_bit_col = bit
-        if row_counter >= 5:
-            score += row_counter - 2  # N1 == 3
-        if col_counter >= 5:
-            score += col_counter - 2  # N1 == 3
-    return score
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[0]
 
 
 def score_n2(matrix, matrix_size):
@@ -813,17 +908,10 @@ def score_n2(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 2) of the matrix.
     """
-    score = 0
-    for i in range(matrix_size - 1):
-        for j in range(matrix_size - 1):
-            bit = matrix[i][j]
-            if bit == matrix[i][j + 1] and bit == matrix[i + 1][j] \
-                and bit == matrix[i + 1][j + 1]:
-                score += 1
-    return score * 3  # N2 == 3
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[1]
 
 
-_N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 def score_n3(matrix, matrix_size):
     """\
     Implements the penalty score feature 3.
@@ -845,36 +933,8 @@ def score_n3(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 3) of the matrix.
     """
-    def is_match(seq, start, end):
-        start = max(start, 0)
-        end = min(end, matrix_size)
-        for i in range(start, end):
-            if seq[i] == 0x1:
-                return False
-        return True
-
-    def find_occurrences(seq):
-        count = 0
-        idx = seq.find(_N3_PATTERN)
-        while idx != -1:
-            offset = idx + 7
-            if is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
-                count += 1
-            else:
-                # Found no / not enough light patterns, start at next possible
-                # match:
-                #                   v
-                # dark light dark dark dark light dark
-                #                   ^
-                offset = idx + 4
-            idx = seq.find(_N3_PATTERN, offset)
-        return count
-
-    score = 0
-    for i in range(matrix_size):
-        score += find_occurrences(matrix[i])
-        score += find_occurrences(bytearray([matrix[y][i] for y in range(matrix_size)]))
-    return score * 40  # N3 = 40
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[2]
 
 
 def score_n4(matrix, matrix_size):
@@ -895,10 +955,8 @@ def score_n4(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score (feature 4) of the matrix.
     """
-    dark_modules = sum(map(sum, matrix))
-    total_modules = matrix_size ** 2
-    k = int(abs(dark_modules * 2 - total_modules) * 10 // total_modules)
-    return 10 * k  # N4 = 10
+    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
+    return mask_scores(matrix, matrix_size)[3]
 
 
 def evaluate_micro_mask(matrix, matrix_size):
@@ -911,8 +969,10 @@ def evaluate_micro_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    sum1 = sum(matrix[i][-1] == 0x1 for i in range(1, matrix_size))
-    sum2 = sum(matrix[-1][i] == 0x1 for i in range(1, matrix_size))
+    module_range = range(1, matrix_size)
+    last_row = matrix[-1]
+    sum1 = sum(matrix[i][-1] for i in module_range)
+    sum2 = sum(last_row[i] for i in module_range)
     return sum1 * 16 + sum2 if sum1 <= sum2 else sum2 * 16 + sum1
 
 
@@ -981,26 +1041,24 @@ def add_format_info(matrix, version, error, mask_pattern):
     #                       14
     is_micro = version < 1
     format_info = calc_format_info(version, error, mask_pattern)
-    offset = int(is_micro)
+    voffset = int(is_micro)
+    hoffset = voffset
+    col = matrix[8]
     for i in range(8):
-        bit = (format_info >> i) & 0x01
+        vbit = (format_info >> i) & 0x01
+        hbit = (format_info >> (14 - i)) & 0x01
         if i == 6 and not is_micro:  # Timing pattern
-            offset += 1
+            voffset += 1
+            hoffset = 1
         # vertical row, upper left corner
-        matrix[i + offset][8] = bit
+        matrix[i + voffset][8] = vbit
+        # horizontal row, upper left corner
+        col[i + hoffset] = hbit
         if not is_micro:
             # horizontal row, upper right corner
-            matrix[8][-1 - i] = bit
-    offset = int(is_micro)
-    for i in range(8):
-        bit = (format_info >> (14 - i)) & 0x01
-        if i == 6 and not is_micro:  # Timing pattern
-            offset = 1
-        # horizontal row, upper left corner
-        matrix[8][i + offset] = bit
-        if not is_micro:
+            col[-1 - i] = vbit
             # vertical row, bottom left corner
-            matrix[-1 - i][8] = bit
+            matrix[-1 - i][8] = hbit
     if not is_micro:
         # Dark module
         matrix[-8][8] = 0x1
@@ -1039,9 +1097,10 @@ def add_version_info(matrix, version):
         matrix[-10][i] = bit2
         matrix[-9][i] = bit3
         # Upper right
-        matrix[i][-11] = bit1
-        matrix[i][-10] = bit2
-        matrix[i][-9] = bit3
+        row = matrix[i]
+        row[-11] = bit1
+        row[-10] = bit2
+        row[-9] = bit3
 
 
 def prepare_data(content, mode, encoding, version=None):
@@ -1221,10 +1280,11 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
         if version > 6:
             # Reserve version pattern areas
             for i in range(6):
+                row = matrix[i]
                 # Upper right
-                matrix[i][-11] = 0x0
-                matrix[i][-10] = 0x0
-                matrix[i][-9] = 0x0
+                row[-11] = 0x0
+                row[-10] = 0x0
+                row[-9] = 0x0
                 # Lower left
                 matrix[-11][i] = 0x0
                 matrix[-10][i] = 0x0
@@ -1720,6 +1780,8 @@ class Buffer:
     """\
     Wraps a bytearray and provides some useful methods to add bits.
     """
+    __slots__ = ['_data']
+
     def __init__(self, iterable=()):
         self._data = bytearray(iterable)
 
@@ -1758,6 +1820,8 @@ class _StructuredAppendInfo(tuple):
     correct order (incl. Structured Append mode indicator); cf.
     ISO/IEC 18004:2015(E) -- 8 Structured Append (page 59).
     """
+    __slots__ = ()
+
     def __new__(cls, number, total, parity):
         """\
         :param int number: Symbol number ``[0 .. 15]``

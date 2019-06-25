@@ -58,7 +58,7 @@ Performance
 -----------
 
 Some performance indicators. The script `benchmarks.py`_ ran on a
-Mac Mini 2,26 Core2 Duo using CPython 2.7.14. Each SVG / PNG image uses a
+Mac Mini 2,26 Core2 Duo using CPython 2.7.15. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 
@@ -67,8 +67,14 @@ Create a QR Code
 
 Create a 1-M QR Code "QR Code Symbol".
 
-.. image:: _static/chart_create.svg
+.. image:: _static/chart_create_1m.svg
     :alt: Chart showing the results of creating a 1-M QR Code.
+
+
+Create a 30-H QR Code "QR Code Symbol".
+
+.. image:: _static/chart_create_30h.svg
+    :alt: Chart showing the results of creating a 30-H QR Code.
 
 
 Create a QR Code and serialize it as SVG

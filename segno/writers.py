@@ -433,8 +433,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns each pixel `scale` times.
         """
+        scale_range = range(scale)
         for b in row:
-            for i in range(scale):
+            for i in scale_range:
                 yield b
 
     def scanline(row, filter_type=b'\0'):
@@ -449,13 +450,18 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """
         return (b ^ 0x1 for b in row)
 
+    def row(r):
+        return reduce(lambda row, fn: fn(row), row_filters, r)
+
+    # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
     check_valid_scale(scale)
     check_valid_border(border)
     # Background color index
     bg_color_idx = 0
     trans_color = 1  # white
-    stroke_is_transparent, bg_is_transparent = color is None, background is None
+    stroke_is_transparent = color is None
+    bg_is_transparent = background is None
     stroke_color = png_color(color) if not stroke_is_transparent else None
     bg_color = png_color(background) if not bg_is_transparent else None
     if stroke_color == bg_color:
@@ -505,30 +511,30 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         if dpi < 0:
             raise ValueError('DPI value must not be negative')
         dpi = int(dpi // 0.0254)
+    colortype = 3
+    if is_greyscale:
+        colortype = 0
+        bg_color_idx = int(invert_row)
+    horizontal_border, vertical_border = b'', b''
+    if border > 0:
+        # Calculate horizontal and vertical border
+        horizontal_border = scanline([bg_color_idx] * width) * border * scale
+        vertical_border = [bg_color_idx] * border * scale
     with writable(out, 'wb') as f:
         write = f.write
-        # PNG writing by "hand" since this lib should not rely on PIL/Pillow
-        # and PyPNG does not support PNG filters which leads to a suboptimal
-        # performance (and file size) if the PNG image should be scaled.
-        # I.e. a (unrealistic) scaling factor of 600 would require a 17400 x 17400
-        # matrix as input for PyPNG for a 21 x 21 QR Code (+ border = 4) while
-        # this algorithm works upon the primary 21 x 21 matrix.
         write(b'\211PNG\r\n\032\n')  # Magic number
-        colortype = 3 if not is_greyscale else 0
-        if is_greyscale:
-            bg_color_idx = int(invert_row)
         # Header:
         # width, height, bitdepth, colortype, compression meth., filter, interlance
         write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
         if dpi:
             write(chunk(b'pHYs', pack(b'>LLB', dpi, dpi, 1)))
-        if colortype == 3:  # Palette
+        if colortype:  # Palette
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <https://www.w3.org/TR/PNG/#11tRNS>
             if len(palette[0]) > 3:  # Color with alpha is the first in the palette
-                f.write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
+                write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
-                f.write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
+                write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
         elif is_greyscale and transparency:  # Greyscale with alpha
             # Greyscale with alpha channel
             # <https://www.w3.org/TR/PNG/#11tRNS>
@@ -545,16 +551,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
             same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
             row_filters.append(scale_row_x_axis)
-        horizontal_border, vertical_border = b'', b''
-        if border > 0:
-            # Calculate horizontal and vertical border
-            horizontal_border = scanline([bg_color_idx] * width) * border * scale
-            vertical_border = [bg_color_idx] * border * scale
+        row_filters = tuple(row_filters)
         res = bytearray(horizontal_border)
-        for row in matrix:
-            row = reduce(lambda r, fn: fn(r), row_filters, row)
+        for r in (row(r) for r in matrix):
             # Chain precalculated left border with row and right border
-            res += scanline(chain(vertical_border, row, vertical_border))
+            res += scanline(chain(vertical_border, r, vertical_border))
             res += same_as_above  # This is b'' if no scaling factor was provided
         res += horizontal_border
         if _PY2:
@@ -1022,6 +1023,7 @@ _VALID_SERIALISERS = {
     'xbm': write_xbm,
     'xpm': write_xpm,
 }
+
 
 def save(matrix, version, out, kind=None, **kw):
     """\
