@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.0 -- 2019-mm-dd
+0.3.0 -- 2019-06-25
 -------------------
 * Performance improvements (evaluation of mask scores)
 * Faster PNG output
