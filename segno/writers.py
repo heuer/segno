@@ -450,8 +450,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """
         return (b ^ 0x1 for b in row)
 
-    def row(r):
-        return reduce(lambda row, fn: fn(row), row_filters, r)
+    def apply_row_filter(row, fn):
+        return fn(row)
 
     # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
@@ -531,7 +531,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         if colortype:  # Palette
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <https://www.w3.org/TR/PNG/#11tRNS>
-            if len(palette[0]) > 3:  # Color with alpha is the first in the palette
+            if len(palette[0]) > 3:  # Color with alpha channel is the first color in the palette
                 write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
                 write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
@@ -553,9 +553,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             row_filters.append(scale_row_x_axis)
         row_filters = tuple(row_filters)
         res = bytearray(horizontal_border)
-        for r in (row(r) for r in matrix):
+        for row in (reduce(apply_row_filter, row_filters, r) for r in matrix):
             # Chain precalculated left border with row and right border
-            res += scanline(chain(vertical_border, r, vertical_border))
+            res += scanline(chain(vertical_border, row, vertical_border))
             res += same_as_above  # This is b'' if no scaling factor was provided
         res += horizontal_border
         if _PY2:
