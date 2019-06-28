@@ -239,7 +239,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     Internal SVG serializer which is useful to debugging purposes.
 
     This function is not exposed to the QRCode class by intention and the
-    resulting SVG document is very inefficient (lots of <rect/>s).
+    resulting SVG document is very inefficient (a lot of ``<rect/>`` elements).
     Dark modules are black and light modules are white by default. Provide
     a custom `color_mapping` to override these defaults.
     Unknown modules are red by default.
