@@ -145,8 +145,15 @@ def parse(args):
 
 def build_config(config, filename=None):
     """\
-    Builds a configuration and returns it. The config contains only keywords,
-    which are supported by the serializer. Unsupported values are ignored.
+    Builds a configuration and returns it.
+
+    The config contains only keywords which are supported by the serializer.
+    Unsupported values are removed.
+
+    :param dict config: The configuration / dict returned by the :py:func:`parse` function.
+    :param filename: Optional filename. If not ``None`` (default), the `filename`
+                     must provide a supported extension to identify the serializer.
+    :return: A (maybe) modified configuration.
     """
     # Done here since it seems not to be possible to detect if an argument
     # was supplied by the user or if it's the default argument.
@@ -179,6 +186,15 @@ def build_config(config, filename=None):
 
 
 def make_code(config):
+    """\
+    Creates the (Micro) QR Code (Sequence).
+
+    Configuration parameters used for creating the Micro QR Code, QR Code
+    or QR Code Sequence are removed from the configuration.
+
+    :param config: Configuration, see :py:func:`build_config`
+    :return: :py:class:`segno.QRCode` or :py:class:`segno.QRCodeSequence`.
+    """
     make = segno.make
     kw = dict(mode=config.pop('mode'), error=config.pop('error'),
               version=config.pop('version'), mask=config.pop('pattern'),
@@ -207,6 +223,9 @@ def main(args=sys.argv[1:]):
 
 
 class _AttrDict(dict):
+    """\
+    Internal helper class.
+    """
     def __init__(self, *args, **kwargs):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
