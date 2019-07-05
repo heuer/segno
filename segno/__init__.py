@@ -402,7 +402,7 @@ class QRCode:
         Aside from the missing ``out`` parameter and the different ``xmldecl``
         and ``nl`` default values and the additional parameter ``encode_minimal``
         and ``omit_charset`` this method uses the same parameters as the
-        usual SVG serializer.
+        usual SVG serializer, see :py:func:`save` and the available `SVG parameters <#svg>`_
 
         :param bool xmldecl: Indicates if the XML declaration should be
                         serialized (default: ``False``)
@@ -421,7 +421,8 @@ class QRCode:
         """\
         Converts the QR Code into a PNG data URI.
 
-        Uses the same keyword parameters as the usual PNG serializer.
+        Uses the same keyword parameters as the usual PNG serializer,
+        see :py:func:`save` and the available `PNG parameters <#png>`_
 
         :rtype: str
         """
@@ -456,8 +457,7 @@ class QRCode:
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
-        **Common keywords**
-
+        **Common keywords common keywords**
 
         ==========    ==============================================================
         Name          Description
@@ -486,6 +486,8 @@ class QRCode:
                       use "white" as default background color.
         ==========    ==============================================================
 
+
+        .. _svg:
 
         **Scalable Vector Graphics (SVG)**
 
@@ -560,6 +562,8 @@ class QRCode:
                          and produces the most. 0 is no compression.
         =============    ==============================================================
 
+
+        .. _png:
 
         **Portable Network Graphics (PNG)**
 
