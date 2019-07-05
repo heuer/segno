@@ -104,8 +104,18 @@ It's possible to specify the desired version for the provided ``content``.
 Error Correction Level
 ----------------------
 
-By default, Segno uses the error correction level "L" to encode the (Micro) QR
-Code. Use the parameter ``error`` to change the error correction level.
+By default, Segno uses at minimum the error correction level "L" to encode
+the (Micro) QR Code.
+
+Segno tries by default to enhance the provided error correction level if
+``boost_error`` was not set to ``False``; it takes  the ``error`` level as
+minimum error level without changing the (Micro) QR Code version.
+
+If this behaviour is not desired, the ``boost_error`` must be set to ``False``
+(default: ``True``).
+
+Use the parameter ``error`` to change the (minimum) error correction level.
+
 The ``error`` parameter is case-insensitive; to specify the error correction
 level "L" and "l" are valid values. Available error correction levels are
 ``L`` (lowest error correction level), ``M``, ``Q`` and ``H``. The error
@@ -116,13 +126,16 @@ Micro QR Code.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Parisienne Walkways', error='l')  # Explicit error correction level
-    >>> qr.version
-    2
+    >>> qr = segno.make('Parisienne Walkways', error='l')  # Explicit (minimum) error correction level
+    >>> qr.designator # The error correction level was changed to "Q" since there was enough available space
+    '2-Q'
+    >>> qr = segno.make('Parisienne Walkways', error='l', boost_error=False)  # Explicit error level
+    >>> qr.designator
+    '2-L'
     >>> # Enhancing the error correction level may enforce another QR Code version
     >>> qr = segno.make('Parisienne Walkways', error='H')
-    >>> qr.version
-    3
+    >>> qr.designator
+    '3-H'
 
 
 Data Masking
