@@ -457,7 +457,7 @@ class QRCode:
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
-        **Common keywords common keywords**
+        **Common keywords**
 
         ==========    ==============================================================
         Name          Description
