@@ -42,7 +42,7 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter
 
 # Standard creator name
-CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
+CREATOR = 'Segno <https://pypi.org/project/segno/>'
 
 
 @contextmanager
