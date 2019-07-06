@@ -494,7 +494,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.BytesIO
+        out              Filename or :py:class:`io.BytesIO`
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
         color            Default: "#000" (black)
@@ -570,7 +570,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.BytesIO
+        out              Filename or :py:class:`io.BytesIO`
         kind             "png"
         scale            integer
         color            Default: "#000" (black)
@@ -591,12 +591,14 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _eps:
+
         **Encapsulated PostScript (EPS)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.StringIO
+        out              Filename or :py:class:`io.StringIO`
         kind             "eps"
         scale            integer or float
         color            Default: "#000" (black)
@@ -604,19 +606,25 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _pdf:
+
         **Portable Document Format (PDF)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.BytesIO
+        out              Filename or :py:class:`io.BytesIO`
         kind             "pdf"
         scale            integer or float
+        color            Default: "#000" (black)
+        background       Default value: ``None`` (no background)
         compresslevel    Default: 9. Integer indicating the compression level.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
         =============    ==============================================================
 
+
+        .. _txt:
 
         **Text (TXT)**
 
@@ -625,7 +633,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.StringIO
+        out              Filename or :py:class:`io.StringIO`
         kind             "txt"
         color            Default: "1"
         background       Default: "0"
@@ -643,12 +651,14 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _pbm:
+
         **Portable Bitmap (PBM)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.BytesIO
+        out              Filename or :py:class:`io.BytesIO`
         kind             "pbm"
         scale            integer
         plain            Default: False. Boolean to switch between the P4 and P1 format.
@@ -657,12 +667,14 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _pam:
+
         **Portable Arbitrary Map (PAM)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.BytesIO
+        out              Filename or :py:class:`io.BytesIO`
         kind             "pam"
         scale            integer
         color            Default: "#000" (black).
@@ -670,6 +682,8 @@ class QRCode:
                          background.
         =============    ==============================================================
 
+
+        .. _latex:
 
         **LaTeX / PGF/TikZ**
 
@@ -680,7 +694,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.StringIO
+        out              Filename or :py:class:`io.StringIO`
         kind             "tex"
         scale            integer or float
         color            LaTeX color name (default: "black"). The color is written
@@ -692,24 +706,28 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _xbm:
+
         **X BitMap (XBM)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.StringIO
+        out              Filename or :py:class:`io.StringIO`
         kind             "xbm"
         scale            integer
         name             Name of the variable (default: "img")
         =============    ==============================================================
 
 
+        .. _xpm:
+
         **X PixMap (XPM)**
 
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
-        out              Filename or io.StringIO
+        out              Filename or :py:class:`io.StringIO`
         kind             "xpm"
         scale            integer
         color            Default: "#000" (black).
