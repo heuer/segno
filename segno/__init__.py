@@ -230,9 +230,15 @@ class QRCode:
             ``mask`` and ``segments`` attribute.
         """
         self.matrix = code.matrix
-        """Returns the matrix (tuple of bytearrays)."""
+        """Returns the matrix.
+
+        :rtype: tuple of :py:class:`bytearray` instances.
+        """
         self.mask = code.mask
-        """Returns the data mask pattern reference (an integer)."""
+        """Returns the data mask pattern reference
+
+        :rtype: int
+        """
         self._version = code.version
         self._error = code.error
         self._mode = code.segments[0].mode if len(code.segments) == 1 else None
@@ -286,6 +292,9 @@ class QRCode:
     def default_border_size(self):
         """\
         Indicates the default border size aka quiet zone.
+
+        QR Codes have a quiet zone of four light modules, while Micro QR Codes
+        have a quiet zone of two light modules.
 
         :rtype: int
         """
@@ -357,17 +366,23 @@ class QRCode:
 
         This method is mainly intended for debugging purposes.
 
-        This method saves the output of the :py:meth:`png` method (by default
-        with a scaling factor of 10) to a temporary file and opens it with the
-        standard PNG viewer application or within the standard webbrowser.
+        This method saves QR code as an image (by default with a scaling factor
+        of 10) to a temporary file and opens it with the standard PNG viewer
+        application or within the standard webbrowser.
         The temporary file is deleted afterwards (unless `delete_after` is set
         to ``None``).
 
         If this method does not show any result, try to increase the
         `delete_after` value or set it to ``None``
 
-        :param delete_after: Time in seconds to wait till the temporary file is
+        :param int delete_after: Time in seconds to wait till the temporary file is
                 deleted.
+        :param int scale: Integer indicating the size of a single module.
+        :param int border: Integer indicating the size of the quiet zone.
+                If set to ``None`` (default), the recommended border size
+                will be used.
+        :param color: The color of the dark modules (default: black).
+        :param background: The color of the background (default: white).
         """
         import os
         import time
@@ -445,10 +460,10 @@ class QRCode:
         Serializes the matrix as ANSI escape code.
 
         :param out: Filename or a file-like object supporting to write text.
-                If ``None`` (default), the matrix is written to ``sys.stdout``.
+                If ``None`` (default), the matrix is written to :py:class:`sys.stdout`.
         :param int border: Integer indicating the size of the quiet zone.
                 If set to ``None`` (default), the recommended border size
-                will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+                will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
         """
         if out is None and sys.platform == 'win32':  # pragma: no cover
             # Windows < 10 does not support ANSI escape sequences, try to
