@@ -26,7 +26,7 @@ a custom border, you may specify the border
     >>> import segno
     >>> qr = segno.make('Vampire Blues')
     >>> qr.save('vampire-blues.svg', border=0)  # No border
-    >>> qr.save('vampire-blues.png', border=10)  # Bigger border
+    >>> qr.save('vampire-blues.png', border=10)  # Larger border
 
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
@@ -71,7 +71,8 @@ for details.
 
 
 If the QR Code should be serialized to a buffer, use the ``kind`` parameter
-to specify the output format.
+to specify the output format. Please note that some serializers write bytes
+while others write strings, see :py:meth:`segno.QRCode.save` for details.
 
 .. code-block:: python
 
@@ -87,3 +88,57 @@ to specify the output format.
 
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
 accepted by the specific serializer.
+
+
+Available serializers
+---------------------
+
+SVG
+    Scalable Vector Graphics (SVG). The serializer provides all default features
+    (scale, border, color and background color) and many more to customize the
+    output, see :ref:`SVG <svg>` for details. SVGZ (compressed SVG) is supported
+    as well.
+
+PNG
+    Portable Network Graphics (PNG). The serializer provides all default features
+    (scale, border, color and background color) and a few more to customize the
+    output, see :ref:`PNG <png>` for details.
+
+EPS
+    Encapsulated PostScript (EPS). The serializer provides all default features
+    (scale, border, color and background color), see :ref:`EPS <eps>` for details.
+
+PDF
+    Portable Document Format (PDF). The serializer provides all default features
+    (scale, border, color and background color), see :ref:`PDF <pdf>` for details.
+
+TXT
+    Text output. The serializer does not support any scale or color, but the
+    character for the dark and white modules may be specified via `color`
+    and `background`, see :ref:`TXT <txt>` for details.
+
+PBM
+    Portable Bitmap (PBM). The serializer does not support any coloring,
+    but the common featurs like scale and border are supported, see :ref:`PBM <pbm>`
+    for details.
+
+PAM
+    Portable Arbitrary Map (PAM). The serializer provides all default features
+    (scale, border, color and background color), see :ref:`PAM <pam>` for details.
+
+
+LaTeX
+    LaTeX / PGF/TikZ. The serializer provides no background color, but all
+    other default features (scale, border, color) are supported, see
+    :ref:`LaTeX <latex>` for details.
+
+
+XBM
+    X BitMap (XBM). The serializer does not support any coloring, but scale
+    and border are supported, see :ref:`XBM <xbm>` for details.
+
+
+XPM
+    X PixMap (XPM). The serializer provides all default features
+    (scale, border, color and background color) and a few more, see
+    :ref:`XPM <xpm>` for details.
