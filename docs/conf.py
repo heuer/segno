@@ -37,7 +37,7 @@ extensions = [
 
 autodoc_member_order = 'groupwise'
 
-intersphinx_mapping = {'python': ('https://docs.python.org/2', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

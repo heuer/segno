@@ -65,11 +65,13 @@ def make_wifi_data(ssid, password, security, hidden=False):
     Creates WIFI configuration string.
 
     :param str ssid: The SSID of the network.
-    :param str or None password: The password.
-    :param str or None security: Authentication type; the value should
-            be "WEP" or "WPA". Set to ``None`` to omit the value.
+    :param password: The password.
+    :type password: str or None
+    :param security: Authentication type; the value should be "WEP" or "WPA".
+            Set to ``None`` to omit the value.
             "nopass" is equivalent to setting the value to ``None`` but in
             the former case, the value is not omitted.
+    :type security: str or None
     :param bool hidden: Indicates if the network is hidden (default: ``False``)
     :rtype: str
     """
@@ -104,11 +106,13 @@ def make_wifi(ssid, password, security, hidden=False):
     Creates a WIFI configuration QR Code.
 
     :param str ssid: The SSID of the network.
-    :param str or None password: The password.
-    :param str or None security: Authentication type; the value should
-            be "WEP" or "WPA". Set to ``None`` to omit the value.
+    :param password: The password.
+    :type password: str or None
+    :param security: Authentication type; the value should be "WEP" or "WPA".
+            Set to ``None`` to omit the value.
             "nopass" is equivalent to setting the value to ``None`` but in
             the former case, the value is not omitted.
+    :type security: str or None
     :param bool hidden: Indicates if the network is hidden (default: ``False``)
     :rtype: segno.QRCode
     """
@@ -124,27 +128,36 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
 
     :param str name: Name. If it contains a comma, the first part
             is treated as lastname and the second part is treated as forename.
-    :param str or None reading: Designates a text string to be set as the
-            kana name in the phonebook
+    :param reading: Designates a text string to be set as the kana name in the phonebook
+    :type reading: str or None
     :param email: E-mail address. Multiple values are allowed.
     :type email: str, iterable of strings, or None
     :param phone: Phone number. Multiple values are allowed.
     :type phone: str, iterable of strings, or None
     :param videophone: Phone number for video calls. Multiple values are allowed.
     :type videophone: str, iterable of strings, or None
-    :param str or None memo: A notice for the contact.
-    :param str or None nickname: Nickname.
+    :param memo: A notice for the contact.
+    :type memo: str or None
+    :param nickname: Nickname.
+    :type nickname: str or None
     :param birthday: Birthday. If a string is provided, it should encode the date as YYYYMMDD value.
     :type birthday: str, datetime.date or None
     :param url: Homepage. Multiple values are allowed.
     :type url: str, iterable of strings, or None
-    :param str or None pobox: P.O. box (address information).
-    :param str or None roomno: Room number (address information).
-    :param str or None houseno: House number (address information).
-    :param str or None city: City (address information).
-    :param str or None prefecture: Prefecture (address information).
-    :param str or None zipcode: Zip code (address information).
-    :param str or None country: Country (address information).
+    :param pobox: P.O. box (address information).
+    :type pobox: str or None
+    :param roomno: Room number (address information).
+    :type roomno: str or None
+    :param houseno: House number (address information).
+    :type houseno: str or None
+    :param city: City (address information).
+    :type city: str or None
+    :param prefecture: Prefecture (address information).
+    :type prefecture: str or None
+    :param zipcode: Zip code (address information).
+    :type zipcode: str or None
+    :param country: Country (address information).
+    :type country: str or None
     :rtype: str
     """
     def make_multifield(name, val):
@@ -189,27 +202,36 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
 
     :param str name: Name. If it contains a comma, the first part
             is treated as lastname and the second part is treated as forename.
-    :param str or None reading: Designates a text string to be set as the
-            kana name in the phonebook
+    :param reading: Designates a text string to be set as the kana name in the phonebook
+    :type reading: str or None
     :param email: E-mail address. Multiple values are allowed.
     :type email: str, iterable of strings, or None
     :param phone: Phone number. Multiple values are allowed.
     :type phone: str, iterable of strings, or None
     :param videophone: Phone number for video calls. Multiple values are allowed.
     :type videophone: str, iterable of strings, or None
-    :param str or None memo: A notice for the contact.
-    :param str or None nickname: Nickname.
+    :param memo: A notice for the contact.
+    :type memo: str or None
+    :param nickname: Nickname.
+    :type nickname: str or None
     :param birthday: Birthday. If a string is provided, it should encode the date as YYYYMMDD value.
     :type birthday: str, datetime.date or None
     :param url: Homepage. Multiple values are allowed.
     :type url: str, iterable of strings, or None
-    :param str or None pobox: P.O. box (address information).
-    :param str or None roomno: Room number (address information).
-    :param str or None houseno: House number (address information).
-    :param str or None city: City (address information).
-    :param str or None prefecture: Prefecture (address information).
-    :param str or None zipcode: Zip code (address information).
-    :param str or None country: Country (address information).
+    :param pobox: P.O. box (address information).
+    :type pobox: str or None
+    :param roomno: Room number (address information).
+    :type roomno: str or None
+    :param houseno: House number (address information).
+    :type houseno: str or None
+    :param city: City (address information).
+    :type city: str or None
+    :param prefecture: Prefecture (address information).
+    :type prefecture: str or None
+    :param zipcode: Zip code (address information).
+    :type zipcode: str or None
+    :param country: Country (address information).
+    :type country: str or None
     :rtype: segno.QRCode
     """
     return segno.make_qr(make_mecard_data(name=name, reading=reading,
@@ -245,23 +267,35 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     :type fax: str, iterable of strings, or None
     :param videophone: Phone number for video calls. Multiple values are allowed.
     :type videophone: str, iterable of strings, or None
-    :param str or None memo: A notice for the contact.
-    :param str or None nickname: Nickname.
+    :param memo: A notice for the contact.
+    :type memo: str or None
+    :param nickname: Nickname.
+    :type nickname: str or None
     :param birthday: Birthday. If a string is provided, it should encode the
                      date as ``YYYY-MM-DD`` value.
     :type birthday: str, datetime.date or None
     :param url: Homepage. Multiple values are allowed.
     :type url: str, iterable of strings, or None
-    :param str or None pobox: P.O. box (address information).
-    :param str or None street: Street address.
-    :param str or None city: City (address information).
-    :param str or None region: Region (address information).
-    :param str or None zipcode: Zip code (address information).
-    :param str or None country: Country (address information).
-    :param str or None org: Company / organization name.
-    :param float or None lat: Latitude.
-    :param float or None lng: Longitude.
-    :param str or None source: URL where to obtain the vCard.
+    :param pobox: P.O. box (address information).
+    :type pobox: str or None
+    :param street: Street address.
+    :type street: str or None
+    :param city: City (address information).
+    :type city: str or None
+    :param region: Region (address information).
+    :type region: str or None
+    :param zipcode: Zip code (address information).
+    :type zipcode: str or None
+    :param country: Country (address information).
+    :type country: str or None
+    :param org: Company / organization name.
+    :type org: str or None
+    :param lat: Latitude.
+    :type lat: float or None
+    :param lng: Longitude.
+    :type lng: float or None
+    :param source: URL where to obtain the vCard.
+    :type source: str or None
     :param rev: Revision of the vCard / last modification date.
     :type rev: str, datetime.date or None
     :param title: Job Title. Multiple values are allowed.
@@ -338,28 +372,40 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
     :param email: E-mail address. Multiple values are allowed.
     :type email: str, iterable of strings, or None
     :param phone: Phone number. Multiple values are allowed.
-    :type phone:  str, iterable of strings, or None
+    :type phone: str, iterable of strings, or None
     :param fax: Fax number. Multiple values are allowed.
     :type fax: str, iterable of strings, or None
     :param videophone: Phone number for video calls. Multiple values are allowed.
     :type videophone: str, iterable of strings, or None
-    :param str or None memo: A notice for the contact.
-    :param str or None nickname: Nickname.
+    :param memo: A notice for the contact.
+    :type memo: str or None
+    :param nickname: Nickname.
+    :type nickname: str or None
     :param birthday: Birthday. If a string is provided, it should encode the
                      date as ``YYYY-MM-DD`` value.
     :type birthday: str, datetime.date or None
     :param url: Homepage. Multiple values are allowed.
     :type url: str, iterable of strings, or None
-    :param str or None pobox: P.O. box (address information).
-    :param str or None street: Street address.
-    :param str or None city: City (address information).
-    :param str or None region: Region (address information).
-    :param str or None zipcode: Zip code (address information).
-    :param str or None country: Country (address information).
-    :param str or None org: Company / organization name.
-    :param float or None lat: Latitude.
-    :param float or None lng: Longitude.
-    :param str or None source: URL where to obtain the vCard.
+    :param pobox: P.O. box (address information).
+    :type pobox: str or None
+    :param street: Street address.
+    :type street: str or None
+    :param city: City (address information).
+    :type city: str or None
+    :param region: Region (address information).
+    :type region: str or None
+    :param zipcode: Zip code (address information).
+    :type zipcode: str or None
+    :param country: Country (address information).
+    :type country: str or None
+    :param org: Company / organization name.
+    :type org: str or None
+    :param lat: Latitude.
+    :type lat: float or None
+    :param lng: Longitude.
+    :type lng: float or None
+    :param source: URL where to obtain the vCard.
+    :type source: str or None
     :param rev: Revision of the vCard / last modification date.
     :type rev: str, datetime.date or None
     :param title: Job Title. Multiple values are allowed.
@@ -417,8 +463,11 @@ def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
     :type cc: str, iterable of strings, or None
     :param bcc: The blind carbon copy recipient. Multiple values are allowed.
     :type bcc: str, iterable of strings, or None
-    :param str or None subject: The subject.
-    :param str or None body: The message body.
+    :param subject: The subject.
+    :type subject: str or None
+    :param body: The message body.
+    :type body: str or None
+    :rtype: str
     """
     def multi(val):
         if not val:
@@ -455,8 +504,11 @@ def make_email(to, cc=None, bcc=None, subject=None, body=None):
     :type cc: str, iterable of strings, or None
     :param bcc: The blind carbon copy recipient. Multiple values are allowed.
     :type bcc: str, iterable of strings, or None
-    :param str or None subject: The subject.
-    :param str or None body: The message body.
+    :param subject: The subject.
+    :type subject: str or None
+    :param body: The message body.
+    :type body: str or None
+    :rtype: segno.QRCode
     """
     return segno.make_qr(make_make_email_data(to=to, cc=cc, bcc=bcc,
                                               subject=subject, body=body))
