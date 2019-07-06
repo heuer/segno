@@ -106,7 +106,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             will use UTF-8. Note that no ECI mode indicator is inserted by
             default (see `eci`).
             The `encoding` parameter is case insensitive.
-    :type encoding: unicode|str|None
+    :type encoding: unicode str or None
     :param bool eci: Indicates if binary data which does not use the default
             encoding (ISO/IEC 8859-1) should enforce the ECI mode. Since a lot
             of QR Code readers do not support the ECI mode, this feature is
@@ -242,6 +242,8 @@ class QRCode:
         """\
         (Micro) QR Code version. Either a string ("M1", "M2", "M3", "M4") or
         an integer in the range of 1 .. 40.
+
+        :rtype: str or int
         """
         return encoder.get_version_name(self._version)
 
@@ -250,6 +252,8 @@ class QRCode:
         """\
         Error correction level; either a string ("L", "M", "Q", "H") or ``None``
         if the QR Code provides no error correction (Micro QR Code version M1)
+
+        :rtype: str
         """
         if self._error is None:
             return None
@@ -260,6 +264,8 @@ class QRCode:
         """\
         String indicating the mode ("numeric", "alphanumeric", "byte", "kanji").
         May be ``None`` if multiple modes are used.
+
+        :rtype: str or None
         """
         if self._mode is not None:
             return encoder.get_mode_name(self._mode)
@@ -270,6 +276,8 @@ class QRCode:
         """\
         Returns the version and error correction level as string `V-E` where
         `V` represents the version number and `E` the error level.
+
+        :rtype: str
         """
         version = str(self.version)
         return '-'.join((version, self.error) if self.error else (version,))
@@ -278,6 +286,8 @@ class QRCode:
     def default_border_size(self):
         """\
         Indicates the default border size aka quiet zone.
+
+        :rtype: int
         """
         return utils.get_default_border_size(self._version)
 
@@ -285,6 +295,8 @@ class QRCode:
     def is_micro(self):
         """\
         Indicates if this QR Code is a Micro QR Code
+
+        :rtype: bool
         """
         return self._version < 1
 
