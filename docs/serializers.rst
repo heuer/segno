@@ -126,17 +126,14 @@ PAM
     Portable Arbitrary Map (PAM). The serializer provides all default features
     (scale, border, color and background color), see :ref:`PAM <pam>` for details.
 
-
 LaTeX
     LaTeX / PGF/TikZ. The serializer provides no background color, but all
     other default features (scale, border, color) are supported, see
     :ref:`LaTeX <latex>` for details.
 
-
 XBM
     X BitMap (XBM). The serializer does not support any coloring, but scale
     and border are supported, see :ref:`XBM <xbm>` for details.
-
 
 XPM
     X PixMap (XPM). The serializer provides all default features
