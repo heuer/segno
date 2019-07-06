@@ -1,12 +1,13 @@
 Special QR Code factory functions
 =================================
 
-The ``helpers`` module provides factory functions to create common QR Codes
+The :py:mod:`segno.helpers` module provides factory functions to create common QR Codes
 for encoding WIFI configurations, MeCards or geographic locations.
 
 The created QR Codes use at minimum the error correction level "L". If a better
 error correction level is possible without changing the QR Code version, the
 better error correction level will be used.
+
 
 Create a QR Code for a WIFI configuration
 -----------------------------------------
@@ -21,8 +22,8 @@ Create a QR Code for a WIFI configuration
 
 
 If you want more control over the creation of the QR Code (i.e. using a specific
-version or error correction level, use the "make_wifi_data" factory function,
-which returns a string which encodes the WIFI configuration.
+version or error correction level, use the :py:func:`segno.helpers.make_wifi_data`
+factory function, which returns a string which encodes the WIFI configuration.
 
 .. code-block:: python
 
@@ -71,8 +72,8 @@ Creating a QR Code encoding contact information
 MeCard
 ^^^^^^
 
-The function ``make_mecard`` returns a QR Code which encodes contact information
-as MeCard.
+The function :py:func:`segno.helpers.make_mecard` returns a QR Code which encodes
+contact information as MeCard.
 
 .. code-block:: python
 
@@ -101,8 +102,8 @@ A factory function which returns the MeCard as string is available as well.
 vCard
 ^^^^^
 
-The function ``make_vcard`` returns a QR Code which encodes contact information
-as vCard version 3.0.
+The function :py:func:`segno.helpers.make_vcard` returns a QR Code which encodes
+contact information as vCard version 3.0.
 
 .. code-block:: python
 
