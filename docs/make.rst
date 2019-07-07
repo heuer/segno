@@ -216,4 +216,4 @@ M3-M codes encoding "Ai Du" with the four different masks:
 
 .. figure:: _static/data_mask_qr_7.svg
 
-    QR Code using data mask pattern 111 (mask=6)
+    QR Code using data mask pattern 111 (mask=7)
