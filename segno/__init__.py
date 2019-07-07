@@ -766,7 +766,7 @@ class QRCode:
 
         :param out: A filename or a writable file-like object with a
                 ``name`` attribute. Use the `kind` parameter if `out` is
-                a :py:class:`io.ByteIO` or :py:class:`io.StringIO` stream which
+                a :py:class:`io.BytesIO` or :py:class:`io.StringIO` stream which
                 don't have a ``name`` attribute.
         :param kind: If the desired output format cannot be determined from
                 the ``out`` parameter, this parameter can be used to indicate the

@@ -155,6 +155,10 @@ Micro QR Codes support 4 mask patterns, only.
     >>> qr.mask
     3
 
+
+Micro QR Code with different data masks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 M3-M codes encoding "Ai Du" with the four different masks:
 
 .. figure:: _static/data_mask_mqr_0.svg
@@ -176,6 +180,9 @@ M3-M codes encoding "Ai Du" with the four different masks:
 
     Micro QR Code using data mask pattern 11 (mask=3)
 
+
+QR Code with different data masks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1-H codes encoding "Ai Du" using the eight different mask patterns:
 
