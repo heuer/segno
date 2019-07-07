@@ -343,13 +343,16 @@ class QRCode:
 
             >>> import segno
             >>> qr = segno.make('The Beatles')
-            >>> size = qr.symbol_size()[0]
+            >>> width, height = qr.symbol_size()
             >>> res = []
             >>> # Scaling factor 2, default border
             >>> for row in qr.matrix_iter(scale=2):
             >>>     res.append([col == 0x1 for col in row])
-            >>> size * 2 == len(res[0])
+            >>> width * 2 == len(res[0])
             True
+            >>> height * 2 == len(res)
+            True
+
 
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
