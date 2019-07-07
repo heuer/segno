@@ -8,7 +8,7 @@ Features
 Description                                     `qrcode`_             `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_          `Segno`_
 ============================================    ==================    ===================    ===================    ==================    ========
 Library license                                 `BSD`_                `BSD`_                 `BSD`_                 `MIT`_                `BSD`_
-Library version                                 6.1                   1.2.0                  1.3.3                  1.3.0                 |version|
+Library version                                 6.1                   1.2.0                  1.3.4                  1.3.0                 |version|
 Mode Numeric                                    Yes                   Yes                    Yes                    Yes                   Yes
 Mode Alphanumeric                               Yes                   Yes                    Yes                    Yes                   Yes
 Mode Byte                                       Yes                   Yes                    Yes                    Yes                   Yes
@@ -63,7 +63,7 @@ shown:
 .. image:: _static/iso_fig1_1m.png
     :alt: 1-M QR Code encoding 'QR Code Symbol'
 
-Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46   52 05 37 96 d6 26 f6 c0``),
+Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
 the generated QR Code may look different because they may use a different mask
 pattern (see ISO/IEC 18004:2015(E) - 7.8.3 Evaluation of data masking results).
 

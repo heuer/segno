@@ -13,7 +13,6 @@ QR Code and Micro QR Code encoder.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
-import warnings
 import re
 import math
 import codecs
@@ -32,7 +31,6 @@ except ImportError:  # pragma: no cover
     numeric = Number
     str = unicode
     range = xrange
-
 import sys
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
@@ -429,42 +427,41 @@ def add_finder_patterns(matrix, is_micro):
     :param matrix: The matrix.
     :param bool is_micro: Indicates if the matrix represents a Micro QR Code.
     """
-    add_finder_pattern(matrix, 0, 0)  # Upper left corner
+    matrix_size = len(matrix)
+    # Finder pattern (includes separator around each side!)
+    pattern = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
+               (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
+               (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
+               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+               (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
+               (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
+               (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
+
+    def add_finder_pattern(x, y):
+        """\
+        Adds the finder pattern (black rect with black square) and
+        the finder separator (white horizontal line and white vertical line) to the
+        provided `matrix`.
+
+        ISO/IEC 18004:2015(E) -- 6.3.3 Finder pattern (page 16)
+        ISO/IEC 18004:2015(E) -- 6.3.4 Separator (page 17)
+
+        :param x: x-index of the first *black* module (upper left corner)
+        :param y: y-index of the first *black* module (upper left corner)
+        """
+        fidx1, fidx2 = (0, 8) if y != 0 else (1, 9)
+        fyoff = 1 if x == 0 else 0
+        idx1, idx2 = (0, 8) if y > -1 else (y - 1, matrix_size)
+        x -= fyoff ^ 0x1
+        for i in range(8):
+            matrix[x + i][idx1:idx2] = pattern[fyoff + i][fidx1:fidx2]
+
+    add_finder_pattern(0, 0)  # Upper left corner
     if not is_micro:
-        add_finder_pattern(matrix, 0, -7)  # Upper right corner
-        add_finder_pattern(matrix, -7, 0)  # Bottom left corner
-
-
-# Finder pattern (includes separator around each side!)
-_FINDER_PATTERN = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
-                   (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
-                   (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
-                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-                   (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
-                   (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
-                   (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
-
-def add_finder_pattern(matrix, x, y):
-    """\
-    Adds the finder pattern (black rect with black square) and
-    the finder separator (white horizontal line and white vertical line) to the
-    provided `matrix`.
-
-    ISO/IEC 18004:2015(E) -- 6.3.3 Finder pattern (page 16)
-    ISO/IEC 18004:2015(E) -- 6.3.4 Separator (page 17)
-
-    :param matrix: Matrix to add the finder into.
-    :param x: x-index of the first *black* module (upper left corner)
-    :param y: y-index of the first *black* module (upper left corner)
-    """
-    fidx1, fidx2 = (0, 8) if y != 0 else (1, 9)
-    fyoff = 1 if x == 0 else 0
-    idx1, idx2 = (0, 8) if y > -1 else (y - 1, len(matrix))
-    x -= fyoff ^ 0x1
-    for i in range(8):
-        matrix[x + i][idx1:idx2] = _FINDER_PATTERN[fyoff + i][fidx1:fidx2]
+        add_finder_pattern(0, -7)  # Upper right corner
+        add_finder_pattern(-7, 0)  # Bottom left corner
 
 
 def add_timing_pattern(matrix, is_micro):
@@ -486,12 +483,6 @@ def add_timing_pattern(matrix, is_micro):
         bit ^= 0x1
 
 
-_ALIGNMENT_PATTERN = ((0x1, 0x1, 0x1, 0x1, 0x1),
-                      (0x1, 0x0, 0x0, 0x0, 0x1),
-                      (0x1, 0x0, 0x1, 0x0, 0x1),
-                      (0x1, 0x0, 0x0, 0x0, 0x1),
-                      (0x1, 0x1, 0x1, 0x1, 0x1))
-
 def add_alignment_patterns(matrix, version):
     """\
     Adds the adjustment patterns to the matrix. For versions < 2 this is a
@@ -502,17 +493,24 @@ def add_alignment_patterns(matrix, version):
     """
     if version < 2:
         return
-    matrix_size = len(matrix)
+    pattern = (0x1, 0x1, 0x1, 0x1, 0x1,
+               0x1, 0x0, 0x0, 0x0, 0x1,
+               0x1, 0x0, 0x1, 0x0, 0x1,
+               0x1, 0x0, 0x0, 0x0, 0x1,
+               0x1, 0x1, 0x1, 0x1, 0x1)
     positions = consts.ALIGNMENT_POS[version - 2]
-    for pos_x in positions:
-        for pos_y in positions:
-            # Finder pattern?
-            if pos_x - 6 == 0 and (pos_y - 6 == 0 or pos_y + 7 == matrix_size) \
-                    or pos_y - 6 == 0 and pos_x + 7 == matrix_size:
-                continue
-            row, col = pos_x - 2, pos_y - 2
-            for r in range(5):
-                matrix[row + r][col:col+5] = _ALIGNMENT_PATTERN[r]
+    alignment_range = range(5)
+    min_pos = positions[0]
+    max_pos = positions[-1]
+    for x, y in ((x, y) for x in positions for y in positions):
+        # Finder pattern?
+        if x == min_pos == y \
+           or x == min_pos and y == max_pos \
+           or x == max_pos and y == min_pos:
+            continue
+        j = y - 2
+        for r in alignment_range:
+            matrix[x - 2 + r][j:j + 5] = pattern[r*5:r*5 + 5]
 
 
 def add_codewords(matrix, codewords, version):
@@ -577,14 +575,15 @@ def make_final_message(version, error, codewords):
         # one error block
         data_blocks[0][-1] >>= 4
     buff = Buffer()
-    append_int = partial(buff.append_bits, length=8)
+    append_bits = buff.append_bits
+    append_int = partial(append_bits, length=8)
     # Write codewords
     for i in range(max(info.num_data for info in ec_infos)):
         for block in data_blocks:
             if i >= len(block):
                 continue
             if last_cw_is_four and i + 1 == len(block):
-                buff.append_bits(block[i], 4)
+                append_bits(block[i], 4)
             else:
                 append_int(block[i])
     # Write error codewords
@@ -639,12 +638,10 @@ def make_error_block(ec_info, data_block):
 
     error_block = bytearray(data_block)
     error_block.extend([0] * num_error_words)
-
     gen = consts.GEN_POLY[num_error_words]
     gen_log = consts.GALIOS_LOG
     gen_exp = consts.GALIOS_EXP
     len_data = len(data_block)
-
     # Extended synthetic division, see http://research.swtch.com/field
     for i in range(len_data):
         coef = error_block[i]
@@ -695,7 +692,7 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         function_matrix[-8][8] = 0x1
 
     def is_encoding_region(i, j):
-        return function_matrix[i][j] == 0x2
+        return function_matrix[i][j] > 0x1
 
     mask_patterns = get_data_mask_functions(is_micro)
     # If the user supplied a mask pattern, the evaluation step is skipped
@@ -752,7 +749,6 @@ def evaluate_mask(matrix, matrix_size):
     return sum(mask_scores(matrix, matrix_size))
 
 
-_N3_PATTERN = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 def mask_scores(matrix, matrix_size):
     """\
     Returns the penalty score features of the matrix.
@@ -784,21 +780,21 @@ def mask_scores(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: A tuple of penalty scores.
     """
+    n3_pattern = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 
     def is_match(seq, start, end):
         start = max(start, 0)
         end = min(end, matrix_size)
-        for i in range(start, end):
-            if seq[i]:
-                return False
-        return True
+        return not any(seq[start:end])
 
     def find_occurrences(seq):
         count = 0
-        idx = seq.find(_N3_PATTERN)
+        idx = seq.find(n3_pattern)
         while idx != -1:
             offset = idx + 7
-            if is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
+            if idx in (0, matrix_size - 7):
+                count += 40
+            elif is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
                 count += 40  # N3 = 40
             else:
                 # Found no / not enough light modules, start at next possible
@@ -807,7 +803,7 @@ def mask_scores(matrix, matrix_size):
                 # dark light dark dark dark light dark
                 #                   ^
                 offset = idx + 4
-            idx = seq.find(_N3_PATTERN, offset)
+            idx = seq.find(n3_pattern, offset)
         return count
 
     s_n1 = 0
@@ -816,11 +812,9 @@ def mask_scores(matrix, matrix_size):
     module_range = range(matrix_size)
     dark_modules = 0
     last_row = None
-    col = [0x2] * matrix_size
-    columns = [bytearray(col) for i in module_range]
     for i in module_range:
+        n3_column = bytearray(matrix_size)
         row = matrix[i]
-        col = columns[i]
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
@@ -831,7 +825,7 @@ def mask_scores(matrix, matrix_size):
         for j in module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
-            col[j] = col_current_bit
+            n3_column[j] = col_current_bit
             dark_modules += row_current_bit
             # N1 -- row-wise
             if row_current_bit == row_prev_bit:
@@ -848,115 +842,22 @@ def mask_scores(matrix, matrix_size):
                     s_n1 += col_cnt - 2
                 col_cnt = 1
             # N2
-            if last_row and j > 0 and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
+            if last_row and j and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
                 s_n2 += 3
             row_prev_bit = row_current_bit
             col_prev_bit = col_current_bit
         last_row = row
+        # N3
+        s_n3 += find_occurrences(n3_column)
         # N1
         if row_cnt >= 5:
             s_n1 += row_cnt - 2
         if col_cnt >= 5:
             s_n1 += col_cnt - 2
-
-    # N3
-    s_n3 += sum([find_occurrences(columns[i]) for i in module_range])
-
     # N4
     percent = float(dark_modules) / (matrix_size ** 2)
     s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
     return s_n1, s_n2, s_n3, s_n4
-
-
-def score_n1(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 1.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    ============================================   ========================    ======
-    Feature                                        Evaluation condition        Points
-    ============================================   ========================    ======
-    Adjacent modules in row/column in same color   No. of modules = (5 + i)    N1 + i
-    ============================================   ========================    ======
-
-    N1 = 3
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 1) of the matrix.
-    """
-    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
-    return mask_scores(matrix, matrix_size)[0]
-
-
-def score_n2(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 2.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    ==============================   ====================   ===============
-    Feature                          Evaluation condition   Points
-    ==============================   ====================   ===============
-    Block of modules in same color   Block size = m × n     N2 ×(m-1)×(n-1)
-    ==============================   ====================   ===============
-
-    N2 = 3
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 2) of the matrix.
-    """
-    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
-    return mask_scores(matrix, matrix_size)[1]
-
-
-def score_n3(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 3.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    =========================================   ========================   ======
-    Feature                                     Evaluation condition       Points
-    =========================================   ========================   ======
-    1 : 1 : 3 : 1 : 1 ratio                     Existence of the pattern   N3
-    (dark:light:dark:light:dark) pattern in
-    row/column, preceded or followed by light
-    area 4 modules wide
-    =========================================   ========================   ======
-
-    N3 = 40
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 3) of the matrix.
-    """
-    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
-    return mask_scores(matrix, matrix_size)[2]
-
-
-def score_n4(matrix, matrix_size):
-    """\
-    Implements the penalty score feature 4.
-
-    ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results - Table 11 (page 54)
-
-    ===========================================   ====================================   ======
-    Feature                                       Evaluation condition                   Points
-    ===========================================   ====================================   ======
-    Proportion of dark modules in entire symbol   50 × (5 × k)% to 50 × (5 × (k + 1))%   N4 × k
-    ===========================================   ====================================   ======
-
-    N4 = 10
-
-    :param matrix: The matrix to evaluate
-    :param matrix_size: The width (or height) of the matrix.
-    :return int: The penalty score (feature 4) of the matrix.
-    """
-    warnings.warn('Deprecated, use mask_scores(matrix, matrix_size)', DeprecationWarning)
-    return mask_scores(matrix, matrix_size)[3]
 
 
 def evaluate_micro_mask(matrix, matrix_size):
@@ -1043,7 +944,7 @@ def add_format_info(matrix, version, error, mask_pattern):
     format_info = calc_format_info(version, error, mask_pattern)
     voffset = int(is_micro)
     hoffset = voffset
-    col = matrix[8]
+    row_eight = matrix[8]
     for i in range(8):
         vbit = (format_info >> i) & 0x01
         hbit = (format_info >> (14 - i)) & 0x01
@@ -1053,10 +954,10 @@ def add_format_info(matrix, version, error, mask_pattern):
         # vertical row, upper left corner
         matrix[i + voffset][8] = vbit
         # horizontal row, upper left corner
-        col[i + hoffset] = hbit
+        row_eight[i + hoffset] = hbit
         if not is_micro:
             # horizontal row, upper right corner
-            col[-1 - i] = vbit
+            row_eight[-1 - i] = vbit
             # vertical row, bottom left corner
             matrix[-1 - i][8] = hbit
     if not is_micro:
@@ -1290,12 +1191,13 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
                 matrix[-10][i] = 0x0
                 matrix[-9][i] = 0x0
         # Reserve format pattern areas
+        row_eight = matrix[8]
         for i in range(9):
             matrix[i][8] = 0x0  # Upper left
-            matrix[8][i] = 0x0  # Upper bottom
+            row_eight[i] = 0x0  # Upper bottom
             if version > 0:
                 matrix[-i][8] = 0x0  # Bottom left
-                matrix[8][- i] = 0x0  # Upper right
+                row_eight[-i] = 0x0  # Upper right
     if add_timing:
         # ISO/IEC 18004:2015 -- 6.3.5 Timing pattern (page 17)
         add_timing_pattern(matrix, version < 1)
@@ -1352,8 +1254,7 @@ def normalize_mode(mode):
              QR Code mode.
     :rtype: int or None
     """
-    if mode is None or (isinstance(mode, int)
-                        and mode in consts.MODE_MAPPING.values()):
+    if mode is None or mode in consts.MODE_MAPPING.values():
         return mode
     try:
         return consts.MODE_MAPPING[mode.lower()]
