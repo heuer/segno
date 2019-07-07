@@ -142,7 +142,8 @@ Data Masking
 ------------
 
 Segno chooses by default the optimal mask for the provided input, but the user
-may specify the preferred mask as well.
+may specify the preferred mask as well. QR Codes support 8 mask patterns, while
+Micro QR Codes support 4 mask patterns, only.
 
 .. code-block:: python
 
@@ -153,3 +154,66 @@ may specify the preferred mask as well.
     >>> qr = segno.make('Ai Du', mask=3)
     >>> qr.mask
     3
+
+M3-M codes encoding "Ai Du" with the four different masks:
+
+.. figure:: _static/data_mask_mqr_0.svg
+
+    Micro QR Code using data mask pattern 00 (mask=0)
+
+
+.. figure:: _static/data_mask_mqr_1.svg
+
+    Micro QR Code using data mask pattern 01 (mask=1)
+
+
+.. figure:: _static/data_mask_mqr_2.svg
+
+    Micro QR Code using data mask pattern 10 (mask=2)
+
+
+.. figure:: _static/data_mask_mqr_3.svg
+
+    Micro QR Code using data mask pattern 11 (mask=3)
+
+
+1-H codes encoding "Ai Du" using the eight different mask patterns:
+
+.. figure:: _static/data_mask_qr_0.svg
+
+    QR Code using data mask pattern 000 (mask=0)
+
+
+.. figure:: _static/data_mask_qr_1.svg
+
+    QR Code using data mask pattern 001 (mask=1)
+
+
+.. figure:: _static/data_mask_qr_2.svg
+
+    QR Code using data mask pattern 010 (mask=2)
+
+
+.. figure:: _static/data_mask_qr_3.svg
+
+    QR Code using data mask pattern 011 (mask=3)
+
+
+.. figure:: _static/data_mask_qr_4.svg
+
+    QR Code using data mask pattern 100 (mask=4)
+
+
+.. figure:: _static/data_mask_qr_5.svg
+
+    QR Code using data mask pattern 101 (mask=5)
+
+
+.. figure:: _static/data_mask_qr_6.svg
+
+    QR Code using data mask pattern 110 (mask=6)
+
+
+.. figure:: _static/data_mask_qr_7.svg
+
+    QR Code using data mask pattern 111 (mask=6)
