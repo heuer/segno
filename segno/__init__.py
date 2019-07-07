@@ -180,7 +180,7 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
 def make_sequence(content, error=None, version=None, mode=None, mask=None,
                   encoding=None, boost_error=True, symbol_count=None):
     """\
-    Creates a sequence of QR Codes.
+    Creates a sequence of QR Codes using the Structured Append mode.
 
     If the content fits into one QR Code and neither ``version`` nor
     ``symbol_count`` is provided, this function may return a sequence with
@@ -201,8 +201,8 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
         for i, qrcode in enumerate(segno.make_sequence(data, symbol_count=2)):
              qrcode.save('seq-%d.svg' % i, scale=10, color='darkblue')
 
-    The returned number of QR Codes is determined by the `version` or
-    `symbol_count` parameter
+    The number of QR Codes is determined by the `version` or `symbol_count`
+    parameter.
 
     See :py:func:`make` for a description of the other parameters.
 
@@ -800,8 +800,7 @@ class QRCodeSequence(tuple):
     """\
     Represents a sequence of  1 .. n (max. n = 16) :py:class:`QRCode` instances.
 
-    Iff this sequence represents only one item, it behaves like
-    :py:class:`QRCode`.
+    Iff this sequence contains only one item, it behaves like :py:class:`QRCode`.
     """
     def __new__(cls, qrcodes):
         return super(QRCodeSequence, cls).__new__(cls, qrcodes)

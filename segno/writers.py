@@ -234,7 +234,7 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
                     fallback_color='fuchsia', color_mapping=None,
-                    add_legend=True):
+                    add_legend=True):  # pragma: no cover
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
@@ -570,6 +570,8 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                     background='#fff', compresslevel=9, addad=True):
     """\
     Converts the provided matrix into a PNG data URI.
+
+    See :func:`write_png` for a description of supported parameters.
 
     :rtype: str
     """
