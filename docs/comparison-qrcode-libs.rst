@@ -71,17 +71,17 @@ While Segno chooses mask pattern 5 which generates the same result as shown
 in the ISO/IEC 18004:2015(E) standard:
 
 .. image:: _static/iso_fig1_1m_segno.png
-    :alt: 1-M QR Code encoding 'QR COde Symbol' by Segno
+    :alt: 1-M QR Code encoding 'QR Code Symbol' by Segno
 
 qrcode and qrcodegen choose mask pattern 4:
 
 .. image:: _static/iso_fig1_1m_qrcode.png
-    :alt: 1-M QR Code encoding 'QR COde Symbol' by qrcode
+    :alt: 1-M QR Code encoding 'QR Code Symbol' by qrcode
 
 and PyQRCode/ PyQRCodeNG choose mask pattern 6:
 
 .. image:: _static/iso_fig1_1m_pyqrcode.png
-    :alt: 1-M QR Code encoding 'QR COde Symbol' by PyQRCode
+    :alt: 1-M QR Code encoding 'QR Code Symbol' by PyQRCode
 
 
 Performance
@@ -92,16 +92,28 @@ Mac Mini 2,26 Core2 Duo using CPython 2.7.15. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 
-Create a QR Code
-^^^^^^^^^^^^^^^^
+Create a 1-M QR Code
+~~~~~~~~~~~~~~~~~~~~
 
-Create a 1-M QR Code "QR Code Symbol".
+1-M QR Code encoding "QR Code Symbol"
 
 .. image:: _static/chart_create_1m.svg
     :alt: Chart showing the results of creating a 1-M QR Code.
 
 
-Create a 30-H QR Code "QR Code Symbol".
+Create a 7-Q QR Code
+~~~~~~~~~~~~~~~~~~~~
+
+7-Q QR Code encoding "QR Code Symbol"
+
+.. image:: _static/chart_create_7q.svg
+    :alt: Chart showing the results of creating a 7-Q QR Code.
+
+
+Create a 30-H QR Code
+~~~~~~~~~~~~~~~~~~~~~
+
+30-H QR Code encoding "QR Code Symbol"
 
 .. image:: _static/chart_create_30h.svg
     :alt: Chart showing the results of creating a 30-H QR Code.
@@ -115,7 +127,6 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
 .. image:: _static/chart_svg.svg
     :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
-
 
 
 Create a QR Code and serialize it as PNG

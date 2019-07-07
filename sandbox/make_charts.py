@@ -2,6 +2,8 @@
 """\
 Create the benchmark charts.
 """
+import glob
+import shutil
 import csv
 from decimal import Decimal
 import pygal
@@ -18,6 +20,7 @@ def create_chart(title, data, filename):
 def create_charts():
     color_map = {
         'PyQRCode': '#F44336',
+        'PyQRCodeNG': '#A22118',
         'qrcode': '#3F51B5',
         'qrcode path': '#3F51B5',
         'qrcode rects': '#26854F',
@@ -25,6 +28,7 @@ def create_charts():
         'Segno': '#FFC107',
     }
     create_1m_data = []
+    create_7q_data = []
     create_30h_data = []
     svg_data = []
     png_data = []
@@ -34,13 +38,16 @@ def create_charts():
             name, val = row
             if name.endswith(' create 1-M'):
                 create_1m_data.append((name.replace(' create 1-M', ''), val))
+            elif name.endswith(' create 7-Q'):
+                create_7q_data.append((name.replace(' create 7-Q', ''), val))
             elif name.endswith(' create 30-H'):
                 create_30h_data.append((name.replace(' create 30-H', ''), val))
-            elif name.endswith(' PNG'):
-                png_data.append((name.replace(' PNG', ''), val))
+            elif name.endswith(' PNG 1-M'):
+                png_data.append((name.replace(' PNG 1-M', ''), val))
             elif ' SVG' in name:
                 svg_data.append((name.replace(' SVG', ''), val))
     for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', 'out/chart_create_1m.svg'),
+                                  (create_7q_data, 'Create a 7-Q QR Code', 'out/chart_create_7q.svg'),
                                   (create_30h_data, 'Create a 30-H QR Code', 'out/chart_create_30h.svg'),
                                   (svg_data, 'Create a 1-M QR Code and write SVG', 'out/chart_svg.svg'),
                                   (png_data, 'Create a 1-M QR Code and write PNG', 'out/chart_png.svg')):
@@ -51,3 +58,5 @@ def create_charts():
 
 if __name__ == '__main__':
     create_charts()
+    for chart in glob.glob('out/chart*.svg'):
+        shutil.copy(chart, '../docs/_static/')
