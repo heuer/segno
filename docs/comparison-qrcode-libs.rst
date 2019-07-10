@@ -59,7 +59,7 @@ Default encoding in Byte mode                                       ISO/IEC 8859
 
 .. [1] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
        the generated QR Code may look different because they choose a different mask pattern.
-       ISO/IEC 18004:2015(E) (see page 7) uses mask 5, while qrcode and qrcodegen use mask 4 and
+       ISO/IEC 18004:2015(E) (cf. page 7) uses mask 5, while qrcode and qrcodegen use mask 4 and
        PyQRCode / PyQRCodeNG use mask 6
 
 
@@ -124,8 +124,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. |ISO M2-L| image:: _static/iso_fig2_m2l.png
     :alt: M2-L Symbol encoding '01234567'
-    :width: 39
-    :height: 39
+    :width: 52
+    :height: 52
 
 .. |qrcode 1-M| image:: _static/iso_fig1_1m_qrcode.png
     :alt: 1-M QR Code encoding 'QR Code Symbol' using mask 4
@@ -144,8 +144,8 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. |segno M2-L| image:: _static/iso_fig2_m2l_segno.png
     :alt: M2-L Symbol encoding '01234567'
-    :width: 39
-    :height: 39
+    :width: 52
+    :height: 52
 
 
 .. _qrcode: https://pypi.org/project/qrcode/
