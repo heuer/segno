@@ -210,6 +210,14 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'segnodoc'
 
+html_css_files = [
+    'css/custom.css',
+]
+
+html_js_files = [
+    'js/custom.js',
+]
+
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
@@ -360,7 +368,3 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 #epub_use_index = True
-
-
-def setup(app):
-    app.add_stylesheet('css/custom.css')

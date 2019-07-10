@@ -11,3 +11,12 @@
       overflow: visible !important;
    }
 }
+
+.feature_yes {
+   color: darkgreen;
+   font-weight: bolder;
+}
+
+.feature_no {
+   color: darkred;
+}
