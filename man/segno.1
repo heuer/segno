@@ -1,0 +1,111 @@
+.\" Segno manpage
+.Dd July 12, 2019
+.Dt SEGNO 1
+.Sh NAME
+.Nm segno
+.Nd QR Code and Micro QR Code generator.
+.Sh SYNOPSIS
+ \fBsegno\fR [--ver] [-h] [--version VERSION] [--error {L,M,Q,H,-}]
+      [--mode {numeric,alphanumeric,byte,kanji}] [--pattern PATTERN]
+      [--scale SCALE] [--border BORDER] [--micro] [--no-micro]
+      [--color COLOR] [--background BACKGROUND] [--output OUTPUT]
+      [--no-error-boost] [--seq] [--symbol-count SYMBOL_COUNT]
+.sp
+      [--no-classes] [--no-xmldecl] [--no-namespace] [--no-newline]
+      [--title TITLE] [--desc DESC] [--svgid SVGID] [--svgclass SVGCLASS]
+      [--lineclass LINECLASS] [--no-size] [--unit UNIT]
+      [--svgversion SVGVERSION] [--encoding ENCODING]
+.sp
+      [--dpi DPI] [--no-ad]
+.sp
+      content
+.Sh COMMAND LINE OPTIONS
+  content               The content to encode
+  --ver, -V             Shows Segno's version and exit
+  -h, --help            Show a help message which lists all commands
+                        and exit
+  --version VERSION, -v VERSION
+                        QR Code version: 1 .. 40 or
+                        Micro Code Version "M1", "M2", "M3", "M4"
+  --error {L,M,Q,H,-}, -e {L,M,Q,H,-}
+                        Error correction level:
+                        "L": 7% (default), "M": 15%, "Q": 25%, "H": 30%,
+                        "-": no error correction (used for M1 symbols)
+  --mode {numeric,alphanumeric,byte,kanji},
+  -m {numeric,alphanumeric,byte,kanji}
+                        Mode. If unspecified (default), an optimal mode
+                        is choosen for the given input.
+  --pattern PATTERN, -p PATTERN
+                        Mask pattern to use. If unspecified (default), an
+                        optimal mask pattern is used.
+                        Valid values for QR Codes: 0 .. 7
+                        Valid values for Micro QR Codes: 0 .. 3
+  --scale SCALE, -s SCALE
+                        Scaling factor of the output.
+                        By default, a scaling factor of 1 is used which
+                        can result into too small images.
+                        Some output formats, like SVG accept a float
+                        value.
+  --border BORDER, -b BORDER
+                        Size of the border / quiet zone of the output.
+                        By default, the standard border (4 modules
+                        for QR Codes, 2 modules for Micro QR Codes)
+                        will be used.
+  --micro               Allow the creation of Micro QR Codes
+  --no-micro            Disallow creation of Micro QR Codes (default)
+  --color COLOR         Color of the dark modules. Use "transparent"
+                        to set the color to None
+                        (not supported by all serializers)
+                        The color may be specified as web color name,
+                        i.e. "red" or as hexadecimal value, i.e.
+                        "#0033cc". Some serializers, i.e. SVG and PNG,
+                        support alpha channels (8-digit hexadecimal
+                        value)
+  --background BACKGROUND
+                        Color of the light modules.
+                        See "color" for a description of possible values.
+  --output OUTPUT, -o OUTPUT
+                        Output file.
+                        If not specified, the QR Code is printed to the
+                        terminal
+  --no-error-boost      Disables the automatic error incrementation if a
+                        higher error correction level is possible
+  --seq                 Creates a sequence of QR Codes (Structured Append
+                        mode). Version or symbol count must be provided
+  --symbol-count SYMBOL_COUNT, -sc SYMBOL_COUNT
+                        Number of symbols to create
+.Sh SVG OPTIONS
+  --no-classes          Omits the (default) SVG classes
+  --no-xmldecl          Omits the XML declaration header
+  --no-namespace        Indicates that the SVG document should have no
+                        SVG namespace declaration
+  --no-newline          Indicates that the SVG document should have no
+                        trailing newline
+  --title TITLE         Specifies the title of the SVG document
+  --desc DESC           Specifies the description of the SVG document
+  --svgid SVGID         Indicates the ID of the <svg/> element
+  --svgclass SVGCLASS   Indicates the CSS class of the <svg/> element
+  --lineclass LINECLASS
+                        Indicates the CSS class of the <path/> element
+                        (the dark modules)
+  --no-size             Indicates that the SVG document should not have
+                        "width" and "height" attributes
+  --unit UNIT           Indicates SVG coordinate system unit
+  --svgversion SVGVERSION
+                        Indicates the SVG version
+  --encoding ENCODING   Specifies the encoding of the document
+.Sh PNG OPTIONS
+  --dpi DPI             Sets the DPI value of the PNG file
+  --no-ad               Omits the "Software" comment in the PNG file
+.Sh EXAMPLES
+segno "Up jumped the devil"
+.sp
+segno -o=yesterday.png "Yesterday"
+.sp
+segno -o=fool.svg --title="Example QR code" "The Fool on the Hill"
+.sp
+segno -o=number.svg --scale=10 --color=darkblue "A Day in the Life"
+.sp
+segno -o rain.png -s 10 --color=#003399 --micro RAIN
+.Sh AUTHORS
+.An Lars Heuer
