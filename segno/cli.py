@@ -69,8 +69,8 @@ def make_parser():
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
                         dest='micro', action='store_false')
-    parser.add_argument('--color', help='Color of the dark modules. Use "transparent" to set the color to None (not supported by all serializers)')
-    parser.add_argument('--background', help='Color of the light modules. Use "transparent" to set the background to None (not supported by all serializers)')
+    parser.add_argument('--color', help='Color of the dark modules. Use "transparent" to set the color to None (not supported by all serializers). The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value)')
+    parser.add_argument('--background', help='Color of the light modules. See "color" for a description of possible values.')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
