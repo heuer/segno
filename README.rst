@@ -12,7 +12,7 @@ Segno provides several serialization formats like Scalable Vector Graphics (SVG)
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
 Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (PAM),
 LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
-serializers require an external lib. Segno could provide more serialization
+serializers require an external lib. Segno can provide more serialization
 formats via a plugin architecture.
 Further, it provides several high level functions to create QR Codes which encode
 contact data (MeCard, vCard) or WIFI configurations.
