@@ -45,6 +45,7 @@ setup(
     platforms=['any'],
     packages=find_packages(exclude=['docs', 'tests', 'sandbox', 'htmlcov']),
     include_package_data=True,
+    data_files=[('share/man/man1', ['man/segno.1'])],
     entry_points = {'console_scripts': ['segno = segno.cli:main']},
     keywords=['QR Code', 'Micro QR Code', 'ISO/IEC 18004',
               'ISO/IEC 18004:2006(E)', 'ISO/IEC 18004:2015(E)', 'qrcode', 'QR',
