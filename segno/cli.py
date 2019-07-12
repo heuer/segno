@@ -62,14 +62,15 @@ def make_parser():
     parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, like SVG accept a float value.',
                         default=1,
                         type=_convert_scale)
-    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used.',
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used. A value of 0 omits the border',
                         default=None,
                         type=int)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
                         dest='micro', action='store_false')
-    parser.add_argument('--color', help='Color of the dark modules. Use "transparent" to set the color to None (not supported by all serializers). The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value)')
+    parser.add_argument('--color', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
+                                        'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.')
     parser.add_argument('--background', help='Color of the light modules. See "color" for a description of possible values.')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
