@@ -503,6 +503,7 @@ class QRCode:
         border        Integer indicating the size of the quiet zone.
                       If set to ``None`` (default), the recommended border size
                       will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+                      A value of ``0`` indicates that border should be omitted.
         color         A string or tuple representing a color value for the dark
                       modules. The default value is "black".  The color can be
                       provided as ``(R, G, B)`` tuple, as web color name

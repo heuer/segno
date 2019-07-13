@@ -55,33 +55,34 @@ def make_parser():
                         choices=('numeric', 'alphanumeric', 'byte', 'kanji'),
                         default=None,
                         type=lambda x: x.lower())
-    parser.add_argument('--pattern', '-p', help='Mask pattern to use. If unspecified (default), an optimal mask pattern is used. Valid values for QR Codes: 0 .. 7. Valid values for Micro QR Codes: 0 .. 3',
-                        required=False,
-                        default=None,
-                        type=int)
-    parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, like SVG accept a float value.',
-                        default=1,
-                        type=_convert_scale)
-    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used. A value of 0 omits the border',
-                        default=None,
-                        type=int)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
                         dest='micro', action='store_false')
-    parser.add_argument('--color', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
-                                        'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.')
-    parser.add_argument('--background', help='Color of the light modules. See "color" for a description of possible values.')
-    parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
+    parser.add_argument('--pattern', '-p', help='Mask pattern to use. If unspecified (default), an optimal mask pattern is used. Valid values for QR Codes: 0 .. 7. Valid values for Micro QR Codes: 0 .. 3',
                         required=False,
-                        )
-    parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
+                        default=None,
+                        type=int)
+    parser.add_argument('--no-error-boost', help='Disables the automatic error correction level incrementation. By default, the maximal error correction level is used (without changing the version).',
                         dest='boost_error', action='store_false')
     parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version or symbol count must be provided',
                         dest='seq', action='store_true')
     parser.add_argument('--symbol-count', '-sc', help='Number of symbols to create',
                         default=None,
                         type=int)
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used. A value of 0 omits the border',
+                        default=None,
+                        type=int)
+    parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, i.e. SVG, accept a decimal value.',
+                        default=1,
+                        type=_convert_scale)
+    parser.add_argument('--color', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
+                                        'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.'
+                                        'The standard color is black.')
+    parser.add_argument('--background', '-bg', help='Color of the light modules. See "color" for a description of possible values. The standard background color is white.')
+    parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
+                        required=False,
+                        )
     # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
