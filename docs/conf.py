@@ -30,6 +30,7 @@ import segno
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx_paramlinks',
     'sphinx.ext.intersphinx',
     #'sphinx.ext.todo',
     #'sphinx.ext.viewcode',
@@ -268,8 +269,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'segno', u'Segno Documentation',
-     [author], 1)
+    ('man/segno', 'segno', 'Segno QR Code encoder', '', 1),
 ]
 
 # If true, show URL addresses after external links.

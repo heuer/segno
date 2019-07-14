@@ -1,12 +1,15 @@
 QR Code creation from the command line
 ======================================
 
-The command line script "segno" can be used to print QR Codes to the
+The command line script :program:`segno` can be used to print QR Codes to the
 terminal or to save them as file (SVG, PNG, EPS, ...).
 
-By default, the script does not create Micro QR Codes, use ``--micro`` to
-allow the creation of Micro QR Codes or specify the version (like ``--version=M3``)
-to create a Micro QR Code.
+By default, the script does not create Micro QR Codes, use
+:option:`--micro <segno --micro>` to allow the creation of Micro QR Codes or
+specify the version (like :option:`--version=M3 <segno --version>`) to create
+a Micro QR Code.
+
+See the :doc:`CLI man page <man/segno>` for a detailed reference of all command line options.
 
 
 Usage
@@ -29,11 +32,11 @@ Same content, but as Micro QR Code (M4)::
 
 
 Version
-^^^^^^^
+-------
 
-If the ``version`` parameter is not provided, Segno chooses the minimal version
-for the QR Code automatically. The version may be specified as integer or as
-Micro QR Code identifier.
+If the :option:`--version <segno --version>` parameter is not provided, Segno
+chooses the minimal version for the QR Code automatically. The version may be
+specified as integer or as Micro QR Code identifier.
 
 The content 'Layla' would fit into a version 1 QR Code, but the following command
 enforces version 5::
@@ -57,10 +60,12 @@ Micro QR Code::
 
 
 Error correction level
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
-The default error correction level is "L", use the ``error`` parameter to change
-it::
+The default error correction level is "L" (or any better if
+:option:`--no-error-boost <segno --no-error-boost>` was not set, c.f.
+:doc:`error-correction-boost`), use the
+:option:`--error <segno --error>` parameter to change it::
 
     $ segno --error=q "Ain't no grave"
     $ segno -e=h "Heart of Gold"
@@ -79,10 +84,11 @@ it::
 
 
 QR Code serialization
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
-Printing the QR Codes to the terminal is nice but the ``output`` parameter
-serializes the QR Code in one of the supported file formats::
+Printing the QR Codes to the terminal is nice but the
+:option:`--output <segno --output>` parameter serializes the QR Code in one of
+the supported file formats::
 
     $ segno --output=white-room.png "White Room"
 
@@ -113,10 +119,10 @@ serializes the QR Code in one of the supported file formats::
 
 
 Scaling QR Codes
-^^^^^^^^^^^^^^^^
+----------------
 
-If the resulting QR Code is too small, ``scale`` can be used to create a more
-appropriate output::
+If the resulting QR Code is too small, :option:`--scale <segno --scale>` can
+be used to create a more appropriate output::
 
     $ segno --scale=10 --output=money-talks.png "Money Talks"
 
@@ -136,10 +142,11 @@ parameter is ignored.
 
 
 Changing the size of the quiet zone
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------
 
 The generated QR Codes will have a recommended quiet zone / border around the
-symbol. To change the size of the border, ``border`` can be utilized::
+symbol. To change the size of the border, :option:`--border <segno --border>`
+can be utilized::
 
     $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
 
@@ -163,11 +170,11 @@ symbol. To change the size of the border, ``border`` can be utilized::
 
 
 Colors
-^^^^^^
+------
 
-Usually, all QR Codes are serialized in black and white. Use ``color``
-to change the color of the dark modules and ``background`` to change the
-color of the light modules.
+Usually, all QR Codes are serialized in black and white. Use
+:option:`--color <segno --color>` to change the color of the dark modules and
+:option:`--background <segno --background>` to change the color of the light modules.
 
 Change the foreground color to darkblue::
 
@@ -193,19 +200,19 @@ Change the foreground color to darkblue and background to yellow::
     :alt: QR Code "Don't Give Up" with foreground color "transparent"
 
 
-If the serializer does not support ``color`` or ``background``, these arguments
-are ignored.
+If the serializer does not support :option:`--color <segno --color>` or
+:option:`--background <segno --background>`, these arguments are ignored.
 
 
 Structured Append
-^^^^^^^^^^^^^^^^^
+-----------------
 
 The :doc:`Structured Append <structured-append>` mode can be used to split a
 message across multiple (max. 16) QR Codes.
 
-To create a sequence of QR Codes, the ``seq`` argument must be provided.
-Additonally, either the QR Code version or the desired number of symbols must be
-provided::
+To create a sequence of QR Codes, the :option:`--seq <segno --seq>` argument must
+be provided. Additonally, either the QR Code :option:`--version <segno --version>`
+or the desired number of symbols (:option:`--symbol-count <segno --symbol-count>`) must be provided::
 
 
     $ segno --seq -v 1 "Well you should see Polythene Pam"

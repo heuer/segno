@@ -52,8 +52,9 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             not support error correction. If an explicit error level is used,
             a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
-            correction level "L" or better see ``boost_error``), "L", "M", "Q",
-            "H" (error correction level "H" isn't available for Micro QR Codes).
+            correction level "L" or better see :paramref:`boost_error <segno.make.boost_error>`),
+            "L", "M", "Q", "H" (error correction level "H" isn't available for
+            Micro QR Codes).
 
             =====================================   ===========================
             Error correction level                  Error correction capability
@@ -64,12 +65,12 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================
 
-            Higher error levels may require larger QR Codes (see also `version`
-            parameter).
+            Higher error levels may require larger QR Codes (see also
+            :paramref:`version <segno.make.version>` parameter).
 
             The `error` parameter is case insensitive.
 
-            See also the `boost_error` parameter.
+            See also the :paramref:`boost_error <segno.make.boost_error>` parameter.
     :type error: str or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
@@ -117,8 +118,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             `encoding` and may raise an exception if the ECI designator cannot
             be found.
             The ECI mode is not supported by Micro QR Codes.
-    :param micro: If `version` is ``None`` this parameter can be used
-            to allow the creation of a Micro QR Code.
+    :param micro: If :paramref:`version <segno.make.version>` is ``None`` (default)
+            this parameter can be used to allow the creation of a Micro QR Code.
             If set to ``False``, a QR Code is generated. If set to
             ``None`` (default) a Micro QR Code may be generated if applicable.
             If set to ``True`` the algorithm generates a Micro QR Code or
@@ -127,10 +128,10 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type micro: bool or None
     :param bool boost_error: Indicates if the error correction level may be
             increased if it does not affect the version (default: ``True``).
-            If set to ``True``, the ``error`` parameter is interpreted as
-            minimum error level. If set to ``False``, the resulting (Micro) QR
-            Code uses the provided ``error`` level (or the default error
-            correction level, if error is ``None``)
+            If set to ``True``, the :paramref:`error <segno.make.error>`
+            parameter is interpreted as minimum error level. If set to ``False``,
+            the resulting (Micro) QR Code uses the provided `error` level
+            (or the default error correction level, if error is ``None``)
     :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
             likely that a derived exception is thrown:
             :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
@@ -372,18 +373,21 @@ class QRCode:
         This method saves QR code as an image (by default with a scaling factor
         of 10) to a temporary file and opens it with the standard PNG viewer
         application or within the standard webbrowser.
-        The temporary file is deleted afterwards (unless `delete_after` is set
-        to ``None``).
+        The temporary file is deleted afterwards (unless
+        :paramref:`delete_after <segno.QRCode.show.delete_after>` is set to ``None``).
 
         If this method does not show any result, try to increase the
-        `delete_after` value or set it to ``None``
+        :paramref:`delete_after <segno.QRCode.show.delete_after>` value or set
+        it to ``None``
 
-        :param int delete_after: Time in seconds to wait till the temporary file is
+        :param delete_after: Time in seconds to wait till the temporary file is
                 deleted.
+        :type delete_after: int or None
         :param int scale: Integer indicating the size of a single module.
-        :param int border: Integer indicating the size of the quiet zone.
+        :param border: Integer indicating the size of the quiet zone.
                 If set to ``None`` (default), the recommended border size
                 will be used.
+        :type border: int or None
         :param color: The color of the dark modules (default: black).
         :param background: The color of the background (default: white).
         """
@@ -425,14 +429,17 @@ class QRCode:
         """\
         Converts the QR Code into a SVG data URI.
 
-        The XML declaration is omitted by default (set ``xmldecl`` to ``True``
+        The XML declaration is omitted by default (set
+        :paramref:`xmldecl <segno.QRCode.svg_data_uri.xmldecl>` to ``True``
         to enable it), further the newline is omitted by default (set ``nl`` to
         ``True`` to enable it).
 
-        Aside from the missing ``out`` parameter and the different ``xmldecl``
-        and ``nl`` default values and the additional parameter ``encode_minimal``
-        and ``omit_charset`` this method uses the same parameters as the
-        usual SVG serializer, see :py:func:`save` and the available `SVG parameters <#svg>`_
+        Aside from the missing `out` parameter, the different `xmldecl` and
+        `nl` default values, and the additional parameters
+        :paramref:`encode_minimal <segno.QRCode.svg_data_uri.encode_minimal>`
+        and :paramref:`omit_charset <segno.QRCode.svg_data_uri.omit_charset>`,
+        this method uses the same parameters as the usual SVG serializer, see
+        :py:func:`save` and the available `SVG parameters <#svg>`_
 
         :param bool xmldecl: Indicates if the XML declaration should be
                         serialized (default: ``False``)
@@ -494,11 +501,12 @@ class QRCode:
         ==========    ==============================================================
         scale         Integer or float indicating the size of a single module.
                       Default: 1. The interpretation of the scaling factor depends
-                      on the serializer. For pixel-based output (like PNG) the
-                      scaling factor is interepreted as pixel-size (1 = 1 pixel).
-                      EPS interprets ``1`` as 1 point (1/72 inch) per module.
-                      Some serializers (like SVG) accept float values. If the
-                      serializer does not accept float values, the value will be
+                      on the serializer. For pixel-based output (like :ref:`PNG <png>`)
+                      the scaling factor is interepreted as pixel-size (1 = 1 pixel).
+                      :ref:`EPS <eps>` interprets ``1`` as 1 point (1/72 inch) per
+                      module.
+                      Some serializers (like :ref:`SVG <svg>`) accept float values.
+                      If the serializer does not accept float values, the value will be
                       converted to an integer value (note: int(1.6) == 1).
         border        Integer indicating the size of the quiet zone.
                       If set to ``None`` (default), the recommended border size
@@ -508,13 +516,15 @@ class QRCode:
                       modules. The default value is "black".  The color can be
                       provided as ``(R, G, B)`` tuple, as web color name
                       (like "red") or in hexadecimal format (``#RGB`` or
-                      ``#RRGGBB``). Some serializers (SVG and PNG) accept an alpha
-                      transparency value like ``#RRGGBBAA``.
+                      ``#RRGGBB``). Some serializers (i.e. :ref:`SVG <svg>` and
+                      :ref:`PNG <png>`) accept an alpha transparency value like
+                      ``#RRGGBBAA``.
         background    A string or tuple representing a color for the light modules
-                      or background. See "color" for valid values.
-                      The default value depends on the serializer. SVG uses no
-                      background color (``None``) by default, other serializers
-                      use "white" as default background color.
+                      or background. See `color` for valid values.
+                      The default value depends on the serializer. :ref:`SVG <svg>`
+                      uses no background color (``None``) by default, other
+                      serializers, like :ref:`PNG <png>`, use "white" as default
+                      background color.
         ==========    ==============================================================
 
 

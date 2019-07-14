@@ -83,8 +83,9 @@ as the four 2-L QR Codes.
     :alt: 6-L QR Code encoding 'Yesterday...'
 
 The following 2-L QR Codes were created by specifying that 4 codes should be generated
-(``symbol_count=4``). The result would be the same if the user specifies that a sequence
-of QR Codes with version 2 should be created.
+(:paramref:`symbol_count=4 <segno.make_sequence.symbol_count>` ).
+The result would be the same if the user specifies that a sequence of QR Codes
+with version 2 should be created.
 
 .. image:: _static/structured_append_example_2_2-L-04-01.svg
     :alt: 2-L QR Code encoding first verse of 'Yesterday' part 1

@@ -19,7 +19,7 @@ QR Code in different formats:
 All serializers accept a ``border`` parameter which indicates the "quiet zone"
 of a (Micro) QR Code. If ``border`` is ``None``, the default border (quiet zone)
 size will be used. If the resulting (Micro) QR Code should have no border or
-a custom border, you may specify the border
+a custom border, the user may specify the border explicitly.
 
 .. code-block:: python
 
@@ -32,9 +32,10 @@ a custom border, you may specify the border
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
 that the dark / light modules of a (Micro) QR Code is interpreted as one unit in
-the specific user space (i.e. 1 pixel for the PNG serializer or 1 point (1/72 of
-an inch) in EPS). Some serializers (like PNG) accept only an integer value or
-convert the provided scaling factor to an integer. Other, like SVG and EPS,
+the specific user space (i.e. 1 pixel for the :ref:`PNG <png>` serializer or
+1 point (1/72 of an inch) in :ref:`EPS <eps>`). Some serializers
+(like :ref:`PNG <png>`) accept only an integer value or convert the provided
+scaling factor to an integer. Other, like :ref:`SVG <svg>` and :ref:`EPS <eps>`,
 accept float values and do not "downgrade" it to an integer.
 
 .. code-block:: python
@@ -70,9 +71,10 @@ for details.
     >>> qr.save('neil-young-5.svgz', color=(8, 90, 117))
 
 
-If the QR Code should be serialized to a buffer, use the ``kind`` parameter
-to specify the output format. Please note that some serializers write bytes
-while others write strings, see :py:meth:`segno.QRCode.save` for details.
+If the QR Code should be serialized to a buffer, use the
+:paramref:`kind <segno.QRCode.save.kind>`  parameter to specify the output format.
+Please note that some serializers write bytes while others write strings, see
+:py:meth:`segno.QRCode.save` for details.
 
 .. code-block:: python
 
