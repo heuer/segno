@@ -18,6 +18,7 @@ segno.encoder
 -------------
 
 .. automodule:: segno.encoder
+    :member-order: bysource
     :members:
 
 
