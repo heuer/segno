@@ -219,5 +219,5 @@ dark modules use the color "darkblue" instead of black.
 
 
 Saves the Micro QR Code (M2-M) as PNG image, using the color #003399 for dark
-modules. Each module corresponds to 10 pixels because the scaling factor was set
-to a value of 10.
+modules. Each module corresponds to 10 x 10 pixels because the scaling factor
+was set to a value of 10.
