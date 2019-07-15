@@ -12,7 +12,7 @@ Description
 
 :program:`segno` creates QR Codes and Micro QR Codes.
 
-It can be used to print the codes to a terminal or to serialize the them
+It can be used to print the codes to a terminal or to serialize them
 in several output formats (like SVG and PNG).
 
 
