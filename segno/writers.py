@@ -42,7 +42,7 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter
 
 # Standard creator name
-CREATOR = 'Segno <https://pypi.python.org/pypi/segno/>'
+CREATOR = 'Segno <https://pypi.org/project/segno/>'
 
 
 @contextmanager
@@ -234,12 +234,12 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
                     fallback_color='fuchsia', color_mapping=None,
-                    add_legend=True):
+                    add_legend=True):  # pragma: no cover
     """\
     Internal SVG serializer which is useful to debugging purposes.
 
     This function is not exposed to the QRCode class by intention and the
-    resulting SVG document is very inefficient (lots of <rect/>s).
+    resulting SVG document is very inefficient (a lot of ``<rect/>`` elements).
     Dark modules are black and light modules are white by default. Provide
     a custom `color_mapping` to override these defaults.
     Unknown modules are red by default.
@@ -450,8 +450,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """
         return (b ^ 0x1 for b in row)
 
-    def row(r):
-        return reduce(lambda row, fn: fn(row), row_filters, r)
+    def apply_row_filter(row, fn):
+        return fn(row)
 
     # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
@@ -531,7 +531,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         if colortype:  # Palette
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <https://www.w3.org/TR/PNG/#11tRNS>
-            if len(palette[0]) > 3:  # Color with alpha is the first in the palette
+            if len(palette[0]) > 3:  # Color with alpha channel is the first color in the palette
                 write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
                 write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
@@ -553,9 +553,9 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             row_filters.append(scale_row_x_axis)
         row_filters = tuple(row_filters)
         res = bytearray(horizontal_border)
-        for r in (row(r) for r in matrix):
+        for row in (reduce(apply_row_filter, row_filters, r) for r in matrix):
             # Chain precalculated left border with row and right border
-            res += scanline(chain(vertical_border, r, vertical_border))
+            res += scanline(chain(vertical_border, row, vertical_border))
             res += same_as_above  # This is b'' if no scaling factor was provided
         res += horizontal_border
         if _PY2:
@@ -570,6 +570,8 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                     background='#fff', compresslevel=9, addad=True):
     """\
     Converts the provided matrix into a PNG data URI.
+
+    See :func:`write_png` for a description of supported parameters.
 
     :rtype: str
     """

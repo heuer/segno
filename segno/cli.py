@@ -51,36 +51,38 @@ def make_parser():
                         choices=('L', 'M', 'Q', 'H', '-'),
                         default=None,
                         type=lambda x: x.upper())
-    parser.add_argument('--mode', '-m', help='Mode',
+    parser.add_argument('--mode', '-m', help='Mode. If unspecified (default), an optimal mode is choosen for the given input.',
                         choices=('numeric', 'alphanumeric', 'byte', 'kanji'),
                         default=None,
                         type=lambda x: x.lower())
-    parser.add_argument('--pattern', '-p', help='Mask pattern to use',
-                        required=False,
-                        default=None,
-                        type=int)
-    parser.add_argument('--scale', '-s', help='Scaling factor',
-                        default=1,
-                        type=_convert_scale)
-    parser.add_argument('--border', '-b', help='Size of the border / quiet zone',
-                        default=None,
-                        type=int)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
                         dest='micro', action='store_false')
-    parser.add_argument('--color', help='Color of the dark modules. Use "transparent" to set the color to None (not supported by all serializers)')
-    parser.add_argument('--background', help='Color of the light modules. Use "transparent" to set the background to None (not supported by all serializers)')
-    parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
+    parser.add_argument('--pattern', '-p', help='Mask pattern to use. If unspecified (default), an optimal mask pattern is used. Valid values for QR Codes: 0 .. 7. Valid values for Micro QR Codes: 0 .. 3',
                         required=False,
-                        )
-    parser.add_argument('--no-error-boost', help='Disables the automatic error incrementation if a higher error correction level is possible',
+                        default=None,
+                        type=int)
+    parser.add_argument('--no-error-boost', help='Disables the automatic error correction level incrementation. By default, the maximal error correction level is used (without changing the version).',
                         dest='boost_error', action='store_false')
     parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version or symbol count must be provided',
                         dest='seq', action='store_true')
     parser.add_argument('--symbol-count', '-sc', help='Number of symbols to create',
                         default=None,
                         type=int)
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used. A value of 0 omits the border',
+                        default=None,
+                        type=int)
+    parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, i.e. SVG, accept a decimal value.',
+                        default=1,
+                        type=_convert_scale)
+    parser.add_argument('--color', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
+                                        'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.'
+                                        'The standard color is black.')
+    parser.add_argument('--background', '-bg', help='Color of the light modules. See "color" for a description of possible values. The standard background color is white.')
+    parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
+                        required=False,
+                        )
     # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
@@ -145,8 +147,15 @@ def parse(args):
 
 def build_config(config, filename=None):
     """\
-    Builds a configuration and returns it. The config contains only keywords,
-    which are supported by the serializer. Unsupported values are ignored.
+    Builds a configuration and returns it.
+
+    The config contains only keywords which are supported by the serializer.
+    Unsupported values are removed.
+
+    :param dict config: The configuration / dict returned by the :py:func:`parse` function.
+    :param filename: Optional filename. If not ``None`` (default), the `filename`
+                     must provide a supported extension to identify the serializer.
+    :return: A (maybe) modified configuration.
     """
     # Done here since it seems not to be possible to detect if an argument
     # was supplied by the user or if it's the default argument.
@@ -179,6 +188,15 @@ def build_config(config, filename=None):
 
 
 def make_code(config):
+    """\
+    Creates the (Micro) QR Code (Sequence).
+
+    Configuration parameters used for creating the Micro QR Code, QR Code
+    or QR Code Sequence are removed from the configuration.
+
+    :param config: Configuration, see :py:func:`build_config`
+    :return: :py:class:`segno.QRCode` or :py:class:`segno.QRCodeSequence`.
+    """
     make = segno.make
     kw = dict(mode=config.pop('mode'), error=config.pop('error'),
               version=config.pop('version'), mask=config.pop('pattern'),
@@ -207,6 +225,9 @@ def main(args=sys.argv[1:]):
 
 
 class _AttrDict(dict):
+    """\
+    Internal helper class.
+    """
     def __init__(self, *args, **kwargs):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self

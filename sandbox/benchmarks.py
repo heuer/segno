@@ -8,7 +8,7 @@ import timeit
 import segno
 try:
     import qrcode
-    from qrcode import QRCode, ERROR_CORRECT_M, ERROR_CORRECT_L, ERROR_CORRECT_H
+    from qrcode import QRCode, ERROR_CORRECT_M, ERROR_CORRECT_Q, ERROR_CORRECT_H
     from qrcode.image.svg import SvgImage, SvgPathImage
 except ImportError:
     QRCode = None
@@ -20,6 +20,10 @@ try:
     import pyqrcode
 except ImportError:
     pyqrcode = None
+try:
+    import pyqrcodeng
+except ImportError:
+    pyqrcodeng = None
 
 
 if QRCode:
@@ -29,7 +33,13 @@ if QRCode:
         qr.add_data(data, optimize=False)
         qr.make()
 
-    def createbig_qrcode(data='QR Code Symbol'):
+    def create7q_qrcode(data='QR Code Symbol'):
+        """qrcode create 7-Q"""
+        qr = QRCode(error_correction=ERROR_CORRECT_Q, version=7)
+        qr.add_data(data, optimize=False)
+        qr.make()
+
+    def create30h_qrcode(data='QR Code Symbol'):
         """qrcode create 30-H"""
         qr = QRCode(error_correction=ERROR_CORRECT_H, version=30)
         qr.add_data(data, optimize=False)
@@ -50,7 +60,7 @@ if QRCode:
         qr.make_image().save('out/qrcode_rects_%s.svg' % data)
 
     def png_qrcode(data='QR Code Symbol'):
-        """qrcode PNG"""
+        """qrcode PNG 1-M"""
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10)
         qr.add_data(data, optimize=False)
         qr.make_image().save('out/qrcode_%s.png' % data)
@@ -61,7 +71,11 @@ if pyqrcode:
         """PyQRCode create 1-M"""
         pyqrcode.create(data, error='m')
 
-    def createbig_pyqrcode(data='QR Code Symbol'):
+    def create7q_pyqrcode(data='QR Code Symbol'):
+        """PyQRCode create 7-Q"""
+        pyqrcode.create(data, error='q', version=7)
+
+    def create30h_pyqrcode(data='QR Code Symbol'):
         """PyQRCode create 30-H"""
         pyqrcode.create(data, error='h', version=30)
 
@@ -70,8 +84,30 @@ if pyqrcode:
         pyqrcode.create(data, error='m').svg('out/pyqrcode_%s.svg' % data, scale=10)
 
     def png_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode PNG"""
+        """PyQRCode PNG 1-M"""
         pyqrcode.create(data, error='m').png('out/pyqrcode_%s.png' % data, scale=10)
+
+
+if pyqrcodeng:
+    def create_pyqrcodeng(data='QR Code Symbol'):
+        """PyQRCodeNG create 1-M"""
+        pyqrcodeng.create(data, error='m')
+
+    def create7q_pyqrcodeng(data='QR Code Symbol'):
+        """PyQRCodeNG create 7-Q"""
+        pyqrcodeng.create(data, error='q', version=7)
+
+    def create30h_pyqrcodeng(data='QR Code Symbol'):
+        """PyQRCodeNG create 30-H"""
+        pyqrcodeng.create(data, error='h', version=30)
+
+    def svg_pyqrcodeng(data='QR Code Symbol'):
+        """PyQRCodeNG SVG"""
+        pyqrcode.create(data, error='m').svg('out/pyqrcodeng_%s.svg' % data, scale=10)
+
+    def png_pyqrcodeng(data='QR Code Symbol'):
+        """PyQRCodeNG PNG 1-M"""
+        pyqrcodeng.create(data, error='m').png('out/pyqrcodeng_%s.png' % data, scale=10)
 
 
 if QrCode:
@@ -90,9 +126,14 @@ def create_segno(data='QR Code Symbol'):
     segno.make_qr(data, error='m', boost_error=False)
 
 
-def createbig_segno(data='QR Code Symbol'):
+def create7q_segno(data='QR Code Symbol'):
+    """Segno create 7-Q"""
+    segno.make_qr(data, error='q', version=7, boost_error=False)
+
+
+def create30h_segno(data='QR Code Symbol'):
     """Segno create 30-H"""
-    segno.make_qr(data, error='h', version=30, boost_error=False)
+    segno.make_qr(data, error='h', version=30, boost_error=False).save('out/segno_30h_%s.svg' % data, scale=10)
 
 
 def svg_segno(data='QR Code Symbol'):
@@ -101,29 +142,46 @@ def svg_segno(data='QR Code Symbol'):
 
 
 def png_segno(data='QR Code Symbol'):
-    """Segno PNG"""
+    """Segno PNG 1-M"""
     segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10, addad=False)
 
 
 def run_create_tests(which=None, number=200, table=None):
-    tests = ('create_pyqrcode', 'create_qrcodegen',
+    tests = ('create_pyqrcode',
+             'create_pyqrcodeng',
+             'create_qrcodegen',
              'create_qrcode', 'create_segno',)
     if which:
         tests = filter(lambda n: n[len('create_'):] in which, tests)
     _run_tests(tests, number, table)
 
 
-def run_createbig_tests(which=None, number=200, table=None):
-    tests = ('createbig_pyqrcode',
-             'createbig_qrcode', 'createbig_segno',)
+def run_create7q_tests(which=None, number=200, table=None):
+    tests = ('create7q_pyqrcode',
+             'create7q_pyqrcodeng',
+             'create7q_qrcode',
+             'create7q_segno',)
+    if which:
+        tests = filter(lambda n: n[len('create7q_'):] in which, tests)
+    _run_tests(tests, number, table)
+
+
+def run_create30h_tests(which=None, number=200, table=None):
+    tests = ('create30h_pyqrcode',
+             'create30h_pyqrcodeng',
+             'create30h_qrcode',
+             'create30h_segno',)
     if which:
         tests = filter(lambda n: n[len('createbig_'):] in which, tests)
     _run_tests(tests, number, table)
 
 
 def run_svg_tests(which=None, number=200, table=None):
-    tests = ('svg_pyqrcode', 'svg_qrcodegen',
-             'svg_qrcode_path', 'svg_qrcode_rects', 'svg_segno',)
+    tests = ('svg_pyqrcode',
+             'svg_pyqrcodeng',
+             'svg_qrcodegen',
+             'svg_qrcode_path', 'svg_qrcode_rects',
+             'svg_segno',)
 
     if which:
         tests = filter(lambda n: n[len('svg_'):] in which, tests)
@@ -131,7 +189,10 @@ def run_svg_tests(which=None, number=200, table=None):
 
 
 def run_png_tests(which=None, number=200, table=None):
-    tests = ('png_pyqrcode', 'png_qrcode', 'png_segno',)
+    tests = ('png_pyqrcode',
+             'png_pyqrcodeng',
+             'png_qrcode',
+             'png_segno',)
     if which:
         tests = filter(lambda n: n[len('png_'):] in which, tests)
     _run_tests(tests, number, table)
@@ -159,7 +220,8 @@ if __name__ == '__main__':
     import csv
     table = []
     run_create_tests(table=table)
-    run_createbig_tests(table=table)
+    run_create7q_tests(table=table)
+    run_create30h_tests(table=table)
     run_svg_tests(table=table)
     run_png_tests(table=table)
     with open('out/results.csv', 'w') as f:

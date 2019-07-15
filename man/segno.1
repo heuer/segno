@@ -1,0 +1,285 @@
+.\" Man page generated from reStructuredText.
+.
+.TH "SEGNO" "1" "Jul 15, 2019" "" "Segno"
+.SH NAME
+segno \- Segno QR Code encoder
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SYNOPSIS
+.sp
+\fBsegno\fP [\fIoptions\fP] content
+.SH DESCRIPTION
+.sp
+\fBsegno\fP creates QR Codes and Micro QR Codes.
+.sp
+It can be used to print the codes to a terminal or to serialize the them
+in several output formats (like SVG and PNG).
+.SH COMMAND LINE OPTIONS
+.INDENT 0.0
+.TP
+.B \-\-ver, \-V
+Shows Segno’s version and exit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-h, \-\-help
+Show a help message which lists all commands and exit
+.UNINDENT
+QR Code Options.INDENT 0.0
+.TP
+.B \-\-version VERSION, \-v VERSION
+QR Code version: 1 .. 40 or Micro Code Version “M1”, “M2”, “M3”, “M4”
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-error {L,M,Q,H,\-}, \-e {L,M,Q,H,\-}
+Error correction level: “L”: 7% (default), “M”: 15%, “Q”: 25%, “H”: 30%,
+“\-“: no error correction (used for M1 symbols)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-mode {numeric,alphanumeric,byte,kanji}, \-m {numeric,alphanumeric,byte,kanji}
+Mode. If unspecified (default), an optimal mode is choosen for the given
+input.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-pattern PATTERN, \-p PATTERN
+Mask pattern to use. If unspecified (default), an optimal mask pattern is used.
+Valid values for QR Codes: 0 .. 7
+Valid values for Micro QR Codes: 0 .. 3
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-micro
+Allow the creation of Micro QR Codes
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-micro
+Disallow creation of Micro QR Codes (default)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-error\-boost
+Disables the automatic error correction level incrementation.
+By default, the maximal error correction level is used (without changing the
+version).
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-seq
+Creates a sequence of QR Codes (Structured Append mode).
+The \fI\%\-\-version\fP or \fI\%\-\-symbol\-count\fP must be provided
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-symbol\-count SYMBOL_COUNT, \-sc SYMBOL_COUNT
+Number of symbols to create
+.UNINDENT
+Output Options.INDENT 0.0
+.TP
+.B \-\-scale SCALE, \-s SCALE
+Scaling factor of the output.
+By default, a scaling factor of 1 is used which can result into too small
+images. Some output formats, i.e. SVG, accept a decimal value.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-border BORDER, \-b BORDER
+Size of the border / quiet zone of the output.
+By default, the standard border (4 modules for QR Codes, 2 modules for
+Micro QR Codes) will be used. A value of 0 omits the border
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-color COLOR
+Color of the dark modules. The color may be specified as web color name,
+i.e. “red” or as hexadecimal value, i.e. “#0033cc”. Some serializers, i.e.
+SVG and PNG, support alpha channels (8\-digit hexadecimal value) and
+some support “transparent” as color value. The standard color is black.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-background BACKGROUND, \-bg BACKGROUND
+Color of the light modules.
+See \fI\%\-\-color\fP for a description of possible values.
+The standard background color is white.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-output OUTPUT, \-o OUTPUT
+Output file.
+If not specified, the QR Code is printed to the terminal
+.UNINDENT
+SVG Options.INDENT 0.0
+.TP
+.B \-\-no\-classes
+Omits the (default) SVG classes
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-xmldecl
+Omits the XML declaration header
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-namespace
+Indicates that the SVG document should have no SVG namespace declaration
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-newline
+Indicates that the SVG document should have no trailing newline
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-title TITLE
+Specifies the title of the SVG document
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-desc DESC
+Specifies the description of the SVG document
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-svgid SVGID
+Indicates the ID of the <svg/> element
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-svgclass SVGCLASS
+Indicates the CSS class of the <svg/> element
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-lineclass LINECLASS
+Indicates the CSS class of the <path/> element (the dark modules)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-size
+Indicates that the SVG document should not have “width” and “height” attributes
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-unit UNIT
+Indicates SVG coordinate system unit
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-svgversion SVGVERSION
+Indicates the SVG version
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-encoding ENCODING
+Specifies the encoding of the document
+.UNINDENT
+PNG Options.INDENT 0.0
+.TP
+.B \-\-dpi DPI
+Sets the DPI value of the PNG file
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-no\-ad
+Omits the “Software” comment in the PNG file
+.UNINDENT
+.SH EXIT STATUS
+.sp
+\fBsegno\fP exits 0 on success, and >0 if an error occurs.
+.SH EXAMPLES
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno "Up jumped the devil"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Prints a 2\-Q QR code to the terminal
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno \-o=yesterday.png "Yesterday"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Saves the 1\-Q QR code as PNG image.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno \-o=fool.svg \-\-title="Example QR code" "The Fool on the Hill"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Saves the 2\-Q QR code as SVG document with the given title.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno \-o=number.svg \-\-scale=10 \-\-color="darkblue" "A Day in the Life"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Saves the 1\-L QR code as SVG document, using a scaling factor of 10 and the
+dark modules use the color “darkblue” instead of black.
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno \-o rain.png \-s 10 \-\-color="#003399" \-\-micro RAIN
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Saves the Micro QR Code (M2\-M) as PNG image, using the color #003399 for dark
+modules. Each module corresponds to 10 x 10 pixels because the scaling factor
+was set to a value of 10.
+.SH COPYRIGHT
+2016 - 2019 Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
+.\" Generated by docutils manpage writer.
+.

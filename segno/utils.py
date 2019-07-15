@@ -69,7 +69,8 @@ def check_valid_scale(scale):
     """\
     Raises a :py:exc:`ValueError` iff `scale` is negative or zero.
 
-    :param scale: float or integer indicating a scaling factor.
+    :param scale: Scaling factor.
+    :type scale: float or int
     """
     if scale <= 0:
         raise ValueError('The scale must not be negative or zero. '
@@ -78,7 +79,7 @@ def check_valid_scale(scale):
 
 def check_valid_border(border):
     """\
-    Raises a ValueError iff `border` is negative.
+    Raises a :py:exc:`ValueError` iff `border` is negative.
 
     :param int border: Indicating the size of the quiet zone.
     """
@@ -142,13 +143,11 @@ def matrix_iter(matrix, version, scale=1, border=None):
     width, height = get_symbol_size(version, scale=1, border=0)
     border_row = [0x0] * width
     for i in range(-border, height + border):
-        if 0 <= i < height:
-           row = matrix[i]
-        else:
-            row = border_row
+        row = matrix[i] if 0 <= i < height else border_row
+        res_row = tuple(chain.from_iterable(([0x1 if 0 <= j < width and row[j] else 0x0] * scale
+                                                for j in range(-border, width + border))))
         for s in range(scale):
-            yield chain.from_iterable(([0x1 if 0 <= j < width and row[j] else 0x0] * scale
-                                       for j in range(-border, width + border)))
+            yield res_row
 
 
 # Constants for detailed iterator, see utils.matrix_iter_detail

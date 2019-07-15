@@ -12,11 +12,13 @@ Segno provides several serialization formats like Scalable Vector Graphics (SVG)
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
 Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (PAM),
 LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
-serializers require an external lib. Segno could provide more serialization
+serializers require an external lib. Segno can provide more serialization
 formats via a plugin architecture.
 Further, it provides several high level functions to create QR Codes which encode
 contact data (MeCard, vCard) or WIFI configurations.
 
+The project provides more than 1000 test cases to verify a standard conform
+QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
 
 Installation
 ------------
@@ -51,7 +53,9 @@ Library
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Up Jumped the Devil')  # Let Segno choose the minimal version
+    >>> # Let Segno choose the minimal version and an optimal (maximal) error
+    >>> # level without changing the minimal version
+    >>> qr = segno.make('Up Jumped the Devil')
     >>> qr.is_micro
     False
     >>> qr.version

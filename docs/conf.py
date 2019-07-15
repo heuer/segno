@@ -30,6 +30,7 @@ import segno
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx_paramlinks',
     'sphinx.ext.intersphinx',
     #'sphinx.ext.todo',
     #'sphinx.ext.viewcode',
@@ -37,7 +38,7 @@ extensions = [
 
 autodoc_member_order = 'groupwise'
 
-intersphinx_mapping = {'python': ('https://docs.python.org/2', None)}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -210,6 +211,14 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'segnodoc'
 
+html_css_files = [
+    'css/custom.css',
+]
+
+html_js_files = [
+    'js/custom.js',
+]
+
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
@@ -260,8 +269,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'segno', u'Segno Documentation',
-     [author], 1)
+    ('man/segno', 'segno', 'Segno QR Code encoder', '', 1),
 ]
 
 # If true, show URL addresses after external links.

@@ -974,17 +974,17 @@ def test_encode_iso_i2():
 def test_encode_iso_i3():
     # ISO/IEC 18004:2015(E) - page 96
     # 01234567 as M2-L symbol
-    qr = encoder.encode('01234567', error='l', version='m2', mask=1, micro=True,
-                        boost_error=False)
-    assert consts.ERROR_LEVEL_L == qr.error
-    assert consts.VERSION_M2 == qr.version
-    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
-    qr = encoder.encode('01234567', error='l', version=None, mask=1, micro=True,
-                        boost_error=False)
-    assert consts.ERROR_LEVEL_L == qr.error
-    assert consts.VERSION_M2 == qr.version
-    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
     ref_matrix = read_matrix('iso-i3')
+    qr = encoder.encode('01234567', error='l', version='m2', boost_error=False)
+    assert consts.ERROR_LEVEL_L == qr.error
+    assert consts.VERSION_M2 == qr.version
+    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert ref_matrix == qr.matrix
+    qr = encoder.encode('01234567', error='l', version=None, micro=True,
+                        boost_error=False)
+    assert consts.ERROR_LEVEL_L == qr.error
+    assert consts.VERSION_M2 == qr.version
+    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
     assert ref_matrix == qr.matrix
 
 

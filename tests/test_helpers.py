@@ -11,6 +11,7 @@ Issue <https://github.com/heuer/segno/issues/19>
 """
 from __future__ import unicode_literals, absolute_import
 import pytest
+import segno
 from segno import helpers
 from datetime import date
 
@@ -98,6 +99,19 @@ def test_vcard_data():
     photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
+
+
+def test_photo_uri():
+    photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
+    qr_from_data = segno.make_qr(vcard)
+    assert qr_from_data
+    assert qr_from_data.error == 'L'
+    qr_from_vcard = helpers.make_vcard('Doe;John', 'John Doe', photo_uri=photo_uris)
+    assert qr_from_vcard
+    assert qr_from_vcard.error == 'L'
+    assert qr_from_data == qr_from_vcard
 
 
 def test_vcard_title_escape():
