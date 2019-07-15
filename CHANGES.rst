@@ -4,6 +4,15 @@ Changes
 
 0.3.1 -- 2019-mm-dd
 -------------------
+* Performance improvements
+* Removed deprecated functions ``encoder.score_n1``, ``encoder.score_n2``,
+  ``encoder.score_n3``, and ``encoder.score_n4`` (they didn't belong to the
+  public API anyway)
+* Added man page for the CLI (fixes #41)
+* Added more documentation and examples
+* Fixed missing charts of <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html>
+* Added PyQRCodeNG <https://pypi.org/project/PyQRCodeNG/> to comparison table
+* Updated CSS for a better layout of tables with a lot of content
 
 
 0.3.0 -- 2019-06-25
