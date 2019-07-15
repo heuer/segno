@@ -2,7 +2,7 @@ Changes
 =======
 
 
-0.3.1 -- 2019-07-15
+0.3.2 -- 2019-07-15
 -------------------
 * Performance improvements
 * Added man page for the CLI (fixes #41)
@@ -13,6 +13,12 @@ Changes
 * Removed deprecated functions ``encoder.score_n1``, ``encoder.score_n2``,
   ``encoder.score_n3``, and ``encoder.score_n4`` (they didn't belong to the
   public API anyway)
+* Fixed Read the Docs build
+
+
+0.3.1 -- 2019-07-15
+-------------------
+* See 0.3.2
 
 
 0.3.0 -- 2019-06-25
