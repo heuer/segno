@@ -1,5 +1,5 @@
-Error Correction Level Boosting
-===============================
+Boost Error Correction Level
+============================
 
 If the user does not provide any :option:`--version <segno --version>` or
 :paramref:`version <segno.make.version>` keyword parameter for :func:`segno.make`,

@@ -13,7 +13,7 @@ Contents:
     command-line
     make
     structured-append
-    error-correction-boost
+    boost-error-correction-level
     serializers
     colors
     special-qrcode-factories
