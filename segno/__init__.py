@@ -616,13 +616,14 @@ class QRCode:
         scale            integer
         color            Default: "#000" (black)
                          ``None`` is a valid value iff background is not ``None``.
-        background       Default value ``#fff`` (white)
+                         If set to ``None``, the dark modules become transparent.
+        background       Default value "#fff" (white)
                          See keyword "color" for further details.
         compresslevel    Default: 9. Integer indicating the compression level
                          for the ``IDAT`` (data) chunk.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
-        dpi              Default: None. Specifies the DPI value for the image.
+        dpi              Default: ``None``. Specifies the DPI value for the image.
                          By default, the DPI value is unspecified. Please note
                          that the DPI value is converted into meters (maybe with
                          rounding errors) since PNG does not support the unit
@@ -719,7 +720,7 @@ class QRCode:
         kind             "pam"
         scale            integer
         color            Default: "#000" (black).
-        background       Default value ``#fff`` (white). Use ``None`` for a transparent
+        background       Default value "#fff" (white). Use ``None`` for a transparent
                          background.
         =============    ==============================================================
 
@@ -739,8 +740,8 @@ class QRCode:
         kind             "tex"
         scale            integer or float
         color            LaTeX color name (default: "black"). The color is written
-                         "at it is", so ensure that the color is a standard color or it
-                         has been defined in the enclosing LaTeX document.
+                         "at it is", please ensure that the color is a standard color
+                         or it has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
                          point to. Requires the ``hyperref`` package in your LaTeX
                          environment.
@@ -772,7 +773,7 @@ class QRCode:
         kind             "xpm"
         scale            integer
         color            Default: "#000" (black).
-        background       Default value ``#fff`` (white)
+        background       Default value "#fff" (white)
                          ``None`` indicates a transparent background.
         name             Name of the variable (default: "img")
         =============    ==============================================================
