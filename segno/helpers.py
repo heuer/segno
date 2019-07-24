@@ -254,7 +254,8 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     """\
     Creates a string encoding the contact information as vCard 3.0.
 
-    Only a subset of available vCard properties is supported.
+    Only a subset of available `vCard 3.0 properties <https://tools.ietf.org/html/rfc2426>`
+    is supported.
 
     :param str name: The name. If it contains a semicolon, , the first part
             is treated as lastname and the second part is treated as forename.
@@ -364,7 +365,8 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
     Creates a QR Code which encodes a `vCard <https://en.wikipedia.org/wiki/VCard>`_
     version 3.0.
 
-    Only a subset of available vCard properties is supported.
+    Only a subset of available `vCard 3.0 properties <https://tools.ietf.org/html/rfc2426>`
+    is supported.
 
     :param str name: The name. If it contains a semicolon, , the first part
             is treated as lastname and the second part is treated as forename.
