@@ -1,23 +1,23 @@
-PyQRCode create 1-M,28.68
-PyQRCodeNG create 1-M,20.68
-qrcodegen create 1-M,15.42
-qrcode create 1-M,11.53
-Segno create 1-M,7.19
-PyQRCode create 7-Q,135.53
-PyQRCodeNG create 7-Q,105.96
-qrcode create 7-Q,50.89
-Segno create 7-Q,32.45
-PyQRCode create 30-H,1284.49
-PyQRCodeNG create 30-H,1055.03
-qrcode create 30-H,480.62
-Segno create 30-H,332.07
-PyQRCode SVG,29.97
-PyQRCodeNG SVG,29.78
-qrcodegen SVG,16.31
-qrcode SVG path,57.06
-qrcode SVG rects,53.43
-Segno SVG,8.69
-PyQRCode PNG 1-M,76.97
-PyQRCodeNG PNG 1-M,71.61
-qrcode PNG 1-M,17.11
-Segno PNG 1-M,12.37
+PyQRCode create 1-M,19.18
+PyQRCodeNG create 1-M,14.32
+qrcodegen create 1-M,11.18
+qrcode create 1-M,8.12
+Segno create 1-M,4.79
+PyQRCode create 7-Q,87.58
+PyQRCodeNG create 7-Q,67.83
+qrcode create 7-Q,37.97
+Segno create 7-Q,23.73
+PyQRCode create 30-H,827.66
+PyQRCodeNG create 30-H,668.63
+qrcode create 30-H,395.64
+Segno create 30-H,244.74
+PyQRCode SVG,19.39
+PyQRCodeNG SVG,19.82
+qrcodegen SVG,11.85
+qrcode SVG path,9.39
+qrcode SVG rects,11.58
+Segno SVG,5.13
+PyQRCode PNG 1-M,35.53
+PyQRCodeNG PNG 1-M,30.96
+qrcode PNG 1-M,9.42
+Segno PNG 1-M,7.00
