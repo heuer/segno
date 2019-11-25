@@ -15,7 +15,7 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.0                  1.3.4                  1.5.0                     |version|
+    Library version                                                     6.1                      1.2.1                  1.3.4                  1.5.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
@@ -70,7 +70,7 @@ Performance
 -----------
 
 Some performance indicators. The script `benchmarks.py`_ ran on a
-Intel i7 8559U / CPython 3.7. Each SVG / PNG image uses a
+Intel i7-8559U / CPython 3.7. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 
