@@ -613,7 +613,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Converts the provided color into an acceptable format for PDF's
         "DeviceRGB" color space.
-         """
+        """
         def to_float(c):
             if isinstance(c, float):
                 if not 0.0 <= c <= 1.0:
