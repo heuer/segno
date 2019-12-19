@@ -34,6 +34,15 @@ def test_encoding():
     assert qr2 == qr
 
 
+def test_encoding2():
+    encoding = 'iso-8859-15'
+    data = 'Émetteur'.encode(encoding)
+    qr = segno.make(data)
+    assert qr.mode == 'byte'
+    qr2 = segno.make(data, encoding=encoding)
+    assert qr2 == qr
+
+
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
