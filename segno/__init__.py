@@ -469,6 +469,10 @@ class QRCode:
         """\
         Serializes the matrix as ANSI escape code.
 
+        Under Windows, no ANSI escape sequence is generated but the Windows
+        API is used *unless* :paramref:`out <segno.QRCode.terminal.out>`
+        is a writable object or using WinAPI fails.
+
         :param out: Filename or a file-like object supporting to write text.
                 If ``None`` (default), the matrix is written to :py:class:`sys.stdout`.
         :param int border: Integer indicating the size of the quiet zone.
