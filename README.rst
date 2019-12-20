@@ -17,8 +17,8 @@ formats via a plugin architecture.
 Further, it provides several high level functions to create QR Codes which encode
 contact data (MeCard, vCard) or WIFI configurations.
 
-The project provides more than 1000 test cases to verify a standard conform
-QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
+The project provides more than 1200 (coverage 97+) test cases to verify a
+standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
 
 Installation
 ------------
