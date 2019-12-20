@@ -49,8 +49,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type content: str, int, bytes
     :param error: Error correction level. If ``None`` (default), error
             correction level ``L`` is used (note: Micro QR Code version M1 does
-            not support error correction. If an explicit error level is used,
-            a M1 QR Code won't be generated).
+            not support any error correction. If an explicit error correction
+            level is used, a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
             correction level "L" or better see :paramref:`boost_error <segno.make.boost_error>`),
             "L", "M", "Q", "H" (error correction level "H" isn't available for
@@ -97,7 +97,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
-            appropriate data mask is choosen automatically. If the `mask`
+            appropriate data mask is chosen automatically. If the `mask`
             parameter if provided, this function may raise a :py:exc:`MaskError`
             if the mask is invalid.
     :type mask: int or None
@@ -105,7 +105,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             (`encoding` is ``None``) the implementation tries to use the
             standard conform ISO/IEC 8859-1 encoding and if it does not fit, it
             will use UTF-8. Note that no ECI mode indicator is inserted by
-            default (see `eci`).
+            default (see :paramref:`version <segno.make.eci>`).
             The `encoding` parameter is case insensitive.
     :type encoding: str or None
     :param bool eci: Indicates if binary data which does not use the default
