@@ -105,7 +105,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             (`encoding` is ``None``) the implementation tries to use the
             standard conform ISO/IEC 8859-1 encoding and if it does not fit, it
             will use UTF-8. Note that no ECI mode indicator is inserted by
-            default (see :paramref:`version <segno.make.eci>`).
+            default (see :paramref:`eci <segno.make.eci>`).
             The `encoding` parameter is case insensitive.
     :type encoding: str or None
     :param bool eci: Indicates if binary data which does not use the default
