@@ -98,7 +98,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is chosen automatically. If the `mask`
-            parameter if provided, this function may raise a :py:exc:`MaskError`
+            parameter is provided, this function may raise a :py:exc:`MaskError`
             if the mask is invalid.
     :type mask: int or None
     :param encoding: Indicates the encoding in mode "byte". By default
