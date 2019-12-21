@@ -1135,13 +1135,13 @@ def make_segment(data, mode, encoding=None):
                 append_bits(to_byte(chunk), 6)
     elif segment_mode == consts.MODE_BYTE:
         # ISO/IEC 18004:2015(E) -- 7.4.5 Byte mode (page 27)
-        if _PY2:
+        if _PY2:  # pragma: no cover
             segment_data = (ord(b) for b in segment_data)
         for b in segment_data:
             append_bits(b, 8)
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
-        if _PY2:
+        if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
         for i in range(0, len(segment_data), 2):
@@ -1377,7 +1377,7 @@ def is_kanji(data):
     data_len = len(data)
     if not data_len or data_len % 2:
         return False
-    if _PY2:
+    if _PY2:  # pragma: no cover
         data = (ord(c) for c in data)
     data_iter = iter(data)
     for i in range(0, data_len, 2):
@@ -1464,7 +1464,7 @@ def calc_structured_append_parity(content):
             data = content.encode('shift-jis')
         except (LookupError, UnicodeError):
             data = content.encode('utf-8')
-    if _PY2:
+    if _PY2:  # pragma: no cover
         data = (ord(c) for c in data)
     return reduce(xor, data)
 
