@@ -3,8 +3,6 @@
 Create the benchmark charts.
 """
 import os
-import glob
-import shutil
 import csv
 from decimal import Decimal
 import pygal
@@ -60,5 +58,3 @@ def create_charts():
 
 if __name__ == '__main__':
     create_charts()
-    for chart in glob.glob('out/chart*.svg'):
-        shutil.copy(chart, '../docs/_static/')
