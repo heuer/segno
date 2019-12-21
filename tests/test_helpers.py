@@ -120,6 +120,14 @@ def test_vcard_title_escape():
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Director\, Research and Development\r\nEND:VCARD\r\n' == vcard
 
 
+def test_vcard_data_valid_bday():
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nBDAY:1976-09-19\r\nEND:VCARD\r\n'
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='1976-09-19')
+    assert expected_vcard_data == vcard
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday=date(year=1976, month=9, day=19))
+    assert expected_vcard_data == vcard
+
+
 def test_vcard_data_invalid_bday():
     with pytest.raises(ValueError):
         helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='19760919')
