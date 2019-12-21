@@ -26,19 +26,17 @@ def test_terminal():
     assert expected == val[:len(expected)]
 
 
-
-_COLOR_PATTERN = re.compile(r'(\033\[\d+m)(\s+)\033\[0m')
-
 def terminal_as_matrix(buff, border):
     """\
     Returns the text QR code as list of [0,1] lists.
     """
+    color_pattern = re.compile(r'(\033\[\d+m)(\s+)\033\[0m')
     res = []
     colors = ('\033[7m', '\033[49m')
     code = buff.getvalue().splitlines()
     for line in code[border:len(code) - border]:
         row = []
-        for m in _COLOR_PATTERN.finditer(line):
+        for m in color_pattern.finditer(line):
             bit = colors.index(m.group(1))
             bit_count = len(m.group(2)) // 2 # 2 chars for 1 module!
             if m.start() == 0 or m.end() == len(line):
