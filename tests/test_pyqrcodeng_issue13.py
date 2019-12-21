@@ -6,7 +6,12 @@
 # License: BSD License
 #
 """\
-Test against issue <https://github.com/pyqrcode/pyqrcodeNG/pull/13/>
+Test against issue <https://github.com/pyqrcode/pyqrcodeNG/pull/13/>.
+
+The initial test was created by Mathieu <https://github.com/albatros69>,
+see the above mentioned pull request.
+
+Adapted for Segno to check if it suffers from the same problem.
 """
 from __future__ import absolute_import, unicode_literals
 import segno
@@ -18,7 +23,7 @@ def test_autodetect():
     assert qr.mode == 'byte'
 
 
-def test_force_byte():
+def test_byte():
     data = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08[c\xf8\x0f\x00\x01\x01\x01\x00\x9b\xd7\x1d\r\x00\x00\x00\x00IEND\xaeB`\x82'
     qr = segno.make(data)
     assert qr.mode == 'byte'
@@ -31,15 +36,6 @@ def test_encoding():
     assert qr.mode == 'byte'
     data2 = 'Émetteur'
     qr2 = segno.make(data2, encoding=encoding)
-    assert qr2 == qr
-
-
-def test_encoding2():
-    encoding = 'iso-8859-15'
-    data = 'Émetteur'.encode(encoding)
-    qr = segno.make(data)
-    assert qr.mode == 'byte'
-    qr2 = segno.make(data, encoding=encoding)
     assert qr2 == qr
 
 
