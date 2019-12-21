@@ -95,43 +95,47 @@ accepted by the specific serializer.
 Available serializers
 ---------------------
 
-SVG
-    Scalable Vector Graphics (SVG). The serializer provides all default features
-    (scale, border, color and background color) and many more to customize the
-    output, see :ref:`SVG <svg>` for details. SVGZ (compressed SVG) is supported
-    as well.
-
-PNG
-    Portable Network Graphics (PNG). The serializer provides all default features
-    (scale, border, color and background color) and a few more to customize the
-    output, see :ref:`PNG <png>` for details.
+ANSI
+    ANSI escape code. The serializer supports the border keyword, only.
+    See :ref:`ANSI <ansi>` for details.
 
 EPS
     Encapsulated PostScript (EPS). The serializer provides all default features
     (scale, border, color and background color), see :ref:`EPS <eps>` for details.
 
-PDF
-    Portable Document Format (PDF). The serializer provides all default features
-    (scale, border, color and background color), see :ref:`PDF <pdf>` for details.
+LaTeX
+    LaTeX / PGF/TikZ. The serializer provides no background color, but all
+    other default features (scale, border, color) are supported, see
+    :ref:`LaTeX <latex>` for details.
 
-TXT
-    Text output. The serializer does not support any scale or color, but the
-    character for the dark and white modules may be specified via `color`
-    and `background`, see :ref:`TXT <txt>` for details.
+PAM
+    Portable Arbitrary Map (PAM). The serializer provides all default features
+    (scale, border, color and background color), see :ref:`PAM <pam>` for details.
 
 PBM
     Portable Bitmap (PBM). The serializer does not support any coloring,
     but the common featurs like scale and border are supported, see :ref:`PBM <pbm>`
     for details.
 
-PAM
-    Portable Arbitrary Map (PAM). The serializer provides all default features
-    (scale, border, color and background color), see :ref:`PAM <pam>` for details.
+PDF
+    Portable Document Format (PDF). The serializer provides all default features
+    (scale, border, color and background color), see :ref:`PDF <pdf>` for details.
 
-LaTeX
-    LaTeX / PGF/TikZ. The serializer provides no background color, but all
-    other default features (scale, border, color) are supported, see
-    :ref:`LaTeX <latex>` for details.
+PNG
+    Portable Network Graphics (PNG). The serializer provides all default features
+    (scale, border, color and background color) and a few more to customize the
+    output, see :ref:`PNG <png>` for details.
+
+SVG
+    Scalable Vector Graphics (SVG). The serializer provides all default features
+    (scale, border, color and background color) and many more to customize the
+    output, see :ref:`SVG <svg>` for details. SVGZ (compressed SVG) is supported
+    as well.
+
+TXT
+    Text output. The serializer does not support any scale or color, but the
+    character for the dark and white modules may be specified via `color`
+    and `background`, see :ref:`TXT <txt>` for details.
 
 XBM
     X BitMap (XBM). The serializer does not support any coloring, but scale

@@ -686,6 +686,8 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _ansi:
+
         **ANSI escape code**
 
         Supports the "border" keyword, only!
