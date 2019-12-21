@@ -135,6 +135,19 @@ def test_vcard_data_invalid_bday():
         helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='1976-09-19TZ')
 
 
+def test_vcard_data_invalid_geo():
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', lat=1.234)
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', lng=1.234)
+
+
+def test_vcard_data_valid_geo():
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nGEO:46.235197;8.015445\r\nEND:VCARD\r\n'
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', lat=46.235197, lng=8.015445)
+    assert expected_vcard_data == vcard
+
+
 def test_vcard_data_invalid_rev():
     with pytest.raises(ValueError):
         helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='19760919')

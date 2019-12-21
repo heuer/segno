@@ -339,7 +339,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
         if not _looks_like_datetime(birthday):
             raise ValueError('"birthday" does not seem to be a valid date or date/time representation')
         data.append('BDAY:{0}'.format(birthday))
-    if lat or lng and (not(all((lat, lng)))):
+    if lat and not lng or lng and not lat:
         raise ValueError('Incomplete geo information, please specify latitude and longitude.')
     if lat and lng:
         data.append('GEO:{0};{1}'.format(lat, lng))

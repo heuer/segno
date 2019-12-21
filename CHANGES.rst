@@ -1,6 +1,14 @@
 Changes
 =======
 
+0.3.3 -- 2019-mm-dd
+-------------------
+* Removed test environments CPython 3.4 and 3.6 from tox
+* Improved documentation
+* Added test cases
+* Fixed bugs in ``helpers.make_vcard_data`` function
+  (superfluous semicolon in birthday line, check geo coordinates)
+
 
 0.3.2 -- 2019-07-15
 -------------------
