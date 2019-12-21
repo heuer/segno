@@ -2,6 +2,7 @@
 """\
 Create the benchmark charts.
 """
+import os
 import glob
 import shutil
 import csv
@@ -46,11 +47,12 @@ def create_charts():
                 png_data.append((name.replace(' PNG 1-M', ''), val))
             elif ' SVG' in name:
                 svg_data.append((name.replace(' SVG', ''), val))
-    for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', 'out/chart_create_1m.svg'),
-                                  (create_7q_data, 'Create a 7-Q QR Code', 'out/chart_create_7q.svg'),
-                                  (create_30h_data, 'Create a 30-H QR Code', 'out/chart_create_30h.svg'),
-                                  (svg_data, 'Create a 1-M QR Code and write SVG', 'out/chart_svg.svg'),
-                                  (png_data, 'Create a 1-M QR Code and write PNG', 'out/chart_png.svg')):
+    output_dir = os.path.abspath('../docs/_static/')
+    for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', os.path.join(output_dir, 'chart_create_1m.svg')),
+                                  (create_7q_data, 'Create a 7-Q QR Code', os.path.join(output_dir, 'chart_create_7q.svg')),
+                                  (create_30h_data, 'Create a 30-H QR Code', os.path.join(output_dir, 'chart_create_30h.svg')),
+                                  (svg_data, 'Create a 1-M QR Code and write SVG', os.path.join(output_dir, 'chart_svg.svg')),
+                                  (png_data, 'Create a 1-M QR Code and write PNG', os.path.join(output_dir, 'chart_png.svg'))):
         create_chart(title,
                      [(name, [{'value': float(val), 'color': color_map[name], 'label': name}]) for name, val in sorted(data, key=lambda t: Decimal(t[1]))],
                      filename)
