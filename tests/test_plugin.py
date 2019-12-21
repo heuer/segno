@@ -21,6 +21,9 @@ def test_noplugin():
 
 
 def an_example_plugin(qrcode):
+    """\
+    This is a Segno converter plugin used by the next test case.
+    """
     assert qrcode
     return 'works'
 
