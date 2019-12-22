@@ -1345,7 +1345,7 @@ def get_version_name(version_const):
     For version 1 .. 40 it returns the version as integer, for Micro QR Codes
     it returns a string like ``M1`` etc.
 
-    :raises: VersionError: In case the `version_constant` is unknown.
+    :raises: :py:exc:`VersionError`: In case the `version_constant` is unknown.
     """
     if 0 < version_const < 41:
         return version_const
@@ -1406,11 +1406,21 @@ def find_mode(data):
 
 def find_version(segments, error, eci, micro, is_sa=False):
     """\
+    Returns the minimal (Micro) QR Code version constant for the provided input.
 
+    :param segments: Iterable of Segment instances.
+    :param error: The error correction level constant.
+    :type error: int or None
+    :param bool eci: Indicates if the ECI mode should be used.
+    :param micro: Boolean value if a Micro QR Code should be created or ``None``
+    :type micro: bool or None
+    :param bool is_sa: Indicator if Structured Append is used.
+    :rtype: int
+    :raises: :py:exc:`DataOverflowError` if the content does not fit into a QR Code.
     """
     assert not (eci and micro)
-    min_version = 1 if micro is False else consts.VERSION_M1
-    max_version = 40 if micro is not True else consts.VERSION_M4
+    min_version = consts.VERSION_M1 if micro or micro is None else 1
+    max_version = consts.VERSION_M4 if micro else 40
     if min_version < 1:
         min_version = max([find_minimum_version_for_mode(mode) for mode in segments.modes])
     if error is not None and micro is not False:
