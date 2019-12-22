@@ -116,6 +116,7 @@ def make_parser():
     png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
                            dest='addad',
                            action='store_false')
+    # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
                                                        version='Segno {0}'.format(segno.__version__))
