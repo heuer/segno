@@ -167,6 +167,7 @@ def _make_valid_hexcodes_rgb_data():
         yield name.upper(), expected
         yield name.lower(), expected
 
+
 @pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgb_data())
 def test_valid_hexcodes_rgb(name, expected):
     rgb = colors.color_to_rgb(name)
@@ -184,6 +185,7 @@ def _make_valid_hexcodes_rgba_data():
         yield name.title(), expected
         yield name.upper(), expected
         yield name.lower(), expected
+
 
 @pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgba_data())
 def test_valid_hexcodes_rgba(name, expected):
