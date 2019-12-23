@@ -9,6 +9,7 @@
 Tests plugin loading.
 """
 from __future__ import absolute_import, unicode_literals
+import os
 import pkg_resources
 import pytest
 import segno
@@ -29,7 +30,7 @@ def an_example_plugin(qrcode):
 
 
 def test_plugin():
-    distribution = pkg_resources.Distribution(__file__)
+    distribution = pkg_resources.Distribution(os.path.dirname(__file__))
     entry_point = pkg_resources.EntryPoint.parse('test = test_plugin:an_example_plugin', dist=distribution)
     distribution._ep_map = {'segno.plugin.converter': {'test': entry_point}}
     pkg_resources.working_set.add(distribution)
