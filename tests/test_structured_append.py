@@ -58,6 +58,7 @@ _DATA_PARITY = (
     (160, 'Mürrisch'),
 )
 
+
 @pytest.mark.parametrize('expected, data', _DATA_PARITY)
 def test_calc_sa_parity(expected, data):
     assert expected == encoder.calc_structured_append_parity(data)

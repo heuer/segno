@@ -19,6 +19,7 @@ def test_issue_10_17():
     assert 'byte' == qr.mode
     assert 'M' == qr.error
 
+
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])

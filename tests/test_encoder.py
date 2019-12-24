@@ -766,6 +766,7 @@ def _make_score_n4_data():
 
     yield 3 * 10, 35
 
+
 @pytest.mark.parametrize('score, percent', _make_score_n4_data())
 def test_score_n4_iso(score, percent):
     # Add 10 points to a deviation of 5% increment or decrement in the

@@ -85,6 +85,7 @@ def test_data(kind, buffer_factory, to_matrix_func, data, error, border, kw):
         assert len(row) == len(exptected_row)
         assert exptected_row == row, 'Error in row {0}'.format(i)
 
+
 if __name__ == '__main__':
     pytest.main([__file__])
 
