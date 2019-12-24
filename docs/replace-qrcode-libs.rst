@@ -6,5 +6,5 @@ common Python QR Code libs like `PyQRCode`_ and `qrcode`_ with Segno.
 
 
 .. _Segno Mimos: https://github.com/heuer/segno-mimos
-.. _qrcode: https://pypi.python.org/pypi/qrcode/
-.. _PyQRCode: https://pypi.python.org/pypi/PyQRCode/
+.. _qrcode: https://pypi.org/project/qrcode/
+.. _PyQRCode: https://pypi.org/project/PyQRCode/
