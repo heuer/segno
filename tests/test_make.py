@@ -130,6 +130,11 @@ def test_m1_has_no_error_level():
     assert qr.error is None
 
 
+def test_micro_invalid_error():
+    with pytest.raises(segno.ErrorLevelError):
+        segno.make_micro(1, error='h')
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
 

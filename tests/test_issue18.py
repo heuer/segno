@@ -55,7 +55,6 @@ def test_issue_18_zero_automatic():
     assert qr.error is None
 
 
-
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])

@@ -17,7 +17,11 @@ import pytest
 import segno
 from segno import ModeError, VersionError, ErrorLevelError, DataOverflowError
 from segno import consts
-from codecs import open
+try:  # Py 2
+    unicode
+    from io import open
+except NameError:
+    pass
 
 _LEGAL_MICRO_VERSIONS = tuple(chain(consts.MICRO_VERSION_MAPPING.keys(),
                                     [v.lower() for v in consts.MICRO_VERSION_MAPPING.keys()]))
