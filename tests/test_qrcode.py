@@ -94,6 +94,16 @@ def test_data_too_large(data, version):
         segno.make(data, version=version)
 
 
+def test_eci_and_micro():
+    with pytest.raises(VersionError):
+        segno.make('A', eci=True, micro=True)
+
+
+def test_eci_and_micro2():
+    with pytest.raises(VersionError):
+        segno.make('A', eci=True, version='m4')
+
+
 def _calc_size(dim, border, scale=1):
     return (dim + 2 * border) * scale
 
