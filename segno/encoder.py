@@ -306,7 +306,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
     :param int|None error: Error level constant or ``None``
     :param Segments segments: Instance of :py:class:`Segments`
     :param bool eci: Indicates if ECI designator should be written.
-    :param bool is_sa: Indicates if Structured Append mode ist used.
+    :param bool is_sa: Indicates if Structured Append mode is used.
     """
     if error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
         levels = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M,
