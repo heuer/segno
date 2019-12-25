@@ -300,7 +300,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
 
 def boost_error_level(version, error, segments, eci, is_sa=False):
     """\
-    Increases the error level if possible.
+    Increases the error correction level if possible.
 
     :param int version: Version constant.
     :param int|None error: Error level constant or ``None``
@@ -1419,11 +1419,12 @@ def find_version(segments, error, eci, micro, is_sa=False):
     :raises: :py:exc:`DataOverflowError` if the content does not fit into a QR Code.
     """
     assert not (eci and micro)
-    min_version = consts.VERSION_M1 if micro or micro is None else 1
+    micro_allowed = micro or micro is None
+    min_version = consts.VERSION_M1 if micro_allowed else 1
     max_version = consts.VERSION_M4 if micro else 40
     if min_version < 1:
         min_version = max([find_minimum_version_for_mode(mode) for mode in segments.modes])
-    if error is not None and micro is not False:
+    if error is not None and micro_allowed:
         min_version = consts.VERSION_M2
     for version in range(min_version, max_version + 1):
         if error is None and version != consts.VERSION_M1:
