@@ -28,7 +28,14 @@ Unique features
 * A lot of serialization formats (SVG, PNG, EPS, PDF, PAM, XPM, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
-* `Structured Append QR Codes <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+* `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+* Simple, user-friendly API
+  ::
+
+    import segno
+    qr = segno.make('Yellow Submarine')
+    qr.save('yellow-submarine.png')
+
 
 
 Installation
