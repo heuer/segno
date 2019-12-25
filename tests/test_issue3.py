@@ -14,7 +14,7 @@ import io
 import segno
 try:
     from .tutils import matrix_looks_valid
-except (ValueError, SystemError):  # Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
     from tutils import matrix_looks_valid
 
 

@@ -15,7 +15,7 @@ from segno import encoder
 from segno.encoder import Buffer
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError):  # Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
     from tutils import read_matrix
 
 
