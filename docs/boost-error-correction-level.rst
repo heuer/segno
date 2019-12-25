@@ -18,8 +18,7 @@ To prevent any error correction level enhancement, Segno provides the
 
 It's recommended to keep the error level correction boosting, because
 a better error correction level improves the probability that the QR Code can be
-read by average QR Code decoders under all circumstances. Disabling the boosting
-may enhance the QR Code encoding performance.
+read by average QR Code decoders under all circumstances.
 
 
 Examples

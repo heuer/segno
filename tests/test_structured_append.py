@@ -119,7 +119,7 @@ def test_dataoverflow():
 
 
 def test_dataoverflow_error():
-    data = ('A' * 4296) * 16  # Version 40: max. 4296 alphanumeric chars * 16 symbols
+    data = 'A' * 4296 * 16  # Version 40: max. 4296 alphanumeric chars * 16 symbols
     data = data[:-4]  # Remove some chars taking some SA overhead into account
     seq = segno.make_sequence(data, version=40)
     assert 16 == len(seq)

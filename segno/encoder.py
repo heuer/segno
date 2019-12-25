@@ -302,6 +302,9 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
     """\
     Increases the error correction level if possible.
 
+    Returns either the provided or a better error correction level which works
+    while keeping the (Micro) QR Code version.
+
     :param int version: Version constant.
     :param int|None error: Error level constant or ``None``
     :param Segments segments: Instance of :py:class:`Segments`
@@ -1427,13 +1430,11 @@ def find_version(segments, error, eci, micro, is_sa=False):
     for version in range(min_version, max_version + 1):
         if error is None and version != consts.VERSION_M1:
             error = consts.ERROR_LEVEL_L
-        found = False
         try:
-            found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci, is_sa)
+            if consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci, is_sa):
+                return version
         except KeyError:
             pass
-        if found:
-            return version
     help_txt = ''
     if micro is None:
         help_txt = '(Micro) '
