@@ -33,7 +33,8 @@ def get_border(version, border):
     the provided QR Code.
 
     :param int version: 1 .. 40 or a Micro QR Code version constant
-    :param int border: The size of the quiet zone or ``None``.
+    :param border: The size of the quiet zone or ``None``.
+    :type border: int or None
 
     :rtype: int
     """
