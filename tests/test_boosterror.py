@@ -75,6 +75,13 @@ def test_boost_error_M4():
     assert 'Q' == qr.error
 
 
+def test_boost_error_M4_boost_disabled():
+    qr = segno.make('A', error='l', version='M4', boost_error=False)
+    assert qr.is_micro
+    assert 'M4' == qr.version
+    assert 'L' == qr.error
+
+
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])

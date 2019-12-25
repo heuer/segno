@@ -317,11 +317,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
                 levels.pop()  # Error level Q isn't supported by M2 and M3
         data_length = segments.bit_length_with_overhead(version, eci, is_sa=is_sa)
         for level in levels[levels.index(error)+1:]:
-            try:
-                found = consts.SYMBOL_CAPACITY[version][level] >= data_length
-            except KeyError:
-                break
-            if found:
+            if consts.SYMBOL_CAPACITY[version][level] >= data_length:
                 error = level
     return error
 
