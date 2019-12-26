@@ -292,5 +292,25 @@ def test_quietzone_custom_mqr():
     assert expected == res
 
 
+def test_convert_to_boolean_true():
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                        error='m', mask=4, boost_error=False)
+    res = []
+    for row in utils.matrix_iter_detail(qr.matrix, qr.version, border=0):
+        res.append(bytearray([(0x0, 0x1)[v >> 8 > 0] for v in row]))
+    expected = read_matrix('iso-fig-29')
+    assert expected == res
+
+
+def test_convert_to_boolean_false():
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                        error='m', mask=4, boost_error=False)
+    res = []
+    for row in utils.matrix_iter_detail(qr.matrix, qr.version, border=0):
+        res.append(bytearray([(0x1, 0x0)[v >> 8 == 0] for v in row]))
+    expected = read_matrix('iso-fig-29')
+    assert expected == res
+
+
 if __name__ == '__main__':
     pytest.main([__file__])

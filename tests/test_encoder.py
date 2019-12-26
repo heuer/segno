@@ -996,7 +996,8 @@ def test_encode_iso_fig29():
     #TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
     qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                             error='m', mask=4, boost_error=False)
-    assert qr.mask == 4
+    assert 4 == qr.mask
+    assert 4 == qr.version
     ref_matrix = read_matrix('iso-fig-29')
     assert ref_matrix == qr.matrix
 
