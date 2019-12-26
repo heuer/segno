@@ -313,5 +313,15 @@ def test_convert_to_boolean_false():
     assert expected == res
 
 
+def test_convert_to_boolean():
+    qr = segno.make('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    error='m', mask=4, boost_error=False)
+    res = []
+    for row in utils.matrix_iter_detail(qr.matrix, qr._version):
+        res.append(bytearray([bool(v >> 8) for v in row]))
+    expected = read_matrix('iso-fig-29')
+    assert expected == res
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
