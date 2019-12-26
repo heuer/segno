@@ -12,7 +12,6 @@ from __future__ import absolute_import, unicode_literals, print_function
 import io
 import os
 import pytest
-import segno
 from segno import encoder, utils
 
 
@@ -294,30 +293,30 @@ def test_quietzone_custom_mqr():
 
 
 def test_convert_to_boolean_true():
-    qr = segno.make('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                    error='m', mask=4, boost_error=False)
+    qr = qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                             error='m', mask=4, boost_error=False)
     res = []
-    for row in utils.matrix_iter_detail(qr.matrix, qr._version):
+    for row in utils.matrix_iter_detail(qr.matrix, qr.version):
         res.append(bytearray([int(v >> 8 > 0) for v in row]))
     expected = read_matrix('iso-fig-29')
     assert expected == res
 
 
 def test_convert_to_boolean_false():
-    qr = segno.make('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                    error='m', mask=4, boost_error=False)
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                        error='m', mask=4, boost_error=False)
     res = []
-    for row in utils.matrix_iter_detail(qr.matrix, qr._version):
+    for row in utils.matrix_iter_detail(qr.matrix, qr.version):
         res.append(bytearray([not int(v >> 8 == 0) for v in row]))
     expected = read_matrix('iso-fig-29')
     assert expected == res
 
 
 def test_convert_to_boolean():
-    qr = segno.make('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                    error='m', mask=4, boost_error=False)
+    qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                        error='m', mask=4, boost_error=False)
     res = []
-    for row in utils.matrix_iter_detail(qr.matrix, qr._version):
+    for row in utils.matrix_iter_detail(qr.matrix, qr.version):
         res.append(bytearray([bool(v >> 8) for v in row]))
     expected = read_matrix('iso-fig-29')
     assert expected == res
