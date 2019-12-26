@@ -9,7 +9,6 @@
 Utility functions useful for writers or QR Code objects.
 """
 from __future__ import absolute_import, unicode_literals
-from . import consts
 from itertools import chain
 try:  # pragma: no cover
     range = xrange
