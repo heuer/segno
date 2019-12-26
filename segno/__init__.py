@@ -40,8 +40,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     This is main entry point to create QR Codes and Micro QR Codes.
 
     Aside from `content`, all parameters are optional and an optimal (minimal)
-    (Micro) QR Code with a maximal error correction level (minimum "M") is
-    generated.
+    (Micro) QR Code with a maximal error correction level is generated.
 
     :param content: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be
@@ -77,7 +76,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             Valid values: "M1", "M2", "M3", "M4" (for Micro QR Codes) or an
             integer between 1 and 40 (for QR Codes).
             The `version` parameter is case insensitive.
-    :type version: int, str or None.
+    :type version: int, str or None
     :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
             ``None`` (default) the appropriate mode will automatically be
             determined.
@@ -344,14 +343,14 @@ class QRCode:
 
             >>> import segno
             >>> qr = segno.make('The Beatles')
-            >>> width, height = qr.symbol_size()
+            >>> width, height = qr.symbol_size(scale=2)
             >>> res = []
             >>> # Scaling factor 2, default border
             >>> for row in qr.matrix_iter(scale=2):
             >>>     res.append([col == 0x1 for col in row])
-            >>> width * 2 == len(res[0])
+            >>> width == len(res[0])
             True
-            >>> height * 2 == len(res)
+            >>> height == len(res)
             True
 
 
