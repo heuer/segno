@@ -5,6 +5,7 @@ Changes
 -------------------
 * Removed test environments CPython 3.4 and 3.6 from tox
 * Improved documentation
+* Refactored source code
 * Added test cases
 * Fixed bugs in ``helpers.make_vcard_data`` function
   (superfluous semicolon in birthday line, check geo coordinates)
