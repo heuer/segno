@@ -298,7 +298,7 @@ def test_convert_to_boolean_true():
                     error='m', mask=4, boost_error=False)
     res = []
     for row in utils.matrix_iter_detail(qr.matrix, qr._version):
-        res.append(bytearray([(0x0, 0x1)[v >> 8 > 0] for v in row]))
+        res.append(bytearray([int(v >> 8 > 0) for v in row]))
     expected = read_matrix('iso-fig-29')
     assert expected == res
 
@@ -308,7 +308,7 @@ def test_convert_to_boolean_false():
                     error='m', mask=4, boost_error=False)
     res = []
     for row in utils.matrix_iter_detail(qr.matrix, qr._version):
-        res.append(bytearray([(0x1, 0x0)[v >> 8 == 0] for v in row]))
+        res.append(bytearray([not int(v >> 8 == 0) for v in row]))
     expected = read_matrix('iso-fig-29')
     assert expected == res
 
