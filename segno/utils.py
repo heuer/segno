@@ -14,6 +14,7 @@ try:  # pragma: no cover
     range = xrange
 except NameError:  # pragma: no cover
     pass
+from . import moduletypes as mt
 
 
 def get_default_border_size(version):
@@ -150,69 +151,29 @@ def matrix_iter(matrix, version, scale=1, border=None):
             yield res_row
 
 
-# Constants for detailed iterator, see utils.matrix_iter_detail
-TYPE_FINDER_PATTERN_LIGHT = 6
-"""\
-Light finder module
-"""
-TYPE_FINDER_PATTERN_DARK = TYPE_FINDER_PATTERN_LIGHT << 8
-"""\
-Dark finder module.
-"""
-TYPE_SEPARATOR = 8
-"""\
-Separator around the finder patterns (light module)
-"""
-TYPE_ALIGNMENT_PATTERN_LIGHT = 10
-"""\
-Light alignment pattern module.
-"""
-TYPE_ALIGNMENT_PATTERN_DARK = TYPE_ALIGNMENT_PATTERN_LIGHT << 8
-"""\
-Dark alignment pattern module.
-"""
-TYPE_TIMING_LIGHT = 12
-"""\
-Light timing pattern module.
-"""
-TYPE_TIMING_DARK = TYPE_TIMING_LIGHT << 8
-"""\
-Dark timing patten module.
-"""
-TYPE_FORMAT_LIGHT = 14
-"""\
-Light format information module.
-"""
-TYPE_FORMAT_DARK = TYPE_FORMAT_LIGHT << 8
-"""\
-Dark format information module.
-"""
-TYPE_VERSION_LIGHT = 16
-"""\
-Light version information module.
-"""
-TYPE_VERSION_DARK = TYPE_VERSION_LIGHT << 8
-"""\
-Dark version information module.
-"""
-TYPE_DARKMODULE = 512
-"""\
-A single dark module which occurs in QR Codes (but not in Micro QR Codes).
-"""
-TYPE_DATA_LIGHT = 4
-"""\
-Light module in the encoding area (either a data module or an error correction module).
-"""
-TYPE_DATA_DARK = TYPE_DATA_LIGHT << 8
-"""\
-Dark module in the encoding area (either a data module or an error correction module).
-"""
-TYPE_QUIET_ZONE = 18
-"""\
-Border of light modules.
-"""
+TYPE_FINDER_PATTERN_LIGHT = mt.TYPE_FINDER_PATTERN_LIGHT
+TYPE_FINDER_PATTERN_DARK = mt.TYPE_FINDER_PATTERN_DARK
+TYPE_SEPARATOR = mt.TYPE_SEPARATOR
+TYPE_ALIGNMENT_PATTERN_LIGHT = mt.TYPE_ALIGNMENT_PATTERN_LIGHT
+TYPE_ALIGNMENT_PATTERN_DARK = mt.TYPE_ALIGNMENT_PATTERN_DARK
+TYPE_TIMING_LIGHT = mt.TYPE_TIMING_LIGHT
+TYPE_TIMING_DARK = mt.TYPE_TIMING_DARK
+TYPE_FORMAT_LIGHT = mt.TYPE_FORMAT_LIGHT
+TYPE_FORMAT_DARK = mt.TYPE_FORMAT_DARK
+TYPE_VERSION_LIGHT = mt.TYPE_VERSION_LIGHT
+TYPE_VERSION_DARK = mt.TYPE_VERSION_DARK
+TYPE_DARKMODULE = mt.TYPE_DARKMODULE
+TYPE_DATA_LIGHT = mt.TYPE_DATA_LIGHT
+TYPE_DATA_DARK = mt.TYPE_DATA_DARK
+TYPE_QUIET_ZONE = mt.TYPE_QUIET_ZONE
 
 def matrix_iter_detail(matrix, version, scale=1, border=None):
+    import warnings
+    warnings.warn('Use matrix_iter_verbose', DeprecationWarning)
+    return matrix_iter_verbose(matrix, version, scale, border)
+
+
+def matrix_iter_verbose(matrix, version, scale=1, border=None):
     """\
     Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
@@ -252,35 +213,35 @@ def matrix_iter_detail(matrix, version, scale=1, border=None):
                 # Alignment pattern
                 alignment_val = alignment_matrix[i][j]
                 if alignment_val != 0x2:
-                    return (TYPE_ALIGNMENT_PATTERN_LIGHT, TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
+                    return (mt.TYPE_ALIGNMENT_PATTERN_LIGHT, mt.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
                 if version > 6:  # Version information
                     if i < 6 and width - 12 < j < width - 8 \
                             or height - 12 < i < height - 8 and j < 6:
-                        return (TYPE_VERSION_LIGHT, TYPE_VERSION_DARK)[val]
+                        return (mt.TYPE_VERSION_LIGHT, mt.TYPE_VERSION_DARK)[val]
                 # Dark module
                 if i == height - 8 and j == 8:
-                    return TYPE_DARKMODULE
+                    return mt.TYPE_DARKMODULE
             # Timing - IMPORTANT: Check alignment (see above) in advance!
             if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
                     or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
-                return (TYPE_TIMING_LIGHT, TYPE_TIMING_DARK)[val]
+                return (mt.TYPE_TIMING_LIGHT, mt.TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
             if i == 8 and (j < 9 or (not is_micro and j > width - 10)) \
                     or j == 8 and (i < 8 or not is_micro and i > height - 9):
-                return (TYPE_FORMAT_LIGHT, TYPE_FORMAT_DARK)[val]
+                return (mt.TYPE_FORMAT_LIGHT, mt.TYPE_FORMAT_DARK)[val]
             # Finder pattern
             # top left             top right
             if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
                 or not is_micro and i > height - 8 and j < 7:  # bottom left
-                return (TYPE_FINDER_PATTERN_LIGHT, TYPE_FINDER_PATTERN_DARK)[val]
+                return (mt.TYPE_FINDER_PATTERN_LIGHT, mt.TYPE_FINDER_PATTERN_DARK)[val]
             # Separator
             # top left              top right
             if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
                 or not is_micro and (i > height - 9 and j < 8):  # bottom left
-                return TYPE_SEPARATOR
-            return (TYPE_DATA_LIGHT, TYPE_DATA_DARK)[val]
+                return mt.TYPE_SEPARATOR
+            return (mt.TYPE_DATA_LIGHT, mt.TYPE_DATA_DARK)[val]
         else:
-            return TYPE_QUIET_ZONE
+            return mt.TYPE_QUIET_ZONE
 
     for i in range(-border, height + border):
         for s in range(scale):

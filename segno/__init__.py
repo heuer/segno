@@ -329,7 +329,7 @@ class QRCode:
         """
         return utils.get_symbol_size(self._version, scale=scale, border=border)
 
-    def matrix_iter(self, scale=1, border=None):
+    def matrix_iter(self, scale=1, border=None, verbose=False):
         """\
         Returns an iterator over the matrix which includes the border.
 
@@ -357,10 +357,13 @@ class QRCode:
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
                 indicate the default border.
+        :param bool verbose: Indicates if the type of the module should be returned
+                instead of ``0x1`` and ``0x0`` values.
         :raises: :py:exc:`ValueError` if the scaling factor or the border is
                 invalid (i.e. negative).
         """
-        return utils.matrix_iter(self.matrix, self._version, scale, border)
+        iterfn = utils.matrix_iter_verbose if verbose else utils.matrix_iter
+        return iterfn(self.matrix, self._version, scale, border)
 
     def show(self, delete_after=20, scale=10, border=None, color='#000',
              background='#fff'):  # pragma: no cover
