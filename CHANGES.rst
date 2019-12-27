@@ -9,6 +9,13 @@ Changes
 * Added test cases
 * Fixed bugs in ``helpers.make_vcard_data`` function
   (superfluous semicolon in birthday line, check geo coordinates)
+* Renamed ``utils.matrix_iter_detail`` into ``utils.matrix_iter_verbose``.
+  Kept ``matrix_iter_detail`` for backwards compatibility (deprecated)
+* Moved module constants from ``segno.utils`` into ``segno.moduletypes``,
+  Constants from ``segno.utils`` will be removed within the next release.
+* Added option ``verbose`` (default: ``False``) to ``segno.QRCode.matrix_iter()``
+  which returns an iterator which provides information about the module type
+  (i.e. quiet zone, dark data module, light data module).
 
 
 0.3.2 -- 2019-07-15
