@@ -243,6 +243,9 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
         else:
             return mt.TYPE_QUIET_ZONE
 
+    row = chain.from_iterable
+    scale_range = range(scale)
+    width_range = range(-border, width + border)
     for i in range(-border, height + border):
-        for s in range(scale):
-            yield chain.from_iterable(([get_bit(i, j)] * scale for j in range(-border, width + border)))
+        for s in scale_range:
+            yield row(([get_bit(i, j)] * scale for j in width_range))
