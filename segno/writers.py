@@ -558,7 +558,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             res += scanline(chain(vertical_border, row, vertical_border))
             res += same_as_above  # This is b'' if no scaling factor was provided
         res += horizontal_border
-        if _PY2:
+        if _PY2:  # pragma: no cover
             res = bytes(res)
         write(chunk(b'IDAT', zlib.compress(res, compresslevel)))
         if addad:
