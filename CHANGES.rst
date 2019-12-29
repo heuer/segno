@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.3 -- 2019-mm-dd
+0.3.3 -- 2019-12-29
 -------------------
 * Fixed issue #54: PNGs with white color and transparent background were rendered
   as transparent PNG with a *black* QR Code.
