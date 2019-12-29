@@ -16,6 +16,13 @@ Utilities
     :members:
 
 
+Module Types
+------------
+
+.. automodule:: segno.moduletypes
+    :members:
+
+
 High level QR Code factories
 ----------------------------
 

@@ -17,8 +17,26 @@ formats via a plugin architecture.
 Further, it provides several high level functions to create QR Codes which encode
 contact data (MeCard, vCard) or WIFI configurations.
 
-The project provides more than 1000 test cases to verify a standard conform
-QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
+The project provides more than 1300 test cases (coverage >= 98%) to verify a
+standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
+
+
+Unique features
+---------------
+* Pure Python (supports 2.7, 3.7+, PyPy2 and PyPy3)
+* No dependencies
+* A lot of serialization formats (SVG, PNG, EPS, PDF, PAM, XPM, ...)
+* `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
+* Micro QR Codes
+* `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
+  ::
+
+    import segno
+    qr = segno.make('Yellow Submarine')
+    qr.save('yellow-submarine.png')
+
+
 
 Installation
 ------------

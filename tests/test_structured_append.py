@@ -19,7 +19,7 @@ import segno
 from segno import encoder
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError):  # Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
     from tutils import read_matrix
 
 
@@ -57,6 +57,7 @@ _DATA_PARITY = (
     (49, 123456789),
     (160, 'Mürrisch'),
 )
+
 
 @pytest.mark.parametrize('expected, data', _DATA_PARITY)
 def test_calc_sa_parity(expected, data):
@@ -115,6 +116,16 @@ def test_dataoverflow():
     data += 'B'
     seq = segno.make_sequence(data, version=40)
     assert 2 == len(seq)
+
+
+def test_dataoverflow_error():
+    data = 'A' * 4296 * 16  # Version 40: max. 4296 alphanumeric chars * 16 symbols
+    data = data[:-4]  # Remove some chars taking some SA overhead into account
+    seq = segno.make_sequence(data, version=40)
+    assert 16 == len(seq)
+    data += 'B'
+    with pytest.raises(segno.DataOverflowError):
+        segno.make_sequence(data, version=40)
 
 
 def test_no_version_provided():

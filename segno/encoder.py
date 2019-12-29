@@ -300,13 +300,16 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
 
 def boost_error_level(version, error, segments, eci, is_sa=False):
     """\
-    Increases the error level if possible.
+    Increases the error correction level if possible.
+
+    Returns either the provided or a better error correction level which works
+    while keeping the (Micro) QR Code version.
 
     :param int version: Version constant.
     :param int|None error: Error level constant or ``None``
     :param Segments segments: Instance of :py:class:`Segments`
     :param bool eci: Indicates if ECI designator should be written.
-    :param bool is_sa: Indicates if Structured Append mode ist used.
+    :param bool is_sa: Indicates if Structured Append mode is used.
     """
     if error not in (consts.ERROR_LEVEL_H, None) and len(segments) == 1:
         levels = [consts.ERROR_LEVEL_L, consts.ERROR_LEVEL_M,
@@ -316,13 +319,11 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
             if version < consts.VERSION_M4:
                 levels.pop()  # Error level Q isn't supported by M2 and M3
         data_length = segments.bit_length_with_overhead(version, eci, is_sa=is_sa)
-        for level in levels[levels.index(error)+1:]:
-            try:
-                found = consts.SYMBOL_CAPACITY[version][level] >= data_length
-            except KeyError:
+        for error_level in levels[levels.index(error)+1:]:
+            if consts.SYMBOL_CAPACITY[version][error_level] >= data_length:
+                error = error_level
+            else:
                 break
-            if found:
-                error = level
     return error
 
 
@@ -1135,13 +1136,13 @@ def make_segment(data, mode, encoding=None):
                 append_bits(to_byte(chunk), 6)
     elif segment_mode == consts.MODE_BYTE:
         # ISO/IEC 18004:2015(E) -- 7.4.5 Byte mode (page 27)
-        if _PY2:
+        if _PY2:  # pragma: no cover
             segment_data = (ord(b) for b in segment_data)
         for b in segment_data:
             append_bits(b, 8)
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
-        if _PY2:
+        if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
         for i in range(0, len(segment_data), 2):
@@ -1345,7 +1346,7 @@ def get_version_name(version_const):
     For version 1 .. 40 it returns the version as integer, for Micro QR Codes
     it returns a string like ``M1`` etc.
 
-    :raises: VersionError: In case the `version_constant` is unknown.
+    :raises: :py:exc:`VersionError`: In case the `version_constant` is unknown.
     """
     if 0 < version_const < 41:
         return version_const
@@ -1377,7 +1378,7 @@ def is_kanji(data):
     data_len = len(data)
     if not data_len or data_len % 2:
         return False
-    if _PY2:
+    if _PY2:  # pragma: no cover
         data = (ord(c) for c in data)
     data_iter = iter(data)
     for i in range(0, data_len, 2):
@@ -1406,25 +1407,34 @@ def find_mode(data):
 
 def find_version(segments, error, eci, micro, is_sa=False):
     """\
+    Returns the minimal (Micro) QR Code version constant for the provided input.
 
+    :param segments: Iterable of Segment instances.
+    :param error: The error correction level constant.
+    :type error: int or None
+    :param bool eci: Indicates if the ECI mode should be used.
+    :param micro: Boolean value if a Micro QR Code should be created or ``None``
+    :type micro: bool or None
+    :param bool is_sa: Indicator if Structured Append is used.
+    :rtype: int
+    :raises: :py:exc:`DataOverflowError` if the content does not fit into a QR Code.
     """
     assert not (eci and micro)
-    min_version = 1 if micro is False else consts.VERSION_M1
-    max_version = 40 if micro is not True else consts.VERSION_M4
+    micro_allowed = micro or micro is None
+    min_version = consts.VERSION_M1 if micro_allowed else 1
+    max_version = consts.VERSION_M4 if micro else 40
     if min_version < 1:
         min_version = max([find_minimum_version_for_mode(mode) for mode in segments.modes])
-    if error is not None and micro is not False:
+    if error is not None and micro_allowed:
         min_version = consts.VERSION_M2
     for version in range(min_version, max_version + 1):
         if error is None and version != consts.VERSION_M1:
             error = consts.ERROR_LEVEL_L
-        found = False
         try:
-            found = consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci, is_sa)
+            if consts.SYMBOL_CAPACITY[version][error] >= segments.bit_length_with_overhead(version, eci, is_sa):
+                return version
         except KeyError:
             pass
-        if found:
-            return version
     help_txt = ''
     if micro is None:
         help_txt = '(Micro) '
@@ -1464,7 +1474,7 @@ def calc_structured_append_parity(content):
             data = content.encode('shift-jis')
         except (LookupError, UnicodeError):
             data = content.encode('utf-8')
-    if _PY2:
+    if _PY2:  # pragma: no cover
         data = (ord(c) for c in data)
     return reduce(xor, data)
 

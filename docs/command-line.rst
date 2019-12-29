@@ -64,7 +64,7 @@ Error correction level
 
 The default error correction level is "L" (or any better if
 :option:`--no-error-boost <segno --no-error-boost>` was not set, c.f.
-:doc:`error-correction-boost`), use the
+:doc:`boost-error-correction-level`), use the
 :option:`--error <segno --error>` parameter to change it::
 
     $ segno --error=q "Ain't no grave"

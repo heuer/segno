@@ -23,7 +23,7 @@ try:
     from .test_pam import pam_bw_as_matrix
     from .test_tex import tex_as_matrix
     from .test_xpm import xpm_as_matrix
-except (ValueError, SystemError):  # Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
     from test_eps import eps_as_matrix
     from test_png import png_as_matrix
     from test_svg import svg_as_matrix
@@ -84,6 +84,7 @@ def test_data(kind, buffer_factory, to_matrix_func, data, error, border, kw):
         exptected_row = bytearray(matrix[i])
         assert len(row) == len(exptected_row)
         assert exptected_row == row, 'Error in row {0}'.format(i)
+
 
 if __name__ == '__main__':
     pytest.main([__file__])

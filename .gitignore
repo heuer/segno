@@ -6,3 +6,6 @@
 htmlcov/*
 dist/*
 build/*
+venv/*
+sandbox/out/*.svg
+sandbox/out/*.png

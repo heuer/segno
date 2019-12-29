@@ -204,9 +204,9 @@ def _make_pixel_array(pixels, is_greyscale):
     Returns a list of lists. Each list contains 0 and/or 1.
     0 == black, 1 == white.
 
-    `is_greyscale`
-        Indiciates if this function must convert RGB colors into black/white
-        (supported values: (0, 0, 0) = black and (255, 255, 255) = white)
+    :param bool is_greyscale: Indiciates if this function must convert RGB colors
+            into black/white (supported values: (0, 0, 0) = black and
+            (255, 255, 255) = white)
     """
     def bw_color(r, g, b):
         rgb = r, g, b

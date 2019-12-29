@@ -16,8 +16,12 @@ import tempfile
 import pytest
 import segno
 from segno import ModeError, VersionError, ErrorLevelError, DataOverflowError
-from segno import consts
-from codecs import open
+from segno import consts, moduletypes as mt
+try:  # Py 2
+    unicode
+    from io import open
+except NameError:
+    pass
 
 _LEGAL_MICRO_VERSIONS = tuple(chain(consts.MICRO_VERSION_MAPPING.keys(),
                                     [v.lower() for v in consts.MICRO_VERSION_MAPPING.keys()]))
@@ -88,6 +92,16 @@ def test_illegal_error_level_micro():
 def test_data_too_large(data, version):
     with pytest.raises(DataOverflowError):
         segno.make(data, version=version)
+
+
+def test_eci_and_micro():
+    with pytest.raises(VersionError):
+        segno.make('A', eci=True, micro=True)
+
+
+def test_eci_and_micro2():
+    with pytest.raises(VersionError):
+        segno.make('A', eci=True, version='m4')
 
 
 def _calc_size(dim, border, scale=1):
@@ -233,6 +247,44 @@ def test_matrix_iter_border_3():
     top_border = [bytearray([0x0] * 27)] * 3
                    # border         finder
     seq = bytearray([0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
+    assert top_border == res[:3]
+    assert seq == res[3][:len(seq)]
+
+
+@pytest.mark.parametrize('border', [.2, -1, 1.3])
+def test_matrix_iter_verbose_invalid_border(border):
+    qr = segno.make('A')
+    with pytest.raises(ValueError):
+        for row in qr.matrix_iter(border=border, verbose=True):
+            pass
+
+
+def test_matrix_iter_verbose_border_zero():
+    qr = segno.make('No border')
+    res = [bytearray([bool(v >> 8) for v in row]) for row in qr.matrix_iter(border=0, verbose=True)]
+    assert qr.matrix == tuple(res)
+
+
+def test_matrix_iter_verbose_border_default():
+    qr = segno.make('A', version=1)
+    res = [list(row) for row in qr.matrix_iter(border=None, verbose=True)]
+    top_border = [[mt.TYPE_QUIET_ZONE] * 29] * 4
+    seq = []
+    seq.extend([mt.TYPE_QUIET_ZONE] * 4)
+    seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
+    seq.extend([mt.TYPE_SEPARATOR, mt.TYPE_FORMAT_LIGHT])
+    assert top_border == res[:4]
+    assert seq == res[4][:len(seq)]
+
+
+def test_matrix_iter_verbose_border_3():
+    qr = segno.make('A', version=1)
+    res = [list(row) for row in qr.matrix_iter(border=3, verbose=True)]
+    top_border = [[mt.TYPE_QUIET_ZONE] * 27] * 3
+    seq = []
+    seq.extend([mt.TYPE_QUIET_ZONE] * 3)
+    seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
+    seq.extend([mt.TYPE_SEPARATOR, mt.TYPE_FORMAT_LIGHT])
     assert top_border == res[:3]
     assert seq == res[3][:len(seq)]
 

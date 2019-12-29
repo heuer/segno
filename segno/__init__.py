@@ -21,7 +21,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
@@ -40,8 +40,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     This is main entry point to create QR Codes and Micro QR Codes.
 
     Aside from `content`, all parameters are optional and an optimal (minimal)
-    (Micro) QR Code with a maximal error correction level (minimum "M") is
-    generated.
+    (Micro) QR Code with a maximal error correction level is generated.
 
     :param content: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be
@@ -49,8 +48,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type content: str, int, bytes
     :param error: Error correction level. If ``None`` (default), error
             correction level ``L`` is used (note: Micro QR Code version M1 does
-            not support error correction. If an explicit error level is used,
-            a M1 QR Code won't be generated).
+            not support any error correction. If an explicit error correction
+            level is used, a M1 QR Code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
             correction level "L" or better see :paramref:`boost_error <segno.make.boost_error>`),
             "L", "M", "Q", "H" (error correction level "H" isn't available for
@@ -77,7 +76,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             Valid values: "M1", "M2", "M3", "M4" (for Micro QR Codes) or an
             integer between 1 and 40 (for QR Codes).
             The `version` parameter is case insensitive.
-    :type version: int, str or None.
+    :type version: int, str or None
     :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
             ``None`` (default) the appropriate mode will automatically be
             determined.
@@ -97,15 +96,15 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
-            appropriate data mask is choosen automatically. If the `mask`
-            parameter if provided, this function may raise a :py:exc:`MaskError`
+            appropriate data mask is chosen automatically. If the `mask`
+            parameter is provided, this function may raise a :py:exc:`MaskError`
             if the mask is invalid.
     :type mask: int or None
     :param encoding: Indicates the encoding in mode "byte". By default
             (`encoding` is ``None``) the implementation tries to use the
             standard conform ISO/IEC 8859-1 encoding and if it does not fit, it
             will use UTF-8. Note that no ECI mode indicator is inserted by
-            default (see `eci`).
+            default (see :paramref:`eci <segno.make.eci>`).
             The `encoding` parameter is case insensitive.
     :type encoding: str or None
     :param bool eci: Indicates if binary data which does not use the default
@@ -330,7 +329,7 @@ class QRCode:
         """
         return utils.get_symbol_size(self._version, scale=scale, border=border)
 
-    def matrix_iter(self, scale=1, border=None):
+    def matrix_iter(self, scale=1, border=None, verbose=False):
         """\
         Returns an iterator over the matrix which includes the border.
 
@@ -344,24 +343,29 @@ class QRCode:
 
             >>> import segno
             >>> qr = segno.make('The Beatles')
-            >>> width, height = qr.symbol_size()
+            >>> width, height = qr.symbol_size(scale=2)
             >>> res = []
             >>> # Scaling factor 2, default border
             >>> for row in qr.matrix_iter(scale=2):
             >>>     res.append([col == 0x1 for col in row])
-            >>> width * 2 == len(res[0])
+            >>> width == len(res[0])
             True
-            >>> height * 2 == len(res)
+            >>> height == len(res)
             True
 
 
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
                 indicate the default border.
+        :param bool verbose: Indicates if the type of the module should be returned
+                instead of ``0x1`` and ``0x0`` values.
+                See :py:mod:`segno.moduletypes` for the return values.
+                This feature is currently in EXPERIMENTAL state.
         :raises: :py:exc:`ValueError` if the scaling factor or the border is
                 invalid (i.e. negative).
         """
-        return utils.matrix_iter(self.matrix, self._version, scale, border)
+        iterfn = utils.matrix_iter_verbose if verbose else utils.matrix_iter
+        return iterfn(self.matrix, self._version, scale, border)
 
     def show(self, delete_after=20, scale=10, border=None, color='#000',
              background='#fff'):  # pragma: no cover
@@ -468,6 +472,10 @@ class QRCode:
     def terminal(self, out=None, border=None):
         """\
         Serializes the matrix as ANSI escape code.
+
+        Under Windows, no ANSI escape sequence is generated but the Windows
+        API is used *unless* :paramref:`out <segno.QRCode.terminal.out>`
+        is a writable object or using WinAPI fails.
 
         :param out: Filename or a file-like object supporting to write text.
                 If ``None`` (default), the matrix is written to :py:class:`sys.stdout`.
@@ -616,13 +624,14 @@ class QRCode:
         scale            integer
         color            Default: "#000" (black)
                          ``None`` is a valid value iff background is not ``None``.
-        background       Default value ``#fff`` (white)
+                         If set to ``None``, the dark modules become transparent.
+        background       Default value "#fff" (white)
                          See keyword "color" for further details.
         compresslevel    Default: 9. Integer indicating the compression level
                          for the ``IDAT`` (data) chunk.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
-        dpi              Default: None. Specifies the DPI value for the image.
+        dpi              Default: ``None``. Specifies the DPI value for the image.
                          By default, the DPI value is unspecified. Please note
                          that the DPI value is converted into meters (maybe with
                          rounding errors) since PNG does not support the unit
@@ -681,6 +690,8 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _ansi:
+
         **ANSI escape code**
 
         Supports the "border" keyword, only!
@@ -688,6 +699,7 @@ class QRCode:
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
+        out              Filename or :py:class:`io.StringIO`
         kind             "ans"
         =============    ==============================================================
 
@@ -719,7 +731,7 @@ class QRCode:
         kind             "pam"
         scale            integer
         color            Default: "#000" (black).
-        background       Default value ``#fff`` (white). Use ``None`` for a transparent
+        background       Default value "#fff" (white). Use ``None`` for a transparent
                          background.
         =============    ==============================================================
 
@@ -739,8 +751,8 @@ class QRCode:
         kind             "tex"
         scale            integer or float
         color            LaTeX color name (default: "black"). The color is written
-                         "at it is", so ensure that the color is a standard color or it
-                         has been defined in the enclosing LaTeX document.
+                         "at it is", please ensure that the color is a standard color
+                         or it has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
                          point to. Requires the ``hyperref`` package in your LaTeX
                          environment.
@@ -772,7 +784,7 @@ class QRCode:
         kind             "xpm"
         scale            integer
         color            Default: "#000" (black).
-        background       Default value ``#fff`` (white)
+        background       Default value "#fff" (white)
                          ``None`` indicates a transparent background.
         name             Name of the variable (default: "img")
         =============    ==============================================================

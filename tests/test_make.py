@@ -110,6 +110,15 @@ def test_create_micro():
     assert 'M1' == qr.version
 
 
+def test_make_micro_overflow():
+    data = 'A' * 21  # Max. 21 alphanumeric chars (M4-L)
+    qr = segno.make(data, micro=True)
+    assert 'M4-L' == qr.designator
+    data += 'A'
+    with pytest.raises(segno.DataOverflowError):
+        segno.make(data, micro=True)
+
+
 def test_enforce_qrcode():
     content = 'HELLO WORLD'
     qr = segno.make(content)
@@ -128,6 +137,11 @@ def test_m1_has_no_error_level():
     assert qr.is_micro
     assert 'M1' == qr.version
     assert qr.error is None
+
+
+def test_micro_invalid_error():
+    with pytest.raises(segno.ErrorLevelError):
+        segno.make_micro(1, error='h')
 
 
 if __name__ == '__main__':

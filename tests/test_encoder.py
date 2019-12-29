@@ -15,7 +15,7 @@ from segno import encoder
 from segno.encoder import Buffer
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError):  # Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
     from tutils import read_matrix
 
 
@@ -766,6 +766,7 @@ def _make_score_n4_data():
 
     yield 3 * 10, 35
 
+
 @pytest.mark.parametrize('score, percent', _make_score_n4_data())
 def test_score_n4_iso(score, percent):
     # Add 10 points to a deviation of 5% increment or decrement in the
@@ -995,7 +996,8 @@ def test_encode_iso_fig29():
     #TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
     qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
                             error='m', mask=4, boost_error=False)
-    assert qr.mask == 4
+    assert 4 == qr.mask
+    assert 4 == qr.version
     ref_matrix = read_matrix('iso-fig-29')
     assert ref_matrix == qr.matrix
 
