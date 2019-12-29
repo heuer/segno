@@ -16,6 +16,10 @@ except NameError:  # pragma: no cover
     pass
 from . import moduletypes as mt
 
+__all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
+           'check_valid_scale', 'check_valid_border', 'matrix_to_lines',
+           'matrix_iter', 'matrix_iter_verbose')
+
 
 def get_default_border_size(version):
     """\
@@ -167,9 +171,12 @@ TYPE_DATA_LIGHT = mt.TYPE_DATA_LIGHT
 TYPE_DATA_DARK = mt.TYPE_DATA_DARK
 TYPE_QUIET_ZONE = mt.TYPE_QUIET_ZONE
 
-def matrix_iter_detail(matrix, version, scale=1, border=None):
+def matrix_iter_detail(matrix, version, scale=1, border=None):  # pragma: no cover
+    """\
+    Deprecated, see py:func:`matrix_iter_verbose`
+    """
     import warnings
-    warnings.warn('Use matrix_iter_verbose', DeprecationWarning)
+    warnings.warn('Deprecated since 0.3.3, use matrix_iter_verbose', DeprecationWarning)
     return matrix_iter_verbose(matrix, version, scale, border)
 
 
