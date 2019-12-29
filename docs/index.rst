@@ -25,6 +25,7 @@ Contents:
     plugins
     api
     api-low-level
+    python2
 
 
 Indices and tables
