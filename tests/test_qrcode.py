@@ -269,7 +269,6 @@ def test_matrix_iter_verbose_border_default():
     qr = segno.make('A', version=1)
     res = [list(row) for row in qr.matrix_iter(border=None, verbose=True)]
     top_border = [[mt.TYPE_QUIET_ZONE] * 29] * 4
-                   # border              finder
     seq = []
     seq.extend([mt.TYPE_QUIET_ZONE] * 4)
     seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
@@ -282,7 +281,6 @@ def test_matrix_iter_verbose_border_3():
     qr = segno.make('A', version=1)
     res = [list(row) for row in qr.matrix_iter(border=3, verbose=True)]
     top_border = [[mt.TYPE_QUIET_ZONE] * 27] * 3
-                   # border         finder
     seq = []
     seq.extend([mt.TYPE_QUIET_ZONE] * 3)
     seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
