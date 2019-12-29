@@ -31,8 +31,8 @@ a custom border, the user may specify the border explicitly.
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
-that the dark / light modules of a (Micro) QR Code is interpreted as one unit in
-the specific user space (i.e. 1 pixel for the :ref:`PNG <png>` serializer or
+that size of a dark / light module is interpreted as one unit in the specific
+user space (i.e. 1 pixel for the :ref:`PNG <png>` serializer or
 1 point (1/72 of an inch) in :ref:`EPS <eps>`). Some serializers
 (like :ref:`PNG <png>`) accept only an integer value or convert the provided
 scaling factor to an integer. Other, like :ref:`SVG <svg>` and :ref:`EPS <eps>`,
