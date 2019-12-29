@@ -457,40 +457,30 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     scale = int(scale)
     check_valid_scale(scale)
     check_valid_border(border)
-    # Background color index
-    bg_color_idx = 0
-    trans_color = 1  # white
+    if dpi:
+        dpi = int(dpi)
+        if dpi < 0:
+            raise ValueError('DPI value must not be negative')
+        dpi = int(dpi // 0.0254)
     stroke_is_transparent = color is None
     bg_is_transparent = background is None
     stroke_color = png_color(color) if not stroke_is_transparent else None
     bg_color = png_color(background) if not bg_is_transparent else None
+    transparency = stroke_is_transparent or bg_is_transparent
     if stroke_color == bg_color:
         raise ValueError('The stroke color and background color must not be the same')
-    stroke_is_black, stroke_is_white = False, False
-    bg_is_white, bg_is_black = False, False
-    if not stroke_is_transparent:
-        stroke_is_black = colors.color_is_black(stroke_color)
-        if not stroke_is_black:
-            stroke_is_white = colors.color_is_white(stroke_color)
-    if not bg_is_transparent:
-        bg_is_white = colors.color_is_white(bg_color)
-        if not bg_is_white:
-            bg_is_black = colors.color_is_black(bg_color)
-    transparency = stroke_is_transparent or bg_is_transparent
-    is_greyscale = False
-    invert_row = False
-    if bg_is_white:
-        is_greyscale = stroke_is_black or stroke_is_transparent
-        invert_row = is_greyscale
-        trans_color = int(not is_greyscale)
-    elif bg_is_black:
-        is_greyscale = stroke_is_transparent or stroke_is_white
-    elif bg_is_transparent:
-        is_greyscale = stroke_is_black or stroke_is_white
-        invert_row = is_greyscale
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    greyscale_colors = (None, black, white)
     palette = None
-    if not is_greyscale:
-        # PLTE image
+    is_greyscale = stroke_color in greyscale_colors and bg_color in greyscale_colors
+    if is_greyscale:
+        colortype = 0
+        invert_row = not(bg_color == black or stroke_color == white)
+        bg_color_idx = int(invert_row)
+        trans_color = 0 if bg_is_transparent and not invert_row else 1
+    else: # PLTE image
+        colortype = 3
         if bg_is_transparent:
             bg_color = colors.invert_color(stroke_color[:3])
             if len(stroke_color) == 4:
@@ -506,20 +496,31 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         invert_row = bg_color_idx > 0
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
-    if dpi:
-        dpi = int(dpi)
-        if dpi < 0:
-            raise ValueError('DPI value must not be negative')
-        dpi = int(dpi // 0.0254)
-    colortype = 3
-    if is_greyscale:
-        colortype = 0
-        bg_color_idx = int(invert_row)
     horizontal_border, vertical_border = b'', b''
     if border > 0:
         # Calculate horizontal and vertical border
         horizontal_border = scanline([bg_color_idx] * width) * border * scale
         vertical_border = [bg_color_idx] * border * scale
+    # <https://www.w3.org/TR/PNG/#9Filters>
+    # This variable holds the "Up" filter which indicates that this scanline
+    # is equal to the above scanline (since it is filled with null bytes)
+    same_as_above = b''
+    row_filters = []
+    if invert_row:
+        row_filters.append(invert_row_bits)
+    if scale > 1:
+        # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
+        same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
+        row_filters.append(scale_row_x_axis)
+    row_filters = tuple(row_filters)
+    idat = bytearray(horizontal_border)
+    for row in (reduce(apply_row_filter, row_filters, r) for r in matrix):
+        # Chain precalculated left border with row and right border
+        idat += scanline(chain(vertical_border, row, vertical_border))
+        idat += same_as_above  # This is b'' if no scaling factor was provided
+    idat += horizontal_border
+    if _PY2:  # pragma: no cover
+        idat = bytes(idat)
     with writable(out, 'wb') as f:
         write = f.write
         write(b'\211PNG\r\n\032\n')  # Magic number
@@ -528,39 +529,19 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
         if dpi:
             write(chunk(b'pHYs', pack(b'>LLB', dpi, dpi, 1)))
-        if colortype:  # Palette
+        if palette:
             write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
             # <https://www.w3.org/TR/PNG/#11tRNS>
-            if len(palette[0]) > 3:  # Color with alpha channel is the first color in the palette
+            if len(palette[0]) > 3:  # Color with alpha channel is the first entry in the palette
                 write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
             elif transparency:
                 write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
-        elif is_greyscale and transparency:  # Greyscale with alpha
-            # Greyscale with alpha channel
+        elif transparency:
+            # Grayscale with Transparency
             # <https://www.w3.org/TR/PNG/#11tRNS>
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', trans_color)))
-        # <https://www.w3.org/TR/PNG/#9Filters>
-        # This variable holds the "Up" filter which indicates that this scanline
-        # is equal to the above scanline (since it is filled with null bytes)
-        same_as_above = b''
-        row_filters = []
-        if invert_row:
-            row_filters.append(invert_row_bits)
-        if scale > 1:
-            # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
-            same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-            row_filters.append(scale_row_x_axis)
-        row_filters = tuple(row_filters)
-        res = bytearray(horizontal_border)
-        for row in (reduce(apply_row_filter, row_filters, r) for r in matrix):
-            # Chain precalculated left border with row and right border
-            res += scanline(chain(vertical_border, row, vertical_border))
-            res += same_as_above  # This is b'' if no scaling factor was provided
-        res += horizontal_border
-        if _PY2:  # pragma: no cover
-            res = bytes(res)
-        write(chunk(b'IDAT', zlib.compress(res, compresslevel)))
+        write(chunk(b'IDAT', zlib.compress(idat, compresslevel)))
         if addad:
             write(chunk(b'tEXt', b'Software\x00' + CREATOR.encode('ascii')))
         write(chunk(b'IEND', b''))
