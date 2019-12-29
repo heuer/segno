@@ -182,7 +182,7 @@ def matrix_iter_detail(matrix, version, scale=1, border=None):  # pragma: no cov
 
 def matrix_iter_verbose(matrix, version, scale=1, border=None):
     """\
-    Returns an iterator / generator over the provided matrix which includes
+    EXPERIMENTAL: Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
 
     This iterator / generator returns different values for dark / light modules

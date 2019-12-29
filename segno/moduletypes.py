@@ -6,7 +6,16 @@
 # License: BSD License
 #
 """\
-Module types.
+Module types (EXPERIMENTAL).
+
+To distinguish between dark and light modules without taking the concrete
+value into account, use::
+
+    if m >> 8:
+        print('dark module')
+
+    if not m >> 8:
+        print('light module')
 """
 TYPE_FINDER_PATTERN_LIGHT = 6
 """\

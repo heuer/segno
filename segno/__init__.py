@@ -359,6 +359,8 @@ class QRCode:
                 indicate the default border.
         :param bool verbose: Indicates if the type of the module should be returned
                 instead of ``0x1`` and ``0x0`` values.
+                See :py:mod:`segno.moduletypes` for the return values.
+                This feature is currently in EXPERIMENTAL state.
         :raises: :py:exc:`ValueError` if the scaling factor or the border is
                 invalid (i.e. negative).
         """
