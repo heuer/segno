@@ -476,9 +476,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     is_greyscale = stroke_color in greyscale_colors and bg_color in greyscale_colors
     if is_greyscale:
         colortype = 0
-        invert_row = not(bg_color == black or stroke_color == white)
-        bg_color_idx = int(invert_row)
-        trans_color = 0 if bg_is_transparent and not invert_row else 1
+        bg_color_idx = int(bg_color != black and stroke_color != white)
+        trans_color = 0 if bg_is_transparent and not bg_color_idx else 1
     else: # PLTE image
         colortype = 3
         if bg_is_transparent:
@@ -491,9 +490,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
                 stroke_color += (0,)
         palette = sorted([bg_color, stroke_color], key=len, reverse=True)
         bg_color_idx = palette.index(bg_color)
-        # Usually, the background color is the first entry in the PLTE so
-        # no bit inverting should be necessary
-        invert_row = bg_color_idx > 0
+    # Usually, the background color is the first entry in the PLTE so
+    # no bit inverting should be necessary
+    # The greyscale mode requires usually bit inverting since 0=black
+    # and 1=white unless the QR Code is inverted
+    invert_row = bg_color_idx > 0
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     horizontal_border, vertical_border = b'', b''
