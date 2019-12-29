@@ -462,40 +462,25 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         if dpi < 0:
             raise ValueError('DPI value must not be negative')
         dpi = int(dpi // 0.0254)
-    # Background color index
-    bg_color_idx = 0
-    trans_color = 1  # white
     stroke_is_transparent = color is None
     bg_is_transparent = background is None
     stroke_color = png_color(color) if not stroke_is_transparent else None
     bg_color = png_color(background) if not bg_is_transparent else None
+    transparency = stroke_is_transparent or bg_is_transparent
     if stroke_color == bg_color:
         raise ValueError('The stroke color and background color must not be the same')
-    stroke_is_black, stroke_is_white = False, False
-    bg_is_white, bg_is_black = False, False
-    if not stroke_is_transparent:
-        stroke_is_black = colors.color_is_black(stroke_color)
-        if not stroke_is_black:
-            stroke_is_white = colors.color_is_white(stroke_color)
-    if not bg_is_transparent:
-        bg_is_white = colors.color_is_white(bg_color)
-        if not bg_is_white:
-            bg_is_black = colors.color_is_black(bg_color)
-    transparency = stroke_is_transparent or bg_is_transparent
-    is_greyscale = False
     invert_row = False
-    if bg_is_white:
-        is_greyscale = stroke_is_black or stroke_is_transparent
-        invert_row = is_greyscale
-        trans_color = int(not is_greyscale)
-    elif bg_is_black:
-        is_greyscale = stroke_is_transparent or stroke_is_white
-    elif bg_is_transparent:
-        is_greyscale = stroke_is_black or stroke_is_white
-        invert_row = is_greyscale
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    greyscale_colors = (None, black, white)
     palette = None
-    colortype = 0
-    if not is_greyscale:
+    colortype = 0  # greyscale
+    is_greyscale = stroke_color in greyscale_colors and bg_color in greyscale_colors
+    if is_greyscale:
+        invert_row = not(bg_color == black or stroke_color == white)
+        bg_color_idx = int(invert_row)
+        trans_color = 0 if bg_is_transparent and not invert_row else 1
+    else:
         # PLTE image
         colortype = 3
         if bg_is_transparent:
@@ -511,8 +496,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         # Usually, the background color is the first entry in the PLTE so
         # no bit inverting should be necessary
         invert_row = bg_color_idx > 0
-    elif invert_row:
-        bg_color_idx = 1
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     horizontal_border, vertical_border = b'', b''
@@ -556,7 +539,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             elif transparency:
                 write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
         elif transparency:
-            # Greyscale with alpha channel
+            # Grayscale with Transparency
             # <https://www.w3.org/TR/PNG/#11tRNS>
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', trans_color)))
