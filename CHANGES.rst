@@ -3,6 +3,8 @@ Changes
 
 0.3.3 -- 2019-mm-dd
 -------------------
+* Fixed issue #54: PNGs with white color and transparent background were rendered
+  as transparent PNG with a *black* QR Code.
 * Removed test environments CPython 3.4 and 3.6 from tox
 * Improved documentation
 * Refactored source code
