@@ -469,19 +469,17 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     transparency = stroke_is_transparent or bg_is_transparent
     if stroke_color == bg_color:
         raise ValueError('The stroke color and background color must not be the same')
-    invert_row = False
     black = (0, 0, 0)
     white = (255, 255, 255)
     greyscale_colors = (None, black, white)
     palette = None
-    colortype = 0  # greyscale
     is_greyscale = stroke_color in greyscale_colors and bg_color in greyscale_colors
     if is_greyscale:
+        colortype = 0
         invert_row = not(bg_color == black or stroke_color == white)
         bg_color_idx = int(invert_row)
         trans_color = 0 if bg_is_transparent and not invert_row else 1
-    else:
-        # PLTE image
+    else: # PLTE image
         colortype = 3
         if bg_is_transparent:
             bg_color = colors.invert_color(stroke_color[:3])
@@ -521,7 +519,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         idat += scanline(chain(vertical_border, row, vertical_border))
         idat += same_as_above  # This is b'' if no scaling factor was provided
     idat += horizontal_border
-    if _PY2:
+    if _PY2:  # pragma: no cover
         idat = bytes(idat)
     with writable(out, 'wb') as f:
         write = f.write
