@@ -26,6 +26,7 @@ Contents:
     api
     api-low-level
     python2
+    changes
 
 
 Indices and tables
