@@ -477,7 +477,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     if is_greyscale:
         colortype = 0
         bg_color_idx = int(bg_color != black and stroke_color != white)
-        trans_color = 0 if bg_is_transparent and not bg_color_idx else 1
+        trans_color = 0 if (bg_is_transparent and not bg_color_idx) or (stroke_is_transparent and bg_color_idx) else 1
     else: # PLTE image
         colortype = 3
         if bg_is_transparent:
