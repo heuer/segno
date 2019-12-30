@@ -389,7 +389,7 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
 
 
 def write_png(matrix, version, out, scale=1, border=None, color='#000',
-              background='#fff', compresslevel=9, dpi=None, addad=True):
+              background='#fff', compresslevel=9, dpi=None, addad=True):  # pragma: no cover
     """\
     Serializes the QR Code as PNG image.
 
@@ -547,8 +547,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', trans_color)))
         write(chunk(b'IDAT', zlib.compress(idat, compresslevel)))
-        if addad:
-            write(chunk(b'tEXt', b'Software\x00' + CREATOR.encode('ascii')))
         write(chunk(b'IEND', b''))
 
 
@@ -583,7 +581,7 @@ def _make_colormapping(dark, light):
 
 
 def write_png2(matrix, version, out, scale=1, border=None, color='#000',
-              background='#fff', compresslevel=9, dpi=None, addad=False,
+              background='#fff', compresslevel=9, dpi=None, addad=True,
               colormap=None):
     """\
     Serializes the QR Code as PNG image.
@@ -698,6 +696,8 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
             if black in palette:
                 palette = [black, transparent]  # Since black is zero, it should be the first entry
             png_trans_idx = palette.index(transparent)
+        elif black in palette and white in palette:  # TODO: Needed for PyPy2 and PyPy3
+            palette = [black, white]
     else:  # PLTE
         # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
         if distinct_colors_no > 2:
@@ -776,8 +776,6 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
             # 2 bytes for color type == 0 (greyscale)
             write(chunk(b'tRNS', pack(b'>1H', png_trans_idx)))
         write(chunk(b'IDAT', zlib.compress(idat, compresslevel)))
-        if addad:
-            write(chunk(b'tEXt', b'Software\x00' + CREATOR.encode('ascii')))
         write(chunk(b'IEND', b''))
 
 

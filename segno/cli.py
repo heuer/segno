@@ -113,7 +113,7 @@ def make_parser():
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
     png_group.add_argument('--dpi', help='Sets the DPI value of the PNG file',
                            type=int)
-    png_group.add_argument('--no-ad', help='Omits the "Software" comment in the PNG file',
+    png_group.add_argument('--no-ad', help=argparse.SUPPRESS,
                            dest='addad',
                            action='store_false')
     # Show Segno's version --version and -v are taken by QR Code version

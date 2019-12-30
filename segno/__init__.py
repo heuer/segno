@@ -642,8 +642,6 @@ class QRCode:
                          that the DPI value is converted into meters (maybe with
                          rounding errors) since PNG does not support the unit
                          "dots per inch".
-        addad            Boolean value (default: True) to (dis-)allow a "Software"
-                         comment indicating that the file was created by Segno.
         =============    ==============================================================
 
 
