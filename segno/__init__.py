@@ -616,6 +616,12 @@ class QRCode:
 
         **Portable Network Graphics (PNG)**
 
+        This writes either a grayscale (maybe with transparency) PNG (color type 0)
+        or a palette-based (maybe with transparency) image (color type 3).
+        If the color / background values are ``None``, white or black, the serializer
+        chooses the more compact grayscale mode, in all other cases a palette-based
+        image is written.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
