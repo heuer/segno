@@ -6,6 +6,8 @@ Changes
 * Fixed issue #54: After last change, white background with transparent
   QR Code did not work. Enhanced test suite to cover all possible inputs
   for PNG grayscale mode
+* Removed interpretation of ``addad`` from PNG serializer.
+  Contradicts the claim to create small images by default.
 
 
 0.3.3 -- 2019-12-29

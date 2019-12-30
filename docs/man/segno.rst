@@ -171,10 +171,6 @@ Command Line Options
 
     Sets the DPI value of the PNG file
 
-.. option:: --no-ad
-
-    Omits the "Software" comment in the PNG file
-
 
 Exit Status
 -----------
