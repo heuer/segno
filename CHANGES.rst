@@ -3,6 +3,9 @@ Changes
 
 0.3.4 -- 2020-mm-dd
 -------------------
+* Fixed issue #54: After last change, white background with transparent
+  QR Code did not work. Enhanced test suite to cover all possible inputs
+  for PNG grayscale mode
 
 
 0.3.3 -- 2019-12-29
