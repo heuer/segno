@@ -565,6 +565,20 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
+def _make_colormapping(dark, light):
+    """\
+    Internal function which returns a module type -> color mapping.
+    """
+    return {mt.TYPE_FINDER_PATTERN_DARK: dark, mt.TYPE_FINDER_PATTERN_LIGHT: light,
+            mt.TYPE_ALIGNMENT_PATTERN_DARK: dark, mt.TYPE_ALIGNMENT_PATTERN_LIGHT: light,
+            mt.TYPE_SEPARATOR: light, mt.TYPE_DARKMODULE: dark,
+            mt.TYPE_DATA_DARK: dark, mt.TYPE_DATA_LIGHT: light,
+            mt.TYPE_FORMAT_DARK: dark, mt.TYPE_FORMAT_LIGHT: light,
+            mt.TYPE_QUIET_ZONE: light,
+            mt.TYPE_VERSION_DARK: dark, mt.TYPE_VERSION_LIGHT: light,
+            mt.TYPE_TIMING_DARK: dark, mt.TYPE_TIMING_LIGHT: light}
+
+
 def write_png2(matrix, version, out, scale=1, border=None, color='#000',
               background='#fff', compresslevel=9, dpi=None, addad=False,
               colormap=None):
@@ -654,14 +668,7 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
             mt.TYPE_FINDER_PATTERN_DARK: png_color(color) if color is not None else transparent,
             mt.TYPE_QUIET_ZONE: png_color(background) if background is not None else transparent}
     else:
-        color_mapping = {mt.TYPE_FINDER_PATTERN_DARK: black, mt.TYPE_FINDER_PATTERN_LIGHT: white,
-                         mt.TYPE_ALIGNMENT_PATTERN_DARK: black, mt.TYPE_ALIGNMENT_PATTERN_LIGHT: white,
-                         mt.TYPE_SEPARATOR: white, mt.TYPE_DARKMODULE: black,
-                         mt.TYPE_DATA_DARK: black, mt.TYPE_DATA_LIGHT: white,
-                         mt.TYPE_FORMAT_DARK: black, mt.TYPE_FORMAT_LIGHT: white,
-                         mt.TYPE_QUIET_ZONE: white,
-                         mt.TYPE_VERSION_DARK: black, mt.TYPE_VERSION_LIGHT: white,
-                         mt.TYPE_TIMING_DARK: black, mt.TYPE_TIMING_LIGHT: white}
+        color_mapping = _make_colormapping(dark=black, light=white)
         for module_type, clr in colormap.items():
             color_mapping[module_type] = png_color(clr) if clr is not None else transparent
     distinct_colors = set(color_mapping.values())
