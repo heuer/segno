@@ -42,9 +42,12 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 from . import moduletypes as mt
 
+__all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
+           'write_txt', 'write_pbm', 'write_pam', 'write_xpm', 'write_xbm',
+           'write_tex', 'write_terminal')
+
 # Standard creator name
 CREATOR = 'Segno <https://pypi.org/project/segno/>'
-
 
 @contextmanager
 def writable(file_or_path, mode, encoding=None):
