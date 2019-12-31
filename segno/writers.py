@@ -450,6 +450,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             (default: 9). 1 is fastest and produces the least
             compression, 9 is slowest and produces the most.
             0 is no compression.
+    :param colormap: Optional module type -> color mapping. If provided, the
+            `color` and `background` arguments are ignored. All undefined module
+            types will have the default colors (light: white, dark: black).
+            See `color` for valid color values. ``None`` is accepted as valid
+            color values as well (becomes transparent).
     """
 
     def png_color(clr):
@@ -519,13 +524,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)
     palette = sorted(set(color_mapping.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
-    is_greyscale = False
     number_of_colors = len(palette)
     if number_of_colors == 1:
         raise ValueError('The stroke color and background color must not be the same')
-    elif number_of_colors == 2:
-        # Check if greyscale mode is applicable
-        is_greyscale = all((clr in (transparent, black, white) for clr in palette))
+    # Check if greyscale mode is applicable
+    is_greyscale = number_of_colors == 2 and all((clr in (transparent, black, white) for clr in palette))
     png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
@@ -571,7 +574,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         miter = iter(matrix)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
-    horizontal_border, vertical_border = b'', b''
+    horizontal_border = b''
+    vertical_border = b''
     if border > 0:
         # Calculate horizontal and vertical border
         qz_value = color_index[qz_idx]
@@ -586,7 +590,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
         same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
         row_filters.append(scale_row_x_axis)
-    row_filters = tuple(row_filters)
     idat = bytearray(horizontal_border)
     for row in (reduce(apply_row_filter, row_filters, r) for r in miter):
         # Chain precalculated left border with row and right border
