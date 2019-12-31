@@ -538,21 +538,20 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             png_bit_depth = 2 if number_of_colors < 5 else 4
         palette.sort(key=len, reverse=True)  # RGBA colors first
         if is_transparent:
+            png_trans_idx = 0
+            need_rgba = len(palette[1]) == 4
             transparent_color = None
-            for clr in palette[1:]:
-                transparent_color = colors.invert_color(clr[:3])
-                if len(clr) == 4:
-                    transparent_color += (0,)
-                if transparent_color in palette:
-                    transparent_color = None
-                else:
+            # Choose a random color which becomes transparent. TODO: Better alternatives? More elegant code?
+            for clr_val in colors._NAME2RGB.values():
+                if need_rgba:
+                    clr_val += (0,)
+                if clr_val not in palette:
+                    transparent_color = clr_val
                     break
-            if transparent_color is not None:
-                palette[0] = transparent_color
-                png_trans_idx = 0
-                for module_type, clr in color_mapping.items():
-                    if clr == transparent:
-                        color_mapping[module_type] = transparent_color
+            palette[0] = transparent_color
+            for module_type, clr in color_mapping.items():
+                if clr == transparent:
+                    color_mapping[module_type] = transparent_color
     elif is_transparent:  # Greyscale and transparent
         if black in palette:
             # Since black is zero, it should be the first entry
