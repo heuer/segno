@@ -530,12 +530,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
-    if is_greyscale:
-        if is_transparent:
-            if black in palette:
-                palette = [black, transparent]  # Since black is zero, it should be the first entry
-            png_trans_idx = palette.index(transparent)
-    else:  # PLTE
+    if not is_greyscale:  # PLTE
         if number_of_colors > 2:
             # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
             png_bit_depth = 2 if number_of_colors < 5 else 4
@@ -556,6 +551,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
                 for module_type, clr in color_mapping.items():
                     if clr == transparent:
                         color_mapping[module_type] = transparent_color
+    elif is_transparent:  # Greyscale and transparent
+        if black in palette:
+            # Since black is zero, it should be the first entry
+            palette = [black, transparent]
+        png_trans_idx = palette.index(transparent)
     # Keeps a mapping of iterator input -> color number
     color_index = {}
     if number_of_colors > 2:
