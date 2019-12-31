@@ -517,7 +517,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         for module_type, clr in colormap.items():
             color_mapping[module_type] = png_color(clr) if clr is not None else transparent
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)
-    palette = sorted(set(color_mapping.values()), key=itemgetter(0,1,2))
+    palette = sorted(set(color_mapping.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
     is_greyscale = False
     number_of_colors = len(palette)
@@ -525,8 +525,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         raise ValueError('The stroke color and background color must not be the same')
     elif number_of_colors == 2:
         # Check if greyscale mode is applicable
-        greyscale_colors = (transparent, black, white)
-        is_greyscale = all((clr in greyscale_colors for clr in palette))
+        is_greyscale = all((clr in (transparent, black, white) for clr in palette))
     png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
