@@ -389,168 +389,6 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
         writeline('%%EOF')
 
 
-def write_png(matrix, version, out, scale=1, border=None, color='#000',
-              background='#fff', compresslevel=9, dpi=None, addad=True):  # pragma: no cover
-    """\
-    Serializes the QR Code as PNG image.
-
-    By default, the generated PNG will be a greyscale image with a bitdepth
-    of 1. If different colors are provided, an indexed-color image with
-    the same bitdepth is generated.
-
-    :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
-    :param out: Filename or a file-like object supporting to write bytes.
-    :param scale: Indicates the size of a single module (default: 1 which
-            corresponds to 1 x 1 pixel per module).
-    :param int border: Integer indicating the size of the quiet zone.
-            If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param color: Color of the modules (default: black). The
-            color can be provided as ``(R, G, B)`` tuple, as web color name
-            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
-    :param background: Optional background color (default: white).
-            See `color` for valid values. In addition, ``None`` is
-            accepted which indicates a transparent background.
-    :param int dpi: Optional DPI setting. By default (``None``), the PNG won't
-            have any DPI information. Note that the DPI value is converted into
-            meters since PNG does not support any DPI information.
-    :param int compresslevel: Integer indicating the compression level
-            (default: 9). 1 is fastest and produces the least
-            compression, 9 is slowest and produces the most.
-            0 is no compression.
-    """
-
-    def png_color(clr):
-        return colors.color_to_rgb_or_rgba(clr, alpha_float=False)
-
-    def chunk(name, data):
-        """\
-        Returns a PNG chunk with checksum.
-        """
-        chunk_head = name + data
-        # See <https://docs.python.org/2/library/zlib.html#zlib.crc32>
-        # why crc32() & 0xFFFFFFFF is necessary
-        return pack(b'>I', len(data)) + chunk_head \
-               + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
-
-    def scale_row_x_axis(row):
-        """\
-        Returns each pixel `scale` times.
-        """
-        scale_range = range(scale)
-        for b in row:
-            for i in scale_range:
-                yield b
-
-    def scanline(row, filter_type=b'\0'):
-        """\
-        Returns a single scanline.
-        """
-        return bytearray(chain(filter_type, _pack_bits_into_byte(row)))
-
-    def invert_row_bits(row):
-        """\
-        Inverts the row bits 0 -> 1, 1 -> 0
-        """
-        return (b ^ 0x1 for b in row)
-
-    def apply_row_filter(row, fn):
-        return fn(row)
-
-    # PNG writing by "hand" since this lib should not rely on other libs
-    scale = int(scale)
-    check_valid_scale(scale)
-    check_valid_border(border)
-    if dpi:
-        dpi = int(dpi)
-        if dpi < 0:
-            raise ValueError('DPI value must not be negative')
-        dpi = int(dpi // 0.0254)
-    stroke_is_transparent = color is None
-    bg_is_transparent = background is None
-    stroke_color = png_color(color) if not stroke_is_transparent else None
-    bg_color = png_color(background) if not bg_is_transparent else None
-    transparency = stroke_is_transparent or bg_is_transparent
-    if stroke_color == bg_color:
-        raise ValueError('The stroke color and background color must not be the same')
-    black = (0, 0, 0)
-    white = (255, 255, 255)
-    greyscale_colors = (None, black, white)
-    palette = None
-    is_greyscale = stroke_color in greyscale_colors and bg_color in greyscale_colors
-    if is_greyscale:
-        colortype = 0
-        bg_color_idx = int(bg_color != black and stroke_color != white)
-        trans_color = 0 if (bg_is_transparent and not bg_color_idx) or (stroke_is_transparent and bg_color_idx) else 1
-    else: # PLTE image
-        colortype = 3
-        if bg_is_transparent:
-            bg_color = colors.invert_color(stroke_color[:3])
-            if len(stroke_color) == 4:
-                bg_color += (0,)
-        elif stroke_is_transparent:
-            stroke_color = colors.invert_color(bg_color[:3])
-            if len(bg_color) == 4:
-                stroke_color += (0,)
-        palette = sorted([bg_color, stroke_color], key=len, reverse=True)
-        bg_color_idx = palette.index(bg_color)
-    # Usually, the background color is the first entry in the PLTE so
-    # no bit inverting should be necessary
-    # The greyscale mode requires usually bit inverting since 0=black
-    # and 1=white unless the QR Code is inverted
-    invert_row = bg_color_idx > 0
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
-    horizontal_border, vertical_border = b'', b''
-    if border > 0:
-        # Calculate horizontal and vertical border
-        horizontal_border = scanline([bg_color_idx] * width) * border * scale
-        vertical_border = [bg_color_idx] * border * scale
-    # <https://www.w3.org/TR/PNG/#9Filters>
-    # This variable holds the "Up" filter which indicates that this scanline
-    # is equal to the above scanline (since it is filled with null bytes)
-    same_as_above = b''
-    row_filters = []
-    if invert_row:
-        row_filters.append(invert_row_bits)
-    if scale > 1:
-        # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
-        same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        row_filters.append(scale_row_x_axis)
-    row_filters = tuple(row_filters)
-    idat = bytearray(horizontal_border)
-    for row in (reduce(apply_row_filter, row_filters, r) for r in matrix):
-        # Chain precalculated left border with row and right border
-        idat += scanline(chain(vertical_border, row, vertical_border))
-        idat += same_as_above  # This is b'' if no scaling factor was provided
-    idat += horizontal_border
-    if _PY2:  # pragma: no cover
-        idat = bytes(idat)
-    with writable(out, 'wb') as f:
-        write = f.write
-        write(b'\211PNG\r\n\032\n')  # Magic number
-        # Header:
-        # width, height, bitdepth, colortype, compression meth., filter, interlance
-        write(chunk(b'IHDR', pack(b'>2I5B', width, height, 1, colortype, 0, 0, 0)))
-        if dpi:
-            write(chunk(b'pHYs', pack(b'>LLB', dpi, dpi, 1)))
-        if palette:
-            write(chunk(b'PLTE', b''.join(pack(b'>3B', *clr[:3]) for clr in palette)))
-            # <https://www.w3.org/TR/PNG/#11tRNS>
-            if len(palette[0]) > 3:  # Color with alpha channel is the first entry in the palette
-                write(chunk(b'tRNS', b''.join(pack(b'>B', clr[3]) for clr in palette if len(clr) > 3)))
-            elif transparency:
-                write(chunk(b'tRNS', pack(b'>B', bg_color_idx)))
-        elif transparency:
-            # Grayscale with Transparency
-            # <https://www.w3.org/TR/PNG/#11tRNS>
-            # 2 bytes for color type == 0 (greyscale)
-            write(chunk(b'tRNS', pack(b'>1H', trans_color)))
-        write(chunk(b'IDAT', zlib.compress(idat, compresslevel)))
-        write(chunk(b'IEND', b''))
-
-
 def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                     background='#fff', compresslevel=9, addad=True):
     """\
@@ -581,7 +419,7 @@ def _make_colormapping(dark, light):
             mt.TYPE_TIMING_DARK: dark, mt.TYPE_TIMING_LIGHT: light}
 
 
-def write_png2(matrix, version, out, scale=1, border=None, color='#000',
+def write_png(matrix, version, out, scale=1, border=None, color='#000',
               background='#fff', compresslevel=9, dpi=None, addad=True,
               colormap=None):
     """\
@@ -688,15 +526,11 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
     elif number_of_colors == 2:
         # Check if greyscale mode is applicable
         greyscale_colors = (transparent, black, white)
-        for clr in palette:
-            is_greyscale = clr in greyscale_colors
-            if not is_greyscale:
-                break
-    png_color_type = 3  # Assume palette-based image
+        is_greyscale = all((clr in greyscale_colors for clr in palette))
+    png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
     if is_greyscale:
-        png_color_type = 0
         if is_transparent:
             if black in palette:
                 palette = [black, transparent]  # Since black is zero, it should be the first entry
@@ -1218,7 +1052,7 @@ def _pack_bits_into_byte(iterable):
 _VALID_SERIALISERS = {
     'svg': write_svg,
     'svg_debug': write_svg_debug,
-    'png': write_png2,
+    'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
     'pdf': write_pdf,
