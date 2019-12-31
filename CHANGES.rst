@@ -8,6 +8,9 @@ Changes
   for PNG grayscale mode
 * Removed interpretation of ``addad`` from PNG serializer.
   Contradicts the claim to create small images by default.
+  It still belongs to the function signature but will be removed in release 0.4.0
+* The option ``--no-ad`` (CLI) is still available but ignored and will be removed
+  in release 0.4.0. Removed the option from man page.
 
 
 0.3.3 -- 2019-12-29
