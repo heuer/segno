@@ -238,10 +238,10 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, color='#000',
 
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
-                    fallback_color='fuchsia', color_mapping=None,
+                    fallback_color='fuchsia', colormap=None,
                     add_legend=True):  # pragma: no cover
     """\
-    Internal SVG serializer which is useful to debugging purposes.
+    Internal SVG serializer which is useful for debugging purposes.
 
     This function is not exposed to the QRCode class by intention and the
     resulting SVG document is very inefficient (a lot of ``<rect/>`` elements).
@@ -256,7 +256,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     :param border: Quiet zone
     :param fallback_color: Color which is used for modules which are not 0x0 or 0x1
                 and for which no entry in `color_mapping` is defined.
-    :param color_mapping: dict of module values to color mapping (optional)
+    :param colormap: dict of module values to color mapping (optional)
     :param bool add_legend: Indicates if the bit values should be added to the
                 matrix (default: True)
     """
@@ -268,8 +268,8 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         0x4: 'gold',
         0x5: 'green',
     }
-    if color_mapping is not None:
-        clr_mapping.update(color_mapping)
+    if colormap is not None:
+        clr_mapping.update(colormap)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     matrix_size = get_symbol_size(version, scale=1, border=0)[0]
@@ -1218,7 +1218,7 @@ def _pack_bits_into_byte(iterable):
 _VALID_SERIALISERS = {
     'svg': write_svg,
     'svg_debug': write_svg_debug,
-    'png': write_png,
+    'png': write_png2,
     'eps': write_eps,
     'txt': write_txt,
     'pdf': write_pdf,
