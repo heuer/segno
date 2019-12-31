@@ -664,21 +664,26 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
     black = (0, 0, 0)
     white = (255, 255, 255)
     transparent = ()
+    dark_idx = mt.TYPE_FINDER_PATTERN_DARK
+    qz_idx = mt.TYPE_QUIET_ZONE
     if colormap is None:
+        # Just two colors, either the default colors or the user provided some
         color_mapping = {
-            mt.TYPE_FINDER_PATTERN_DARK: png_color(color) if color is not None else transparent,
-            mt.TYPE_QUIET_ZONE: png_color(background) if background is not None else transparent}
+            dark_idx: png_color(color) if color is not None else transparent,
+            qz_idx: png_color(background) if background is not None else transparent}
     else:
+        # Color map was provided, initialize a default mapping and replace defaults
+        # with values provided by "colormap"
         color_mapping = _make_colormapping(dark=black, light=white)
         for module_type, clr in colormap.items():
             color_mapping[module_type] = png_color(clr) if clr is not None else transparent
     distinct_colors = set(color_mapping.values())
     is_transparent = transparent in distinct_colors
     is_greyscale = False
-    distinct_colors_no = len(distinct_colors)
-    if distinct_colors_no == 1:
+    number_of_colors = len(distinct_colors)
+    if number_of_colors == 1:
         raise ValueError('The stroke color and background color must not be the same')
-    elif distinct_colors_no == 2:
+    elif number_of_colors == 2:
         # Check if greyscale mode is applicable
         greyscale_colors = (transparent, black, white)
         for clr in distinct_colors:
@@ -696,12 +701,13 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
             if black in palette:
                 palette = [black, transparent]  # Since black is zero, it should be the first entry
             png_trans_idx = palette.index(transparent)
-        elif black in palette and white in palette:  # TODO: Needed for PyPy2 and PyPy3
+        elif black in palette and white in palette:  # Required for PyPy2 and PyPy3
+            #TODO: Should be done by cmp or key in palette = sorted(...), see above
             palette = [black, white]
     else:  # PLTE
         # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
-        if distinct_colors_no > 2:
-            png_bit_depth = 2 if distinct_colors_no < 5 else 4
+        if number_of_colors > 2:
+            png_bit_depth = 2 if number_of_colors < 5 else 4
         if is_transparent:
             transparent_color = None
             for clr in palette[1:]:
@@ -718,25 +724,28 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
                 for module_type, clr in color_mapping.items():
                     if clr == transparent:
                         color_mapping[module_type] = transparent_color
+    # Keeps a mapping of iterator input -> color number
     color_index = {}
-    if distinct_colors_no > 2:
+    if number_of_colors > 2:
+        # Need the more expensive matrix iterator
         for module_type, clr in color_mapping.items():
             color_index[module_type] = palette.index(clr)
         miter = matrix_iter_verbose(matrix, version, scale=1, border=0)
     else:
-        # This is need because it is later used to create the border
-        color_index[mt.TYPE_QUIET_ZONE] = palette.index(color_mapping[mt.TYPE_QUIET_ZONE])
-        color_index[0] = color_index[mt.TYPE_QUIET_ZONE]
-        color_index[1] = palette.index(color_mapping[mt.TYPE_FINDER_PATTERN_DARK])
+        # Just two colors, use the cheap iterator which returns 0x0 or 0x1
+        # The code to create the image requires that TYPE_QUIET_ZONE is available
+        color_index[qz_idx] = palette.index(color_mapping[qz_idx])
+        color_index[0] = color_index[qz_idx]
+        color_index[1] = palette.index(color_mapping[dark_idx])
         miter = iter(matrix)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     horizontal_border, vertical_border = b'', b''
     if border > 0:
         # Calculate horizontal and vertical border
-        qz_idx = color_index[mt.TYPE_QUIET_ZONE]
-        horizontal_border = scanline([qz_idx] * width) * border * scale
-        vertical_border = [qz_idx] * border * scale
+        qz_value = color_index[qz_idx]
+        horizontal_border = scanline([qz_value] * width) * border * scale
+        vertical_border = [qz_value] * border * scale
     # <https://www.w3.org/TR/PNG/#9Filters>
     # This variable holds the "Up" filter which indicates that this scanline
     # is equal to the above scanline (since it is filled with null bytes)
