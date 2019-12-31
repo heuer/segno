@@ -24,6 +24,7 @@ from struct import pack
 from itertools import chain
 from functools import partial
 from functools import reduce
+from operator import itemgetter
 from contextlib import contextmanager
 import time
 _PY2 = False
@@ -663,7 +664,7 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
 
     black = (0, 0, 0)
     white = (255, 255, 255)
-    transparent = ()
+    transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
     dark_idx = mt.TYPE_FINDER_PATTERN_DARK
     qz_idx = mt.TYPE_QUIET_ZONE
     if colormap is None:
@@ -677,21 +678,20 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
         color_mapping = _make_colormapping(dark=black, light=white)
         for module_type, clr in colormap.items():
             color_mapping[module_type] = png_color(clr) if clr is not None else transparent
-    distinct_colors = set(color_mapping.values())
-    is_transparent = transparent in distinct_colors
+    # Creating a palette here regardless of the image type (greyscale vs. index-colors)
+    palette = sorted(set(color_mapping.values()), key=itemgetter(0,1,2))
+    is_transparent = transparent in palette
     is_greyscale = False
-    number_of_colors = len(distinct_colors)
+    number_of_colors = len(palette)
     if number_of_colors == 1:
         raise ValueError('The stroke color and background color must not be the same')
     elif number_of_colors == 2:
         # Check if greyscale mode is applicable
         greyscale_colors = (transparent, black, white)
-        for clr in distinct_colors:
+        for clr in palette:
             is_greyscale = clr in greyscale_colors
             if not is_greyscale:
                 break
-    # Creating a palette here regardless of the image type (greyscale vs. index-colors)
-    palette = sorted(distinct_colors, key=len, reverse=not(is_transparent))
     png_color_type = 3  # Assume palette-based image
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
@@ -701,13 +701,11 @@ def write_png2(matrix, version, out, scale=1, border=None, color='#000',
             if black in palette:
                 palette = [black, transparent]  # Since black is zero, it should be the first entry
             png_trans_idx = palette.index(transparent)
-        elif black in palette and white in palette:  # Required for PyPy2 and PyPy3
-            #TODO: Should be done by cmp or key in palette = sorted(...), see above
-            palette = [black, white]
     else:  # PLTE
-        # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
         if number_of_colors > 2:
+            # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
             png_bit_depth = 2 if number_of_colors < 5 else 4
+        palette.sort(key=len, reverse=True)  # RGBA colors first
         if is_transparent:
             transparent_color = None
             for clr in palette[1:]:
