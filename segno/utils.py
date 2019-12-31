@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2019 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2020 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -199,7 +199,6 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
     :raises: :py:exc:`ValueError` if an illegal scale or border value is provided
-
     """
     from segno import encoder
     check_valid_border(border)
