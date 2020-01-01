@@ -11,8 +11,8 @@ Changes
   It still belongs to the function signature but will be removed in release 0.4.0
 * The option ``--no-ad`` (CLI) is still available but ignored and will be removed
   in release 0.4.0. Removed the option from man page.
-* Added option to PNG serializer provide more than two colors. Each module type
-  may have it's own color.
+* Added option to PNG serializer to provide more than two colors. Each module
+  type may have it's own color.
 
 
 0.3.3 -- 2019-12-29
