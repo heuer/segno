@@ -33,5 +33,17 @@ def test_version_and_error_provided2():
     assert 'alphanumeric' == qr.mode
 
 
+def test_numeric_defaults():
+    qr = segno.make('1' * 17, micro=False)  # Capacity of a 1-H (numeric): 17
+    assert '1-H' == qr.designator
+    assert 'numeric' == qr.mode
+
+
+def test_numeric_explicit_error():
+    qr = segno.make('1' * 41, error='l')  # Capacity of a 1-L (numeric): 41
+    assert '1-L' == qr.designator
+    assert 'numeric' == qr.mode
+
+
 if __name__ == '__main__':
     pytest.main([__file__])

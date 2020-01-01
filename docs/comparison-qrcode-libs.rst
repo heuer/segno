@@ -15,7 +15,7 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.3.4                  1.5.0                     |version|
+    Library version                                                     6.1                      1.2.1                  1.3.5                  1.5.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
