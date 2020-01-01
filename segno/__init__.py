@@ -400,12 +400,12 @@ class QRCode:
         import tempfile
         import webbrowser
         import threading
-        try:  # Python 2
-            from urlparse import urljoin
-            from urllib import pathname2url
-        except ImportError:  # Python 3
+        try:  # Python 3
             from urllib.parse import urljoin
             from urllib.request import pathname2url
+        except ImportError:  # Python 2
+            from urlparse import urljoin
+            from urllib import pathname2url
 
         def delete_file(name):
             time.sleep(delete_after)
