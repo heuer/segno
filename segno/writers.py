@@ -450,11 +450,11 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             (default: 9). 1 is fastest and produces the least
             compression, 9 is slowest and produces the most.
             0 is no compression.
-    :param colormap: Optional module type -> color mapping. If provided, the
+    :param dict colormap: Optional module type -> color mapping. If provided, the
             `color` and `background` arguments are ignored. All undefined module
             types will have the default colors (light: white, dark: black).
             See `color` for valid color values. ``None`` is accepted as valid
-            color values as well (becomes transparent).
+            color value as well (becomes transparent).
     """
 
     def png_color(clr):

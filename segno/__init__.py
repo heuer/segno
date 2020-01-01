@@ -642,6 +642,12 @@ class QRCode:
                          that the DPI value is converted into meters (maybe with
                          rounding errors) since PNG does not support the unit
                          "dots per inch".
+        colormap         Optional module type -> color mapping. If provided, the
+                         "color" and "background" arguments are ignored. All undefined
+                         module types will have the default colors (light: white,
+                         dark: black).
+                         See ""color" for valid color values. ``None`` is accepted as
+                         valid color value as well (becomes transparent).
         =============    ==============================================================
 
 

@@ -92,6 +92,24 @@ See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
 accepted by the specific serializer.
 
 
+More colorful QR Codes
+----------------------
+
+The PNG serializer supports an optional color mapping which can define a specific
+color for each module type.
+
+.. code-block:: python
+
+    >>> import segno
+    >>> from segno import moduletypes as mt
+    >>> qr = segno.make('Yellow Submarine', error='h')
+    >>> colormap = {mt.TYPE_FINDER_PATTERN_DARK:'darkred', mt.TYPE_ALIGNMENT_PATTERN_DARK:'darkred', mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred', mt.TYPE_DATA_DARK: 'darkorange', mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
+    >>> qr.save('yellow-submarine.png', scale=5, colormap=colormap)
+
+.. image:: _static/yellow-submarine.png
+    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+
+
 Available serializers
 ---------------------
 
