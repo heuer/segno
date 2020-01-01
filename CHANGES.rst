@@ -3,7 +3,7 @@ Changes
 
 0.3.4 -- 2020-mm-dd
 -------------------
-* Fixed issue #54: After last change, white background with transparent
+* Fixed issue #54: After last change (see 0.3.3), white background with transparent
   QR Code did not work. Enhanced test suite to cover all possible inputs
   for PNG grayscale mode
 * Removed interpretation of ``addad`` from PNG serializer.
@@ -11,6 +11,8 @@ Changes
   It still belongs to the function signature but will be removed in release 0.4.0
 * The option ``--no-ad`` (CLI) is still available but ignored and will be removed
   in release 0.4.0. Removed the option from man page.
+* Added option to PNG serializer provide more than two colors. Each module type
+  may have it's own color.
 
 
 0.3.3 -- 2019-12-29
