@@ -102,7 +102,7 @@ Create a 30-H QR Code
 
 
 Create a QR Code and serialize it as SVG
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
@@ -112,7 +112,7 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
 
 Create a QR Code and serialize it as PNG
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
