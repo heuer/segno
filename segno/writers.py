@@ -558,7 +558,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # Since black is zero, it should be the first entry
             palette = [black, transparent]
         png_trans_idx = palette.index(transparent)
-    # Keeps a mapping of iterator input -> color number
+    # Keeps a mapping of iterator output -> color number
     color_index = {}
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
