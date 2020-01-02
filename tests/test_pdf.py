@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2019 -- Lars Heuer - Semagia <http://www.semagia.com/>.
+# Copyright (c) 2016 - 2020 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -12,6 +12,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 import io
 import zlib
+import pytest
 import segno
 
 
@@ -92,6 +93,14 @@ def test_stokecolor_set():
     assert 'RG' in graphic
 
 
+def test_illegal_color_float():
+    color = (.1, 1.1, .1)
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    with pytest.raises(ValueError):
+        qr.save(out, kind='pdf', color=color)
+
+
 def _find_graphic(out):
     val = out.getvalue()
     start = b'stream\r\n'
@@ -123,6 +132,5 @@ def pdf_as_matrix(buff, border):
 
 
 if __name__ == '__main__':
-    import pytest
     pytest.main([__file__])
 

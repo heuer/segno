@@ -31,8 +31,8 @@ a custom border, the user may specify the border explicitly.
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
-that the dark / light modules of a (Micro) QR Code is interpreted as one unit in
-the specific user space (i.e. 1 pixel for the :ref:`PNG <png>` serializer or
+that size of a dark / light module is interpreted as one unit in the specific
+user space (i.e. 1 pixel for the :ref:`PNG <png>` serializer or
 1 point (1/72 of an inch) in :ref:`EPS <eps>`). Some serializers
 (like :ref:`PNG <png>`) accept only an integer value or convert the provided
 scaling factor to an integer. Other, like :ref:`SVG <svg>` and :ref:`EPS <eps>`,
@@ -90,6 +90,24 @@ Please note that some serializers write bytes while others write strings, see
 
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
 accepted by the specific serializer.
+
+
+More colorful QR Codes
+----------------------
+
+The PNG serializer supports an optional color mapping which can define a specific
+color for each module type.
+
+.. code-block:: python
+
+    >>> import segno
+    >>> from segno import moduletypes as mt
+    >>> qr = segno.make('Yellow Submarine', error='h')
+    >>> colormap = {mt.TYPE_FINDER_PATTERN_DARK:'darkred', mt.TYPE_ALIGNMENT_PATTERN_DARK:'darkred', mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred', mt.TYPE_DATA_DARK: 'darkorange', mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
+    >>> qr.save('yellow-submarine.png', scale=5, colormap=colormap)
+
+.. image:: _static/yellow-submarine.png
+    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
 
 
 Available serializers

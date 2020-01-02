@@ -19,6 +19,8 @@ Contents:
     serializers
     colors
     special-qrcode-factories
+    contact-information
+    epc-qrcodes
     comparison-qrcode-libs
     man/index
     replace-qrcode-libs
@@ -26,6 +28,7 @@ Contents:
     api
     api-low-level
     python2
+    changes
 
 
 Indices and tables

@@ -103,7 +103,7 @@ if pyqrcodeng:
 
     def svg_pyqrcodeng(data='QR Code Symbol'):
         """PyQRCodeNG SVG"""
-        pyqrcode.create(data, error='m').svg('out/pyqrcodeng_%s.svg' % data, scale=10)
+        pyqrcodeng.create(data, error='m').svg('out/pyqrcodeng_%s.svg' % data, scale=10)
 
     def png_pyqrcodeng(data='QR Code Symbol'):
         """PyQRCodeNG PNG 1-M"""

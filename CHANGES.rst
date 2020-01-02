@@ -1,6 +1,24 @@
 Changes
 =======
 
+0.3.4 -- 2020-01-02
+-------------------
+* Fixed issue #54: After last change (see 0.3.3), white background with transparent
+  QR Code did not work. Enhanced test suite to cover all possible inputs
+  for PNG grayscale mode
+* Removed interpretation of ``addad`` from PNG serializer.
+  Contradicts the claim to create small images by default.
+  It still belongs to the function signature but will be removed in release 0.4.0
+* The option ``--no-ad`` (CLI) is still available but ignored and will be removed
+  in release 0.4.0. Removed the option from man page.
+* Added option to PNG serializer to provide more than two colors. Each module
+  type may have its own color.
+* Added support for EPC QR Codes.
+* Fixed bug in ``helpers.make_vcard_data`` function (the "source" URL was not
+  used, but the usual URL was added to the SOURCE field)
+* Better test coverage for the ``segno.helpers`` module
+
+
 0.3.3 -- 2019-12-29
 -------------------
 * Fixed issue #54: PNGs with white color and transparent background were rendered

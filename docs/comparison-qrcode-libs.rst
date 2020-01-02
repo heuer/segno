@@ -15,7 +15,7 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.3.4                  1.5.0                     |version|
+    Library version                                                     6.1                      1.2.1                  1.3.6                  1.5.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
@@ -102,7 +102,7 @@ Create a 30-H QR Code
 
 
 Create a QR Code and serialize it as SVG
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
@@ -112,7 +112,7 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
 
 
 Create a QR Code and serialize it as PNG
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 
