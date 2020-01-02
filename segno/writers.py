@@ -487,11 +487,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
                                (reduce(lambda x, y: (x << png_bit_depth) + y, e)
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
 
-    def translate_colors(row):
-        return (color_index[b] for b in row)
-
-    def apply_row_filter(row, fn):
-        return fn(row)
+    def row_filter_noop(row):
+        return row
 
     # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
@@ -569,6 +566,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         color_index[0] = color_index[qz_idx]
         color_index[1] = palette.index(color_mapping[dark_idx])
         miter = iter(matrix)
+    miter = ((color_index[b] for b in r) for r in miter)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     horizontal_border = b''
@@ -582,13 +580,13 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     # This variable holds the "Up" filter which indicates that this scanline
     # is equal to the above scanline (since it is filled with null bytes)
     same_as_above = b''
-    row_filters = [translate_colors]
+    row_filter = row_filter_noop
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
         same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        row_filters.append(scale_row_x_axis)
+        row_filter = scale_row_x_axis
     idat = bytearray(horizontal_border)
-    for row in (reduce(apply_row_filter, row_filters, r) for r in miter):
+    for row in (row_filter(r) for r in miter):
         # Chain precalculated left border with row and right border
         idat += scanline(chain(vertical_border, row, vertical_border))
         idat += same_as_above  # This is b'' if no scaling factor was provided
