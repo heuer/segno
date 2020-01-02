@@ -475,10 +475,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns each pixel `scale` times.
         """
-        scale_range = range(scale)
-        for b in row:
-            for i in scale_range:
-                yield b
+        return chain(*([b] * scale for b in row))
 
     def scanline(row, filter_type=b'\0'):
         """\
