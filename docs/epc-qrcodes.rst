@@ -34,6 +34,9 @@ The QR Code shown above encodes the following information::
     DE33100205000001194700
     EUR20
 
+
+    Spende fuer Wikipedia
+
 By default, the function uses the minimal possible encoding to encode the
 provided data. If another encoding, i.e. UTF-8, is required, the user may specify
 the encoding with an integer referring to one of the supported encodings
