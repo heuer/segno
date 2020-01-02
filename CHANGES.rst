@@ -12,7 +12,7 @@ Changes
 * The option ``--no-ad`` (CLI) is still available but ignored and will be removed
   in release 0.4.0. Removed the option from man page.
 * Added option to PNG serializer to provide more than two colors. Each module
-  type may have it's own color.
+  type may have its own color.
 * Added support for EPC QR Codes.
 * Fixed bug in ``helpers.make_vcard_data`` function (the "source" URL was not
   used, but the usual URL was added to the SOURCE field)
