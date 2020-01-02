@@ -337,7 +337,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             birthday = birthday.strftime('%Y-%m-%d')
         except AttributeError:
             pass
-        if not _looks_like_datetime(birthday):
+        if not isinstance(birthday, str_type) or not _looks_like_datetime(birthday):
             raise ValueError('"birthday" does not seem to be a valid date or date/time representation')
         data.append('BDAY:{0}'.format(birthday))
     if lat and not lng or lng and not lat:
@@ -345,11 +345,15 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     if lat and lng:
         data.append('GEO:{0};{1}'.format(lat, lng))
     if source:
-        data.append('SOURCE:{0}'.format(escape(url)))
+        data.append('SOURCE:{0}'.format(escape(source)))
     if memo:
         data.append('NOTE:{0}'.format(escape(memo)))
     if rev:
-        if not _looks_like_datetime(rev):
+        try:
+            rev = rev.strftime('%Y-%m-%d')
+        except AttributeError:
+            pass
+        if not isinstance(rev, str_type) or not _looks_like_datetime(rev):
             raise ValueError('"rev" does not seem to be a valid date or date/time representation')
         data.append('REV:{0}'.format(rev))
     data.append('END:VCARD')

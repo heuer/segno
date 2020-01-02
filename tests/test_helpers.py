@@ -69,6 +69,11 @@ def test_mecard_data():
     assert 'MECARD:N:Mustermann,Max;BDAY:19760919;;' == mecard
     mecard = helpers.make_mecard_data(name='Mustermann,Max', country='Germany')
     assert 'MECARD:N:Mustermann,Max;ADR:,,,,,,Germany;;' == mecard
+    mecard = helpers.make_mecard_data(name='Mustermann,Max', memo='this,is;a\\memo')
+    assert 'MECARD:N:Mustermann,Max;MEMO:this,is\\;a\\\\memo;;' == mecard
+    mecard = helpers.make_mecard_data(name='Mustermann,Max', reading='this,is;a\\sound')
+    assert 'MECARD:N:Mustermann,Max;SOUND:this,is\\;a\\\\sound;;' == mecard
+
 
 
 def test_mecard():
@@ -80,7 +85,7 @@ def test_vcard_data():
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann')
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nEND:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', org='ABC, Inc.')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nORG:ABC\, Inc.\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nORG:ABC\\, Inc.\r\nEND:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.', 'John Stevenson')
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.\r\nFN:John Stevenson\r\nEND:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='Street', city='City', zipcode='123456')
@@ -117,7 +122,7 @@ def test_photo_uri():
 def test_vcard_title_escape():
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
                                     title='Director, Research and Development')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Director\, Research and Development\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Director\\, Research and Development\r\nEND:VCARD\r\n' == vcard
 
 
 def test_vcard_data_valid_bday():
@@ -127,12 +132,49 @@ def test_vcard_data_valid_bday():
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday=date(year=1976, month=9, day=19))
     assert expected_vcard_data == vcard
 
-
 def test_vcard_data_invalid_bday():
     with pytest.raises(ValueError):
         helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='19760919')
     with pytest.raises(ValueError):
         helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='1976-09-19TZ')
+
+
+def test_vcard_data_source_url():
+    source_url = 'https://example.org/this-is-the-SOURCE-url'
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nSOURCE:{}\r\nEND:VCARD\r\n'.format(source_url)
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', source=source_url)
+    assert expected_vcard_data == vcard
+
+
+def test_vcard_data_nickname():
+    nickname = 'Mäxchen'
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nNICKNAME:{}\r\nEND:VCARD\r\n'.format(nickname)
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', nickname=nickname)
+    assert expected_vcard_data == vcard
+
+
+def test_vcard_data_note():
+    note = 'test cases,; we need more test cases'
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nNOTE:test cases\\,\\; we need more test cases\r\nEND:VCARD\r\n'
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', memo=note)
+    assert expected_vcard_data == vcard
+
+def test_vcard_data_rev():
+    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nREV:1976-09-19\r\nEND:VCARD\r\n'
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19')
+    assert expected_vcard_data == vcard
+    vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev=date(year=1976, month=9, day=19))
+    assert expected_vcard_data == vcard
+
+
+@pytest.mark.parametrize('rev', ['19760919'
+                                 '1976-09-19TZ',
+                                 '1976-09-19T-06',
+                                 1.2, 1
+                                 ])
+def test_vcard_data_invalid_rev(rev):
+    with pytest.raises(ValueError):
+        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev=rev)
 
 
 def test_vcard_data_invalid_geo():
@@ -146,15 +188,6 @@ def test_vcard_data_valid_geo():
     expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nGEO:46.235197;8.015445\r\nEND:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', lat=46.235197, lng=8.015445)
     assert expected_vcard_data == vcard
-
-
-def test_vcard_data_invalid_rev():
-    with pytest.raises(ValueError):
-        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='19760919')
-    with pytest.raises(ValueError):
-        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19TZ')
-    with pytest.raises(ValueError):
-        helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19T-06')
 
 
 def test_vcard():
