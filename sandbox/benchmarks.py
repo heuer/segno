@@ -213,7 +213,6 @@ def _run_tests(tests, number, table=None):
         print('%-35s %s' % (name, result))
         if table is not None:
             table.append((name, '%.2f' % (1000 * time)))
-        
 
 
 if __name__ == '__main__':
