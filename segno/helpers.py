@@ -611,7 +611,8 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
 
     :param str name: Name of the recipient.
     :param str iban: International Bank Account Number (IBAN)
-    :param amount: The amount to transfer.
+    :param amount: The amount (in EUR) to transfer.
+            The currency is always Euro, no other currencies are supported.
     :type amount: int, float, decimal.Decimal
     :param str text: Remittance Information (unstructured)
     :param str reference: Remittance Information (structured)
