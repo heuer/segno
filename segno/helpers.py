@@ -15,6 +15,7 @@ return a string which can be used as input for :py:func:`segno.make()`.
 """
 from __future__ import absolute_import, unicode_literals
 import re
+import decimal
 import segno
 try:  # pragma: no cover
     from urllib.parse import urlsplit, quote
@@ -514,3 +515,118 @@ def make_email(to, cc=None, bcc=None, subject=None, body=None):
     """
     return segno.make_qr(make_make_email_data(to=to, cc=cc, bcc=bcc,
                                               subject=subject, body=body))
+
+
+def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
+                      purpose=None, encoding=None):
+    """\
+    Validates the input and creates the data for an EPC QR Code.
+
+    DOES NOT belong to the public API, kept separate from make_epc_qr to apply
+    tests on the raw data.
+
+    See :py:func:`make_epc_qr` for a description of the parameters.
+    """
+    # Ordering is important!
+    encodings = ('utf-8', 'iso-8859-1', 'iso-8859-2', 'iso-8859-4',
+                 'iso-8859-5', 'iso-8859-7', 'iso-8859-10', 'iso-8859-15')
+    min_amount = decimal.Decimal('0.01')
+    max_amount = decimal.Decimal('999999999.99')
+    text = text.rstrip() if text else text
+    reference = reference.rstrip() if reference else reference
+    bic = bic.strip() if bic else bic
+    name = name.strip() if name else name
+    if encoding is not None and (not isinstance(encoding, int) or not 1 <= encoding <= len(encodings)):
+        raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
+    if not text and not reference or text and reference:
+        raise ValueError('Either a text or a creditor reference (ISO 11649) must be provided')
+    if text and not 0 < len(text) <= 140:
+        raise ValueError('Invalid text, max. 140 characters are allowed, got "{}"'.format(len(text)))
+    elif reference and not 0 < len(reference) <= 35:
+        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'.format(len(reference)))
+    if name is None or not 0 < len(name) <= 70:
+        raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
+    if iban is None or not 4 < len(iban) <= 34:
+        raise ValueError('Invalid IBAN, max. 34 characters are allowed, got "{}"'.format(iban))
+    if bic and len(bic) not in (8, 11):
+        raise ValueError('Invalid BIC, should be 8 or 11 characters long, got "{}"'.format(bic))
+    if purpose and len(purpose) != 4:
+        raise ValueError('Invalid purpose, 4 characters are allowed, got "{}"'.format(purpose))
+    amount = decimal.Decimal(amount)
+    if not min_amount <= amount <= max_amount:
+        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'.format(min_amount, max_amount))
+    l = ['BCD',  # Service tag
+         '002',  # Version
+         '',  # character set (will be set later)
+         'SCT',  # Identification
+         bic or '',  # BIC
+         name,  # Name of the recipient
+         iban,  # IBAN
+         'EUR{:.2f}'.format(amount).rstrip('0'),  # Amount
+         purpose or '',  # Purpose
+         reference or '',  # Remittance
+    ]
+    if text:
+        l.append(text)
+    data = '\n'.join(l)
+    charset = -1 if encoding is None else encoding
+    if charset < 0:
+        for idx, enc in enumerate(encodings[1:], start=2):
+            try:
+                data.encode(enc)
+                charset = idx
+                break
+            except UnicodeEncodeError:
+                pass
+    if charset < 0:
+        charset = 1  # Use UTF-8
+    l[2] = str(charset)  # Set character set
+    data = '\n'.join(l).encode(encodings[charset - 1])
+    # Max. payload: 331 bytes
+    if len(data) > 331:  # pragma: no cover
+        raise ValueError('Payload is too big: Max. 331 bytes allowed, got {} bytes'.format(len(data)))
+    return data
+
+
+
+def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
+                purpose=None, encoding=None):
+    """\
+    Creates and returns an European Payments Council Quick Response Code 
+    (EPC QR Code) version 002.
+
+    .. note::
+
+        Either the ``text`` or ``reference`` must be provided but not both
+
+    .. note::
+
+        Neither the IBAN, BIC, nor remittance reference number or any other
+        information is validated (aside from checks regarding the allowed string
+        lengths).
+
+    :param str name: Name of the recipient.
+    :param str iban: International Bank Account Number (IBAN)
+    :param amount: The amount to transfer.
+    :type amount: int, float, decimal.Decimal
+    :param str text: Remittance Information (unstructured)
+    :param str reference: Remittance Information (structured)
+    :param str bic: Bank Identifier Code (BIC). Optional, only required
+                for non-EEA countries.
+    :param str purpose: SEPA purpose code.
+    :param int encoding: By default, this function tries to find the best, minimal
+                encoding. If another encoding should be used, the number of
+                the encoding can be provided: 1: UTF-8, 2: ISO 8859-1,
+                3: ISO 8859-2, 4: ISO 8859-4, 5: ISO 8859-5, 6: ISO 8859-7,
+                7: ISO 8859-10, 8: ISO 8859-15
+    :rtype: segno.QRCode
+    """
+    # Create a QR Code, error correction level "M".
+    # It's not allowed to use another error mode
+    qr = segno.make_qr(_make_epc_qr_data(name, iban, amount, text, reference,
+                                         bic, purpose, encoding),
+                       error='m', boost_error=False)
+    # This shouldn't happen
+    if qr.version > 13:  # pragma: no cover
+        raise ValueError('Invalid EPC QR Code, max. QR Code version 13 is allowed, got "{}"'.format(qr.designator))
+    return qr
