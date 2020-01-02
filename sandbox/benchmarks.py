@@ -133,7 +133,7 @@ def create7q_segno(data='QR Code Symbol'):
 
 def create30h_segno(data='QR Code Symbol'):
     """Segno create 30-H"""
-    segno.make_qr(data, error='h', version=30, boost_error=False).save('out/segno_30h_%s.svg' % data, scale=10)
+    segno.make_qr(data, error='h', version=30, boost_error=False)
 
 
 def svg_segno(data='QR Code Symbol'):
