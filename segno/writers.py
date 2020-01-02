@@ -332,6 +332,11 @@ def write_eps(matrix, version, out, scale=1, border=None, color='#000',
          ``setrgbcolor``
         """
         def to_float(c):
+            if isinstance(c, float):
+                if not 0.0 <= c <= 1.0:
+                    raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
+                                     .format(c))
+                return c
             return 1 / 255.0 * c if c != 1 else c
 
         return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
