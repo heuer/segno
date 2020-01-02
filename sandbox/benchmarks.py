@@ -143,7 +143,7 @@ def svg_segno(data='QR Code Symbol'):
 
 def png_segno(data='QR Code Symbol'):
     """Segno PNG 1-M"""
-    segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10, addad=False)
+    segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10)
 
 
 def run_create_tests(which=None, number=200, table=None):
