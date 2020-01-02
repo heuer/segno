@@ -566,7 +566,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
          bic or '',  # BIC
          name,  # Name of the recipient
          iban,  # IBAN
-         'EUR{:.2f}'.format(amount).rstrip('0'),  # Amount
+         'EUR{:.2f}'.format(amount).rstrip('0').rstrip('.'),  # Amount
          purpose or '',  # Purpose
          reference or '',  # Remittance
     ]

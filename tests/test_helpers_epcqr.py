@@ -49,6 +49,14 @@ def test_text_002(amount):
     assert 'M' == qr.error
 
 
+@pytest.mark.parametrize('amount', [5.0, 5, '5.00', decimal.Decimal('5.00000')])
+def test_remove_dot(amount):
+    kw = _make_valid_kw()
+    kw['amount'] = amount
+    d = make_epc_qr_data(**kw).split(b'\n')
+    assert b'EUR5' == d[7]
+
+
 @pytest.mark.parametrize('amount', [12.3,
                                     12.30,
                                     decimal.Decimal('12.3'),
