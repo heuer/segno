@@ -425,9 +425,10 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     """\
     Serializes the QR Code as PNG image.
 
-    By default, the generated PNG will be a greyscale image with a bitdepth
-    of 1. If different colors are provided, an indexed-color image with
-    the same bitdepth is generated.
+    By default, the generated PNG will be a greyscale image (black / white)
+    with a bit depth of 1. If different colors are provided, an indexed-color
+    image with the same bit depth is generated unless more than two colors
+    are provided via ``colormap`` (may require a bit depth of 2 or 4).
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
