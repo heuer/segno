@@ -17,6 +17,7 @@ import sys
 import argparse
 import segno
 from segno import writers
+from segno import moduletypes as mt
 
 
 # file extension to supported keywords mapping
@@ -116,6 +117,21 @@ def make_parser():
     png_group.add_argument('--no-ad', help=argparse.SUPPRESS,
                            dest='addad',
                            action='store_false')
+    png_group.add_argument('--finder-dark', help='Sets the color of the dark finder modules')
+    png_group.add_argument('--finder-light', help='Sets the color of the light finder modules')
+    png_group.add_argument('--separator', help='Sets the color of the separator modules')
+    png_group.add_argument('--data-dark', help='Sets the color of the dark data modules')
+    png_group.add_argument('--data-light', help='Sets the color of the light data modules')
+    png_group.add_argument('--timing-dark', help='Sets the color of the dark timing modules')
+    png_group.add_argument('--timing-light', help='Sets the color of the light timing modules')
+    png_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules')
+    png_group.add_argument('--align-light', help='Sets the color of the light alignment modules')
+    png_group.add_argument('--quietzone', help='Sets the color of the quiet zone (border)')
+    png_group.add_argument('--darkmodule', help='Sets the color of the dark module')
+    png_group.add_argument('--format-dark', help='Sets the color of the dark format information modules')
+    png_group.add_argument('--format-light', help='Sets the color of the light format information modules')
+    png_group.add_argument('--version-dark', help='Sets the color of the dark version information modules')
+    png_group.add_argument('--version-light', help='Sets the color of the light version information modules')
     # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
@@ -175,6 +191,15 @@ def build_config(config, filename=None):
     if config.pop('no_classes', False):
         config['svgclass'] = None
         config['lineclass'] = None
+    # PNG
+    clr_map = {}
+    for clr, mt_const in _COLOR_NAME2TYPE.items():
+        val = config.pop(clr, None)
+        if not val:
+            continue
+        clr_map[mt_const] = val if val not in ('transparent', 'trans') else None
+    if clr_map:
+        config['colormap'] = clr_map
     if filename is not None:
         ext = filename[filename.rfind('.') + 1:].lower()
         if ext == 'svgz':  # There is no svgz serializer, use same config as svg
@@ -233,6 +258,23 @@ class _AttrDict(dict):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
+_COLOR_NAME2TYPE = {
+    'finder_dark': mt.TYPE_FINDER_PATTERN_DARK,
+    'finder_light': mt.TYPE_FINDER_PATTERN_LIGHT,
+    'separator': mt.TYPE_SEPARATOR,
+    'data_dark': mt.TYPE_DATA_DARK,
+    'data_light': mt.TYPE_DATA_LIGHT,
+    'timing_dark': mt.TYPE_TIMING_DARK,
+    'timing_light': mt.TYPE_TIMING_LIGHT,
+    'align_dark': mt.TYPE_ALIGNMENT_PATTERN_DARK,
+    'align_light': mt.TYPE_ALIGNMENT_PATTERN_LIGHT,
+    'quietzone': mt.TYPE_QUIET_ZONE,
+    'darkmodule': mt.TYPE_DARKMODULE,
+    'format_dark': mt.TYPE_FORMAT_DARK,
+    'format_light': mt.TYPE_FORMAT_LIGHT,
+    'version_dark': mt.TYPE_VERSION_DARK,
+    'version_light': mt.TYPE_VERSION_LIGHT,
+}
 
 if __name__ == '__main__':  # pragma: no cover
     main()

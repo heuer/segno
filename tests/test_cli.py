@@ -34,7 +34,6 @@ def test_defaults():
     assert not args.seq
     assert args.symbol_count is None
     # PNG
-    assert args.addad
     assert not args.dpi
     # SVG
     assert args.xmldecl
@@ -325,11 +324,6 @@ def test_terminal(capsys):
 
 
 # -- PNG
-def test_noad():
-    args = cli.parse(['--no-ad', ''])
-    assert not args.addad
-
-
 def test_dpi():
     args = cli.parse(['--dpi=300', ''])
     assert 300 == args.dpi
