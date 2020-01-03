@@ -206,7 +206,7 @@ If the serializer does not support :option:`--color <segno --color>` or
 The PNG serializer supports more than two colors, each module type (finder pattern
 (dark / light), alignment pattern (dark / light) etc.) may have its own color::
 
-    $ segno --finder-dark darkred --format-dark darkred --version-dark darkred --data-dark darkorange --data-light yellow --timing-dark darkred --dark-module darkred --scale 5 Yellow Submarine -o yellow-submarine.png
+    $ segno --finder-dark darkred --format-dark darkred --version-dark darkred --data-dark darkorange --data-light yellow --timing-dark darkred --dark-module darkred --scale 5 -o yellow-submarine.png Yellow Submarine
 
 .. image:: _static/cli_yellow-submarine.png
     :alt: QR Code "Yellow Submarine" colorful
