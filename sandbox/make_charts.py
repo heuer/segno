@@ -19,7 +19,7 @@ def create_chart(title, data, filename):
 def create_charts():
     color_map = {
         'PyQRCode': '#F44336',
-        'PyQRCodeNG': '#A22118',
+        'PyQRCodeNG': '#b4750f',
         'qrcode': '#3F51B5',
         'qrcode path': '#3F51B5',
         'qrcode rects': '#26854F',
