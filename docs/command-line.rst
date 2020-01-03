@@ -246,7 +246,7 @@ Specify the max. number of symbols::
     :alt: 2nd part of Structured Append code
 
 
-Shortcut to specify the number of symobols::
+Shortcut to specify the number of symbols::
 
     $ segno --seq -sc 2 -s 3 -o julia.png "Half of what I say is meaningless"
 
