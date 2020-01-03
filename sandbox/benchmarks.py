@@ -11,11 +11,16 @@ try:
     from qrcode import QRCode, ERROR_CORRECT_M, ERROR_CORRECT_Q, ERROR_CORRECT_H
     from qrcode.image.svg import SvgImage, SvgPathImage
 except ImportError:
-    QRCode = None
+    qrcode = None
 try:
-    from qrcodegen import QrCode
+    from qrcodegen import QrCode, QrSegment
+    qrcodegen_make_segment = QrSegment.make_segments
+    qrcodegen_error_m = QrCode.Ecc.MEDIUM
+    qrcodegen_error_q = QrCode.Ecc.QUARTILE
+    qrcodegen_error_h = QrCode.Ecc.HIGH
+    qrcodegen = True
 except ImportError:
-    QrCode = None
+    qrcodegen = None
 try:
     import pyqrcode
 except ImportError:
@@ -26,7 +31,7 @@ except ImportError:
     pyqrcodeng = None
 
 
-if QRCode:
+if qrcode:
     def create_qrcode(data='QR Code Symbol'):
         """qrcode create 1-M"""
         qr = QRCode(error_correction=ERROR_CORRECT_M)
@@ -110,15 +115,35 @@ if pyqrcodeng:
         pyqrcodeng.create(data, error='m').png('out/pyqrcodeng_%s.png' % data, scale=10)
 
 
-if QrCode:
+if qrcodegen:
     def create_qrcodegen(data='QR Code Symbol'):
         """qrcodegen create 1-M"""
-        QrCode.encode_text(data, QrCode.Ecc.MEDIUM)
+        QrCode.encode_segments(qrcodegen_make_segment(data),
+                               ecl=qrcodegen_error_m,
+                               boostecl=False)
+
+    def create7q_qrcodegen(data='QR Code Symbol'):
+        """qrcodegen create 7-Q"""
+        QrCode.encode_segments(qrcodegen_make_segment(data),
+                               ecl=qrcodegen_error_q,
+                               minversion=7,
+                               maxversion=7,
+                               boostecl=False)
+
+    def create30h_qrcodegen(data='QR Code Symbol'):
+        """qrcodegen create 30-H"""
+        QrCode.encode_segments(qrcodegen_make_segment(data),
+                               ecl=qrcodegen_error_h,
+                               minversion=30,
+                               maxversion=30,
+                               boostecl=False)
 
     def svg_qrcodegen(data='QR Code Symbol'):
         """qrcodegen SVG"""
         with open('out/qrcodegen_%s.svg' % data, 'wt') as f:
-            f.write(QrCode.encode_text(data, QrCode.Ecc.MEDIUM).to_svg_str(border=4))
+            f.write(QrCode.encode_segments(qrcodegen_make_segment(data),
+                                           ecl=qrcodegen_error_m,
+                                           boostecl=False).to_svg_str(border=4))
 
 
 def create_segno(data='QR Code Symbol'):
@@ -138,19 +163,20 @@ def create30h_segno(data='QR Code Symbol'):
 
 def svg_segno(data='QR Code Symbol'):
     """Segno SVG"""
-    segno.make_qr(data, error='m').save('out/segno_%s.svg' % data, scale=10)
+    segno.make_qr(data, error='m', boost_error=False).save('out/segno_%s.svg' % data, scale=10)
 
 
 def png_segno(data='QR Code Symbol'):
     """Segno PNG 1-M"""
-    segno.make_qr(data, error='m').save('out/segno_%s.png' % data, scale=10)
+    segno.make_qr(data, error='m', boost_error=False).save('out/segno_%s.png' % data, scale=10)
 
 
 def run_create_tests(which=None, number=200, table=None):
     tests = ('create_pyqrcode',
              'create_pyqrcodeng',
              'create_qrcodegen',
-             'create_qrcode', 'create_segno',)
+             'create_qrcode',
+             'create_segno',)
     if which:
         tests = filter(lambda n: n[len('create_'):] in which, tests)
     _run_tests(tests, number, table)
@@ -159,6 +185,7 @@ def run_create_tests(which=None, number=200, table=None):
 def run_create7q_tests(which=None, number=200, table=None):
     tests = ('create7q_pyqrcode',
              'create7q_pyqrcodeng',
+             'create7q_qrcodegen',
              'create7q_qrcode',
              'create7q_segno',)
     if which:
@@ -169,6 +196,7 @@ def run_create7q_tests(which=None, number=200, table=None):
 def run_create30h_tests(which=None, number=200, table=None):
     tests = ('create30h_pyqrcode',
              'create30h_pyqrcodeng',
+             'create30h_qrcodegen',
              'create30h_qrcode',
              'create30h_segno',)
     if which:
