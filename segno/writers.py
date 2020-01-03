@@ -425,9 +425,10 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     """\
     Serializes the QR Code as PNG image.
 
-    By default, the generated PNG will be a greyscale image with a bitdepth
-    of 1. If different colors are provided, an indexed-color image with
-    the same bitdepth is generated.
+    By default, the generated PNG will be a greyscale image (black / white)
+    with a bit depth of 1. If different colors are provided, an indexed-color
+    image with the same bit depth is generated unless more than two colors
+    are provided via ``colormap`` (may require a bit depth of 2 or 4).
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -474,10 +475,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         """\
         Returns each pixel `scale` times.
         """
-        scale_range = range(scale)
-        for b in row:
-            for i in scale_range:
-                yield b
+        return chain(*([b] * scale for b in row))
 
     def scanline(row, filter_type=b'\0'):
         """\
@@ -488,12 +486,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
                                # into account
                                (reduce(lambda x, y: (x << png_bit_depth) + y, e)
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
-
-    def translate_colors(row):
-        return (color_index[b] for b in row)
-
-    def apply_row_filter(row, fn):
-        return fn(row)
 
     # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
@@ -557,7 +549,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
             # Since black is zero, it should be the first entry
             palette = [black, transparent]
         png_trans_idx = palette.index(transparent)
-    # Keeps a mapping of iterator input -> color number
+    # Keeps a mapping of iterator output -> color number
     color_index = {}
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
@@ -571,6 +563,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
         color_index[0] = color_index[qz_idx]
         color_index[1] = palette.index(color_mapping[dark_idx])
         miter = iter(matrix)
+    miter = ((color_index[b] for b in r) for r in miter)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
     horizontal_border = b''
@@ -584,13 +577,12 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     # This variable holds the "Up" filter which indicates that this scanline
     # is equal to the above scanline (since it is filled with null bytes)
     same_as_above = b''
-    row_filters = [translate_colors]
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
         same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        row_filters.append(scale_row_x_axis)
+        miter = (scale_row_x_axis(row) for row in miter)
     idat = bytearray(horizontal_border)
-    for row in (reduce(apply_row_filter, row_filters, r) for r in miter):
+    for row in miter:
         # Chain precalculated left border with row and right border
         idat += scanline(chain(vertical_border, row, vertical_border))
         idat += same_as_above  # This is b'' if no scaling factor was provided

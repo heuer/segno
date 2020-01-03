@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.3.5 -- 2020-01-03
+-------------------
+* Added support for colorful (more than two colors) QR Codes to the CLI script
+  (fixes #58).
+* Fixed Read the Docs build
+* Improved documentation
+* Minor perfomance and code improvements.
+
+
 0.3.4 -- 2020-01-02
 -------------------
 * Fixed issue #54: After last change (see 0.3.3), white background with transparent
