@@ -487,9 +487,6 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
                                (reduce(lambda x, y: (x << png_bit_depth) + y, e)
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
 
-    def row_filter_noop(row):
-        return row
-
     # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
     check_valid_scale(scale)
@@ -580,13 +577,12 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     # This variable holds the "Up" filter which indicates that this scanline
     # is equal to the above scanline (since it is filled with null bytes)
     same_as_above = b''
-    row_filter = row_filter_noop
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
         same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        row_filter = scale_row_x_axis
+        miter = (scale_row_x_axis(row) for row in miter)
     idat = bytearray(horizontal_border)
-    for row in (row_filter(r) for r in miter):
+    for row in miter:
         # Chain precalculated left border with row and right border
         idat += scanline(chain(vertical_border, row, vertical_border))
         idat += same_as_above  # This is b'' if no scaling factor was provided
