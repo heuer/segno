@@ -35,6 +35,21 @@ def test_defaults():
     assert args.symbol_count is None
     # PNG
     assert not args.dpi
+    assert args.finder_dark is None
+    assert args.finder_light is None
+    assert args.data_dark is None
+    assert args.data_light is None
+    assert args.align_dark is None
+    assert args.align_light is None
+    assert args.timing_dark is None
+    assert args.timing_light is None
+    assert args.format_dark is None
+    assert args.format_light is None
+    assert args.version_dark is None
+    assert args.version_light is None
+    assert args.quiet_zone is None
+    assert args.dark_module is None
+    assert args.separator is None
     # SVG
     assert args.xmldecl
     assert not args.no_classes
@@ -254,15 +269,10 @@ def test_color():
     assert cli.build_config(args)['color'] == 'green'
 
 
-def test_color_transparent():
-    args = cli.parse(['--color=transparent', '-output=x.png', ''])
-    assert args.color == 'transparent'
-    assert cli.build_config(args)['color'] is None
-
-
-def test_color_transparent2():
-    args = cli.parse(['--color=trans', '-output=x.png', ''])
-    assert args.color == 'trans'
+@pytest.mark.parametrize('arg', ['transparent', 'trans'])
+def test_color_transparent(arg):
+    args = cli.parse(['--color={}'.format(arg), '-output=x.png', ''])
+    assert args.color == arg
     assert cli.build_config(args)['color'] is None
 
 
@@ -271,15 +281,36 @@ def test_background():
     assert args.background == 'red'
 
 
-def test_background_transparent():
-    args = cli.parse(['--background=transparent', '-output=x.png', ''])
-    assert args.background == 'transparent'
-    assert cli.build_config(args)['background'] is None
+def test_no_colormap():
+    args = cli.parse(['--scale', '10', '-output=x.png', ''])
+    config = cli.build_config(args)
+    assert 'colormap' not in config
 
 
-def test_background_transparent2():
-    args = cli.parse(['--background=trans', '-output=x.png', ''])
-    assert args.background == 'trans'
+@pytest.mark.parametrize('clr', ['finder-dark', 'finder-light', 'separator',
+                                 'data-dark', 'data-light', 'timing-dark', 'timing-light',
+                                 'align-dark', 'align-light', 'quiet-zone', 'dark-module',
+                                 'format-dark', 'format-light', 'version-dark', 'version-light'])
+@pytest.mark.parametrize('arg', ['transparent', 'trans', 'red', 'green'])
+def test_colormap(clr, arg):
+    args = cli.parse(['--{}'.format(clr), arg, '-output=x.png', ''])
+    clr_name = clr.replace('-', '_')
+    assert args.get(clr_name) == arg
+    config = cli.build_config(args)
+    assert clr_name not in config
+    colormap = cli.build_config(args).get('colormap')
+    assert colormap
+    assert len(colormap) == 1
+    if arg in ('transparent', 'trans'):
+        assert None in colormap.values()
+    else:
+        arg in colormap.values()
+
+
+@pytest.mark.parametrize('arg', ['transparent', 'trans'])
+def test_background_transparent(arg):
+    args = cli.parse(['--background={}'.format(arg), '-output=x.png', ''])
+    assert args.background == arg
     assert cli.build_config(args)['background'] is None
 
 

@@ -126,8 +126,8 @@ def make_parser():
     png_group.add_argument('--timing-light', help='Sets the color of the light timing modules')
     png_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules')
     png_group.add_argument('--align-light', help='Sets the color of the light alignment modules')
-    png_group.add_argument('--quietzone', help='Sets the color of the quiet zone (border)')
-    png_group.add_argument('--darkmodule', help='Sets the color of the dark module')
+    png_group.add_argument('--quiet-zone', help='Sets the color of the quiet zone (border)')
+    png_group.add_argument('--dark-module', help='Sets the color of the dark module')
     png_group.add_argument('--format-dark', help='Sets the color of the dark format information modules')
     png_group.add_argument('--format-light', help='Sets the color of the light format information modules')
     png_group.add_argument('--version-dark', help='Sets the color of the dark version information modules')
@@ -268,8 +268,8 @@ _COLOR_NAME2TYPE = {
     'timing_light': mt.TYPE_TIMING_LIGHT,
     'align_dark': mt.TYPE_ALIGNMENT_PATTERN_DARK,
     'align_light': mt.TYPE_ALIGNMENT_PATTERN_LIGHT,
-    'quietzone': mt.TYPE_QUIET_ZONE,
-    'darkmodule': mt.TYPE_DARKMODULE,
+    'quiet_zone': mt.TYPE_QUIET_ZONE,
+    'dark_module': mt.TYPE_DARKMODULE,
     'format_dark': mt.TYPE_FORMAT_DARK,
     'format_light': mt.TYPE_FORMAT_LIGHT,
     'version_dark': mt.TYPE_VERSION_DARK,
