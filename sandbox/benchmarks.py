@@ -13,12 +13,12 @@ try:
 except ImportError:
     qrcode = None
 try:
+    import qrcodegen
     from qrcodegen import QrCode, QrSegment
     qrcodegen_make_segment = QrSegment.make_segments
     qrcodegen_error_m = QrCode.Ecc.MEDIUM
     qrcodegen_error_q = QrCode.Ecc.QUARTILE
     qrcodegen_error_h = QrCode.Ecc.HIGH
-    qrcodegen = True
 except ImportError:
     qrcodegen = None
 try:
