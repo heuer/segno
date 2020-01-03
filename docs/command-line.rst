@@ -223,6 +223,35 @@ be provided. Additonally, either the QR Code :option:`--version <segno --version
 or the desired number of symbols (:option:`--symbol-count <segno --symbol-count>`) must be provided::
 
 
-    $ segno --seq -v 1 "Well you should see Polythene Pam"
-    $ segno --seq --symbol-count=2 "We all live in a yellow submarine"
-    $ segno --seq -sc 2 "Half of what I say is meaningless"
+    $ segno --seq -v 1 --scale 3 -o polythene-pam.png "Well you should see Polythene Pam"
+
+.. image:: _static/polythene-pam-03-01.png
+    :alt: 1st part of Structured Append code
+
+.. image:: _static/polythene-pam-03-02.png
+    :alt: 2nd part of Structured Append code
+
+.. image:: _static/polythene-pam-03-03.png
+    :alt: 3nd part of Structured Append code
+
+
+Specify the max. number of symbols::
+
+    $ segno --seq --symbol-count=2 -s 3 -o sa_yellow-submarine.png "We all live in a yellow submarine"
+
+.. image:: _static/sa_yellow-submarine-02-01.png
+    :alt: 1st part of Structured Append code
+
+.. image:: _static/sa_yellow-submarine-02-02.png
+    :alt: 2nd part of Structured Append code
+
+
+Shortcut to specify the number of symobols::
+
+    $ segno --seq -sc 2 -s 3 -o julia.png "Half of what I say is meaningless"
+
+.. image:: _static/julia-02-01.png
+    :alt: 1st part of Structured Append code
+
+.. image:: _static/julia-02-02.png
+    :alt: 2nd part of Structured Append code
