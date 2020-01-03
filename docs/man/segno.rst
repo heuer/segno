@@ -101,7 +101,7 @@ Command Line Options
 .. option:: --background BACKGROUND, -bg BACKGROUND
 
     Color of the light modules.
-    See :option:`--color` for a description of possible values.
+    See :option:`--color` for a description of allowed values.
     The standard background color is white.
 
 .. option:: --output OUTPUT, -o OUTPUT
@@ -170,6 +170,82 @@ Command Line Options
 .. option:: --dpi DPI
 
     Sets the DPI value of the PNG file
+
+.. option:: --finder-dark COLOR
+
+    Sets the color of the dark modules of the finder pattern.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --finder-light COLOR
+
+    Sets the color of the light modules of the finder pattern.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --separator COLOR
+
+    Sets the color of the separator.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --data-dark COLOR
+
+    Sets the color of the dark data modules.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --data-light COLOR
+
+    Sets the color of the light data modules.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --quiet-zone COLOR
+
+    Sets the color of the quiet zone (border).
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --align-dark COLOR
+
+    Sets the color of the dark modules of the alignment patterns.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --align-light COLOR
+
+    Sets the color of the light modules of the alignment patterns.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --timing-dark COLOR
+
+    Sets the color of the dark modules of the timing pattern.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --timing-light COLOR
+
+    Sets the color of the light modules of the timing pattern.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --format-dark COLOR
+
+    Sets the color of the dark modules of the format information.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --format-light COLOR
+
+    Sets the color of the light modules of the format information.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --version-dark COLOR
+
+    Sets the color of the dark modules of the version information.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --version-light COLOR
+
+    Sets the color of the light modules of the version information.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --dark-module COLOR
+
+    Sets the color of the dark module.
+    See :option:`--color` for a description of allowed values.
+
 
 
 Exit Status
