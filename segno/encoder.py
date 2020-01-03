@@ -783,19 +783,14 @@ def mask_scores(matrix, matrix_size):
     """
     n3_pattern = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 
-    def is_match(seq, start, end):
-        start = max(start, 0)
-        end = min(end, matrix_size)
-        return not any(seq[start:end])
-
-    def find_occurrences(seq):
+    def n3_pattern_occurrences(seq):
         count = 0
         idx = seq.find(n3_pattern)
         while idx != -1:
             offset = idx + 7
-            if idx in (0, matrix_size - 7):
-                count += 40
-            elif is_match(seq, idx - 4, idx) or is_match(seq, offset, offset + 4):
+            if idx in (0, matrix_size - 7) \
+                    or not any(seq[max(idx - 4, 0):min(idx, matrix_size)]) \
+                    or not any(seq[max(offset, 0):min(offset + 4, matrix_size)]):
                 count += 40  # N3 = 40
             else:
                 # Found no / not enough light modules, start at next possible
@@ -813,16 +808,15 @@ def mask_scores(matrix, matrix_size):
     module_range = range(matrix_size)
     dark_modules = 0
     last_row = None
+    # Collects the bytes column-wise (required to calculate score N3)
+    n3_column = bytearray(matrix_size)
     for i in module_range:
-        n3_column = bytearray(matrix_size)
         row = matrix[i]
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
         row_cnt = 0
         col_cnt = 0
-        # N3
-        s_n3 += find_occurrences(row)
         for j in module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
@@ -849,7 +843,8 @@ def mask_scores(matrix, matrix_size):
             col_prev_bit = col_current_bit
         last_row = row
         # N3
-        s_n3 += find_occurrences(n3_column)
+        s_n3 += n3_pattern_occurrences(row)
+        s_n3 += n3_pattern_occurrences(n3_column)
         # N1
         if row_cnt >= 5:
             s_n1 += row_cnt - 2
