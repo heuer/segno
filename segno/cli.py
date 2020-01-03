@@ -258,6 +258,7 @@ class _AttrDict(dict):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
+
 _COLOR_NAME2TYPE = {
     'finder_dark': mt.TYPE_FINDER_PATTERN_DARK,
     'finder_light': mt.TYPE_FINDER_PATTERN_LIGHT,
