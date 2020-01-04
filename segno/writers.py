@@ -553,16 +553,16 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     color_index = {}
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
+        miter = matrix_iter_verbose(matrix, version, scale=1, border=0)
         for module_type, clr in color_mapping.items():
             color_index[module_type] = palette.index(clr)
-        miter = matrix_iter_verbose(matrix, version, scale=1, border=0)
     else:
         # Just two colors, use the cheap iterator which returns 0x0 or 0x1
+        miter = iter(matrix)
         # The code to create the image requires that TYPE_QUIET_ZONE is available
         color_index[qz_idx] = palette.index(color_mapping[qz_idx])
         color_index[0] = color_index[qz_idx]
         color_index[1] = palette.index(color_mapping[dark_idx])
-        miter = iter(matrix)
     miter = ((color_index[b] for b in r) for r in miter)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
