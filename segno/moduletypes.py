@@ -20,7 +20,7 @@ value into account, use::
 from . import consts
 import warnings
 
-warnings.warn('This module is deprecated since 0.3.6. Use the constants in segno.consts or segno.colormap()')
+warnings.warn('This module is deprecated since 0.3.6. Use the constants in segno.consts or segno.colormap()', DeprecationWarning)
 
 TYPE_FINDER_PATTERN_LIGHT = consts.TYPE_FINDER_PATTERN_LIGHT
 TYPE_FINDER_PATTERN_DARK = consts.TYPE_FINDER_PATTERN_DARK
