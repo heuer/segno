@@ -27,3 +27,10 @@ segno.writers
 
 .. automodule:: segno.writers
     :members:
+
+
+Utilities
+---------
+
+.. automodule:: segno.utils
+    :members:
