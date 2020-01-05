@@ -355,6 +355,18 @@ class QRCode:
             >>> height == len(res)
             True
 
+        If `verbose` is ``True``, the iterator returns integer constants which
+        indicate the type of the module, i.e. ``segno.consts.TYPE_FINDER_PATTERN_DARK``,
+        ``segno.consts.TYPE_FINDER_PATTERN_LIGHT``, ``segno.consts.TYPE_QUIET_ZONE`` etc.
+
+        To check if the returned module type is dark or light, use::
+
+            if mt >> 8:
+                print('dark module')
+
+            if not mt >> 8:
+                print('light module')
+
 
         :param int scale: The scaling factor (default: ``1``).
         :param int border: The size of border / quiet zone or ``None`` to
