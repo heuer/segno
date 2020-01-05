@@ -18,7 +18,7 @@ from . import consts
 
 __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
            'check_valid_scale', 'check_valid_border', 'matrix_to_lines',
-           'matrix_iter', 'matrix_iter_verbose')
+           'matrix_iter', 'matrix_iter_verbose', 'colormap')
 
 
 def get_default_border_size(version):
@@ -268,6 +268,23 @@ def colormap(dark=False, light=False,
              quiet_zone=False):
     """\
     Creates and returns a module type -> color map.
+
+    The result can be used for serializers which support more than two colors.
+
+    Examples
+
+    .. code-block:: python
+
+        # All dark modules (data, version, ...) will be dark red, the dark
+        # modules of finder patterns will be blue
+        # The light modules will be rendered in the serializer's default color
+        # (usually white)
+        cm = colormap(dark='darkred', finder_dark='blue')
+
+        # Use the serializer's default colors for dark / light modules
+        # (usually black and white) but the dark modules of the timing patterns
+        # will be brown
+        cm = colormap(timing_dark=(165, 42, 42))
 
     :param dark: Default color of dark modules
     :param light: Default color of light modules

@@ -29,8 +29,8 @@ segno.writers
     :members:
 
 
-Utilities
----------
+segno.utils
+-----------
 
 .. automodule:: segno.utils
     :members:
