@@ -3,7 +3,8 @@ Changes
 
 0.3.6 -- 2020-mm-dd
 -------------------
-* Deprecated ``segno.moduletypes``, moved all constants to ``segno.consts``
+* Deprecated ``segno.moduletypes`` (will be removed in release 0.4.0),
+  moved all constants to ``segno.consts``
 * Added ``segno.colormap`` which simplifies the creation of color mappings a lot
 
 
@@ -45,9 +46,10 @@ Changes
 * Fixed bugs in ``helpers.make_vcard_data`` function
   (superfluous semicolon in birthday line, check geo coordinates)
 * Renamed ``utils.matrix_iter_detail`` into ``utils.matrix_iter_verbose``.
-  Kept ``matrix_iter_detail`` for backwards compatibility (deprecated)
+  Kept ``matrix_iter_detail`` for backwards compatibility (deprecated, will be
+  removed in release 0.4.0)
 * Moved module constants from ``segno.utils`` into ``segno.moduletypes``,
-  Constants from ``segno.utils`` will be removed within the next release.
+  Constants from ``segno.utils`` will be removed in release 0.4.0.
 * Added option ``verbose`` (default: ``False``) to ``segno.QRCode.matrix_iter()``
   which returns an iterator which provides information about the module type
   (i.e. quiet zone, dark data module, light data module).

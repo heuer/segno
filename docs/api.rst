@@ -1,5 +1,5 @@
-Segno package
-=============
+API
+===
 
 Module contents
 ---------------
@@ -13,13 +13,6 @@ Utilities
 ---------
 
 .. automodule:: segno.utils
-    :members:
-
-
-Module Types
-------------
-
-.. automodule:: segno.moduletypes
     :members:
 
 
