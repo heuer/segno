@@ -19,7 +19,7 @@ from png import Reader as PNGReader
 def test_greyscale():
     qr = segno.make_qr('test')
     buff = io.BytesIO()
-    qr.save(buff, kind='png', colormap=segno.colormap(quiet_zone='white'))
+    qr.save(buff, kind='png', quiet_zone='white')
     buff.seek(0)
     reader = PNGReader(file=buff)
     reader.preamble()
@@ -29,7 +29,7 @@ def test_greyscale():
 def test_not_greyscale():
     qr = segno.make_qr('test')
     buff = io.BytesIO()
-    qr.save(buff, kind='png', colormap=segno.colormap(quiet_zone=None))  # Three "colors": white, black, transparent
+    qr.save(buff, kind='png', quiet_zone=None)  # Three "colors": white, black, transparent
     buff.seek(0)
     reader = PNGReader(file=buff)
     reader.preamble()
@@ -45,7 +45,7 @@ def test_plte():
     qr = segno.make_qr('test')
     buff = io.BytesIO()
     dark = (0, 0, 139)
-    qr.save(buff, kind='png', colormap=segno.colormap(dark=dark, light=None))
+    qr.save(buff, kind='png', dark=dark, light=None)
     buff.seek(0)
     reader = PNGReader(file=buff)
     reader.preamble()
@@ -62,7 +62,7 @@ def test_plte_no_transparency():
     buff = io.BytesIO()
     dark = (0, 0, 139)
     light = (255, 255, 255)
-    qr.save(buff, kind='png', colormap=segno.colormap(dark=dark, light=light))
+    qr.save(buff, kind='png', dark=dark, light=light)
     buff.seek(0)
     reader = PNGReader(file=buff)
     reader.preamble()
@@ -78,9 +78,8 @@ def test_plte_colors():
     buff = io.BytesIO()
     dark = (0, 0, 139)
     light = (255, 255, 255)
-    colormap = segno.colormap(dark=dark, light=light, quiet_zone='green',
-                              finder_dark='purple', finder_light='yellow')
-    qr.save(buff, kind='png', colormap=colormap)
+    qr.save(buff, kind='png', dark=dark, light=light, quiet_zone='green',
+            finder_dark='purple', finder_light='yellow')
     buff.seek(0)
     reader = PNGReader(file=buff)
     reader.preamble()

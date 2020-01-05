@@ -16,7 +16,6 @@ from . import encoder
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
-from .utils import colormap
 try:  # pragma: no cover
     str_type = basestring
 except NameError:  # pragma: no cover

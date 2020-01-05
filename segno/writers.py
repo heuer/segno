@@ -40,8 +40,7 @@ except ImportError:  # pragma: no cover
     from io import open
 from . import colors, consts
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose, \
-        colormap as make_colormap
+        check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
            'write_txt', 'write_pbm', 'write_pam', 'write_xpm', 'write_xbm',
@@ -406,7 +405,14 @@ def as_png_data_uri(matrix, version, scale=1, border=None, dark='#000',
 
 
 def write_png(matrix, version, out, scale=1, border=None, dark='#000',
-              light='#fff', compresslevel=9, dpi=None, addad=True,
+              light='#fff', finder_dark=False, finder_light=False,
+              data_dark=False, data_light=False,
+              version_dark=False, version_light=False,
+              format_dark=False, format_light=False,
+              alignment_dark=False, alignment_light=False,
+              timing_dark=False, timing_light=False,
+              separator=False, dark_module=False,
+              quiet_zone=False, compresslevel=9, dpi=None, addad=True,
               colormap=None):
     """\
     Serializes the QR Code as PNG image.
@@ -445,7 +451,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     """
 
     def png_color(clr):
-        return colors.color_to_rgb_or_rgba(clr, alpha_float=False)
+        return colors.color_to_rgb_or_rgba(clr, alpha_float=False) if clr is not None else transparent
 
     def chunk(name, data):
         """\
@@ -488,17 +494,16 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
     dark_idx = consts.TYPE_FINDER_PATTERN_DARK
     qz_idx = consts.TYPE_QUIET_ZONE
-    if not colormap:
-        # Just two colors, either the default colors or the user provided some
-        color_mapping = {
-            dark_idx: png_color(dark) if dark is not None else transparent,
-            qz_idx: png_color(light) if light is not None else transparent}
-    else:
-        # Color map was provided, initialize a default mapping and replace defaults
-        # with values provided by "colormap"
-        color_mapping = make_colormap(dark=black, light=white)
-        for module_type, clr in colormap.items():
-            color_mapping[module_type] = png_color(clr) if clr is not None else transparent
+    color_mapping = _make_colormap(dark=dark, light=light, finder_dark=finder_dark,
+                              finder_light=finder_light, data_dark=data_dark,
+                              data_light=data_light, version_dark=version_dark,
+                              version_light=version_light, format_dark=format_dark,
+                              format_light=format_light, alignment_dark=alignment_dark,
+                              alignment_light=alignment_light, timing_dark=timing_dark,
+                              timing_light=timing_light, separator=separator, dark_module=dark_module,
+                              quiet_zone=quiet_zone)
+    for mt, clr in color_mapping.items():
+        color_mapping[mt] = png_color(clr)
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)
     palette = sorted(set(color_mapping.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
@@ -1026,6 +1031,76 @@ def _pack_bits_into_byte(iterable):
     """
     return (reduce(lambda x, y: (x << 1) + y, e)
             for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
+
+
+def _make_colormap(dark, light,
+             finder_dark=False, finder_light=False,
+             data_dark=False, data_light=False,
+             version_dark=False, version_light=False,
+             format_dark=False, format_light=False,
+             alignment_dark=False, alignment_light=False,
+             timing_dark=False, timing_light=False,
+             separator=False, dark_module=False,
+             quiet_zone=False):
+    """\
+    Creates and returns a module type -> color map.
+
+    The result can be used for serializers which support more than two colors.
+
+    Examples
+
+    .. code-block:: python
+
+        # All dark modules (data, version, ...) will be dark red, the dark
+        # modules of the finder patterns will be blue
+        # The light modules will be rendered in the serializer's default color
+        # (usually white)
+        cm = colormap(dark='darkred', finder_dark='blue')
+
+        # Use the serializer's default colors for dark / light modules
+        # (usually black and white) but the dark modules of the timing patterns
+        # will be brown
+        cm = colormap(timing_dark=(165, 42, 42))
+
+    :param dark: Default color of dark modules
+    :param light: Default color of light modules
+    :param finder_dark: Color of the dark modules of the finder patterns.
+    :param finder_light: Color of the light modules of the finder patterns.
+    :param data_dark: Color of the dark data modules.
+    :param data_light: Color of the light data modules.
+    :param version_dark: Color of the dark modules of the version information.
+    :param version_light: Color of the light modules of the version information.
+    :param format_dark: Color of the dark modules of the format information.
+    :param format_light: Color of the light modules of the format information.
+    :param alignment_dark: Color of the dark modules of the alignment patterns.
+    :param alignment_light: Color of the light modules of the alignment patterns.
+    :param timing_dark: Color of the dark modules of the timing patterns.
+    :param timing_light: Color of the light modules of the timing patterns.
+    :param separator: Color of the separator.
+    :param dark_module: Color of the dark module.
+    :param quiet_zone: Color of the quiet zone / border.
+    :rtype: dict
+    """
+    print('dark cm', dark)
+    mt2color = {
+        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
+        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
+        consts.TYPE_DATA_DARK: data_dark if data_dark is not False else dark,
+        consts.TYPE_DATA_LIGHT: data_light if data_light is not False else light,
+        consts.TYPE_VERSION_DARK: version_dark if version_dark is not False else dark,
+        consts.TYPE_VERSION_LIGHT: version_light if version_light is not False else light,
+        consts.TYPE_ALIGNMENT_PATTERN_DARK: alignment_dark if alignment_dark is not False else dark,
+        consts.TYPE_ALIGNMENT_PATTERN_LIGHT: alignment_light if alignment_light is not False else light,
+        consts.TYPE_TIMING_DARK: timing_dark if timing_dark is not False else dark,
+        consts.TYPE_TIMING_LIGHT: timing_light if timing_light is not False else light,
+        consts.TYPE_FORMAT_DARK: format_dark if format_dark is not False else dark,
+        consts.TYPE_FORMAT_LIGHT: format_light if format_light is not False else light,
+        consts.TYPE_SEPARATOR: separator if separator is not False else light,
+        consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
+        consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
+    }
+    print('mt clrs', mt2color)
+    return dict([(clr, val) for clr, val in mt2color.items() if val or val is None])
 
 
 _VALID_SERIALIZERS = {

@@ -78,47 +78,5 @@ def test_invalid_border(border):
         utils.check_valid_border(border)
 
 
-def test_colormap_empty():
-    assert not utils.colormap()
-
-
-def test_colormap_dark():
-    cm = utils.colormap(dark='blue')
-    # Finder dark, version dark, format dark , timing dark, alignment dark, data dark, dark module
-    assert 7 == len(cm)
-    assert all([clr >> 8 > 0 for clr in cm])
-    values = set(cm.values())
-    assert 1 == len(values)
-    assert 'blue' in values
-
-
-def test_colormap_light():
-    cm = utils.colormap(light='white')
-    # Finder light, version light, format light , timing light, alignment light,
-    # data light, quiet zone, separator
-    assert 8 == len(cm)
-    assert all([clr >> 8 == 0 for clr in cm])
-    values = set(cm.values())
-    assert 1 == len(values)
-    assert 'white' in values
-
-
-def test_colormap():
-    cm = utils.colormap(dark='blue', alignment_dark='red')
-    # Finder dark, version dark, format dark , timing dark, alignment dark, data dark, dark module
-    assert 7 == len(cm)
-    assert all([clr >> 8 > 0 for clr in cm])
-    values = set(cm.values())
-    assert 2 == len(values)
-    assert 'red' == cm[consts.TYPE_ALIGNMENT_PATTERN_DARK]
-    assert 'blue' in values
-
-
-def test_colormap_singlevalue():
-    cm = utils.colormap(quiet_zone='red')
-    assert 1 == len(cm)
-    assert 'red' == cm[consts.TYPE_QUIET_ZONE]
-
-
 if __name__ == '__main__':
     pytest.main([__file__])
