@@ -322,11 +322,4 @@ def colormap(dark=False, light=False,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    cm = {}
-    light_dark = (light, dark)
-    for k, v in mt2color.items():
-        if v is False:
-            v = light_dark[int(k >> 8 > 0)]
-        if v or v is None:
-            cm[k] = v
-    return cm
+    return dict([(clr, val) for clr, val in mt2color.items() if val or val is None])
