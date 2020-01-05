@@ -171,6 +171,16 @@ Command Line Options
 
     Sets the DPI value of the PNG file
 
+.. option:: --dark COLOR
+
+    Sets the default color of the dark modules.
+    See :option:`--color` for a description of allowed values.
+
+.. option:: --light COLOR
+
+    Sets the default color of the light modules.
+    See :option:`--color` for a description of allowed values.
+
 .. option:: --finder-dark COLOR
 
     Sets the color of the dark modules of the finder pattern.

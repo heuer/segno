@@ -117,6 +117,8 @@ def make_parser():
     png_group.add_argument('--no-ad', help=argparse.SUPPRESS,
                            dest='addad',
                            action='store_false')
+    png_group.add_argument('--dark', help='Sets the default color of the dark modules')
+    png_group.add_argument('--light', help='Sets the default color of the light modules')
     png_group.add_argument('--finder-dark', help='Sets the color of the dark finder modules')
     png_group.add_argument('--finder-light', help='Sets the color of the light finder modules')
     png_group.add_argument('--separator', help='Sets the color of the separator modules')
@@ -192,7 +194,14 @@ def build_config(config, filename=None):
         config['svgclass'] = None
         config['lineclass'] = None
     # PNG
-    clr_map = {}
+    kw = {'dark': config.pop('dark', None),
+          'light': config.pop('light', None)}
+    for clr in ('dark', 'light'):
+        if kw[clr] is None:
+            del kw[clr]
+        elif clr in ('transparent', 'trans'):
+            kw[clr] =  None
+    clr_map = segno.colormap(**kw) if kw else {}
     for clr, mt_const in _COLOR_NAME2TYPE.items():
         val = config.pop(clr, None)
         if not val:
