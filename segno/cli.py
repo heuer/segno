@@ -181,7 +181,7 @@ def build_config(config, filename=None):
     # If using type=lambda v: None if v in ('transparent', 'trans') else v
     # we cannot detect if "None" comes from "transparent" or the default value
     for clr in ('dark', 'light', 'finder_dark', 'finder_light',
-                'format_dark', 'format_light', 'align_dark', 'align_light',
+                'format_dark', 'format_light', 'alignment_dark', 'alignment_light',
                 'timing_dark', 'timing_light', 'data_dark', 'data_light',
                 'version_dark', 'version_light',
                 'quiet_zone', 'dark_module', 'separator'):
