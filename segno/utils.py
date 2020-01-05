@@ -18,7 +18,7 @@ from . import consts
 
 __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
            'check_valid_scale', 'check_valid_border', 'matrix_to_lines',
-           'matrix_iter', 'matrix_iter_verbose', 'colormap')
+           'matrix_iter', 'matrix_iter_verbose')
 
 
 def get_default_border_size(version):

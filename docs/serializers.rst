@@ -51,7 +51,7 @@ accept float values and do not "downgrade" it to an integer.
     >>> qr.save('the-beatles-2.svg', unit='cm')  # 1 unit = 1 cm, result as above
 
 
-Many serializers accept the parameters ``color`` and ``background`` to specify
+Many serializers accept the parameters ``dark`` and ``light`` to specify
 the color of the dark modules and light modules (background). See :doc:`colors`
 for details.
 
@@ -59,16 +59,16 @@ for details.
 
     >>> import segno
     >>> qr = segno.make('Neil Young')
-    >>> qr.save('neil-young.svg', color='darkblue', background='yellow')
-    >>> qr.save('neil-young.png', color='#ccc')
-    >>> qr.save('neil-young-2.png', background=None)  # Transparent background
+    >>> qr.save('neil-young.svg', dark='darkblue', light='yellow')
+    >>> qr.save('neil-young.png', dark='#ccc')
+    >>> qr.save('neil-young-2.png', light=None)  # Transparent background
     >>> # Dark modules = transparent, light modules = black
-    >>> qr.save('neil-young-3.png', color=None, background='black')
+    >>> qr.save('neil-young-3.png', dark=None, light='black')
     >>> # Dark modules with alpha transparency
-    >>> qr.save('neil-young-4.png', color='#0000ffcc')
-    >>> qr.save('neil-young-4.svg', color='#00fc')  # Same as above but SVG
+    >>> qr.save('neil-young-4.png', dark='#0000ffcc')
+    >>> qr.save('neil-young-4.svg', dark='#00fc')  # Same as above but SVG
     >>> # Anonther color, save as compressed SVG
-    >>> qr.save('neil-young-5.svgz', color=(8, 90, 117))
+    >>> qr.save('neil-young-5.svgz', dark=(8, 90, 117))
 
 
 If the QR Code should be serialized to a buffer, use the
@@ -85,7 +85,7 @@ Please note that some serializers write bytes while others write strings, see
     >>> qr.save(buff, kind='svg')
     >>> # All other serializer parameters are supported as well
     >>> buff = io.BytesIO()
-    >>> qr.save(buff, kind='svg', color='#ccc', background='green')
+    >>> qr.save(buff, kind='svg', dark='#ccc', light='green')
 
 
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are
@@ -102,8 +102,7 @@ color for each module type.
 
     >>> import segno
     >>> qr = segno.make('Yellow Submarine', error='h')
-    >>> colormap = segno.colormap(dark='darkred', data_dark='darkorange', data_light='yellow')
-    >>> qr.save('yellow-submarine.png', scale=5, colormap=colormap)
+    >>> qr.save('yellow-submarine.png', scale=5, dark='darkred', data_dark='darkorange', data_light='yellow')
 
 .. image:: _static/yellow-submarine.png
     :alt: Colorful 3-H QR Code encoding "Yellow Submarine"

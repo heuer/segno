@@ -25,8 +25,8 @@ and border, see :py:func:`segno.QRCode.save()` and :doc:`serializers` for detail
     >>> import segno
     >>> qr = segno.make('You Know My Name (Look Up The Number)')
     >>> qr.save('you-know-my-name-no-border.svg', border=0)  # no border / quiet zone
-    >>> qr.save('you-know-my-name-color-green.svg', color='green')  # default border, dark modules are green
-    >>> qr.save('you-know-my-name-background-grey.svg', background='#eee')  # default border, background grey
+    >>> qr.save('you-know-my-name-color-green.svg', dark='green')  # default border, dark modules are green
+    >>> qr.save('you-know-my-name-background-grey.svg', light='#eee')  # default border, background grey
 
 
 The factory function :py:func:`segno.make` chooses the minimal possible (Micro) QR Code

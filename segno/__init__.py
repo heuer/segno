@@ -25,7 +25,7 @@ except NameError:  # pragma: no cover
 __version__ = '0.3.6.dev0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence', 'colormap',
+           'QRCodeSequence',
            'QRCodeError', 'ErrorLevelError', 'ModeError', 'MaskError',
            'VersionError', 'DataOverflowError')
 
@@ -534,14 +534,14 @@ class QRCode:
                       If set to ``None`` (default), the recommended border size
                       will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
                       A value of ``0`` indicates that border should be omitted.
-        color         A string or tuple representing a color value for the dark
+        dark         A string or tuple representing a color value for the dark
                       modules. The default value is "black".  The color can be
                       provided as ``(R, G, B)`` tuple, as web color name
                       (like "red") or in hexadecimal format (``#RGB`` or
                       ``#RRGGBB``). Some serializers (i.e. :ref:`SVG <svg>` and
                       :ref:`PNG <png>`) accept an alpha transparency value like
                       ``#RRGGBBAA``.
-        background    A string or tuple representing a color for the light modules
+        light         A string or tuple representing a color for the light modules
                       or background. See `color` for valid values.
                       The default value depends on the serializer. :ref:`SVG <svg>`
                       uses no background color (``None``) by default, other
@@ -560,7 +560,7 @@ class QRCode:
         out              Filename or :py:class:`io.BytesIO`
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
-        color            Default: "#000" (black)
+        dark             Default: "#000" (black)
                          ``None`` is a valid value. If set to ``None``, the resulting
                          path won't have a "stroke" attribute. The "stroke" attribute
                          may be defined via CSS (external).
@@ -575,7 +575,7 @@ class QRCode:
                          document will have a color value of "#000". If the color
                          is "#FF0000", the resulting color is not "#F00", but
                          the web color name "red".
-        background       Default value ``None``. If this paramater is set to another
+        light            Default value ``None``. If this paramater is set to another
                          value, the resulting image will have another path which
                          is used to define the background color.
                          If an alpha channel is used, the resulting path may
@@ -642,10 +642,10 @@ class QRCode:
         out              Filename or :py:class:`io.BytesIO`
         kind             "png"
         scale            integer
-        color            Default: "#000" (black)
+        dark             Default: "#000" (black)
                          ``None`` is a valid value iff background is not ``None``.
                          If set to ``None``, the dark modules become transparent.
-        background       Default value "#fff" (white)
+        light            Default value "#fff" (white)
                          See keyword "color" for further details.
         compresslevel    Default: 9. Integer indicating the compression level
                          for the ``IDAT`` (data) chunk.
@@ -656,12 +656,6 @@ class QRCode:
                          that the DPI value is converted into meters (maybe with
                          rounding errors) since PNG does not support the unit
                          "dots per inch".
-        colormap         Optional module type -> color mapping. If provided, the
-                         "color" and "background" arguments are ignored. All undefined
-                         module types will have the default colors (light: white,
-                         dark: black).
-                         See ""color" for valid color values. ``None`` is accepted as
-                         valid color value as well (becomes transparent).
         =============    ==============================================================
 
 
@@ -675,8 +669,8 @@ class QRCode:
         out              Filename or :py:class:`io.StringIO`
         kind             "eps"
         scale            integer or float
-        color            Default: "#000" (black)
-        background       Default value: ``None`` (no background)
+        dark             Default: "#000" (black)
+        light            Default value: ``None`` (no background)
         =============    ==============================================================
 
 
@@ -690,8 +684,8 @@ class QRCode:
         out              Filename or :py:class:`io.BytesIO`
         kind             "pdf"
         scale            integer or float
-        color            Default: "#000" (black)
-        background       Default value: ``None`` (no background)
+        dark             Default: "#000" (black)
+        light            Default value: ``None`` (no background)
         compresslevel    Default: 9. Integer indicating the compression level.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
@@ -709,8 +703,8 @@ class QRCode:
         =============    ==============================================================
         out              Filename or :py:class:`io.StringIO`
         kind             "txt"
-        color            Default: "1"
-        background       Default: "0"
+        dark             Default: "1"
+        light            Default: "0"
         =============    ==============================================================
 
 
@@ -754,8 +748,8 @@ class QRCode:
         out              Filename or :py:class:`io.BytesIO`
         kind             "pam"
         scale            integer
-        color            Default: "#000" (black).
-        background       Default value "#fff" (white). Use ``None`` for a transparent
+        dark             Default: "#000" (black).
+        light            Default value "#fff" (white). Use ``None`` for a transparent
                          background.
         =============    ==============================================================
 
@@ -774,7 +768,7 @@ class QRCode:
         out              Filename or :py:class:`io.StringIO`
         kind             "tex"
         scale            integer or float
-        color            LaTeX color name (default: "black"). The color is written
+        dark             LaTeX color name (default: "black"). The color is written
                          "at it is", please ensure that the color is a standard color
                          or it has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
@@ -807,8 +801,8 @@ class QRCode:
         out              Filename or :py:class:`io.StringIO`
         kind             "xpm"
         scale            integer
-        color            Default: "#000" (black).
-        background       Default value "#fff" (white)
+        dark             Default: "#000" (black).
+        light            Default value "#fff" (white)
                          ``None`` indicates a transparent background.
         name             Name of the variable (default: "img")
         =============    ==============================================================
@@ -824,6 +818,10 @@ class QRCode:
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
+        if 'color' in kw:
+            kw['dark'] = kw.pop('color')
+        if 'background' in kw:
+            kw['light'] = kw.pop('background')
         writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
