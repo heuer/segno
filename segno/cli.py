@@ -23,7 +23,7 @@ from segno import consts
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
-for ext, func in writers._VALID_SERIALISERS.items():
+for ext, func in writers._VALID_SERIALIZERS.items():
     if len(ext) > 3:
         continue
     # Python 2 vs Python 3

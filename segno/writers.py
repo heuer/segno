@@ -50,6 +50,7 @@ __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
 # Standard creator name
 CREATOR = 'Segno <https://pypi.org/project/segno/>'
 
+
 @contextmanager
 def writable(file_or_path, mode, encoding=None):
     """\
@@ -1028,7 +1029,7 @@ def _pack_bits_into_byte(iterable):
             for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
-_VALID_SERIALISERS = {
+_VALID_SERIALIZERS = {
     'svg': write_svg,
     'svg_debug': write_svg_debug,
     'png': write_png,
@@ -1074,14 +1075,14 @@ def save(matrix, version, out, kind=None, **kw):
     if not is_stream and ext == 'svgz':
         f = gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9))
         try:
-            _VALID_SERIALISERS['svg'](matrix, version, f, **kw)
+            _VALID_SERIALIZERS['svg'](matrix, version, f, **kw)
         finally:
             f.close()
     else:
         if kw.pop('debug', False) and ext == 'svg':
             ext = 'svg_debug'
         try:
-            serializer = _VALID_SERIALISERS[ext]
+            serializer = _VALID_SERIALIZERS[ext]
         except KeyError:
             raise ValueError('Unknown file extension ".{0}"'.format(ext))
         serializer(matrix, version, out, **kw)
