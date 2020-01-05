@@ -7,6 +7,8 @@ Changes
   moved all constants to ``segno.consts``
 * Added function ``segno.colormap`` which simplifies the creation of color
   mappings a lot (no need to deal with the integer constants)
+* Added ``--dark`` and ``--light`` to the command line interface to reduce
+  typing
 * Fixed typos, improved documentation
 
 
