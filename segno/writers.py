@@ -1081,7 +1081,6 @@ def _make_colormap(dark, light,
     :param quiet_zone: Color of the quiet zone / border.
     :rtype: dict
     """
-    print('dark cm', dark)
     mt2color = {
         consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
         consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
@@ -1099,7 +1098,6 @@ def _make_colormap(dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    print('mt clrs', mt2color)
     return dict([(clr, val) for clr, val in mt2color.items() if val or val is None])
 
 
