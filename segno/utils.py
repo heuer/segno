@@ -276,7 +276,7 @@ def colormap(dark=False, light=False,
     .. code-block:: python
 
         # All dark modules (data, version, ...) will be dark red, the dark
-        # modules of finder patterns will be blue
+        # modules of the finder patterns will be blue
         # The light modules will be rendered in the serializer's default color
         # (usually white)
         cm = colormap(dark='darkred', finder_dark='blue')
@@ -299,10 +299,10 @@ def colormap(dark=False, light=False,
     :param alignment_dark: Color of the dark modules of the alignment patterns.
     :param alignment_light: Color of the light modules of the alignment patterns.
     :param timing_dark: Color of the dark modules of the timing patterns.
-    :param timing_light: Color of the light modules of the alignment patterns.
+    :param timing_light: Color of the light modules of the timing patterns.
     :param separator: Color of the separator.
     :param dark_module: Color of the dark module.
-    :param quiet_zone: Color of the quiet zone.
+    :param quiet_zone: Color of the quiet zone / border.
     :rtype: dict
     """
     mt2color = {
