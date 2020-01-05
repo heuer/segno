@@ -201,7 +201,7 @@ def build_config(config, filename=None):
             del kw[clr]
         elif clr in ('transparent', 'trans'):
             kw[clr] =  None
-    clr_map = segno.colormap(**kw) if kw else {}
+    clr_map = segno.colormap(**kw)
     for clr, mt_const in _COLOR_NAME2TYPE.items():
         val = config.pop(clr, None)
         if not val:
