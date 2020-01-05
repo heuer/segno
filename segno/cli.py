@@ -17,8 +17,6 @@ import sys
 import argparse
 import segno
 from segno import writers
-from segno import consts
-
 
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
@@ -194,19 +192,15 @@ def build_config(config, filename=None):
         config['svgclass'] = None
         config['lineclass'] = None
     # PNG
-    kw = {'dark': config.pop('dark', None),
-          'light': config.pop('light', None)}
-    for clr in ('dark', 'light'):
-        if kw[clr] is None:
-            del kw[clr]
-        elif clr in ('transparent', 'trans'):
-            kw[clr] =  None
+    color_names = ('dark', 'light', 'finder_dark', 'finder_light',
+                   'format_dark', 'format_light', 'align_dark', 'align_light',
+                   'timing_dark', 'timing_light', 'data_dark', 'data_light',
+                   'version_dark', 'version_light',
+                   'quiet_zone', 'dark_module', 'separator')
+    color_values = [(clr.replace('align_', 'alignment_'), config.pop(clr, None)) for clr in color_names]
+    kw = dict([(clr, None if val in ('transparent', 'trans') else val)
+               for clr, val in color_values if val is not None])
     clr_map = segno.colormap(**kw)
-    for clr, mt_const in _COLOR_NAME2TYPE.items():
-        val = config.pop(clr, None)
-        if not val:
-            continue
-        clr_map[mt_const] = val if val not in ('transparent', 'trans') else None
     if clr_map:
         config['colormap'] = clr_map
     if filename is not None:
@@ -267,24 +261,6 @@ class _AttrDict(dict):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
-
-_COLOR_NAME2TYPE = {
-    'finder_dark': consts.TYPE_FINDER_PATTERN_DARK,
-    'finder_light': consts.TYPE_FINDER_PATTERN_LIGHT,
-    'separator': consts.TYPE_SEPARATOR,
-    'data_dark': consts.TYPE_DATA_DARK,
-    'data_light': consts.TYPE_DATA_LIGHT,
-    'timing_dark': consts.TYPE_TIMING_DARK,
-    'timing_light': consts.TYPE_TIMING_LIGHT,
-    'align_dark': consts.TYPE_ALIGNMENT_PATTERN_DARK,
-    'align_light': consts.TYPE_ALIGNMENT_PATTERN_LIGHT,
-    'quiet_zone': consts.TYPE_QUIET_ZONE,
-    'dark_module': consts.TYPE_DARKMODULE,
-    'format_dark': consts.TYPE_FORMAT_DARK,
-    'format_light': consts.TYPE_FORMAT_LIGHT,
-    'version_dark': consts.TYPE_VERSION_DARK,
-    'version_light': consts.TYPE_VERSION_LIGHT,
-}
 
 if __name__ == '__main__':  # pragma: no cover
     main()

@@ -312,8 +312,8 @@ def colormap(dark=False, light=False,
         consts.TYPE_DATA_LIGHT: data_light if data_light is not False else light,
         consts.TYPE_VERSION_DARK: version_dark if version_dark is not False else dark,
         consts.TYPE_VERSION_LIGHT: version_light if version_light is not False else light,
-        consts.TYPE_ALIGNMENT_PATTERN_DARK: alignment_dark is not False or dark,
-        consts.TYPE_ALIGNMENT_PATTERN_LIGHT: alignment_light is not False or light,
+        consts.TYPE_ALIGNMENT_PATTERN_DARK: alignment_dark if alignment_dark is not False else dark,
+        consts.TYPE_ALIGNMENT_PATTERN_LIGHT: alignment_light if alignment_light is not False else light,
         consts.TYPE_TIMING_DARK: timing_dark if timing_dark is not False else dark,
         consts.TYPE_TIMING_LIGHT: timing_light if timing_light is not False else light,
         consts.TYPE_FORMAT_DARK: format_dark if format_dark is not False else dark,
@@ -327,6 +327,6 @@ def colormap(dark=False, light=False,
     for k, v in mt2color.items():
         if v is False:
             v = light_dark[int(k >> 8 > 0)]
-        if v is not False:
+        if v or v is None:
             cm[k] = v
     return cm
