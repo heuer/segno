@@ -434,38 +434,38 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
     :param light: Optional background color (default: white).
-            See `color` for valid values. In addition, ``None`` is
+            See :paramref:`write_png.dark` for valid values. In addition, ``None`` is
             accepted which indicates a transparent background.
     :param finder_dark: Color of the dark modules of the finder patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param finder_light: Color of the light modules of the finder patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param data_dark: Color of the dark data modules.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param data_light: Color of the light data modules.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param version_dark: Color of the dark modules of the version information.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param version_light: Color of the light modules of the version information.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param format_dark: Color of the dark modules of the format information.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param format_light: Color of the light modules of the format information.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param alignment_dark: Color of the dark modules of the alignment patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param alignment_light: Color of the light modules of the alignment patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param timing_dark: Color of the dark modules of the timing patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param timing_light: Color of the light modules of the timing patterns.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param separator: Color of the separator.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param dark_module: Color of the dark module.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param quiet_zone: Color of the quiet zone / border.
-            See `color` for valid values.
+            See :paramref:`write_png.dark` for valid values.
     :param int dpi: Optional DPI setting. By default (``None``), the PNG won't
             have any DPI information. Note that the DPI value is converted into
             meters since PNG does not support any DPI information.
