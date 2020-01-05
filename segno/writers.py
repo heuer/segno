@@ -38,10 +38,10 @@ except ImportError:  # pragma: no cover
     range = xrange
     str = unicode
     from io import open
-from . import colors
+from . import colors, consts
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
-from . import moduletypes as mt
+        check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose, \
+        colormap as make_colormap
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
            'write_txt', 'write_pbm', 'write_pam', 'write_xpm', 'write_xbm',
@@ -405,20 +405,6 @@ def as_png_data_uri(matrix, version, scale=1, border=None, color='#000',
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
-def _make_colormapping(dark, light):
-    """\
-    Internal function which returns a module type -> color mapping.
-    """
-    return {mt.TYPE_FINDER_PATTERN_DARK: dark, mt.TYPE_FINDER_PATTERN_LIGHT: light,
-            mt.TYPE_ALIGNMENT_PATTERN_DARK: dark, mt.TYPE_ALIGNMENT_PATTERN_LIGHT: light,
-            mt.TYPE_SEPARATOR: light, mt.TYPE_DARKMODULE: dark,
-            mt.TYPE_DATA_DARK: dark, mt.TYPE_DATA_LIGHT: light,
-            mt.TYPE_FORMAT_DARK: dark, mt.TYPE_FORMAT_LIGHT: light,
-            mt.TYPE_QUIET_ZONE: light,
-            mt.TYPE_VERSION_DARK: dark, mt.TYPE_VERSION_LIGHT: light,
-            mt.TYPE_TIMING_DARK: dark, mt.TYPE_TIMING_LIGHT: light}
-
-
 def write_png(matrix, version, out, scale=1, border=None, color='#000',
               background='#fff', compresslevel=9, dpi=None, addad=True,
               colormap=None):
@@ -500,8 +486,8 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     black = (0, 0, 0)
     white = (255, 255, 255)
     transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
-    dark_idx = mt.TYPE_FINDER_PATTERN_DARK
-    qz_idx = mt.TYPE_QUIET_ZONE
+    dark_idx = consts.TYPE_FINDER_PATTERN_DARK
+    qz_idx = consts.TYPE_QUIET_ZONE
     if colormap is None:
         # Just two colors, either the default colors or the user provided some
         color_mapping = {
@@ -510,7 +496,7 @@ def write_png(matrix, version, out, scale=1, border=None, color='#000',
     else:
         # Color map was provided, initialize a default mapping and replace defaults
         # with values provided by "colormap"
-        color_mapping = _make_colormapping(dark=black, light=white)
+        color_mapping = make_colormap(dark=black, light=white)
         for module_type, clr in colormap.items():
             color_mapping[module_type] = png_color(clr) if clr is not None else transparent
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)

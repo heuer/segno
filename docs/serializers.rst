@@ -101,9 +101,8 @@ color for each module type.
 .. code-block:: python
 
     >>> import segno
-    >>> from segno import moduletypes as mt
     >>> qr = segno.make('Yellow Submarine', error='h')
-    >>> colormap = {mt.TYPE_FINDER_PATTERN_DARK:'darkred', mt.TYPE_ALIGNMENT_PATTERN_DARK:'darkred', mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred', mt.TYPE_DATA_DARK: 'darkorange', mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
+    >>> colormap = segno.colormap(dark='darkred', data_dark='darkorange', data_light='yellow')
     >>> qr.save('yellow-submarine.png', scale=5, colormap=colormap)
 
 .. image:: _static/yellow-submarine.png

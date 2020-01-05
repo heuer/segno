@@ -16,6 +16,7 @@ from . import encoder
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
+from .utils import colormap
 try:  # pragma: no cover
     str_type = basestring
 except NameError:  # pragma: no cover
@@ -24,8 +25,9 @@ except NameError:  # pragma: no cover
 __version__ = '0.3.6.dev0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence', 'QRCodeError', 'ErrorLevelError', 'ModeError',
-           'MaskError', 'VersionError', 'DataOverflowError')
+           'QRCodeSequence', 'colormap',
+           'QRCodeError', 'ErrorLevelError', 'ModeError', 'MaskError',
+           'VersionError', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>

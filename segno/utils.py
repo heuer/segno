@@ -14,7 +14,7 @@ try:  # pragma: no cover
     range = xrange
 except NameError:  # pragma: no cover
     pass
-from . import moduletypes as mt
+from . import consts
 
 __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
            'check_valid_scale', 'check_valid_border', 'matrix_to_lines',
@@ -155,21 +155,21 @@ def matrix_iter(matrix, version, scale=1, border=None):
             yield res_row
 
 
-TYPE_FINDER_PATTERN_LIGHT = mt.TYPE_FINDER_PATTERN_LIGHT
-TYPE_FINDER_PATTERN_DARK = mt.TYPE_FINDER_PATTERN_DARK
-TYPE_SEPARATOR = mt.TYPE_SEPARATOR
-TYPE_ALIGNMENT_PATTERN_LIGHT = mt.TYPE_ALIGNMENT_PATTERN_LIGHT
-TYPE_ALIGNMENT_PATTERN_DARK = mt.TYPE_ALIGNMENT_PATTERN_DARK
-TYPE_TIMING_LIGHT = mt.TYPE_TIMING_LIGHT
-TYPE_TIMING_DARK = mt.TYPE_TIMING_DARK
-TYPE_FORMAT_LIGHT = mt.TYPE_FORMAT_LIGHT
-TYPE_FORMAT_DARK = mt.TYPE_FORMAT_DARK
-TYPE_VERSION_LIGHT = mt.TYPE_VERSION_LIGHT
-TYPE_VERSION_DARK = mt.TYPE_VERSION_DARK
-TYPE_DARKMODULE = mt.TYPE_DARKMODULE
-TYPE_DATA_LIGHT = mt.TYPE_DATA_LIGHT
-TYPE_DATA_DARK = mt.TYPE_DATA_DARK
-TYPE_QUIET_ZONE = mt.TYPE_QUIET_ZONE
+TYPE_FINDER_PATTERN_LIGHT = consts.TYPE_FINDER_PATTERN_LIGHT
+TYPE_FINDER_PATTERN_DARK = consts.TYPE_FINDER_PATTERN_DARK
+TYPE_SEPARATOR = consts.TYPE_SEPARATOR
+TYPE_ALIGNMENT_PATTERN_LIGHT = consts.TYPE_ALIGNMENT_PATTERN_LIGHT
+TYPE_ALIGNMENT_PATTERN_DARK = consts.TYPE_ALIGNMENT_PATTERN_DARK
+TYPE_TIMING_LIGHT = consts.TYPE_TIMING_LIGHT
+TYPE_TIMING_DARK = consts.TYPE_TIMING_DARK
+TYPE_FORMAT_LIGHT = consts.TYPE_FORMAT_LIGHT
+TYPE_FORMAT_DARK = consts.TYPE_FORMAT_DARK
+TYPE_VERSION_LIGHT = consts.TYPE_VERSION_LIGHT
+TYPE_VERSION_DARK = consts.TYPE_VERSION_DARK
+TYPE_DARKMODULE = consts.TYPE_DARKMODULE
+TYPE_DATA_LIGHT = consts.TYPE_DATA_LIGHT
+TYPE_DATA_DARK = consts.TYPE_DATA_DARK
+TYPE_QUIET_ZONE = consts.TYPE_QUIET_ZONE
 
 def matrix_iter_detail(matrix, version, scale=1, border=None):  # pragma: no cover
     """\
@@ -219,35 +219,35 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
                 # Alignment pattern
                 alignment_val = alignment_matrix[i][j]
                 if alignment_val != 0x2:
-                    return (mt.TYPE_ALIGNMENT_PATTERN_LIGHT, mt.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
+                    return (consts.TYPE_ALIGNMENT_PATTERN_LIGHT, consts.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
                 if version > 6:  # Version information
                     if i < 6 and width - 12 < j < width - 8 \
                             or height - 12 < i < height - 8 and j < 6:
-                        return (mt.TYPE_VERSION_LIGHT, mt.TYPE_VERSION_DARK)[val]
+                        return (consts.TYPE_VERSION_LIGHT, consts.TYPE_VERSION_DARK)[val]
                 # Dark module
                 if i == height - 8 and j == 8:
-                    return mt.TYPE_DARKMODULE
+                    return consts.TYPE_DARKMODULE
             # Timing - IMPORTANT: Check alignment (see above) in advance!
             if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
                     or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
-                return (mt.TYPE_TIMING_LIGHT, mt.TYPE_TIMING_DARK)[val]
+                return (consts.TYPE_TIMING_LIGHT, consts.TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
             if i == 8 and (j < 9 or (not is_micro and j > width - 10)) \
                     or j == 8 and (i < 8 or not is_micro and i > height - 9):
-                return (mt.TYPE_FORMAT_LIGHT, mt.TYPE_FORMAT_DARK)[val]
+                return (consts.TYPE_FORMAT_LIGHT, consts.TYPE_FORMAT_DARK)[val]
             # Finder pattern
             # top left             top right
             if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
                 or not is_micro and i > height - 8 and j < 7:  # bottom left
-                return (mt.TYPE_FINDER_PATTERN_LIGHT, mt.TYPE_FINDER_PATTERN_DARK)[val]
+                return (consts.TYPE_FINDER_PATTERN_LIGHT, consts.TYPE_FINDER_PATTERN_DARK)[val]
             # Separator
             # top left              top right
             if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
                 or not is_micro and (i > height - 9 and j < 8):  # bottom left
-                return mt.TYPE_SEPARATOR
-            return (mt.TYPE_DATA_LIGHT, mt.TYPE_DATA_DARK)[val]
+                return consts.TYPE_SEPARATOR
+            return (consts.TYPE_DATA_LIGHT, consts.TYPE_DATA_DARK)[val]
         else:
-            return mt.TYPE_QUIET_ZONE
+            return consts.TYPE_QUIET_ZONE
 
     row = chain.from_iterable
     scale_range = range(scale)
@@ -255,3 +255,61 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
     for i in range(-border, height + border):
         for s in scale_range:
             yield row(([get_bit(i, j)] * scale for j in width_range))
+
+
+def colormap(dark=False, light=False,
+             finder_dark=False, finder_light=False,
+             data_dark=False, data_light=False,
+             version_dark=False, version_light=False,
+             format_dark=False, format_light=False,
+             alignment_dark=False, alignment_light=False,
+             timing_dark=False, timing_light=False,
+             separator=False, dark_module=False,
+             quiet_zone=False):
+    """\
+    Creates and returns a module type -> color map.
+
+    :param dark: Default color of dark modules
+    :param light: Default color of light modules
+    :param finder_dark: Color of the dark modules of the finder patterns.
+    :param finder_light: Color of the light modules of the finder patterns.
+    :param data_dark: Color of the dark data modules.
+    :param data_light: Color of the light data modules.
+    :param version_dark: Color of the dark modules of the version information.
+    :param version_light: Color of the light modules of the version information.
+    :param format_dark: Color of the dark modules of the format information.
+    :param format_light: Color of the light modules of the format information.
+    :param alignment_dark: Color of the dark modules of the alignment patterns.
+    :param alignment_light: Color of the light modules of the alignment patterns.
+    :param timing_dark: Color of the dark modules of the timing patterns.
+    :param timing_light: Color of the light modules of the alignment patterns.
+    :param separator: Color of the separator.
+    :param dark_module: Color of the dark module.
+    :param quiet_zone: Color of the quiet zone.
+    :rtype: dict
+    """
+    mt2color = {
+        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark is not False else dark,
+        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light is not False else light,
+        consts.TYPE_DATA_DARK: data_dark if data_dark is not False else dark,
+        consts.TYPE_DATA_LIGHT: data_light if data_light is not False else light,
+        consts.TYPE_VERSION_DARK: version_dark if version_dark is not False else dark,
+        consts.TYPE_VERSION_LIGHT: version_light if version_light is not False else light,
+        consts.TYPE_ALIGNMENT_PATTERN_DARK: alignment_dark is not False or dark,
+        consts.TYPE_ALIGNMENT_PATTERN_LIGHT: alignment_light is not False or light,
+        consts.TYPE_TIMING_DARK: timing_dark if timing_dark is not False else dark,
+        consts.TYPE_TIMING_LIGHT: timing_light if timing_light is not False else light,
+        consts.TYPE_FORMAT_DARK: format_dark if format_dark is not False else dark,
+        consts.TYPE_FORMAT_LIGHT: format_light if format_light is not False else light,
+        consts.TYPE_SEPARATOR: separator if separator is not False else light,
+        consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
+        consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
+    }
+    cm = {}
+    light_dark = (light, dark)
+    for k, v in mt2color.items():
+        if v is False:
+            v = light_dark[int(k >> 8 > 0)]
+        if v is not False:
+            cm[k] = v
+    return cm

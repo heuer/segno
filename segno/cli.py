@@ -17,7 +17,7 @@ import sys
 import argparse
 import segno
 from segno import writers
-from segno import moduletypes as mt
+from segno import consts
 
 
 # file extension to supported keywords mapping
@@ -260,21 +260,21 @@ class _AttrDict(dict):
 
 
 _COLOR_NAME2TYPE = {
-    'finder_dark': mt.TYPE_FINDER_PATTERN_DARK,
-    'finder_light': mt.TYPE_FINDER_PATTERN_LIGHT,
-    'separator': mt.TYPE_SEPARATOR,
-    'data_dark': mt.TYPE_DATA_DARK,
-    'data_light': mt.TYPE_DATA_LIGHT,
-    'timing_dark': mt.TYPE_TIMING_DARK,
-    'timing_light': mt.TYPE_TIMING_LIGHT,
-    'align_dark': mt.TYPE_ALIGNMENT_PATTERN_DARK,
-    'align_light': mt.TYPE_ALIGNMENT_PATTERN_LIGHT,
-    'quiet_zone': mt.TYPE_QUIET_ZONE,
-    'dark_module': mt.TYPE_DARKMODULE,
-    'format_dark': mt.TYPE_FORMAT_DARK,
-    'format_light': mt.TYPE_FORMAT_LIGHT,
-    'version_dark': mt.TYPE_VERSION_DARK,
-    'version_light': mt.TYPE_VERSION_LIGHT,
+    'finder_dark': consts.TYPE_FINDER_PATTERN_DARK,
+    'finder_light': consts.TYPE_FINDER_PATTERN_LIGHT,
+    'separator': consts.TYPE_SEPARATOR,
+    'data_dark': consts.TYPE_DATA_DARK,
+    'data_light': consts.TYPE_DATA_LIGHT,
+    'timing_dark': consts.TYPE_TIMING_DARK,
+    'timing_light': consts.TYPE_TIMING_LIGHT,
+    'align_dark': consts.TYPE_ALIGNMENT_PATTERN_DARK,
+    'align_light': consts.TYPE_ALIGNMENT_PATTERN_LIGHT,
+    'quiet_zone': consts.TYPE_QUIET_ZONE,
+    'dark_module': consts.TYPE_DARKMODULE,
+    'format_dark': consts.TYPE_FORMAT_DARK,
+    'format_light': consts.TYPE_FORMAT_LIGHT,
+    'version_dark': consts.TYPE_VERSION_DARK,
+    'version_light': consts.TYPE_VERSION_LIGHT,
 }
 
 if __name__ == '__main__':  # pragma: no cover
