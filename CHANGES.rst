@@ -5,7 +5,9 @@ Changes
 -------------------
 * Deprecated ``segno.moduletypes`` (will be removed in release 0.4.0),
   moved all constants to ``segno.consts``
-* Added ``segno.colormap`` which simplifies the creation of color mappings a lot
+* Added function ``segno.colormap`` which simplifies the creation of color
+  mappings a lot (no need to deal with the integer constants)
+* Fixed typos, improved documentation
 
 
 0.3.5 -- 2020-01-03
