@@ -6,6 +6,9 @@ Changes
 * Backwards incompatibility change: QRCode.show() uses "dark" instead of
   "color" and "light" instead of "background" to define the color of
   the dark / light modules
+* Backwards incompatibility change: All ``segno.writers`` use "dark" instead of
+  "color" and "light" instead of "background". This does not affect normal users,
+  but only users of the low level API.
 * Changed the keyword for setting the color of the dark modules from
   "color" to "dark" and for setting the light modules from "background"
   to "light"
@@ -22,9 +25,11 @@ Changes
 
       colormap = {mt.TYPE_FINDER_PATTERN_DARK: 'darkred',
                   mt.TYPE_ALIGNMENT_PATTERN_DARK: 'darkred',
-                  mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred',
+                  mt.TYPE_TIMING_DARK: 'darkred',
+                  mt.TYPE_DARKMODULE: 'darkred',
                   mt.TYPE_DATA_DARK: 'darkorange',
-                  mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
+                  mt.TYPE_DATA_LIGHT: 'yellow',
+                  mt.TYPE_FORMAT_DARK: 'darkred'}
 
       qr.save('qrcode.png', scale=5, colormap=colormap)
 
