@@ -541,11 +541,11 @@ class QRCode:
                       :ref:`PNG <png>`) accept an alpha transparency value like
                       ``#RRGGBBAA``.
         light         A string or tuple representing a color for the light modules
-                      or background. See `color` for valid values.
+                      or background. See `dark` for valid values.
                       The default value depends on the serializer. :ref:`SVG <svg>`
-                      uses no background color (``None``) by default, other
+                      uses no color (``None``) for light modules by default, other
                       serializers, like :ref:`PNG <png>`, use "white" as default
-                      background color.
+                      light color.
         ==========    ==============================================================
 
 
@@ -580,7 +580,7 @@ class QRCode:
                          If an alpha channel is used, the resulting path may
                          have a "fill-opacity" attribute (for SVG version < 2.0)
                          or the "fill" attribute has a "rgba(R, G, B, A)" value.
-                         See keyword "color" for further details.
+                         See keyword "dark" for further details.
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
@@ -817,10 +817,14 @@ class QRCode:
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
-        if 'color' in kw:
+        try:
             kw['dark'] = kw.pop('color')
-        if 'background' in kw:
+        except KeyError:
+            pass
+        try:
             kw['light'] = kw.pop('background')
+        except KeyError:
+            pass
         writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
