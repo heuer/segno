@@ -432,6 +432,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+            ``None`` can be used to define transparency.
     :param light: Optional background color (default: white).
             See :paramref:`write_png.dark` for valid values. In addition, ``None`` is
             accepted which indicates a transparent background.
