@@ -26,7 +26,6 @@ Contents:
     plugins
     api
     api-low-level
-    replace-qrcode-libs
     python2
     changes
 
