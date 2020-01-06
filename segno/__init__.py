@@ -533,7 +533,7 @@ class QRCode:
                       If set to ``None`` (default), the recommended border size
                       will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
                       A value of ``0`` indicates that border should be omitted.
-        dark         A string or tuple representing a color value for the dark
+        dark          A string or tuple representing a color value for the dark
                       modules. The default value is "black".  The color can be
                       provided as ``(R, G, B)`` tuple, as web color name
                       (like "red") or in hexadecimal format (``#RGB`` or
