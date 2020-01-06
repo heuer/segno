@@ -13,6 +13,7 @@ QR Code and Micro QR Code implementation.
 from __future__ import absolute_import, unicode_literals
 import sys
 from . import encoder
+import warnings
 from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
     VersionError, DataOverflowError
 from . import writers, utils
@@ -817,12 +818,39 @@ class QRCode:
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
+        # Segno <= 0.3.6
         try:
             kw['dark'] = kw.pop('color')
         except KeyError:
             pass
         try:
             kw['light'] = kw.pop('background')
+        except KeyError:
+            pass
+        # Segno 0.3.4 and 0.3.5
+        try:
+            cm = kw.pop('colormap')
+            warnings.warn('"colormap" is deprecated, use the keywords in save', DeprecationWarning)
+            from segno import consts
+            mt2name = {
+                consts.TYPE_FINDER_PATTERN_DARK: 'finder_dark',
+                consts.TYPE_FINDER_PATTERN_LIGHT: 'finder_light',
+                consts.TYPE_DATA_DARK: 'data_dark',
+                consts.TYPE_DATA_LIGHT: 'data_light',
+                consts.TYPE_VERSION_DARK: 'version_dark',
+                consts.TYPE_VERSION_LIGHT: 'version_light',
+                consts.TYPE_ALIGNMENT_PATTERN_DARK: 'alignment_dark',
+                consts.TYPE_ALIGNMENT_PATTERN_LIGHT: 'alignment_light',
+                consts.TYPE_TIMING_DARK: 'timing_dark',
+                consts.TYPE_TIMING_LIGHT: 'timing_light',
+                consts.TYPE_FORMAT_DARK: 'format_dark',
+                consts.TYPE_FORMAT_LIGHT: 'format_light',
+                consts.TYPE_SEPARATOR: 'separator',
+                consts.TYPE_DARKMODULE: 'dark_module',
+                consts.TYPE_QUIET_ZONE: 'quiet_zone'
+            }
+            for mt, clr in cm.items():
+                kw[mt2name[mt]] = clr
         except KeyError:
             pass
         writers.save(self.matrix, self._version, out, kind, **kw)
