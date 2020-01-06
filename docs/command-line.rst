@@ -208,7 +208,7 @@ The PNG serializer supports more than two colors, each module type (finder patte
 
     $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o yellow-submarine.png Yellow Submarine
 
-.. image:: _static/cli_yellow-submarine.png
+.. image:: _static/yellow-submarine.png
     :alt: QR Code "Yellow Submarine" colorful
 
 
