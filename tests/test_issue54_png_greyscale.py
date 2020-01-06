@@ -16,15 +16,15 @@ from png import Reader as PNGReader
 import segno
 
 
-@pytest.mark.parametrize('color, background, transparent', [('white', None, (0,)),
+@pytest.mark.parametrize('dark, light, transparent', [('white', None, (0,)),
                                                             ('white', 'black', None),
                                                             (None, 'black', (1,))])
-def test_issue_54_inverted(color, background, transparent):
+def test_issue_54_inverted(dark, light, transparent):
     qr = segno.make('The Beatles')
     assert 'M4-M' == qr.designator
     out = io.BytesIO()
     scale = 5
-    qr.save(out, kind='png', scale=scale, color=color, background=background)
+    qr.save(out, kind='png', scale=scale, dark=dark, light=light)
     out.seek(0)
     reader = PNGReader(file=out)
     w, h, pixels, meta = reader.read()
@@ -43,15 +43,15 @@ def test_issue_54_inverted(color, background, transparent):
     assert transparent == reader.transparent
 
 
-@pytest.mark.parametrize('color, background, transparent', [('black', None, (1,)),
+@pytest.mark.parametrize('dark, light, transparent', [('black', None, (1,)),
                                                             ('black', 'white', None),
                                                             (None, 'white', (0,))])
-def test_issue_54_notinverted(color, background, transparent):
+def test_issue_54_notinverted(dark, light, transparent):
     qr = segno.make('The Beatles')
     assert 'M4-M' == qr.designator
     out = io.BytesIO()
     scale = 5
-    qr.save(out, kind='png', scale=scale, color=color, background=background)
+    qr.save(out, kind='png', scale=scale, dark=dark, light=light)
     out.seek(0)
     reader = PNGReader(file=out)
     w, h, pixels, meta = reader.read()

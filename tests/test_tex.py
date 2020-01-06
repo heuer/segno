@@ -55,7 +55,7 @@ def test_write_tex_color():
 def test_write_tex_color2():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
-    qr.save(out, kind='tex', border=4, color='green')
+    qr.save(out, kind='tex', border=4, dark='green')
     assert r'\color{green}' in out.getvalue()
 
 

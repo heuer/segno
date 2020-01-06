@@ -39,7 +39,7 @@ def _get_path(root):
 def test_version_none():
     qr = segno.make('Test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color='#0000ffcc')
+    qr.save(out, kind='svg', dark='#0000ffcc')
     root = _parse_xml(out)
     assert root.get('version') is None
     assert b'stroke-opacity' in out.getvalue()
@@ -49,7 +49,7 @@ def test_version_none():
 def test_version_1_1():
     qr = segno.make('Test')
     out = io.BytesIO()
-    qr.save(out, svgversion=1.1, kind='svg', color='#0000ffcc')
+    qr.save(out, svgversion=1.1, kind='svg', dark='#0000ffcc')
     root = _parse_xml(out)
     assert '1.1' == root.get('version')
     assert b'stroke-opacity' in out.getvalue()
@@ -59,7 +59,7 @@ def test_version_1_1():
 def test_version_2_0():
     qr = segno.make('Test')
     out = io.BytesIO()
-    qr.save(out, svgversion=2.0, kind='svg', color='#0000ffcc')
+    qr.save(out, svgversion=2.0, kind='svg', dark='#0000ffcc')
     root = _parse_xml(out)
     assert root.get('version') is None
     assert b'stroke-opacity' not in out.getvalue()
