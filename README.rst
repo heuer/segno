@@ -78,12 +78,8 @@ Library
     >>> # Let Segno choose the minimal version and an optimal (maximal) error
     >>> # level without changing the minimal version
     >>> qr = segno.make('Up Jumped the Devil')
-    >>> qr.is_micro
-    False
-    >>> qr.version
-    2
-    >>> qr.error
-    'Q'
+    >>> qr.designator  # Returns the QR Code version and the error correction level
+    '2-Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
     >>> qr.save('up-jumped-the-devil-3.png', light=None)  # Transparent light modules
@@ -117,18 +113,18 @@ If this behaviour is not desired, the user may set ``micro`` to ``False``
 
 
 Or use the factory functions ``segno.make_qr()`` which generates always QR Codes
-(never Micro QR Codes) or ``segno.make_micro()`` which generates always
+(never Micro QR Codes) or ``segno.make_micro()`` which returns always
 Micro QR Codes (or raises an error if the content is too large for a Micro QR Code).
 
 .. code-block:: python
 
     >>> import segno
     >>> mqr = segno.make_micro('THE BEATLES')
-    >>> mqr.version
-    'M3'
+    >>> mqr.designator
+    'M3-M'
     >>> qr = segno.make_qr('THE BEATLES')  # Same content but enforce a QR Code
-    >>> qr.version
-    1
+    >>> qr.designator
+    '1-Q'
     >>> # This won't work since the data does not fit into a Micro QR Code M1 - M4
     >>> mqr = segno.make_micro('Nick Cave and the Bad Seeds')
     Traceback (most recent call last):
