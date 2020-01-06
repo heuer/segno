@@ -3,11 +3,19 @@ Changes
 
 0.3.6 -- 2020-mm-dd
 -------------------
+* Backwards incompatibility change: QRCode.show() uses "dark" instead of
+  "color" and "light" instead of "background" to define the color of
+  the dark / light modules
+* Changed the keyword for setting the color of the dark modules from
+  "color" to "dark" and for setting the light modules from "background"
+  to "light"
+  The former keywords are still supported. Their usage will issue a
+  DeprecationWarning in the future.
+* Added ``--dark`` and ``--light`` to the command line interface, see point
+  above. ```--color``` and ``--background`` are still supported.
+* Fixed typos, improved documentation
 * Deprecated ``segno.moduletypes`` (will be removed in release 0.4.0),
   moved all constants to ``segno.consts``
-* Added ``--dark`` and ``--light`` to the command line interface to reduce
-  typing
-* Fixed typos, improved documentation
 * Deprecated usage of parameter "colormap" (introduced in 0.3.4). It still
   works but a deprecation warning is issued.
   Instead of::
@@ -24,9 +32,6 @@ Changes
 
       qr.save('qrcode.png', scale=5, dark='darkred', data_dark='darkorange',
               data_light='yellow')
-
-
-
 
 
 0.3.5 -- 2020-01-03

@@ -381,8 +381,8 @@ class QRCode:
         iterfn = utils.matrix_iter_verbose if verbose else utils.matrix_iter
         return iterfn(self.matrix, self._version, scale, border)
 
-    def show(self, delete_after=20, scale=10, border=None, color='#000',
-             background='#fff'):  # pragma: no cover
+    def show(self, delete_after=20, scale=10, border=None, dark='#000',
+             light='#fff'):  # pragma: no cover
         """\
         Displays this QR code.
 
@@ -406,8 +406,8 @@ class QRCode:
                 If set to ``None`` (default), the recommended border size
                 will be used.
         :type border: int or None
-        :param color: The color of the dark modules (default: black).
-        :param background: The color of the background (default: white).
+        :param dark: The color of the dark modules (default: black).
+        :param light: The color of the background (default: white).
         """
         import os
         import time
@@ -430,7 +430,7 @@ class QRCode:
 
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
-            self.save(f, scale=scale, color=color, background=background,
+            self.save(f, scale=scale, dark=dark, light=light,
                       border=border)
         except:
             f.close()

@@ -21,9 +21,7 @@ from segno import writers
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
-for ext, func in writers._VALID_SERIALIZERS.items():
-    if len(ext) > 3:
-        continue
+for ext, func in ((ext, func) for ext, func in writers._VALID_SERIALIZERS.items() if ext != 'svg_debug'):
     # Python 2 vs Python 3
     func_code = getattr(func, 'func_code', None) or func.__code__
     defaults = getattr(func, 'func_defaults', None) or func.__defaults__
@@ -197,7 +195,6 @@ def build_config(config, filename=None):
     if config.pop('no_classes', False):
         config['svgclass'] = None
         config['lineclass'] = None
-    # PNG
     if filename is not None:
         ext = filename[filename.rfind('.') + 1:].lower()
         if ext == 'svgz':  # There is no svgz serializer, use same config as svg

@@ -412,8 +412,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
               alignment_dark=False, alignment_light=False,
               timing_dark=False, timing_light=False,
               separator=False, dark_module=False,
-              quiet_zone=False, compresslevel=9, dpi=None, addad=True,
-              colormap=None):
+              quiet_zone=False, compresslevel=9, dpi=None, addad=True):
     """\
     Serializes the QR Code as PNG image.
 
@@ -539,7 +538,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     is_transparent = transparent in palette
     number_of_colors = len(palette)
     if number_of_colors == 1:
-        raise ValueError('The stroke color and background color must not be the same')
+        raise ValueError('Provide at least two different colors')
     # Check if greyscale mode is applicable
     is_greyscale = number_of_colors == 2 and all((clr in (transparent, black, white) for clr in palette))
     png_color_type = 0 if is_greyscale else 3
