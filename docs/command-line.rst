@@ -173,12 +173,12 @@ Colors
 ------
 
 Usually, all QR Codes are serialized in black and white. Use
-:option:`--color <segno --color>` to change the color of the dark modules and
-:option:`--background <segno --background>` to change the color of the light modules.
+:option:`--dark <segno --dark>` to change the color of the dark modules and
+:option:`--light <segno --light>` to change the color of the light modules.
 
 Change the foreground color to darkblue::
 
-    $ segno --color=darkblue --output=excited.png "So Excited"
+    $ segno --dark=darkblue --output=excited.png "So Excited"
 
 .. image:: _static/excited.png
     :alt: QR Code "So Excited" with foreground color "darkblue"
@@ -186,7 +186,7 @@ Change the foreground color to darkblue::
 
 Change the background color to transparent::
 
-    $ segno --background=transparent --output=hotel.png "Hotel California"
+    $ segno --light=transparent --output=hotel.png "Hotel California"
 
 .. image:: _static/hotel.png
     :alt: QR Code "Hotel California" with background color "transparent"
@@ -194,21 +194,21 @@ Change the background color to transparent::
 
 Change the foreground color to darkblue and background to yellow::
 
-    $ segno --color=darkblue --background=yellow --output=dontgiveup.svg "Don't Give Up"
+    $ segno --dark=darkblue --light=yellow --output=dontgiveup.svg "Don't Give Up"
 
 .. image:: _static/dontgiveup.svg
     :alt: QR Code "Don't Give Up" with foreground color "transparent"
 
 
-If the serializer does not support :option:`--color <segno --color>` or
-:option:`--background <segno --background>`, these arguments are ignored.
+If the serializer does not support :option:`--color <segno --dark>` or
+:option:`--light <segno --light>`, these arguments are ignored.
 
 The PNG serializer supports more than two colors, each module type (finder pattern
 (dark / light), alignment pattern (dark / light) etc.) may have its own color::
 
-    $ segno --finder-dark darkred --format-dark darkred --version-dark darkred --data-dark darkorange --data-light yellow --timing-dark darkred --dark-module darkred --scale 5 -o yellow-submarine.png Yellow Submarine
+    $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o yellow-submarine.png Yellow Submarine
 
-.. image:: _static/cli_yellow-submarine.png
+.. image:: _static/yellow-submarine.png
     :alt: QR Code "Yellow Submarine" colorful
 
 

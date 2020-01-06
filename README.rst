@@ -64,8 +64,8 @@ The command line script prints the QR Code to the terminal::
 To serialize the QR Code, use the "output" argument::
 
     $ segno -o=raincoat.svg "Famous Blue Raincoat"
-    $ segno --scale=10 --color=darkblue --border=0 --output=fire.svg "Who by Fire"
-    $ segno --scale=10 --background=transparent --output=miracle.png "Waiting for the Miracle"
+    $ segno --scale 10 --dark darkblue --border 0 --output=fire.svg "Who by Fire"
+    $ segno --scale 10 --light transparent --output=miracle.png "Waiting for the Miracle"
 
 
 
@@ -78,15 +78,11 @@ Library
     >>> # Let Segno choose the minimal version and an optimal (maximal) error
     >>> # level without changing the minimal version
     >>> qr = segno.make('Up Jumped the Devil')
-    >>> qr.is_micro
-    False
-    >>> qr.version
-    2
-    >>> qr.error
-    'Q'
+    >>> qr.designator  # Returns the QR Code version and the error correction level
+    '2-Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
-    >>> qr.save('up-jumped-the-devil-3.png', background=None)  # Transparent background
+    >>> qr.save('up-jumped-the-devil-3.png', light=None)  # Transparent light modules
     >>> qr.save('up-jumped-the-devil.pdf', scale=10)  # Save as PDF
     >>> # SVG drawing the dark modules in "dark blue"
     >>> qr.save('up-jumped-the-devil.svg', scale=10, color='darkblue')
@@ -100,24 +96,35 @@ If the content to encode is small enough, a Micro QR Code is generated:
     >>> qr = segno.make('RAIN')
     >>> qr.is_micro
     True
-    >>> qr.version
-    'M2'
+    >>> qr.designator
+    'M2-M'
 
 
-If this behaviour is not desired, the user may use the factory functions
-``segno.make_qr()`` which generates always QR Codes (never Micro QR Codes) or
-``segno.make_micro()`` which generates always Micro QR Codes (or raises an error
-if the content is too large for a Micro QR Code).
+If this behaviour is not desired, the user may set ``micro`` to ``False``
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make('RAIN', micro=False)
+    >>> qr.is_micro
+    False
+    >>> qr.designator
+    '1-H'
+
+
+Or use the factory functions ``segno.make_qr()`` which generates always QR Codes
+(never Micro QR Codes) or ``segno.make_micro()`` which returns always
+Micro QR Codes (or raises an error if the content is too large for a Micro QR Code).
 
 .. code-block:: python
 
     >>> import segno
     >>> mqr = segno.make_micro('THE BEATLES')
-    >>> mqr.version
-    'M3'
+    >>> mqr.designator
+    'M3-M'
     >>> qr = segno.make_qr('THE BEATLES')  # Same content but enforce a QR Code
-    >>> qr.version
-    1
+    >>> qr.designator
+    '1-Q'
     >>> # This won't work since the data does not fit into a Micro QR Code M1 - M4
     >>> mqr = segno.make_micro('Nick Cave and the Bad Seeds')
     Traceback (most recent call last):

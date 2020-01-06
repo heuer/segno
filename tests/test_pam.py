@@ -23,7 +23,7 @@ def test_invalid_color():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='pam', color=None)
+        qr.save(out, kind='pam', dark=None)
 
 
 def test_bw():
@@ -36,14 +36,14 @@ def test_bw():
 def test_grayscale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pam', background=None)
+    qr.save(out, kind='pam', light=None)
     assert b'GRAYSCALE_ALPHA' in out.getvalue()
 
 
 def test_rgb():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pam', color='red')
+    qr.save(out, kind='pam', dark='red')
     assert b'RGB' in out.getvalue()
     assert b'RGB_ALPHA' not in out.getvalue()
 
@@ -51,7 +51,7 @@ def test_rgb():
 def test_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pam', color='red', background=None)
+    qr.save(out, kind='pam', dark='red', light=None)
     assert b'RGB' in out.getvalue()
     assert b'RGB_ALPHA' in out.getvalue()
 

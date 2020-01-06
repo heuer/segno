@@ -9,6 +9,7 @@
 CLI colormap (PNG) related tests.
 """
 from __future__ import unicode_literals, absolute_import
+import io
 import os
 import tempfile
 import pytest
@@ -25,18 +26,23 @@ def _make_tmp_png_filename():
 def test_greyscale():
     fn = _make_tmp_png_filename()
     res = cli.main(['--quiet-zone=white', '--output={0}'.format(fn), 'test'])
+    with open(fn, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fn)
     assert 0 == res
-    reader = PNGReader(filename=fn)
+    reader = PNGReader(file=data)
     reader.preamble()
     assert reader.greyscale
-    os.unlink(fn)
 
 
 def test_not_greyscale():
     fn = _make_tmp_png_filename()
     res = cli.main(['--quiet-zone=transparent', '--output={0}'.format(fn), 'test'])
+    with open(fn, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fn)
     assert 0 == res
-    reader = PNGReader(filename=fn)
+    reader = PNGReader(file=data)
     reader.preamble()
     assert not reader.greyscale
     palette = reader.palette()
@@ -44,14 +50,16 @@ def test_not_greyscale():
     assert 0 == palette[0][3]  # Transparent color
     assert (0, 0, 0, 255) in palette  # black
     assert (255, 255, 255, 255) in palette  # white
-    os.unlink(fn)
 
 
 def test_plte_colors():
     fn = _make_tmp_png_filename()
     res = cli.main(['--quiet-zone=green', '--finder-dark=purple', '--finder-light=yellow', '--output={0}'.format(fn), 'test'])
+    with open(fn, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fn)
     assert 0 == res
-    reader = PNGReader(filename=fn)
+    reader = PNGReader(file=data)
     reader.preamble()
     assert not reader.greyscale
     palette = reader.palette()

@@ -16,7 +16,7 @@ import tempfile
 import pytest
 import segno
 from segno import ModeError, VersionError, ErrorLevelError, DataOverflowError
-from segno import consts, moduletypes as mt
+from segno import consts
 try:  # Py 2
     unicode
     from io import open
@@ -268,11 +268,11 @@ def test_matrix_iter_verbose_border_zero():
 def test_matrix_iter_verbose_border_default():
     qr = segno.make('A', version=1)
     res = [list(row) for row in qr.matrix_iter(border=None, verbose=True)]
-    top_border = [[mt.TYPE_QUIET_ZONE] * 29] * 4
+    top_border = [[consts.TYPE_QUIET_ZONE] * 29] * 4
     seq = []
-    seq.extend([mt.TYPE_QUIET_ZONE] * 4)
-    seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
-    seq.extend([mt.TYPE_SEPARATOR, mt.TYPE_FORMAT_LIGHT])
+    seq.extend([consts.TYPE_QUIET_ZONE] * 4)
+    seq.extend([consts.TYPE_FINDER_PATTERN_DARK] * 7)
+    seq.extend([consts.TYPE_SEPARATOR, consts.TYPE_FORMAT_LIGHT])
     assert top_border == res[:4]
     assert seq == res[4][:len(seq)]
 
@@ -280,11 +280,11 @@ def test_matrix_iter_verbose_border_default():
 def test_matrix_iter_verbose_border_3():
     qr = segno.make('A', version=1)
     res = [list(row) for row in qr.matrix_iter(border=3, verbose=True)]
-    top_border = [[mt.TYPE_QUIET_ZONE] * 27] * 3
+    top_border = [[consts.TYPE_QUIET_ZONE] * 27] * 3
     seq = []
-    seq.extend([mt.TYPE_QUIET_ZONE] * 3)
-    seq.extend([mt.TYPE_FINDER_PATTERN_DARK] * 7)
-    seq.extend([mt.TYPE_SEPARATOR, mt.TYPE_FORMAT_LIGHT])
+    seq.extend([consts.TYPE_QUIET_ZONE] * 3)
+    seq.extend([consts.TYPE_FINDER_PATTERN_DARK] * 7)
+    seq.extend([consts.TYPE_SEPARATOR, consts.TYPE_FORMAT_LIGHT])
     assert top_border == res[:3]
     assert seq == res[3][:len(seq)]
 

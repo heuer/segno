@@ -17,15 +17,11 @@ import sys
 import argparse
 import segno
 from segno import writers
-from segno import moduletypes as mt
-
 
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
-for ext, func in writers._VALID_SERIALISERS.items():
-    if len(ext) > 3:
-        continue
+for ext, func in ((ext, func) for ext, func in writers._VALID_SERIALIZERS.items() if ext != 'svg_debug'):
     # Python 2 vs Python 3
     func_code = getattr(func, 'func_code', None) or func.__code__
     defaults = getattr(func, 'func_defaults', None) or func.__defaults__
@@ -77,10 +73,12 @@ def make_parser():
     parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, i.e. SVG, accept a decimal value.',
                         default=1,
                         type=_convert_scale)
-    parser.add_argument('--color', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
+    parser.add_argument('--color', help=argparse.SUPPRESS, dest='dark')
+    parser.add_argument('--background', '-bg', help=argparse.SUPPRESS, dest='light')
+    parser.add_argument('--dark', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
                                         'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.'
                                         'The standard color is black.')
-    parser.add_argument('--background', '-bg', help='Color of the light modules. See "color" for a description of possible values. The standard background color is white.')
+    parser.add_argument('--light', help='Color of the light modules. See "dark" for a description of possible values. The standard light color is white.')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
@@ -124,8 +122,10 @@ def make_parser():
     png_group.add_argument('--data-light', help='Sets the color of the light data modules')
     png_group.add_argument('--timing-dark', help='Sets the color of the dark timing modules')
     png_group.add_argument('--timing-light', help='Sets the color of the light timing modules')
-    png_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules')
-    png_group.add_argument('--align-light', help='Sets the color of the light alignment modules')
+    png_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules',
+                           dest='alignment_dark', )
+    png_group.add_argument('--align-light', help='Sets the color of the light alignment modules',
+                           dest='alignment_light', )
     png_group.add_argument('--quiet-zone', help='Sets the color of the quiet zone (border)')
     png_group.add_argument('--dark-module', help='Sets the color of the dark module')
     png_group.add_argument('--format-dark', help='Sets the color of the dark format information modules')
@@ -178,7 +178,11 @@ def build_config(config, filename=None):
     # was supplied by the user or if it's the default argument.
     # If using type=lambda v: None if v in ('transparent', 'trans') else v
     # we cannot detect if "None" comes from "transparent" or the default value
-    for clr in ('color', 'background'):
+    for clr in ('dark', 'light', 'finder_dark', 'finder_light',
+                'format_dark', 'format_light', 'alignment_dark', 'alignment_light',
+                'timing_dark', 'timing_light', 'data_dark', 'data_light',
+                'version_dark', 'version_light',
+                'quiet_zone', 'dark_module', 'separator'):
         val = config.pop(clr, None)
         if val in ('transparent', 'trans'):
             config[clr] = None
@@ -191,15 +195,6 @@ def build_config(config, filename=None):
     if config.pop('no_classes', False):
         config['svgclass'] = None
         config['lineclass'] = None
-    # PNG
-    clr_map = {}
-    for clr, mt_const in _COLOR_NAME2TYPE.items():
-        val = config.pop(clr, None)
-        if not val:
-            continue
-        clr_map[mt_const] = val if val not in ('transparent', 'trans') else None
-    if clr_map:
-        config['colormap'] = clr_map
     if filename is not None:
         ext = filename[filename.rfind('.') + 1:].lower()
         if ext == 'svgz':  # There is no svgz serializer, use same config as svg
@@ -258,23 +253,6 @@ class _AttrDict(dict):
         super(_AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
 
-_COLOR_NAME2TYPE = {
-    'finder_dark': mt.TYPE_FINDER_PATTERN_DARK,
-    'finder_light': mt.TYPE_FINDER_PATTERN_LIGHT,
-    'separator': mt.TYPE_SEPARATOR,
-    'data_dark': mt.TYPE_DATA_DARK,
-    'data_light': mt.TYPE_DATA_LIGHT,
-    'timing_dark': mt.TYPE_TIMING_DARK,
-    'timing_light': mt.TYPE_TIMING_LIGHT,
-    'align_dark': mt.TYPE_ALIGNMENT_PATTERN_DARK,
-    'align_light': mt.TYPE_ALIGNMENT_PATTERN_LIGHT,
-    'quiet_zone': mt.TYPE_QUIET_ZONE,
-    'dark_module': mt.TYPE_DARKMODULE,
-    'format_dark': mt.TYPE_FORMAT_DARK,
-    'format_light': mt.TYPE_FORMAT_LIGHT,
-    'version_dark': mt.TYPE_VERSION_DARK,
-    'version_light': mt.TYPE_VERSION_LIGHT,
-}
 
 if __name__ == '__main__':  # pragma: no cover
     main()

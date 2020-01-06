@@ -28,8 +28,8 @@ def test_defaults():
     assert not args.micro
     assert args.output is None
     assert args.border is None
-    assert args.color is None
-    assert args.background is None
+    assert args.dark is None
+    assert args.light is None
     assert args.boost_error
     assert not args.seq
     assert args.symbol_count is None
@@ -39,8 +39,8 @@ def test_defaults():
     assert args.finder_light is None
     assert args.data_dark is None
     assert args.data_light is None
-    assert args.align_dark is None
-    assert args.align_light is None
+    assert args.alignment_dark is None
+    assert args.alignment_light is None
     assert args.timing_dark is None
     assert args.timing_light is None
     assert args.format_dark is None
@@ -265,53 +265,27 @@ def test_sequence_output():
 
 def test_color():
     args = cli.parse(['--color', 'green', ''])
-    assert args.color == 'green'
-    assert cli.build_config(args)['color'] == 'green'
+    assert args.dark == 'green'
+    assert cli.build_config(args)['dark'] == 'green'
 
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
 def test_color_transparent(arg):
     args = cli.parse(['--color={}'.format(arg), '-output=x.png', ''])
-    assert args.color == arg
-    assert cli.build_config(args)['color'] is None
+    assert args.dark == arg
+    assert cli.build_config(args)['dark'] is None
 
 
 def test_background():
     args = cli.parse(['--background', 'red', ''])
-    assert args.background == 'red'
-
-
-def test_no_colormap():
-    args = cli.parse(['--scale', '10', '-output=x.png', ''])
-    config = cli.build_config(args)
-    assert 'colormap' not in config
-
-
-@pytest.mark.parametrize('clr', ['finder-dark', 'finder-light', 'separator',
-                                 'data-dark', 'data-light', 'timing-dark', 'timing-light',
-                                 'align-dark', 'align-light', 'quiet-zone', 'dark-module',
-                                 'format-dark', 'format-light', 'version-dark', 'version-light'])
-@pytest.mark.parametrize('arg', ['transparent', 'trans', 'red', 'green'])
-def test_colormap(clr, arg):
-    args = cli.parse(['--{}'.format(clr), arg, '-output=x.png', ''])
-    clr_name = clr.replace('-', '_')
-    assert args.get(clr_name) == arg
-    config = cli.build_config(args)
-    assert clr_name not in config
-    colormap = cli.build_config(args).get('colormap')
-    assert colormap
-    assert len(colormap) == 1
-    if arg in ('transparent', 'trans'):
-        assert None in colormap.values()
-    else:
-        arg in colormap.values()
+    assert args.light == 'red'
 
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
 def test_background_transparent(arg):
     args = cli.parse(['--background={}'.format(arg), '-output=x.png', ''])
-    assert args.background == arg
-    assert cli.build_config(args)['background'] is None
+    assert args.light == arg
+    assert cli.build_config(args)['light'] is None
 
 
 def test_error_code():
@@ -537,7 +511,7 @@ def test_png_svg_command():
 def test_output_svgz():
     f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
     f.close()
-    res = cli.main(['--scale=10', '--color=red', '--output={0}'.format(f.name), 'test'])
+    res = cli.main(['--scale=10', '--dark=red', '--output={0}'.format(f.name), 'test'])
     assert 0 == res
     f = gzip.open(f.name)
     content = f.read()

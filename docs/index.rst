@@ -23,7 +23,6 @@ Contents:
     epc-qrcodes
     comparison-qrcode-libs
     man/index
-    replace-qrcode-libs
     plugins
     api
     api-low-level

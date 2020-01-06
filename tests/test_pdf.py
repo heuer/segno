@@ -55,7 +55,7 @@ def test_background_none():
 def test_background_set():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pdf', background='yellow')
+    qr.save(out, kind='pdf', light='yellow')
     graphic = _find_graphic(out)
     assert 'rg' in graphic
     assert 're' in graphic
@@ -72,7 +72,7 @@ def test_stokecolor_default():
 def test_stokecolor_black():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pdf', color='black')
+    qr.save(out, kind='pdf', dark='black')
     graphic = _find_graphic(out)
     assert 'RG' not in graphic
 
@@ -80,7 +80,7 @@ def test_stokecolor_black():
 def test_stokecolor_black2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pdf', color='#000')
+    qr.save(out, kind='pdf', dark='#000')
     graphic = _find_graphic(out)
     assert 'RG' not in graphic
 
@@ -88,7 +88,7 @@ def test_stokecolor_black2():
 def test_stokecolor_set():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='pdf', color='#EEE')
+    qr.save(out, kind='pdf', dark='#EEE')
     graphic = _find_graphic(out)
     assert 'RG' in graphic
 
@@ -98,7 +98,7 @@ def test_illegal_color_float():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='pdf', color=color)
+        qr.save(out, kind='pdf', dark=color)
 
 
 def _find_graphic(out):

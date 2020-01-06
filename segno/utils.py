@@ -14,7 +14,7 @@ try:  # pragma: no cover
     range = xrange
 except NameError:  # pragma: no cover
     pass
-from . import moduletypes as mt
+from . import consts
 
 __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
            'check_valid_scale', 'check_valid_border', 'matrix_to_lines',
@@ -155,21 +155,21 @@ def matrix_iter(matrix, version, scale=1, border=None):
             yield res_row
 
 
-TYPE_FINDER_PATTERN_LIGHT = mt.TYPE_FINDER_PATTERN_LIGHT
-TYPE_FINDER_PATTERN_DARK = mt.TYPE_FINDER_PATTERN_DARK
-TYPE_SEPARATOR = mt.TYPE_SEPARATOR
-TYPE_ALIGNMENT_PATTERN_LIGHT = mt.TYPE_ALIGNMENT_PATTERN_LIGHT
-TYPE_ALIGNMENT_PATTERN_DARK = mt.TYPE_ALIGNMENT_PATTERN_DARK
-TYPE_TIMING_LIGHT = mt.TYPE_TIMING_LIGHT
-TYPE_TIMING_DARK = mt.TYPE_TIMING_DARK
-TYPE_FORMAT_LIGHT = mt.TYPE_FORMAT_LIGHT
-TYPE_FORMAT_DARK = mt.TYPE_FORMAT_DARK
-TYPE_VERSION_LIGHT = mt.TYPE_VERSION_LIGHT
-TYPE_VERSION_DARK = mt.TYPE_VERSION_DARK
-TYPE_DARKMODULE = mt.TYPE_DARKMODULE
-TYPE_DATA_LIGHT = mt.TYPE_DATA_LIGHT
-TYPE_DATA_DARK = mt.TYPE_DATA_DARK
-TYPE_QUIET_ZONE = mt.TYPE_QUIET_ZONE
+TYPE_FINDER_PATTERN_LIGHT = consts.TYPE_FINDER_PATTERN_LIGHT
+TYPE_FINDER_PATTERN_DARK = consts.TYPE_FINDER_PATTERN_DARK
+TYPE_SEPARATOR = consts.TYPE_SEPARATOR
+TYPE_ALIGNMENT_PATTERN_LIGHT = consts.TYPE_ALIGNMENT_PATTERN_LIGHT
+TYPE_ALIGNMENT_PATTERN_DARK = consts.TYPE_ALIGNMENT_PATTERN_DARK
+TYPE_TIMING_LIGHT = consts.TYPE_TIMING_LIGHT
+TYPE_TIMING_DARK = consts.TYPE_TIMING_DARK
+TYPE_FORMAT_LIGHT = consts.TYPE_FORMAT_LIGHT
+TYPE_FORMAT_DARK = consts.TYPE_FORMAT_DARK
+TYPE_VERSION_LIGHT = consts.TYPE_VERSION_LIGHT
+TYPE_VERSION_DARK = consts.TYPE_VERSION_DARK
+TYPE_DARKMODULE = consts.TYPE_DARKMODULE
+TYPE_DATA_LIGHT = consts.TYPE_DATA_LIGHT
+TYPE_DATA_DARK = consts.TYPE_DATA_DARK
+TYPE_QUIET_ZONE = consts.TYPE_QUIET_ZONE
 
 def matrix_iter_detail(matrix, version, scale=1, border=None):  # pragma: no cover
     """\
@@ -219,35 +219,35 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
                 # Alignment pattern
                 alignment_val = alignment_matrix[i][j]
                 if alignment_val != 0x2:
-                    return (mt.TYPE_ALIGNMENT_PATTERN_LIGHT, mt.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
+                    return (consts.TYPE_ALIGNMENT_PATTERN_LIGHT, consts.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
                 if version > 6:  # Version information
                     if i < 6 and width - 12 < j < width - 8 \
                             or height - 12 < i < height - 8 and j < 6:
-                        return (mt.TYPE_VERSION_LIGHT, mt.TYPE_VERSION_DARK)[val]
+                        return (consts.TYPE_VERSION_LIGHT, consts.TYPE_VERSION_DARK)[val]
                 # Dark module
                 if i == height - 8 and j == 8:
-                    return mt.TYPE_DARKMODULE
+                    return consts.TYPE_DARKMODULE
             # Timing - IMPORTANT: Check alignment (see above) in advance!
             if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
                     or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
-                return (mt.TYPE_TIMING_LIGHT, mt.TYPE_TIMING_DARK)[val]
+                return (consts.TYPE_TIMING_LIGHT, consts.TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
             if i == 8 and (j < 9 or (not is_micro and j > width - 10)) \
                     or j == 8 and (i < 8 or not is_micro and i > height - 9):
-                return (mt.TYPE_FORMAT_LIGHT, mt.TYPE_FORMAT_DARK)[val]
+                return (consts.TYPE_FORMAT_LIGHT, consts.TYPE_FORMAT_DARK)[val]
             # Finder pattern
             # top left             top right
             if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
                 or not is_micro and i > height - 8 and j < 7:  # bottom left
-                return (mt.TYPE_FINDER_PATTERN_LIGHT, mt.TYPE_FINDER_PATTERN_DARK)[val]
+                return (consts.TYPE_FINDER_PATTERN_LIGHT, consts.TYPE_FINDER_PATTERN_DARK)[val]
             # Separator
             # top left              top right
             if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
                 or not is_micro and (i > height - 9 and j < 8):  # bottom left
-                return mt.TYPE_SEPARATOR
-            return (mt.TYPE_DATA_LIGHT, mt.TYPE_DATA_DARK)[val]
+                return consts.TYPE_SEPARATOR
+            return (consts.TYPE_DATA_LIGHT, consts.TYPE_DATA_DARK)[val]
         else:
-            return mt.TYPE_QUIET_ZONE
+            return consts.TYPE_QUIET_ZONE
 
     row = chain.from_iterable
     scale_range = range(scale)

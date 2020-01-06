@@ -20,31 +20,31 @@ from png import Reader as PNGReader
 def test_hexcolor_too_short():
     qr = segno.make_qr('test')
     with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', color='#FFFFF')
+        qr.save(io.BytesIO(), kind='png', dark='#FFFFF')
 
 
 def test_hexcolor_too_short_background():
     qr = segno.make_qr('test')
     with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', background='#FFFFF')
+        qr.save(io.BytesIO(), kind='png', light='#FFFFF')
 
 
 def test_hexcolor_too_long():
     qr = segno.make_qr('test')
     with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', color='#0000000')
+        qr.save(io.BytesIO(), kind='png', dark='#0000000')
 
 
 def test_hexcolor_too_long_background():
     qr = segno.make_qr('test')
     with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', background='#0000000')
+        qr.save(io.BytesIO(), kind='png', light='#0000000')
 
 
 def test_color_eq_background():
     qr = segno.make_qr('test')
     with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', color='#000', background='#000')
+        qr.save(io.BytesIO(), kind='png', dark='#000', light='#000')
 
 _has_palette = re.compile(br'PLTE').search
 _has_transparency = re.compile(br'tRNS').search
@@ -52,7 +52,7 @@ _has_transparency = re.compile(br'tRNS').search
 def test_greyscale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='#000', background='#fff')
+    qr.save(out, kind='png', dark='#000', light='#fff')
     assert not _has_palette(out.getvalue())
     assert not _has_transparency(out.getvalue())
 
@@ -60,7 +60,7 @@ def test_greyscale():
 def test_greyscale2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='white', background='black')
+    qr.save(out, kind='png', dark='white', light='black')
     assert not _has_palette(out.getvalue())
     assert not _has_transparency(out.getvalue())
 
@@ -68,7 +68,7 @@ def test_greyscale2():
 def test_greyscale_trans():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='#000', background=None)
+    qr.save(out, kind='png', dark='#000', light=None)
     assert not _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -76,7 +76,7 @@ def test_greyscale_trans():
 def test_greyscale_trans2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color=None, background='white')
+    qr.save(out, kind='png', dark=None, light='white')
     assert not _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -84,7 +84,7 @@ def test_greyscale_trans2():
 def test_color():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='blue', background='white')
+    qr.save(out, kind='png', dark='blue', light='white')
     assert _has_palette(out.getvalue())
     assert not _has_transparency(out.getvalue())
 
@@ -92,7 +92,7 @@ def test_color():
 def test_color_trans():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='blue', background=None)
+    qr.save(out, kind='png', dark='blue', light=None)
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -100,7 +100,7 @@ def test_color_trans():
 def test_color_trans2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color=None, background='green')
+    qr.save(out, kind='png', dark=None, light='green')
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -108,7 +108,7 @@ def test_color_trans2():
 def test_color_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='#0000ffcc', background='white')
+    qr.save(out, kind='png', dark='#0000ffcc', light='white')
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -116,7 +116,7 @@ def test_color_rgba():
 def test_color_rgba2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='#000', background='#0000ffcc')
+    qr.save(out, kind='png', dark='#000', light='#0000ffcc')
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -124,7 +124,7 @@ def test_color_rgba2():
 def test_color_rgba_and_trans():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color='#0000ffcc', background=None)
+    qr.save(out, kind='png', dark='#0000ffcc', light=None)
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 
@@ -132,7 +132,7 @@ def test_color_rgba_and_trans():
 def test_color_rgba_and_trans2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='png', color=None, background='#0000ffcc')
+    qr.save(out, kind='png', dark=None, light='#0000ffcc')
     assert _has_palette(out.getvalue())
     assert _has_transparency(out.getvalue())
 

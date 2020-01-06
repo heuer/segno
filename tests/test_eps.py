@@ -20,7 +20,7 @@ def test_illegal_color_float():
     qr = segno.make_qr('test')
     out = io.StringIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='eps', color=color)
+        qr.save(out, kind='eps', dark=color)
 
 
 def test_illegal_color_float2():
@@ -28,7 +28,7 @@ def test_illegal_color_float2():
     qr = segno.make_qr('test')
     out = io.StringIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='eps', color=color)
+        qr.save(out, kind='eps', dark=color)
 
 
 def test_illegal_color_int():
@@ -36,7 +36,7 @@ def test_illegal_color_int():
     qr = segno.make_qr('test')
     out = io.StringIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='eps', color=color)
+        qr.save(out, kind='eps', dark=color)
 
 
 def test_illegal_color_int2():
@@ -44,7 +44,7 @@ def test_illegal_color_int2():
     qr = segno.make_qr('test')
     out = io.StringIO()
     with pytest.raises(ValueError):
-        qr.save(out, kind='eps', color=color)
+        qr.save(out, kind='eps', dark=color)
 
 
 def test_default_color():
@@ -57,7 +57,7 @@ def test_default_color():
 def test_color():
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', color='#195805')
+    qr.save(out, kind='eps', dark='#195805')
     assert 'setrgbcolor' in out.getvalue()
 
 
@@ -65,7 +65,7 @@ def test_color_omit_black():
     qr = segno.make_qr('test')
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
-    qr.save(out, kind='eps', color='#000')
+    qr.save(out, kind='eps', dark='#000')
     assert 'setrgbcolor' not in out.getvalue()
 
 
@@ -73,7 +73,7 @@ def test_color_omit_black2():
     qr = segno.make_qr('test')
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
-    qr.save(out, kind='eps', color='Black')
+    qr.save(out, kind='eps', dark='Black')
     assert 'setrgbcolor' not in out.getvalue()
 
 
@@ -81,14 +81,14 @@ def test_color_omit_black3():
     qr = segno.make_qr('test')
     out = io.StringIO()
     # Black does not need setrgbcolor since it is the default stroke color
-    qr.save(out, kind='eps', color=(0, 0, 0))
+    qr.save(out, kind='eps', dark=(0, 0, 0))
     assert 'setrgbcolor' not in out.getvalue()
 
 
 def test_background():
     qr = segno.make_qr('test')
     out = io.StringIO()
-    qr.save(out, kind='eps', background='#EEE')
+    qr.save(out, kind='eps', light='#EEE')
     assert 'setrgbcolor' in out.getvalue()
     assert 'clippath' in out.getvalue()
 

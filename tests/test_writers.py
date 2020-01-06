@@ -75,5 +75,10 @@ def test_writable_not_stream3():
     assert f.closed
 
 
+def test_colormap_dark_light():
+    cm = writers._make_colormap(dark='blue', light='white')
+    assert 15 == len(cm)
+
+
 if __name__ == '__main__':
     pytest.main([__file__])

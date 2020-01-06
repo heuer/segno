@@ -74,7 +74,7 @@ def test_write_svg_black():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color='bLacK')
+    qr.save(out, kind='svg', dark='bLacK')
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -100,7 +100,7 @@ def test_write_svg_black2():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color='#000000')
+    qr.save(out, kind='svg', dark='#000000')
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -126,7 +126,7 @@ def test_write_svg_black3():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color=(0, 0, 0))
+    qr.save(out, kind='svg', dark=(0, 0, 0))
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -166,7 +166,7 @@ def test_write_svg_background_white():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', background='white')
+    qr.save(out, kind='svg', light='white')
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -180,7 +180,7 @@ def test_write_svg_background_white2():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', background='#fff')
+    qr.save(out, kind='svg', light='#fff')
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -194,7 +194,7 @@ def test_write_svg_background_white3():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', background='#ffffff')
+    qr.save(out, kind='svg', light='#ffffff')
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -208,7 +208,7 @@ def test_write_svg_color_rgb():
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color=(76, 131, 205))
+    qr.save(out, kind='svg', dark=(76, 131, 205))
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -233,14 +233,14 @@ def test_write_svg_color_rgb():
 def test_write_svg_color_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color='#0000ffcc')
+    qr.save(out, kind='svg', dark='#0000ffcc')
     assert b'stroke-opacity' in out.getvalue()
 
 
 def test_write_svg_color_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', color='#0000ffcc', svgversion=2.0)
+    qr.save(out, kind='svg', dark='#0000ffcc', svgversion=2.0)
     assert b'stroke-opacity' not in out.getvalue()
     root = _parse_xml(out)
     path = _get_path(root)
@@ -250,14 +250,14 @@ def test_write_svg_color_rgba_svg2():
 def test_write_svg_background_rgba():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', background='#0000ffcc')
+    qr.save(out, kind='svg', light='#0000ffcc')
     assert b'fill-opacity' in out.getvalue()
 
 
 def test_write_svg_background_rgba_svg2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', background='#0000ffcc', svgversion=2.0)
+    qr.save(out, kind='svg', light='#0000ffcc', svgversion=2.0)
     assert b'fill-opacity' not in out.getvalue()
     root = _parse_xml(out)
     path = _get_path(root)
@@ -504,7 +504,7 @@ def test_background():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     color = '#800080'
-    qr.save(out, kind='svg', background=color)
+    qr.save(out, kind='svg', light=color)
     root = _parse_xml(out)
     # Background should be the first path in the doc
     rect = _get_path(root)
@@ -516,7 +516,7 @@ def test_module_color():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     color = '#800080'
-    qr.save(out, kind='svg', color=color)
+    qr.save(out, kind='svg', dark=color)
     root = _parse_xml(out)
     path = _get_path(root)
     assert path is not None

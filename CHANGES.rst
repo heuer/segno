@@ -1,13 +1,51 @@
 Changes
 =======
 
+0.3.6 -- 2020-01-06
+-------------------
+* Backwards incompatibility change: QRCode.show() uses "dark" instead of
+  "color" and "light" instead of "background" to define the color of
+  the dark / light modules
+* Backwards incompatibility change: All ``segno.writers`` use "dark" instead of
+  "color" and "light" instead of "background". This does not affect normal users,
+  but only users of the low level API.
+* Changed the keyword for setting the color of the dark modules from
+  "color" to "dark" and for setting the light modules from "background"
+  to "light"
+  The former keywords are still supported. Their usage will issue a
+  DeprecationWarning in the future.
+* Added ``--dark`` and ``--light`` to the command line interface, see point
+  above. ```--color``` and ``--background`` are still supported.
+* Fixed typos, improved documentation
+* Deprecated ``segno.moduletypes`` (will be removed in release 0.4.0),
+  moved all constants to ``segno.consts``
+* Deprecated usage of parameter "colormap" (introduced in 0.3.4). It still
+  works but a deprecation warning is issued.
+  Instead of::
+
+      colormap = {mt.TYPE_FINDER_PATTERN_DARK: 'darkred',
+                  mt.TYPE_ALIGNMENT_PATTERN_DARK: 'darkred',
+                  mt.TYPE_TIMING_DARK: 'darkred',
+                  mt.TYPE_DARKMODULE: 'darkred',
+                  mt.TYPE_DATA_DARK: 'darkorange',
+                  mt.TYPE_DATA_LIGHT: 'yellow',
+                  mt.TYPE_FORMAT_DARK: 'darkred'}
+
+      qr.save('qrcode.png', scale=5, colormap=colormap)
+
+  use::
+
+      qr.save('qrcode.png', scale=5, dark='darkred', data_dark='darkorange',
+              data_light='yellow')
+
+
 0.3.5 -- 2020-01-03
 -------------------
 * Added support for colorful (more than two colors) QR Codes to the CLI script
   (fixes #58).
 * Fixed Read the Docs build
 * Improved documentation
-* Minor perfomance and code improvements.
+* Minor performance and code improvements.
 
 
 0.3.4 -- 2020-01-02
@@ -39,9 +77,10 @@ Changes
 * Fixed bugs in ``helpers.make_vcard_data`` function
   (superfluous semicolon in birthday line, check geo coordinates)
 * Renamed ``utils.matrix_iter_detail`` into ``utils.matrix_iter_verbose``.
-  Kept ``matrix_iter_detail`` for backwards compatibility (deprecated)
+  Kept ``matrix_iter_detail`` for backwards compatibility (deprecated, will be
+  removed in release 0.4.0)
 * Moved module constants from ``segno.utils`` into ``segno.moduletypes``,
-  Constants from ``segno.utils`` will be removed within the next release.
+  Constants from ``segno.utils`` will be removed in release 0.4.0.
 * Added option ``verbose`` (default: ``False``) to ``segno.QRCode.matrix_iter()``
   which returns an iterator which provides information about the module type
   (i.e. quiet zone, dark data module, light data module).
