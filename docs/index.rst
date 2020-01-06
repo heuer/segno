@@ -23,10 +23,10 @@ Contents:
     epc-qrcodes
     comparison-qrcode-libs
     man/index
-    replace-qrcode-libs
     plugins
     api
     api-low-level
+    replace-qrcode-libs
     python2
     changes
 
