@@ -91,17 +91,17 @@ Command Line Options
     By default, the standard border (4 modules for QR Codes, 2 modules for
     Micro QR Codes) will be used. A value of 0 omits the border
 
-.. option:: --color COLOR
+.. option:: --dark COLOR
 
     Color of the dark modules. The color may be specified as web color name,
     i.e. "red" or as hexadecimal value, i.e. "#0033cc". Some serializers, i.e.
     SVG and PNG, support alpha channels (8-digit hexadecimal value) and
     some support "transparent" as color value. The standard color is black.
 
-.. option:: --background BACKGROUND, -bg BACKGROUND
+.. option:: --light COLOR
 
     Color of the light modules.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
     The standard background color is white.
 
 .. option:: --output OUTPUT, -o OUTPUT
@@ -171,90 +171,80 @@ Command Line Options
 
     Sets the DPI value of the PNG file
 
-.. option:: --dark COLOR
-
-    Sets the default color of the dark modules.
-    See :option:`--color` for a description of allowed values.
-
-.. option:: --light COLOR
-
-    Sets the default color of the light modules.
-    See :option:`--color` for a description of allowed values.
-
 .. option:: --finder-dark COLOR
 
     Sets the color of the dark modules of the finder pattern.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --finder-light COLOR
 
     Sets the color of the light modules of the finder pattern.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --separator COLOR
 
     Sets the color of the separator.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --data-dark COLOR
 
     Sets the color of the dark data modules.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --data-light COLOR
 
     Sets the color of the light data modules.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --quiet-zone COLOR
 
     Sets the color of the quiet zone (border).
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --align-dark COLOR
 
     Sets the color of the dark modules of the alignment patterns.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --align-light COLOR
 
     Sets the color of the light modules of the alignment patterns.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --timing-dark COLOR
 
     Sets the color of the dark modules of the timing pattern.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --timing-light COLOR
 
     Sets the color of the light modules of the timing pattern.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --format-dark COLOR
 
     Sets the color of the dark modules of the format information.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --format-light COLOR
 
     Sets the color of the light modules of the format information.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --version-dark COLOR
 
     Sets the color of the dark modules of the version information.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --version-light COLOR
 
     Sets the color of the light modules of the version information.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 .. option:: --dark-module COLOR
 
     Sets the color of the dark module.
-    See :option:`--color` for a description of allowed values.
+    See :option:`--dark` for a description of allowed values.
 
 
 
@@ -289,7 +279,7 @@ Saves the 2-Q QR code as SVG document with the given title.
 
 .. code-block:: bash
 
-    $ segno -o=number.svg --scale=10 --color="darkblue" "A Day in the Life"
+    $ segno -o=number.svg --scale=10 --dark darkblue "A Day in the Life"
 
 Saves the 1-L QR code as SVG document, using a scaling factor of 10 and the
 dark modules use the color "darkblue" instead of black.
@@ -297,7 +287,7 @@ dark modules use the color "darkblue" instead of black.
 
 .. code-block:: bash
 
-    $ segno -o rain.png -s 10 --color="#003399" --micro RAIN
+    $ segno -o rain.png -s 10 --dark #003399 --micro RAIN
 
 
 Saves the Micro QR Code (M2-M) as PNG image, using the color #003399 for dark

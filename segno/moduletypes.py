@@ -6,7 +6,7 @@
 # License: BSD License
 #
 """\
-Module types (DEPRECATED, use consts or segno.colormap).
+Module types (DEPRECATED, use segno.consts).
 
 To distinguish between dark and light modules without taking the concrete
 value into account, use::
@@ -20,7 +20,7 @@ value into account, use::
 from . import consts
 import warnings
 
-warnings.warn('This module is deprecated since 0.3.6. Use the constants in segno.consts or segno.colormap()', DeprecationWarning)
+warnings.warn('This module is deprecated since 0.3.6. Use the constants in segno.consts', DeprecationWarning)
 
 TYPE_FINDER_PATTERN_LIGHT = consts.TYPE_FINDER_PATTERN_LIGHT
 TYPE_FINDER_PATTERN_DARK = consts.TYPE_FINDER_PATTERN_DARK
