@@ -8,6 +8,25 @@ Changes
 * Added ``--dark`` and ``--light`` to the command line interface to reduce
   typing
 * Fixed typos, improved documentation
+* Deprecated usage of parameter "colormap" (introduced in 0.3.4). It still
+  works but a deprecation warning is issued.
+  Instead of::
+
+      colormap = {mt.TYPE_FINDER_PATTERN_DARK: 'darkred',
+                  mt.TYPE_ALIGNMENT_PATTERN_DARK: 'darkred',
+                  mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred',
+                  mt.TYPE_DATA_DARK: 'darkorange',
+                  mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
+
+      qr.save('qrcode.png', scale=5, colormap=colormap)
+
+  use::
+
+      qr.save('qrcode.png', scale=5, dark='darkred', data_dark='darkorange',
+              data_light='yellow')
+
+
+
 
 
 0.3.5 -- 2020-01-03
