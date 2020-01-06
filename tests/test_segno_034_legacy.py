@@ -13,6 +13,7 @@ import io
 import pytest
 import segno
 
+
 def test_deprecation_moduletypes():
     with pytest.deprecated_call():
         from segno import moduletypes
@@ -32,7 +33,6 @@ def test_deprecation():
             timing_dark='darkred', dark_module='darkred', data_dark='darkorange', data_light='yellow',
             format_dark='darkred')
     assert out_new.getvalue() == out_legacy.getvalue()
-
 
 
 if __name__ == '__main__':
