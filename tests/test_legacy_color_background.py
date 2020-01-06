@@ -22,5 +22,6 @@ def test_colorbackground():
     qr.save(out_old, kind='png', color='blue', background='yellow')
     assert out_new.getvalue() == out_old.getvalue()
 
+
 if __name__ == '__main__':
     pytest.main([__file__])
