@@ -861,7 +861,7 @@ class QRCode:
         # Segno 0.3.4 and 0.3.5
         try:
             cm = kw.pop('colormap')
-            warnings.warn('"colormap" is deprecated, use the keywords for QRCode.save()', DeprecationWarning)
+            warnings.warn('"colormap" is deprecated, use the keywords for QRCode.save(). Support will be removed in 0.4.0', DeprecationWarning)
             from segno import consts
             mt2name = {
                 consts.TYPE_FINDER_PATTERN_DARK: 'finder_dark',
