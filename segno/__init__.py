@@ -636,27 +636,58 @@ class QRCode:
         chooses the more compact grayscale mode, in all other cases a palette-based
         image is written.
 
-        =============    ==============================================================
-        Name             Description
-        =============    ==============================================================
-        out              Filename or :py:class:`io.BytesIO`
-        kind             "png"
-        scale            integer
-        dark             Default: "#000" (black)
-                         ``None`` is a valid value iff background is not ``None``.
-                         If set to ``None``, the dark modules become transparent.
-        light            Default value "#fff" (white)
-                         See keyword "color" for further details.
-        compresslevel    Default: 9. Integer indicating the compression level
-                         for the ``IDAT`` (data) chunk.
-                         1 is fastest and produces the least compression, 9 is slowest
-                         and produces the most. 0 is no compression.
-        dpi              Default: ``None``. Specifies the DPI value for the image.
-                         By default, the DPI value is unspecified. Please note
-                         that the DPI value is converted into meters (maybe with
-                         rounding errors) since PNG does not support the unit
-                         "dots per inch".
-        =============    ==============================================================
+        ===============    ==============================================================
+        Name               Description
+        ===============    ==============================================================
+        out                Filename or :py:class:`io.BytesIO`
+        kind               "png"
+        scale              integer
+        dark               Default: "#000" (black)
+                           ``None`` is a valid value iff background is not ``None``.
+                           If set to ``None``, the dark modules become transparent.
+        light              Default value "#fff" (white)
+                           See keyword "dark" for further details.
+        finder_dark        Color of the dark modules of the finder patterns
+                           Default: undefined, use value of "dark"
+        finder_light       Color of the light modules of the finder patterns
+                           Default: undefined, use value of "light"
+        data_dark          Color of the dark data modules
+                           Default: undefined, use value of "dark"
+        data_light         Color of the light data modules.
+                           Default: undefined, use value of "light".
+        version_dark       Color of the dark modules of the version information.
+                           Default: undefined, use value of "dark".
+        version_light      Color of the light modules of the version information,
+                           Default: undefined, use value of "light".
+        format_dark        Color of the dark modules of the format information.
+                           Default: undefined, use value of "dark".
+        format_light       Color of the light modules of the format information.
+                           Default: undefined, use value of "light".
+        alignment_dark     Color of the dark modules of the alignment patterns.
+                           Default: undefined, use value of "dark".
+        alignment_light    Color of the light modules of the alignment patterns.
+                           Default: undefined, use value of "light".
+        timing_dark        Color of the dark modules of the timing patterns.
+                           Default: undefined, use value of "dark".
+        timing_light       Color of the light modules of the timing patterns.
+                           Default: undefined, use value of "light".
+        separator          Color of the separator.
+                           Default: undefined, use value of "light".
+        dark_module        Color of the dark module (a single dark module which
+                           occurs in all QR Codes but not in Micro QR Codes.
+                           Default: undefined, use value of "dark".
+        quiet_zone         Color of the quiet zone / border.
+                           Default: undefined, use value of "light".
+        compresslevel      Default: 9. Integer indicating the compression level
+                           for the ``IDAT`` (data) chunk.
+                           1 is fastest and produces the least compression, 9 is slowest
+                           and produces the most. 0 is no compression.
+        dpi                Default: ``None``. Specifies the DPI value for the image.
+                           By default, the DPI value is unspecified. Please note
+                           that the DPI value is converted into meters (maybe with
+                           rounding errors) since PNG does not support the unit
+                           "dots per inch".
+        ===============    ==============================================================
 
 
         .. _eps:

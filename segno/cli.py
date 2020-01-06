@@ -80,7 +80,7 @@ def make_parser():
     parser.add_argument('--dark', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
                                         'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.'
                                         'The standard color is black.')
-    parser.add_argument('--light', help='Color of the light modules. See "color" for a description of possible values. The standard light color is white.')
+    parser.add_argument('--light', help='Color of the light modules. See "dark" for a description of possible values. The standard light color is white.')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False,
                         )
