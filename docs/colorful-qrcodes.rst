@@ -16,6 +16,16 @@ its own color.
     :alt: Colorful 7-H QR Code encoding "Yellow Submarine"
 
 
+.. code-block:: python
+
+    >>> import segno
+    >>> mqr = segno.make('RAIN', error='q')
+    >>> qr.save('rain.png', scale=4, dark='darkblue', data_dark='steelblue')
+
+.. image:: _static/colorful/rain.png
+    :alt: Colorful M4-Q QR Code encoding "RAIN"
+
+
 Color names
 -----------
 
@@ -27,6 +37,9 @@ Sets the (default) color of dark modules.
 .. image:: _static/colorful/dark.png
     :alt: Picture showing the dark modules
 
+.. image:: _static/colorful/mqr_dark.png
+    :alt: Picture showing the dark modules of a Micro QR Code
+
 
 light
 ~~~~~
@@ -35,6 +48,9 @@ Sets the (default) color of light modules.
 
 .. image:: _static/colorful/light.png
     :alt: Picture showing the light modules
+
+.. image:: _static/colorful/mqr_light.png
+    :alt: Picture showing the light modules of a Micro QR Code
 
 
 alignment_dark
@@ -45,6 +61,9 @@ Sets the color of the dark alignment pattern modules.
 .. image:: _static/colorful/alignment_dark.png
     :alt: Picture showing the dark alignment modules
 
+.. image:: _static/colorful/mqr_alignment_dark.png
+    :alt: Picture showing the dark alignment modules of a Micro QR Code (None)
+
 
 alignment_light
 ~~~~~~~~~~~~~~~
@@ -54,6 +73,9 @@ Sets the color of the light alignment pattern modules.
 .. image:: _static/colorful/alignment_light.png
     :alt: Picture showing the light alignment modules
 
+.. image:: _static/colorful/mqr_alignment_light.png
+    :alt: Picture showing the light alignment modules of a Micro QR Code (None)
+
 
 dark_module
 ~~~~~~~~~~~
@@ -61,7 +83,10 @@ dark_module
 Sets the color of the dark module.
 
 .. image:: _static/colorful/dark_module.png
-    :alt: Picture showing the dark module
+    :alt: Picture showing the dark modules
+
+.. image:: _static/colorful/mqr_dark_module.png
+    :alt: Picture showing the dark modules of a Micro QR Code (None)
 
 
 data_dark
@@ -72,6 +97,9 @@ Sets the color of the dark data modules.
 .. image:: _static/colorful/data_dark.png
     :alt: Picture showing the dark data modules
 
+.. image:: _static/colorful/mqr_data_dark.png
+    :alt: Picture showing the dark data modules of a Micro QR Code
+
 
 data_light
 ~~~~~~~~~~
@@ -80,6 +108,9 @@ Sets the color of the light data modules.
 
 .. image:: _static/colorful/data_light.png
     :alt: Picture showing the light modules
+
+.. image:: _static/colorful/mqr_data_light.png
+    :alt: Picture showing the light modules of a Micro QR Code
 
 
 finder_dark
@@ -90,6 +121,9 @@ Sets the color of the dark modules of the finder pattern.
 .. image:: _static/colorful/finder_dark.png
     :alt: Picture showing the dark finder modules
 
+.. image:: _static/colorful/mqr_finder_dark.png
+    :alt: Picture showing the dark finder modules of a Micro QR Code
+
 
 finder_light
 ~~~~~~~~~~~~
@@ -98,6 +132,9 @@ Sets the color of the light modules of the finder pattern.
 
 .. image:: _static/colorful/finder_light.png
     :alt: Picture showing the light finder modules
+
+.. image:: _static/colorful/mqr_finder_light.png
+    :alt: Picture showing the light finder modules of a Micro QR Code
 
 
 format_dark
@@ -108,6 +145,9 @@ Sets the color of the dark modules of the format information.
 .. image:: _static/colorful/format_dark.png
     :alt: Picture showing the dark format information modules
 
+.. image:: _static/colorful/mqr_format_dark.png
+    :alt: Picture showing the dark format information modules of a Micro QR Code (None)
+
 
 format_light
 ~~~~~~~~~~~~
@@ -116,6 +156,9 @@ Sets the color of the light modules of the format information.
 
 .. image:: _static/colorful/format_light.png
     :alt: Picture showing the light format information modules
+
+.. image:: _static/colorful/mqr_format_light.png
+    :alt: Picture showing the light format information modules of a Micro QR Code (None)
 
 
 quiet_zone
@@ -126,6 +169,9 @@ Sets the color of the quiet zone.
 .. image:: _static/colorful/quiet_zone.png
     :alt: Picture showing the quiet zone
 
+.. image:: _static/colorful/mqr_quiet_zone.png
+    :alt: Picture showing the quiet zone of a Micro QR Code
+
 
 separator
 ~~~~~~~~~
@@ -134,6 +180,9 @@ Sets the color of the separator.
 
 .. image:: _static/colorful/separator.png
     :alt: Picture showing the separator
+
+.. image:: _static/colorful/mqr_separator.png
+    :alt: Picture showing the separator of a Micro QR Code
 
 
 timing_dark
@@ -144,6 +193,9 @@ Sets the color of the dark modules of the timing pattern.
 .. image:: _static/colorful/timing_dark.png
     :alt: Picture showing the dark timing pattern modules
 
+.. image:: _static/colorful/mqr_timing_dark.png
+    :alt: Picture showing the dark timing pattern modules of a Micro QR Code
+
 
 timing_light
 ~~~~~~~~~~~~
@@ -152,6 +204,9 @@ Sets the color of the light modules of the timing pattern.
 
 .. image:: _static/colorful/timing_light.png
     :alt: Picture showing the light timing pattern modules
+
+.. image:: _static/colorful/mqr_timing_light.png
+    :alt: Picture showing the light timing pattern modules of a Micro QR Code
 
 
 version_dark
@@ -162,6 +217,9 @@ Sets the color of the dark modules of the version information.
 .. image:: _static/colorful/version_dark.png
     :alt: Picture showing the dark version modules
 
+.. image:: _static/colorful/mqr_version_dark.png
+    :alt: Picture showing the dark version modules of a Micro QR Code (None)
+
 
 version_light
 ~~~~~~~~~~~~~
@@ -170,3 +228,6 @@ Sets the color of the light modules of the version information.
 
 .. image:: _static/colorful/version_light.png
     :alt: Picture showing the light version modules
+
+.. image:: _static/colorful/mqr_version_light.png
+    :alt: Picture showing the light version modules of a Micro QR Code (None)
