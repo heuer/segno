@@ -20,7 +20,7 @@ its own color.
 
     >>> import segno
     >>> mqr = segno.make('RAIN', error='q')
-    >>> qr.save('rain.png', scale=4, dark='darkblue', data_dark='steelblue')
+    >>> mqr.save('rain.png', scale=4, dark='darkblue', data_dark='steelblue')
 
 .. image:: _static/colorful/rain.png
     :alt: Colorful M4-Q QR Code encoding "RAIN"
