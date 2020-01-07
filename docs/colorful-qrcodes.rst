@@ -29,6 +29,10 @@ its own color.
 Color names
 -----------
 
+The following examples show the results of all supported module colors.
+The unused colors are rendered as grey modules, the red modules show the usage
+of the keyword.
+
 dark
 ~~~~
 
@@ -58,6 +62,8 @@ alignment_dark
 
 Sets the color of the dark alignment pattern modules.
 
+Micro QR Codes don't have alignment patterns.
+
 .. image:: _static/colorful/alignment_dark.png
     :alt: Picture showing the dark alignment modules
 
@@ -70,6 +76,8 @@ alignment_light
 
 Sets the color of the light alignment pattern modules.
 
+Micro QR Codes don't have alignment patterns.
+
 .. image:: _static/colorful/alignment_light.png
     :alt: Picture showing the light alignment modules
 
@@ -81,6 +89,8 @@ dark_module
 ~~~~~~~~~~~
 
 Sets the color of the dark module.
+
+Micro QR Codes don't have a dark module.
 
 .. image:: _static/colorful/dark_module.png
     :alt: Picture showing the dark modules
@@ -142,6 +152,8 @@ format_dark
 
 Sets the color of the dark modules of the format information.
 
+Micro QR Codes don't have any format information.
+
 .. image:: _static/colorful/format_dark.png
     :alt: Picture showing the dark format information modules
 
@@ -153,6 +165,8 @@ format_light
 ~~~~~~~~~~~~
 
 Sets the color of the light modules of the format information.
+
+Micro QR Codes don't have any format information.
 
 .. image:: _static/colorful/format_light.png
     :alt: Picture showing the light format information modules
@@ -214,6 +228,8 @@ version_dark
 
 Sets the color of the dark modules of the version information.
 
+Micro QR Codes don't have any version information.
+
 .. image:: _static/colorful/version_dark.png
     :alt: Picture showing the dark version modules
 
@@ -225,6 +241,8 @@ version_light
 ~~~~~~~~~~~~~
 
 Sets the color of the light modules of the version information.
+
+Micro QR Codes don't have any version information.
 
 .. image:: _static/colorful/version_light.png
     :alt: Picture showing the light version modules
