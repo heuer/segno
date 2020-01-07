@@ -25,7 +25,7 @@ Unique features
 ---------------
 * Pure Python (supports 2.7, 3.7+, PyPy2 and PyPy3)
 * No dependencies
-* A lot of serialization formats (SVG, PNG, EPS, PDF, PAM, XPM, ...)
+* A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
 * `Colorful QR Codes <https://segno.readthedocs.io/en/stable/serializers.html#more-colorful-qr-codes>`_

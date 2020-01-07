@@ -117,16 +117,16 @@ ANSI
 
 EPS
     Encapsulated PostScript (EPS). The serializer provides all default features
-    (scale, border, color and background color), see :ref:`EPS <eps>` for details.
+    (scale, border, color of dark / light modules), see :ref:`EPS <eps>` for details.
 
 LaTeX
-    LaTeX / PGF/TikZ. The serializer provides no background color, but all
-    other default features (scale, border, color) are supported, see
-    :ref:`LaTeX <latex>` for details.
+    LaTeX / PGF/TikZ. The serializer provides no support to change the color
+    color of the light modules, but all other default features
+    (scale, border, color) are supported, see :ref:`LaTeX <latex>` for details.
 
 PAM
     Portable Arbitrary Map (PAM). The serializer provides all default features
-    (scale, border, color and background color), see :ref:`PAM <pam>` for details.
+    (scale, border, color of dark / light modules), see :ref:`PAM <pam>` for details.
 
 PBM
     Portable Bitmap (PBM). The serializer does not support any coloring,
@@ -135,23 +135,23 @@ PBM
 
 PDF
     Portable Document Format (PDF). The serializer provides all default features
-    (scale, border, color and background color), see :ref:`PDF <pdf>` for details.
+    (scale, border, color of dark / light modules), see :ref:`PDF <pdf>` for details.
 
 PNG
     Portable Network Graphics (PNG). The serializer provides all default features
-    (scale, border, color and background color) and a few more to customize the
+    (scale, border, color of dark / light modules) and a few more to customize the
     output, see :ref:`PNG <png>` for details.
 
 SVG
     Scalable Vector Graphics (SVG). The serializer provides all default features
-    (scale, border, color and background color) and many more to customize the
+    (scale, border, color of dark / light modules) and many more to customize the
     output, see :ref:`SVG <svg>` for details. SVGZ (compressed SVG) is supported
     as well.
 
 TXT
     Text output. The serializer does not support any scale or color, but the
-    character for the dark and white modules may be specified via `color`
-    and `background`, see :ref:`TXT <txt>` for details.
+    character for the dark and white modules may be specified,
+    see :ref:`TXT <txt>` for details.
 
 XBM
     X BitMap (XBM). The serializer does not support any coloring, but scale
@@ -159,5 +159,5 @@ XBM
 
 XPM
     X PixMap (XPM). The serializer provides all default features
-    (scale, border, color and background color) and a few more, see
+    (scale, border, color of dark / light modules) and a few more, see
     :ref:`XPM <xpm>` for details.
