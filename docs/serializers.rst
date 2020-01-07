@@ -95,8 +95,7 @@ accepted by the specific serializer.
 More colorful QR Codes
 ----------------------
 
-The PNG serializer supports an optional color mapping which can define a specific
-color for each module type.
+The PNG serializer more than two colors.
 
 .. code-block:: python
 
@@ -106,6 +105,8 @@ color for each module type.
 
 .. image:: _static/yellow-submarine.png
     :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+
+See :doc:`colorful-qrcodes` for available options.
 
 
 Available serializers
