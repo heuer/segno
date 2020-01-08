@@ -1,1 +1,2 @@
 include LICENSE *.txt *.rst
+exclude *.rtd
