@@ -37,7 +37,7 @@ factory function, which returns a string which encodes the WIFI configuration.
     >>> config = helpers.make_wifi_data(ssid='My network', password='secret', security='WPA')
     >>> config
     'WIFI:T:WPA;S:My network;P:secret;;'
-    >>> # Create a QR Code with error correction level "L"
+    >>> # Create a QR Code with error correction level "H"
     >>> qr = segno.make(config, error='h')
     >>> qr.designator
     '4-H'
