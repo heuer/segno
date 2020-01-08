@@ -22,6 +22,10 @@ Create a QR Code for a WIFI configuration
     '3-M'
 
 
+.. image:: _static/wifi/wifi_default.png
+    :alt: 3-M QR Code encoding a WIFI configuration
+
+
 If you want more control over the creation of the QR Code (i.e. using a specific
 version or error correction level, use the :py:func:`segno.helpers.make_wifi_data`
 factory function, which returns a string which encodes the WIFI configuration.
@@ -34,9 +38,13 @@ factory function, which returns a string which encodes the WIFI configuration.
     >>> config
     'WIFI:T:WPA;S:My network;P:secret;;'
     >>> # Create a QR Code with error correction level "L"
-    >>> qr = segno.make(config, error='l', boost_error=False)
+    >>> qr = segno.make(config, error='h')
     >>> qr.designator
-    '3-L'
+    '4-H'
+
+
+.. image:: _static/wifi/wifi_data.png
+    :alt: 4-H QR Code encoding a WIFI configuration
 
 
 Create a QR Code encoding geographic information
