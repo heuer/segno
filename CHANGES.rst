@@ -44,6 +44,9 @@ Changes
       qr.save('qrcode.png', scale=5, dark='darkred', data_dark='darkorange',
               data_light='yellow')
 
+  See `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
+  for a description of available color names.
+
 
 0.3.5 -- 2020-01-03
 -------------------
