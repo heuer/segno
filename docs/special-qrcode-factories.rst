@@ -1,9 +1,9 @@
 Special QR Code factory functions
 =================================
 
-The :py:mod:`segno.helpers` module provides factory functions to create common QR Codes
-for encoding WIFI configurations, :doc:`vCards and MeCards <contact-information>`,
-:doc:`EPC QR Codes <epc-qrcodes>` or geographic locations.
+The :py:mod:`segno.helpers` module provides factory functions to create common
+QR Codes for encoding WIFI configurations, :doc:`vCards and MeCards <contact-information>`,
+:doc:`EPC QR Codes <epc-qrcodes>` or `geographic locations <#geographic>`_.
 
 The created QR Codes use at minimum the error correction level "L". If a better
 error correction level is possible without changing the QR Code version, the
@@ -46,6 +46,7 @@ factory function, which returns a string which encodes the WIFI configuration.
 .. image:: _static/wifi/wifi_data.png
     :alt: 4-H QR Code encoding a WIFI configuration
 
+.. _geographic:
 
 Create a QR Code encoding geographic information
 ------------------------------------------------
@@ -57,6 +58,10 @@ Create a QR Code encoding geographic information
     >>> qr = helpers.make_geo(latitude, longitude)
     >>> qr.designator
     '2-M'
+
+.. image:: _static/geo/geo_default.png
+    :alt: 2-M QR Code encoding a geographic informatiion
+
 
 A factory function for encoding the geographic information as string is also
 available.
@@ -74,4 +79,5 @@ available.
     >>> qr.designator
     '4-H'
 
-
+.. image:: _static/geo/geo_data.png
+    :alt: 4-H QR Code encoding a geographic informatiion
