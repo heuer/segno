@@ -5,6 +5,8 @@ Changes
 0.3.7 -- 2020-mm-dd
 -------------------
 * Documentation improvements
+* Fixed #62: PNG serializer adds only those colors to the PLTE which are
+  actually needed for the given (Micro) QR Code.
 
 
 0.3.6 -- 2020-01-06
