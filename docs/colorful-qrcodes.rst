@@ -16,6 +16,9 @@ be transparent.
 In almost all cases the color values are automatically converted into a
 meaningful value of the specific output format.
 
+The keywords are optional, if not provided, all serializers use a reasonable
+default value (dark modules are rendered in black, light modules in white).
+
 .. note:: Providing an alpha channel to a serializer which does not accept an
     alpha channel results usually into an error.
 
