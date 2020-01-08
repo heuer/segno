@@ -843,9 +843,10 @@ class QRCode:
                 ``name`` attribute. Use the `kind` parameter if `out` is
                 a :py:class:`io.BytesIO` or :py:class:`io.StringIO` stream which
                 don't have a ``name`` attribute.
-        :param kind: If the desired output format cannot be determined from
+        :param str kind: If the desired output format cannot be determined from
                 the ``out`` parameter, this parameter can be used to indicate the
-                serialization format (i.e. "svg" to enforce SVG output)
+                serialization format (i.e. "svg" to enforce SVG output).
+                The value is case insensitive.
         :param kw: Any of the supported keywords by the specific serialization
                 method.
         """
