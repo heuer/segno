@@ -18,7 +18,6 @@ Contents:
     boost-error-correction-level
     serializers
     colorful-qrcodes
-    colors
     special-qrcode-factories
     contact-information
     epc-qrcodes

@@ -1,6 +1,24 @@
 Colorful QR Codes
 =================
 
+Almost all serializers support custom settings for the color of the dark and
+light modules of a (Micro) QR Code.
+
+The color values can be provided as tuple (``(R, G, B)``), as web color name
+(like 'red') or as hexadecimal ``#RRGGBB`` value (i.e. '#085A75'). If alpha
+transparency is supported (i.e. :ref:`PNG <png>` and :ref:`SVG <svg>`),
+hexadecimal values like ``#RRGGBBAA`` are accepted.
+
+The value ``None`` is accepted by many serialization formats and indicates
+transparency, i.e. ``light=None`` to indicate that all light modules should
+be transparent.
+
+In almost all cases the color values are automatically converted into a
+meaningful value of the specific output format.
+
+.. note:: Providing an alpha channel to a serializer which does not accept an
+    alpha channel results usually into an error.
+
 The PNG serializer supports more than two colors, every module type may have
 its own color.
 
@@ -32,6 +50,10 @@ Color names
 The following examples show the results of all supported module colors.
 The unused colors are rendered as grey or white modules, the red modules show
 the usage of the keyword.
+
+The keywords "dark" and "light" are supported by almost all serialization
+formats.
+
 
 dark
 ~~~~

@@ -32,9 +32,12 @@ Unique features
 * `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
-     :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+
+  ... works also with Micro QR Codes
+
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
-     :alt: Colorful M4-Q Micro QR Code encoding "Rain"
+    :alt: Colorful M4-Q Micro QR Code encoding "Rain"
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
   ::

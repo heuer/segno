@@ -52,7 +52,7 @@ accept float values and do not "downgrade" it to an integer.
 
 
 Many serializers accept the parameters ``dark`` and ``light`` to specify
-the color of the dark modules and light modules (background). See :doc:`colors`
+the color of the dark modules and light modules (background). See :doc:`colorful-qrcodes`
 for details.
 
 .. code-block:: python
