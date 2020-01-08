@@ -1,6 +1,12 @@
 Changes
 =======
 
+
+0.3.7 -- 2020-mm-dd
+-------------------
+* Documentation improvements
+
+
 0.3.6 -- 2020-01-06
 -------------------
 * Backwards incompatibility change: QRCode.show() uses "dark" instead of
