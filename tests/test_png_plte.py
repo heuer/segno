@@ -16,7 +16,7 @@ import segno
 
 def test_plte():
     qr = segno.make_qr('test')
-    dark = (0, 0, 139)
+    dark = 'red'
     buff_1 = io.BytesIO()
     buff_2 = io.BytesIO()
     qr.save(buff_1, kind='png', dark=dark, finder_dark=dark)
@@ -26,7 +26,7 @@ def test_plte():
 
 def test_plte2():
     qr = segno.make_qr('test')
-    dark = (0, 0, 139)
+    dark = 'red'
     buff_1 = io.BytesIO()
     buff_2 = io.BytesIO()
     qr.save(buff_1, kind='png', dark=dark, finder_dark=dark)
@@ -36,7 +36,7 @@ def test_plte2():
 
 def test_plte3():
     qr = segno.make_qr('test')
-    dark = (0, 0, 139)
+    dark = 'red'
     buff_1 = io.BytesIO()
     buff_2 = io.BytesIO()
     qr.save(buff_1, kind='png', dark=dark, finder_dark=dark, dark_module=dark)
@@ -46,21 +46,21 @@ def test_plte3():
 
 def test_plte_micro():
     qr = segno.make_micro('RAIN')
-    dark = (0, 0, 139)
+    dark = 'red'
     buff_1 = io.BytesIO()
     buff_2 = io.BytesIO()
-    qr.save(buff_1, kind='png', dark=dark, finder_dark=dark, alignment_dark=dark)
+    qr.save(buff_1, kind='png', dark=dark, finder_dark=dark, alignment_dark='green')
     qr.save(buff_2, kind='png', dark=dark)
     assert buff_1.getvalue() == buff_2.getvalue()
 
 
 def test_plte_micro2():
     qr = segno.make_micro('RAIN')
-    dark = (0, 0, 139)
+    dark = 'red'
     buff_1 = io.BytesIO()
     buff_2 = io.BytesIO()
-    qr.save(buff_1, kind='png', dark=dark, finder_dark=dark, dark_module='red')
-    qr.save(buff_2, kind='png', dark=dark, dark_module='red')
+    qr.save(buff_1, kind='png', dark=dark, finder_dark=dark, dark_module='green')
+    qr.save(buff_2, kind='png', dark=dark)
     assert buff_1.getvalue() == buff_2.getvalue()
 
 
