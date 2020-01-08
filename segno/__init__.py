@@ -840,15 +840,17 @@ class QRCode:
 
 
         :param out: A filename or a writable file-like object with a
-                ``name`` attribute. Use the `kind` parameter if `out` is
-                a :py:class:`io.BytesIO` or :py:class:`io.StringIO` stream which
-                don't have a ``name`` attribute.
-        :param str kind: If the desired output format cannot be determined from
-                the ``out`` parameter, this parameter can be used to indicate the
-                serialization format (i.e. "svg" to enforce SVG output).
-                The value is case insensitive.
-        :param kw: Any of the supported keywords by the specific serialization
-                method.
+                ``name`` attribute. Use the :paramref:`kind <segno.QRCode.save.kind>`
+                parameter if `out` is a :py:class:`io.BytesIO` or
+                :py:class:`io.StringIO` stream which don't have a ``name``
+                attribute.
+        :param str kind: Default ``None``.
+                If the desired output format cannot be determined from
+                the :paramref:`out <segno.QRCode.save.out>` parameter, this
+                parameter can be used to indicate the serialization format
+                (i.e. "svg" to enforce SVG output). The value is case
+                insensitive.
+        :param kw: Any of the supported keywords by the specific serializer.
         """
         # Segno <= 0.3.6
         try:
