@@ -19,7 +19,7 @@ its own color.
 .. code-block:: python
 
     >>> import segno
-    >>> mqr = segno.make('RAIN', error='q')
+    >>> mqr = segno.make('Rain', error='q')
     >>> mqr.save('rain.png', scale=4, dark='darkblue', data_dark='steelblue')
 
 .. image:: _static/colorful/rain.png
