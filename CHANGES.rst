@@ -45,7 +45,7 @@ Changes
               data_light='yellow')
 
   See `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
-  for a description of available color names.
+  for a description of available module names.
 
 
 0.3.5 -- 2020-01-03

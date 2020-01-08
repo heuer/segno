@@ -47,12 +47,12 @@ its own color.
     :alt: Colorful M4-Q QR Code encoding "RAIN"
 
 
-Color names
------------
+Module names
+------------
 
-The following examples show the results of all supported module colors.
-The unused colors are rendered as grey or white modules, the red modules show
-the usage of the keyword.
+The following examples show the results of all supported module types.
+The unaffected modules are rendered as grey or white modules, the red modules
+show the usage of the keyword.
 
 The keywords "dark" and "light" are supported by almost all serialization
 formats.
