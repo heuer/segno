@@ -30,8 +30,8 @@ Color names
 -----------
 
 The following examples show the results of all supported module colors.
-The unused colors are rendered as grey modules, the red modules show the usage
-of the keyword.
+The unused colors are rendered as grey or white modules, the red modules show
+the usage of the keyword.
 
 dark
 ~~~~
