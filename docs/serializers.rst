@@ -95,7 +95,7 @@ accepted by the specific serializer.
 More colorful QR Codes
 ----------------------
 
-The PNG serializer more than two colors.
+The PNG serializer supports more than two colors.
 
 .. code-block:: python
 
