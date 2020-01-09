@@ -19,7 +19,7 @@ Output the QR Code to the terminal::
 
     $ segno "Little wing"
 
-.. image:: _static/qr-little-wing-terminal.png
+.. image:: _static/cli/qr-little-wing-terminal.png
     :alt: QR Code for "Little wing".
 
 
@@ -27,7 +27,7 @@ Same content, but as Micro QR Code (M4)::
 
     $ segno --micro "Little wing"
 
-.. image:: _static/micro-qr-little-wing-terminal.png
+.. image:: _static/cli/micro-qr-little-wing-terminal.png
     :alt: Micro QR Code for "Little wing".
 
 
@@ -45,7 +45,7 @@ enforces version 5::
     $ segno -v=5 Layla
 
 
-.. image:: _static/qr-layla-version-5.png
+.. image:: _static/cli/qr-layla-version-5.png
     :alt: QR Code version 5 for "Layla".
 
 
@@ -55,7 +55,7 @@ Micro QR Code::
     $ segno --version M4 Layla
 
 
-.. image:: _static/micro-qr-layla-version-m4.png
+.. image:: _static/cli/micro-qr-layla-version-m4.png
     :alt: Micro QR Code version M4 for "Layla".
 
 
@@ -71,18 +71,6 @@ The default error correction level is "L" (or any better if
     $ segno -e=h "Heart of Gold"
 
 
-"Heart of Gold" using error level "L":
-
-.. image:: _static/qr-heart-of-gold-error-l.png
-    :alt: QR Code "Heart of Gold" using error level L
-
-
-"Heart of Gold" using error level "H":
-
-.. image:: _static/qr-heart-of-gold-error-h.png
-    :alt: QR Code "Heart of Gold" using error level H
-
-
 QR Code serialization
 ---------------------
 
@@ -92,14 +80,14 @@ the supported file formats::
 
     $ segno --output=white-room.png "White Room"
 
-.. image:: _static/white-room.png
+.. image:: _static/cli/white-room.png
     :alt: QR Code "White Room".
 
 ::
 
     $ segno -o=satellite.svg "Satellite Of Love"
 
-.. image:: _static/satellite.svg
+.. image:: _static/cli/satellite.svg
     :alt: QR Code "Satellite Of Love".
 
 
@@ -114,7 +102,7 @@ the supported file formats::
 
     $ segno --output=thrill-gone.txt "The Thrill Is Gone"
 
-.. include:: _static/thrill-gone.txt
+.. include:: _static/cli/thrill-gone.txt
     :literal:
 
 
@@ -126,14 +114,14 @@ be used to create a more appropriate output::
 
     $ segno --scale=10 --output=money-talks.png "Money Talks"
 
-.. image:: _static/money-talks.png
+.. image:: _static/cli/money-talks.png
     :alt: QR Code "Money Talks".
 
 ::
 
     $ segno -s 10 --output=private-investigations.svg Private Investigations
 
-.. image:: _static/private-investigations.svg
+.. image:: _static/cli/private-investigations.svg
     :alt: QR Code "Private Investigations".
 
 
@@ -150,14 +138,14 @@ can be utilized::
 
     $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
 
-.. image:: _static/black-magic-woman.svg
+.. image:: _static/cli/black-magic-woman.svg
     :alt: QR Code "Black Magic Woman" using quiet zone of zero.
 
 ::
 
     $ segno --border=10 --output=diamond.png "Shine On You Crazy Diamond"
 
-.. image:: _static/diamond.png
+.. image:: _static/cli/diamond.png
     :alt: QR Code "Shine On You Crazy Diamond" using quiet zone of ten.
 
 
@@ -165,7 +153,7 @@ can be utilized::
 
     $ segno -b=30 --output=boom-boom.svg Boom Boom
 
-.. image:: _static/boom-boom.svg
+.. image:: _static/cli/boom-boom.svg
     :alt: QR Code "Boom Boom" using quiet zone of 30.
 
 
@@ -180,7 +168,7 @@ Change the foreground color to darkblue::
 
     $ segno --dark=darkblue --output=excited.png "So Excited"
 
-.. image:: _static/excited.png
+.. image:: _static/cli/excited.png
     :alt: QR Code "So Excited" with foreground color "darkblue"
 
 
@@ -188,7 +176,7 @@ Change the background color to transparent::
 
     $ segno --light=transparent --output=hotel.png "Hotel California"
 
-.. image:: _static/hotel.png
+.. image:: _static/cli/hotel.png
     :alt: QR Code "Hotel California" with background color "transparent"
 
 
@@ -196,7 +184,7 @@ Change the foreground color to darkblue and background to yellow::
 
     $ segno --dark=darkblue --light=yellow --output=dontgiveup.svg "Don't Give Up"
 
-.. image:: _static/dontgiveup.svg
+.. image:: _static/cli/dontgiveup.svg
     :alt: QR Code "Don't Give Up" with foreground color "transparent"
 
 
@@ -239,10 +227,10 @@ Specify the max. number of symbols::
 
     $ segno --seq --symbol-count=2 -s 3 -o sa_yellow-submarine.png "We all live in a yellow submarine"
 
-.. image:: _static/sa_yellow-submarine-02-01.png
+.. image:: _static/cli/sa_yellow-submarine-02-01.png
     :alt: 1st part of Structured Append code
 
-.. image:: _static/sa_yellow-submarine-02-02.png
+.. image:: _static/cli/sa_yellow-submarine-02-02.png
     :alt: 2nd part of Structured Append code
 
 
@@ -250,8 +238,8 @@ Shortcut to specify the number of symbols::
 
     $ segno --seq -sc 2 -s 3 -o julia.png "Half of what I say is meaningless"
 
-.. image:: _static/julia-02-01.png
+.. image:: _static/cli/julia-02-01.png
     :alt: 1st part of Structured Append code
 
-.. image:: _static/julia-02-02.png
+.. image:: _static/cli/julia-02-02.png
     :alt: 2nd part of Structured Append code

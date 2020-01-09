@@ -74,8 +74,8 @@ available.
     >>> geo_uri = helpers.make_geo_data(latitude, longitude)
     >>> geo_uri
     'geo:38.8976763,-77.0365297'
-    >>> # Use version 4 instead of the minimum version
-    >>> qr = segno.make(geo_uri, version=4)
+    >>> # Use error correction level "H"
+    >>> qr = segno.make(geo_uri, error='H')
     >>> qr.designator
     '4-H'
 

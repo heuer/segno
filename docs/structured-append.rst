@@ -7,15 +7,15 @@ QR Codes (it's not available for Micro QR Codes).
 Example: The 2-L QR Code encodes the same information ("I read the news today oh boy")
 as the following 1-L QR Codes which are using Structured Append:
 
-.. image:: _static/structured_append_2_l.svg
+.. image:: _static/sa/structured_append_2_l.svg
     :alt: 2-L QR Code encoding 'I read the news today oh boy'
 
 With Structured Append (version 1):
 
-.. image:: _static/structured_append_1_l-02-01.svg
+.. image:: _static/sa/structured_append_1_l-02-01.svg
     :alt: 1-L QR Code encoding 'I read the news today oh boy' part 1
 
-.. image:: _static/structured_append_1_l-02-02.svg
+.. image:: _static/sa/structured_append_1_l-02-02.svg
     :alt: 1-L QR Code encoding 'I read the news today oh boy' part 2
 
 
@@ -79,7 +79,7 @@ QR Code version is automatically determined by the number of symbols.
 Example: The 6-L QR Code encodes the same information (first verse of the song "Yesterday")
 as the four 2-L QR Codes.
 
-.. image:: _static/structured_append_example_2_6-L.svg
+.. image:: _static/sa/structured_append_example_2_6-L.svg
     :alt: 6-L QR Code encoding 'Yesterday...'
 
 The following 2-L QR Codes were created by specifying that 4 codes should be generated
@@ -87,14 +87,14 @@ The following 2-L QR Codes were created by specifying that 4 codes should be gen
 The result would be the same if the user specifies that a sequence of QR Codes
 with version 2 should be created.
 
-.. image:: _static/structured_append_example_2_2-L-04-01.svg
+.. image:: _static/sa/structured_append_example_2_2-L-04-01.svg
     :alt: 2-L QR Code encoding first verse of 'Yesterday' part 1
 
-.. image:: _static/structured_append_example_2_2-L-04-02.svg
+.. image:: _static/sa/structured_append_example_2_2-L-04-02.svg
     :alt: 2-L QR Code encoding first verse of 'Yesterday' part 2
 
-.. image:: _static/structured_append_example_2_2-L-04-03.svg
+.. image:: _static/sa/structured_append_example_2_2-L-04-03.svg
     :alt: 2-L QR Code encoding first verse of 'Yesterday' part 3
 
-.. image:: _static/structured_append_example_2_2-L-04-04.svg
+.. image:: _static/sa/structured_append_example_2_2-L-04-04.svg
     :alt: 2-L QR Code encoding first verse of 'Yesterday' part 4
