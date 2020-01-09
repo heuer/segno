@@ -17,7 +17,7 @@ Contents:
     structured-append
     boost-error-correction-level
     serializers
-    colors
+    colorful-qrcodes
     special-qrcode-factories
     contact-information
     epc-qrcodes

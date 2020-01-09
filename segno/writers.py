@@ -419,7 +419,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     By default, the generated PNG will be a greyscale image (black / white)
     with a bit depth of 1. If different colors are provided, an indexed-color
     image with the same bit depth is generated unless more than two colors
-    are provided via ``colormap`` (may require a bit depth of 2 or 4).
+    are provided. This may require a bit depth of of 2 or 4.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -432,6 +432,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
+            ``None`` can be used to define transparency.
     :param light: Optional background color (default: white).
             See :paramref:`write_png.dark` for valid values. In addition, ``None`` is
             accepted which indicates a transparent background.
@@ -523,7 +524,7 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
     dark_idx = consts.TYPE_FINDER_PATTERN_DARK
     qz_idx = consts.TYPE_QUIET_ZONE
-    color_mapping = _make_colormap(dark=dark, light=light, finder_dark=finder_dark,
+    color_mapping = _make_colormap(version, dark=dark, light=light, finder_dark=finder_dark,
                               finder_light=finder_light, data_dark=data_dark,
                               data_light=data_light, version_dark=version_dark,
                               version_light=version_light, format_dark=format_dark,
@@ -1062,15 +1063,15 @@ def _pack_bits_into_byte(iterable):
             for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
-def _make_colormap(dark, light,
-             finder_dark=False, finder_light=False,
-             data_dark=False, data_light=False,
-             version_dark=False, version_light=False,
-             format_dark=False, format_light=False,
-             alignment_dark=False, alignment_light=False,
-             timing_dark=False, timing_light=False,
-             separator=False, dark_module=False,
-             quiet_zone=False):
+def _make_colormap(version, dark, light,
+                   finder_dark=False, finder_light=False,
+                   data_dark=False, data_light=False,
+                   version_dark=False, version_light=False,
+                   format_dark=False, format_light=False,
+                   alignment_dark=False, alignment_light=False,
+                   timing_dark=False, timing_light=False,
+                   separator=False, dark_module=False,
+                   quiet_zone=False):
     """\
     Creates and returns a module type -> color map.
 
@@ -1091,6 +1092,7 @@ def _make_colormap(dark, light,
         # will be brown
         cm = colormap(timing_dark=(165, 42, 42))
 
+    :param version: QR Code version (int constant)
     :param dark: Default color of dark modules
     :param light: Default color of light modules
     :param finder_dark: Color of the dark modules of the finder patterns.
@@ -1110,6 +1112,13 @@ def _make_colormap(dark, light,
     :param quiet_zone: Color of the quiet zone / border.
     :rtype: dict
     """
+    unsupported = []
+    if version < 7:
+        unsupported = [consts.TYPE_VERSION_DARK, consts.TYPE_VERSION_LIGHT]
+    if version < 1:  # Micro QR Code
+        unsupported.extend([consts.TYPE_DARKMODULE,
+                            consts.TYPE_ALIGNMENT_PATTERN_DARK,
+                            consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
     mt2color = {
         consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
         consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
@@ -1127,12 +1136,11 @@ def _make_colormap(dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    return dict([(clr, val) for clr, val in mt2color.items() if val or val is None])
+    return dict([(mt, val) for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported])
 
 
 _VALID_SERIALIZERS = {
     'svg': write_svg,
-    'svg_debug': write_svg_debug,
     'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
@@ -1173,17 +1181,13 @@ def save(matrix, version, out, kind=None, **kw):
         ext = fname[fname.rfind('.') + 1:].lower()
     else:
         ext = kind.lower()
-    if not is_stream and ext == 'svgz':
-        f = gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9))
-        try:
-            _VALID_SERIALIZERS['svg'](matrix, version, f, **kw)
-        finally:
-            f.close()
+    is_svgz = not is_stream and ext == 'svgz'
+    try:
+        serializer = _VALID_SERIALIZERS[ext if not is_svgz else 'svg']
+    except KeyError:
+        raise ValueError('Unknown file extension ".{0}"'.format(ext))
+    if is_svgz:
+        with gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9)) as f:
+            serializer(matrix, version, f, **kw)
     else:
-        if kw.pop('debug', False) and ext == 'svg':
-            ext = 'svg_debug'
-        try:
-            serializer = _VALID_SERIALIZERS[ext]
-        except KeyError:
-            raise ValueError('Unknown file extension ".{0}"'.format(ext))
         serializer(matrix, version, out, **kw)

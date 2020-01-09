@@ -10,12 +10,13 @@ QR Codes.
 
 Segno provides several serialization formats like Scalable Vector Graphics (SVG),
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
-Portable Document Format (PDF), Portable Bitmap (PBM), Portable Arbitrary Map (PAM),
-LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) or text output. None of these
-serializers require an external lib. Segno can provide more serialization
-formats via a plugin architecture.
+Portable Document Format (PDF), Portable Bitmap (PBM),
+LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) etc. None of these
+serializers require an external lib.
 Further, it provides several high level functions to create QR Codes which encode
-contact data (MeCard, vCard) or WIFI configurations.
+`contact data (vCard, MeCard) <https://segno.readthedocs.io/en/stable/contact-information.html>`_,
+`EPC QR Codes <https://segno.readthedocs.io/en/stable/epc-qrcodes.html>`_,
+or `WIFI configurations <https://segno.readthedocs.io/en/stable/special-qrcode-factories.html#create-a-qr-code-for-a-wifi-configuration>`_.
 
 The project provides more than 1400 test cases (coverage >= 98%) to verify a
 standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
@@ -25,13 +26,18 @@ Unique features
 ---------------
 * Pure Python (supports 2.7, 3.7+, PyPy2 and PyPy3)
 * No dependencies
-* A lot of serialization formats (SVG, PNG, EPS, PDF, PAM, XPM, ...)
+* A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
-* `Colorful QR Codes <https://segno.readthedocs.io/en/stable/serializers.html#more-colorful-qr-codes>`_
+* `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
-     :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+
+  ... works also with Micro QR Codes
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
+    :alt: Colorful M4-Q Micro QR Code encoding "Rain"
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
   ::

@@ -104,7 +104,8 @@ def test_encode_multi_by_version_or_symbol_count(version, symbol_count):
 
 
 def test_too_much_for_one_qrcode():
-    data = 'A' * 4300  # Version 40 supports max. 4296 alphanumeric chars (40-L)
+    data = 'A' * 4296  # Version 40 supports max. 4296 alphanumeric chars (40-L)
+    data += 'B'
     with pytest.raises(segno.DataOverflowError):
         segno.make(data)
 

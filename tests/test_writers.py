@@ -13,7 +13,7 @@ import os
 import io
 import tempfile
 import pytest
-from segno import writers
+from segno import consts, writers
 
 
 def test_writable_stream():
@@ -76,8 +76,25 @@ def test_writable_not_stream3():
 
 
 def test_colormap_dark_light():
-    cm = writers._make_colormap(dark='blue', light='white')
+    cm = writers._make_colormap(7, dark='blue', light='white')
     assert 15 == len(cm)
+
+
+def test_colormap_lesser_version_7():
+    cm = writers._make_colormap(6, dark='blue', light='white')
+    assert 13 == len(cm)
+    assert consts.TYPE_VERSION_DARK not in cm
+    assert consts.TYPE_VERSION_LIGHT not in cm
+
+
+def test_colormap_micro():
+    cm = writers._make_colormap(consts.VERSION_M3, dark='blue', light='white')
+    assert 10 == len(cm)
+    assert consts.TYPE_VERSION_DARK not in cm
+    assert consts.TYPE_VERSION_LIGHT not in cm
+    assert consts.TYPE_ALIGNMENT_PATTERN_DARK not in cm
+    assert consts.TYPE_ALIGNMENT_PATTERN_LIGHT not in cm
+    assert consts.TYPE_DARKMODULE not in cm
 
 
 if __name__ == '__main__':

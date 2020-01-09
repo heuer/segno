@@ -1,9 +1,9 @@
 Special QR Code factory functions
 =================================
 
-The :py:mod:`segno.helpers` module provides factory functions to create common QR Codes
-for encoding WIFI configurations, :doc:`vCards and MeCards <contact-information>`,
-:doc:`EPC QR Codes <epc-qrcodes>` or geographic locations.
+The :py:mod:`segno.helpers` module provides factory functions to create common
+QR Codes for encoding WIFI configurations, :doc:`vCards and MeCards <contact-information>`,
+:doc:`EPC QR Codes <epc-qrcodes>` or `geographic locations <#geographic>`_.
 
 The created QR Codes use at minimum the error correction level "L". If a better
 error correction level is possible without changing the QR Code version, the
@@ -22,6 +22,10 @@ Create a QR Code for a WIFI configuration
     '3-M'
 
 
+.. image:: _static/wifi/wifi_default.png
+    :alt: 3-M QR Code encoding a WIFI configuration
+
+
 If you want more control over the creation of the QR Code (i.e. using a specific
 version or error correction level, use the :py:func:`segno.helpers.make_wifi_data`
 factory function, which returns a string which encodes the WIFI configuration.
@@ -33,11 +37,16 @@ factory function, which returns a string which encodes the WIFI configuration.
     >>> config = helpers.make_wifi_data(ssid='My network', password='secret', security='WPA')
     >>> config
     'WIFI:T:WPA;S:My network;P:secret;;'
-    >>> # Create a QR Code with error correction level "L"
-    >>> qr = segno.make(config, error='l', boost_error=False)
+    >>> # Create a QR Code with error correction level "H"
+    >>> qr = segno.make(config, error='h')
     >>> qr.designator
-    '3-L'
+    '4-H'
 
+
+.. image:: _static/wifi/wifi_data.png
+    :alt: 4-H QR Code encoding a WIFI configuration
+
+.. _geographic:
 
 Create a QR Code encoding geographic information
 ------------------------------------------------
@@ -50,6 +59,10 @@ Create a QR Code encoding geographic information
     >>> qr.designator
     '2-M'
 
+.. image:: _static/geo/geo_default.png
+    :alt: 2-M QR Code encoding a geographic informatiion
+
+
 A factory function for encoding the geographic information as string is also
 available.
 
@@ -61,9 +74,10 @@ available.
     >>> geo_uri = helpers.make_geo_data(latitude, longitude)
     >>> geo_uri
     'geo:38.8976763,-77.0365297'
-    >>> # Use version 4 instead of the minimum version
-    >>> qr = segno.make(geo_uri, version=4)
+    >>> # Use error correction level "H"
+    >>> qr = segno.make(geo_uri, error='H')
     >>> qr.designator
     '4-H'
 
-
+.. image:: _static/geo/geo_data.png
+    :alt: 4-H QR Code encoding a geographic informatiion

@@ -779,7 +779,7 @@ def mask_scores(matrix, matrix_size):
 
     :param matrix: The matrix to evaluate
     :param matrix_size: The width (or height) of the matrix.
-    :return int: A tuple of penalty scores.
+    :return tuple: A tuple of penalty scores (ints): ``(n1, n2, n3, n4)``.
     """
     n3_pattern = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 
@@ -1641,7 +1641,7 @@ class Segments:
         overhead = 0
         # ECI overhead
         if eci:
-            no_eci_indicators = sum([1 for segment in self.segments if segment.mode == consts.MODE_BYTE and segment.encoding != consts.DEFAULT_BYTE_ENCODING])
+            no_eci_indicators = sum(1 for segment in self.segments if segment.mode == consts.MODE_BYTE and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
             overhead += no_eci_indicators * 4  # ECI indicator
             overhead += no_eci_indicators * 8  # ECI assignment no
         if is_sa:
@@ -1655,7 +1655,7 @@ class Segments:
             overhead += len(self.modes) * (version + 3)
         # Char count indicator overhead
         ver_range = version_range(version) if version > 0 else version
-        overhead += sum([consts.CHAR_COUNT_INDICATOR_LENGTH[mode][ver_range] for mode in self.modes])
+        overhead += sum(consts.CHAR_COUNT_INDICATOR_LENGTH[mode][ver_range] for mode in self.modes)
         return overhead + self.bit_length
 
 

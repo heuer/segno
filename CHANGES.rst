@@ -1,6 +1,15 @@
 Changes
 =======
 
+
+0.3.7 -- 2020-01-09
+-------------------
+* Documentation improvements: Added several examples, fixed docs
+* Fixed #62: PNG serializer adds only those colors to the PLTE which are
+  actually needed for the given (Micro) QR Code.
+* Minor performance improvements
+
+
 0.3.6 -- 2020-01-06
 -------------------
 * Backwards incompatibility change: QRCode.show() uses "dark" instead of
@@ -37,6 +46,9 @@ Changes
 
       qr.save('qrcode.png', scale=5, dark='darkred', data_dark='darkorange',
               data_light='yellow')
+
+  See `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
+  for a description of available module names.
 
 
 0.3.5 -- 2020-01-03

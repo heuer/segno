@@ -21,7 +21,7 @@ from segno import writers
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
-for ext, func in ((ext, func) for ext, func in writers._VALID_SERIALIZERS.items() if ext != 'svg_debug'):
+for ext, func in writers._VALID_SERIALIZERS.items():
     # Python 2 vs Python 3
     func_code = getattr(func, 'func_code', None) or func.__code__
     defaults = getattr(func, 'func_defaults', None) or func.__defaults__
