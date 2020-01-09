@@ -22,7 +22,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.3.7.dev0'
+__version__ = '0.3.7'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence',
