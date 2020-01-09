@@ -12,6 +12,7 @@ from __future__ import absolute_import, unicode_literals
 import os
 import io
 from itertools import chain
+import gzip
 import tempfile
 import pytest
 import segno
@@ -301,176 +302,146 @@ def test_save_png_buffer():
 
 def test_save_png_filestream():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
-    qr.save(f)
-    f.close()
-    f = open(f.name, mode='rb')
+    with tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False) as f:
+        fn = f.name
+        qr.save(f)
     expected = b'\211PNG\r\n\032\n'  # PNG magic number
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='rb') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 def test_save_png_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='rb')
+    with tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False) as f:
+        fn = f.name
+    qr.save(fn)
     expected = b'\211PNG\r\n\032\n'  # PNG magic number
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='rb') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 @pytest.mark.parametrize('ext', ['svg', 'SvG', 'SVG', 'Svg'])
 def test_save_svg_filestream(ext):
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.' + ext, delete=False)
-    qr.save(f)
-    f.close()
-    f = open(f.name, mode='rb')
-    val = f.read(6)
-    f.close()
-    os.unlink(f.name)
+    with tempfile.NamedTemporaryFile('wb', suffix='.' + ext, delete=False) as f:
+        fn = f.name
+        qr.save(f)
+    with open(fn, mode='rb') as f:
+        val = f.read(6)
+    os.unlink(fn)
     assert b'<?xml ' == val
 
 
 def test_save_svg_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.svg', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='rb')
-    val = f.read(6)
-    f.close()
-    os.unlink(f.name)
+    with tempfile.NamedTemporaryFile('wb', suffix='.svg', delete=False) as f:
+        fn = f.name
+        qr.save(f.name)
+    with open(fn, mode='rb') as f:
+        val = f.read(6)
+    os.unlink(fn)
     assert b'<?xml ' == val
 
 
 def test_save_svgz_filename():
-    import gzip
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.svgz', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='rb')
+    with tempfile.NamedTemporaryFile('wb', suffix='.svgz', delete=False) as f:
+        fn = f.name
+    qr.save(fn)
     expected = b'\x1f\x8b\x08'  # gzip magic number
-    val = f.read(len(expected))
-    f.close()
-    f = gzip.open(f.name)
-    try:
+    with open(fn, mode='rb') as f:
+        val = f.read(len(expected))
+    with gzip.open(fn) as f:
         content = f.read(6)
-    finally:
-        f.close()
-    os.unlink(f.name)
+    os.unlink(fn)
     assert expected == val
     assert b'<?xml ' == content
 
 
-def test_save_svg_debug():
-    qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.svg', delete=False)
-    f.close()
-    qr.save(f.name, debug=True)
-    f = open(f.name, mode='rb')
-    val = f.read()
-    f.close()
-    os.unlink(f.name)
-    assert b'<?xml ' == val[:6]
-    assert b'<rect' in val
-    assert b'<path' not in val
-
-
 def test_save_pdf_filestream():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.pdf', delete=False)
-    qr.save(f)
-    f.close()
-    f = open(f.name, mode='rb')
-    val = f.read(5)
-    f.close()
-    os.unlink(f.name)
+    with tempfile.NamedTemporaryFile('wb', suffix='.pdf', delete=False) as f:
+        fn = f.name
+        qr.save(f)
+    with open(fn, mode='rb') as f:
+        val = f.read(5)
+    os.unlink(fn)
     assert b'%PDF-' == val
 
 
 def test_save_pdf_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('wb', suffix='.pdf', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='rb')
-    val = f.read(5)
-    f.close()
-    os.unlink(f.name)
+    with tempfile.NamedTemporaryFile('wb', suffix='.pdf', delete=False) as f:
+        fn = f.name
+        qr.save(fn)
+    with open(fn, mode='rb') as f:
+        val = f.read(5)
+    os.unlink(fn)
     assert b'%PDF-' == val
 
 
 def test_save_eps_filestream():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.eps', delete=False)
-    qr.save(f)
-    f.close()
-    f = open(f.name, mode='r')
+    with tempfile.NamedTemporaryFile('w', suffix='.eps', delete=False) as f:
+        fn = f.name
+        qr.save(f)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='r') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 def test_save_eps_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.eps', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='r')
+    with tempfile.NamedTemporaryFile('w', suffix='.eps', delete=False) as f:
+        fn = f.name
+    qr.save(fn)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='r') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 def test_save_txt_filestream():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False)
-    qr.save(f)
-    f.close()
-    f = open(f.name, mode='r')
+    with tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False) as f:
+        fn = f.name
+        qr.save(f)
     expected = '000000'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='r') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 def test_save_txt_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False)
-    f.close()
-    qr.save(f.name)
-    f = open(f.name, mode='r', encoding='utf-8')
+    with tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False) as f:
+        fn = f.name
+        qr.save(fn)
     expected = '000000'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='r', encoding='utf-8') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 @pytest.mark.parametrize('kind', ['eps', 'EpS', 'EPS', 'Eps'])
 def test_save_kind_filestream(kind):
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=False)
-    qr.save(f, kind=kind)
-    f.close()
-    f = open(f.name, mode='r')
+    with tempfile.NamedTemporaryFile('w', suffix='.murks', delete=False) as f:
+        fn = f.name
+        qr.save(f, kind=kind)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(fn, mode='r') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
@@ -490,30 +461,30 @@ def test_save_kind_filename():
 def test_save_kind_overrides_filename():
     qr = segno.make_qr('test')
     # SVG extension
-    f = tempfile.NamedTemporaryFile('w', suffix='.svg', delete=False)
-    f.close()
+    with tempfile.NamedTemporaryFile('w', suffix='.svg', delete=False) as f:
+        fn = f.name
     # ... but we want EPS
-    qr.save(f.name, kind='eps')
-    f = open(f.name, mode='r')
+    qr.save(fn, kind='eps')
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    val = f.read(len(expected))
-    f.close()
-    os.unlink(f.name)
+    with open(f.name, mode='r') as f:
+        val = f.read(len(expected))
+    os.unlink(fn)
     assert expected == val
 
 
 def test_save_invalid_filename():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=True)
+    with tempfile.NamedTemporaryFile('w', suffix='.murks', delete=True) as f:
+        fn = f.name
     with pytest.raises(ValueError):
-        qr.save(f.name)
+        qr.save(fn)
 
 
 def test_save_invalid_filename2():
     qr = segno.make_qr('test')
-    f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=True)
-    with pytest.raises(ValueError):
-        qr.save(f)
+    with tempfile.NamedTemporaryFile('w', suffix='.murks', delete=True) as f:
+        with pytest.raises(ValueError):
+            qr.save(f)
 
 
 def test_unknown_converter():
