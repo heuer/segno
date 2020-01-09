@@ -779,7 +779,7 @@ def mask_scores(matrix, matrix_size):
 
     :param matrix: The matrix to evaluate
     :param matrix_size: The width (or height) of the matrix.
-    :return int: A tuple of penalty scores.
+    :return tuple: A tuple of penalty scores (ints): ``(n1, n2, n3, n4)``.
     """
     n3_pattern = bytearray((0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1))
 
