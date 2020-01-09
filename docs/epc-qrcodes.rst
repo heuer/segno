@@ -20,7 +20,7 @@ fixed to "M" and the QR Code version must not be higher than 13.
     >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft', iban='DE33100205000001194700', amount=20, text='Spende fuer Wikipedia')
     >>> qr.save('spende-wikipedia.png', scale=3)
 
-.. image:: _static/spende-wikipedia.png
+.. image:: _static/epc/spende-wikipedia.png
     :alt: EPC QR Code
 
 The QR Code shown above encodes the following information::
@@ -50,7 +50,7 @@ the encoding with an integer referring to one of the supported encodings
     >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft', iban='DE33100205000001194700', amount=13.05, text='Spende fuer Wikipedia', encoding=1)
     >>> qr.save('spende-wikipedia2.png', scale=3)
 
-.. image:: _static/spende-wikipedia2.png
+.. image:: _static/epc/spende-wikipedia2.png
     :alt: EPC QR Code
 
 Decoded infomation::
