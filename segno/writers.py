@@ -1141,7 +1141,6 @@ def _make_colormap(version, dark, light,
 
 _VALID_SERIALIZERS = {
     'svg': write_svg,
-    'svg_debug': write_svg_debug,
     'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
@@ -1182,17 +1181,13 @@ def save(matrix, version, out, kind=None, **kw):
         ext = fname[fname.rfind('.') + 1:].lower()
     else:
         ext = kind.lower()
-    if not is_stream and ext == 'svgz':
-        f = gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9))
-        try:
-            _VALID_SERIALIZERS['svg'](matrix, version, f, **kw)
-        finally:
-            f.close()
+    is_svgz = not is_stream and ext == 'svgz'
+    try:
+        serializer = _VALID_SERIALIZERS[ext if not is_svgz else 'svg']
+    except KeyError:
+        raise ValueError('Unknown file extension ".{0}"'.format(ext))
+    if is_svgz:
+        with gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9)) as f:
+            serializer(matrix, version, f, **kw)
     else:
-        if kw.pop('debug', False) and ext == 'svg':
-            ext = 'svg_debug'
-        try:
-            serializer = _VALID_SERIALIZERS[ext]
-        except KeyError:
-            raise ValueError('Unknown file extension ".{0}"'.format(ext))
         serializer(matrix, version, out, **kw)
