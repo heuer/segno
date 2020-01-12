@@ -21,12 +21,22 @@ from segno import writers
 # file extension to supported keywords mapping
 _EXT_TO_KW_MAPPING = {}
 
-for ext, func in writers._VALID_SERIALIZERS.items():
+
+def _get_args(func):
     # Python 2 vs Python 3
     func_code = getattr(func, 'func_code', None) or func.__code__
     defaults = getattr(func, 'func_defaults', None) or func.__defaults__
     args = func_code.co_varnames[:func_code.co_argcount]
-    _EXT_TO_KW_MAPPING[ext] = args[-len(defaults):]
+    return args[-len(defaults):]
+
+
+for ext, func in writers._VALID_SERIALIZERS.items():
+    kws = set(_get_args(func))
+    try:
+        kws.update(_get_args(func.__wrapped__))
+    except AttributeError:
+        pass
+    _EXT_TO_KW_MAPPING[ext] = frozenset(kws)
 
 del writers
 

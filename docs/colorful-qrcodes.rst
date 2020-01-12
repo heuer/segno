@@ -22,8 +22,8 @@ default value (dark modules are rendered in black, light modules in white).
 .. note:: Providing an alpha channel to a serializer which does not accept an
     alpha channel results usually into an error.
 
-The PNG serializer supports more than two colors, every module type may have
-its own color.
+The SVG and PNG serializers support more than two colors, every module type may
+have its own color.
 
 .. code-block:: python
 
