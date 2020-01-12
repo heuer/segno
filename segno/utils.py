@@ -98,8 +98,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
     Converts the `matrix` into an iterable of ((x1, y1), (x2, y2)) tuples which
     represent a sequence (horizontal line) of dark modules.
 
-    The path starts at the 1st row of the matrix and moves down to the last
-    row.
+    The path starts at the 1st row of the matrix and moves down to the last row.
 
     :param matrix: An iterable of bytearrays.
     :param x: Initial position on the x-axis.
@@ -110,8 +109,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
     y -= incby  # Move along y-axis so we can simply increment y in the loop
     last_bit = 0x1
     for row in matrix:
-        x1 = x
-        x2 = x
+        x1, x2 = x, x
         y += incby
         for bit in row:
             if last_bit != bit and not bit:
@@ -149,8 +147,8 @@ def matrix_iter(matrix, version, scale=1, border=None):
     border_row = [0x0] * width
     for i in range(-border, height + border):
         row = matrix[i] if 0 <= i < height else border_row
-        res_row = tuple(chain.from_iterable(([0x1 if 0 <= j < width and row[j] else 0x0] * scale
-                                                for j in range(-border, width + border))))
+        res_row = tuple(chain.from_iterable([0x1 if 0 <= j < width and row[j] else 0x0] * scale
+                                            for j in range(-border, width + border)))
         for s in range(scale):
             yield res_row
 
@@ -254,4 +252,4 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
     width_range = range(-border, width + border)
     for i in range(-border, height + border):
         for s in scale_range:
-            yield row(([get_bit(i, j)] * scale for j in width_range))
+            yield row([get_bit(i, j)] * scale for j in width_range)
