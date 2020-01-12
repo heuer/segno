@@ -57,6 +57,8 @@ def test_write_svg():
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
+    # No background (and scaling) -> no group
+    assert _get_group(root) is None
     assert 'viewBox' not in root.attrib
     assert 'height' in root.attrib
     assert 'width' in root.attrib
@@ -84,6 +86,8 @@ def test_write_svg_black(dark):
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
+    # No background (and scaling) -> no group
+    assert _get_group(root) is None
     assert 'viewBox' not in root.attrib
     assert 'height' in root.attrib
     assert 'width' in root.attrib
@@ -110,6 +114,8 @@ def test_write_svg_background_omitted():
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
+    # No background (and scaling) -> no group
+    assert _get_group(root) is None
     # Background should be the first path in the doc
     path = _get_first_path(root)
     assert path is not None
