@@ -24,8 +24,13 @@ def _get_svg_el(root, name):
     return root.find('{%s}%s' % (_SVG_NS, name))
 
 
-def _get_path(root):
-    return _get_svg_el(root, 'path')
+def _get_group(root):
+    return _get_svg_el(root, 'g')
+
+
+def _get_first_path(root):
+    g = _get_group(root)
+    return _get_svg_el(root if g is None else g, 'path')
 
 
 def _get_title(root):
@@ -58,7 +63,7 @@ def test_write_svg():
     css_class = root.attrib.get('class')
     assert css_class
     assert 'segno' == css_class
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
     assert 'qrline' == path_class
@@ -85,7 +90,7 @@ def test_write_svg_black(dark):
     css_class = root.attrib.get('class')
     assert css_class
     assert 'segno' == css_class
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
     assert 'qrline' == path_class
@@ -106,7 +111,7 @@ def test_write_svg_background_omitted():
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
     # Background should be the first path in the doc
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path is not None
     assert not path.attrib.get('fill')
 
@@ -120,8 +125,10 @@ def test_write_svg_background_white(light):
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
+    # No scaling -> no group
+    assert _get_group(root) is None
     # Background should be the first path in the doc
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path is not None
     assert '#fff' == path.attrib.get('fill')
     assert path.attrib.get('class') is None
@@ -141,7 +148,7 @@ def test_write_svg_color_rgb():
     css_class = root.attrib.get('class')
     assert css_class
     assert 'segno' == css_class
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
     assert 'qrline' == path_class
@@ -166,7 +173,7 @@ def test_write_svg_color_rgba_svg2():
     qr.save(out, kind='svg', dark='#0000ffcc', svgversion=2.0)
     assert b'stroke-opacity' not in out.getvalue()
     root = _parse_xml(out)
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path.attrib['stroke'].startswith('rgba')
 
 
@@ -183,7 +190,7 @@ def test_write_svg_background_rgba_svg2():
     qr.save(out, kind='svg', light='#0000ffcc', svgversion=2.0)
     assert b'fill-opacity' not in out.getvalue()
     root = _parse_xml(out)
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path.attrib['fill'].startswith('rgba')
 
 
@@ -279,7 +286,7 @@ def test_no_line_class():
     out = io.BytesIO()
     qr.save(out, kind='svg', lineclass=None)
     root = _parse_xml(out)
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert 'class' not in path_el.attrib
 
 
@@ -288,7 +295,7 @@ def test_no_line_class_empty_str():
     out = io.BytesIO()
     qr.save(out, kind='svg', lineclass='')
     root = _parse_xml(out)
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert 'class' not in path_el.attrib
 
 
@@ -297,7 +304,7 @@ def test_custom_line_class():
     out = io.BytesIO()
     qr.save(out, kind='svg', lineclass='test-class')
     root = _parse_xml(out)
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert 'class' in path_el.attrib
     assert 'test-class' == path_el.attrib.get('class')
 
@@ -307,7 +314,7 @@ def test_omit_svgns():
     out = io.BytesIO()
     qr.save(out, kind='svg', svgns=False)
     root = _parse_xml(out)
-    path_el = _get_path(root)
+    path_el = _get_first_path(root)
     assert path_el is None  # (since _get_path uses the SVG namespace)
     path_el = root.find('path')  # Query w/o namespace MUST find the path
     assert path_el is not None
@@ -430,7 +437,7 @@ def test_background():
     qr.save(out, kind='svg', light=color)
     root = _parse_xml(out)
     # Background should be the first path in the doc
-    rect = _get_path(root)
+    rect = _get_first_path(root)
     assert rect is not None
     assert color == rect.attrib['fill']
 
@@ -441,7 +448,7 @@ def test_module_color():
     color = '#800080'
     qr.save(out, kind='svg', dark=color)
     root = _parse_xml(out)
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path is not None
     assert color == path.attrib['stroke']
 
@@ -451,7 +458,7 @@ def test_scale():
     out = io.BytesIO()
     qr.save(out, kind='svg', scale=2)
     root = _parse_xml(out)
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path is not None
     assert 'scale(2)' in path.attrib['transform']
 
@@ -462,7 +469,7 @@ def test_scale_float():
     scale = 2.13
     qr.save(out, kind='svg', scale=scale)
     root = _parse_xml(out)
-    path = _get_path(root)
+    path = _get_first_path(root)
     assert path is not None
     assert 'scale({0})'.format(scale) in path.attrib['transform']
 
@@ -524,7 +531,7 @@ def svg_as_matrix(buff, border):
     Returns the QR code path as list of [0,1] lists.
     """
     root = _parse_xml(buff)
-    path = _get_path(root)
+    path = _get_first_path(root)
     h = root.attrib['height']
     w = root.attrib['width']
     if h != w:
