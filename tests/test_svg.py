@@ -124,6 +124,7 @@ def test_write_svg_background_white(light):
     path = _get_path(root)
     assert path is not None
     assert '#fff' == path.attrib.get('fill')
+    assert path.attrib.get('class') is None
 
 
 def test_write_svg_color_rgb():
