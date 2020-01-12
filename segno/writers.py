@@ -88,12 +88,12 @@ def colorful(dark, light):
     """
     def w(f):
         @functools.wraps(f)
-        def wrapper(*args, dark=dark, light=light, finder_dark=False, finder_light=False,
+        def wrapper(matrix, version, out, dark=dark, light=light, finder_dark=False, finder_light=False,
                     data_dark=False, data_light=False, version_dark=False, version_light=False,
                     format_dark=False, format_light=False, alignment_dark=False, alignment_light=False,
                     timing_dark=False, timing_light=False, separator=False, dark_module=False,
                     quiet_zone=False, **kw):
-            cm = _make_colormap(args[1], dark=dark, light=light, finder_dark=finder_dark,
+            cm = _make_colormap(version, dark=dark, light=light, finder_dark=finder_dark,
                                 finder_light=finder_light, data_dark=data_dark,
                                 data_light=data_light, version_dark=version_dark,
                                 version_light=version_light, format_dark=format_dark,
@@ -101,7 +101,7 @@ def colorful(dark, light):
                                 alignment_light=alignment_light, timing_dark=timing_dark,
                                 timing_light=timing_light, separator=separator,
                                 dark_module=dark_module, quiet_zone=quiet_zone)
-            return f(*args, colormap=cm, **kw)
+            return f(matrix, version, out, cm, **kw)
         return wrapper
     return w
 
@@ -292,6 +292,7 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
     width, height = get_symbol_size(version, scale, border)
     is_multicolor = len(set(colormap.values())) > 2
     need_background = not is_multicolor and colormap[consts.TYPE_QUIET_ZONE] is not None and not draw_transparent
+    need_svg_group = scale != 1 and (need_background or is_multicolor)
     if is_multicolor:
         miter = matrix_to_lines_verbose()
     else:
@@ -305,7 +306,7 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
         coordinates[clr].append((x1 - x, int(y1 - y), x2 - x1))
         xy[clr] = x2, y1
     if need_background:
-        coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width)]
+        coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width // scale)]
     if not draw_transparent:
         try:
             del coordinates[None]
@@ -314,7 +315,7 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
     paths = {}
     scale_info = ' transform="scale({})"'.format(scale) if scale != 1 else ''
     for color, coord in coordinates.items():
-        path = ['<path{}'.format(scale_info if not is_multicolor else '')]
+        path = ['<path{}'.format(scale_info if not need_svg_group else '')]
         opacity = None
         clr = svg_color(color)
         if clr is not None:
@@ -330,9 +331,8 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
         path.append('"/>')
         paths[color] = ''.join(path)
     if need_background:
-        #TODO: Remove line class
         k = colormap[consts.TYPE_QUIET_ZONE]
-        paths[k] = paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height, width))
+        paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
     l = [] if not xmldecl else ['<?xml version="1.0" encoding="{0}"?>\n'.format(encoding)]
     append = l.append
     append('<svg')
@@ -353,10 +353,10 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
         append('<title>{}</title>'.format(escape(title)))
     if desc is not None:
         append('<desc>{}</desc>'.format(escape(desc)))
-    if is_multicolor and scale_info:
+    if need_svg_group:
         append('<g{}>'.format(scale_info))
     append(''.join(sorted(paths.values(), key=len)))
-    if is_multicolor and scale_info:
+    if need_svg_group:
         append('</g>')
     append('</svg>')
     if nl:
