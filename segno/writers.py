@@ -84,9 +84,9 @@ def writable(file_or_path, mode, encoding=None):
 
 def colorful(dark, light):
     """\
-
+    Decorator to inject a module type -> color mapping into the decorated function.
     """
-    def w(f):
+    def decorate(f):
         @functools.wraps(f)
         def wrapper(matrix, version, out, dark=dark, light=light, finder_dark=False, finder_light=False,
                     data_dark=False, data_light=False, version_dark=False, version_light=False,
@@ -102,8 +102,10 @@ def colorful(dark, light):
                                 timing_light=timing_light, separator=separator,
                                 dark_module=dark_module, quiet_zone=quiet_zone)
             return f(matrix, version, out, cm, **kw)
+        if _PY2:
+            wrapper.__wrapped__ = f  # Needed by CLI to inspect the arguments
         return wrapper
-    return w
+    return decorate
 
 
 def write_svg(matrix, version, out, scale=1, border=None, dark='#000',
