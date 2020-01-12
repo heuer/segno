@@ -226,7 +226,7 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
                 if i == height - 8 and j == 8:
                     return consts.TYPE_DARKMODULE
             # Timing - IMPORTANT: Check alignment (see above) in advance!
-            if not is_micro and ((i == 6 and j > 7 and j < width - 8) or (j == 6 and i > 7 and i < height - 8)) \
+            if not is_micro and ((i == 6 and 7 < j < width - 8) or (j == 6 and 7 < i < height - 8)) \
                     or is_micro and (i == 0 and j > 7 or j == 0 and i > 7):
                 return (consts.TYPE_TIMING_LIGHT, consts.TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
@@ -236,12 +236,12 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
             # Finder pattern
             # top left             top right
             if i < 7 and (j < 7 or (not is_micro and j > width - 8)) \
-                or not is_micro and i > height - 8 and j < 7:  # bottom left
+                    or not is_micro and i > height - 8 and j < 7:  # bottom left
                 return (consts.TYPE_FINDER_PATTERN_LIGHT, consts.TYPE_FINDER_PATTERN_DARK)[val]
             # Separator
             # top left              top right
             if i < 8 and (j < 8 or (not is_micro and j > width - 9)) \
-                or not is_micro and (i > height - 9 and j < 8):  # bottom left
+                    or not is_micro and (i > height - 9 and j < 8):  # bottom left
                 return consts.TYPE_SEPARATOR
             return (consts.TYPE_DATA_LIGHT, consts.TYPE_DATA_DARK)[val]
         else:
