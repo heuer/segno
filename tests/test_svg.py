@@ -70,63 +70,12 @@ def test_write_svg():
     assert desc_el is None
 
 
-def test_write_svg_black():
+@pytest.mark.parametrize('dark', ['bLack', '#000000', (0, 0, 0)])
+def test_write_svg_black(dark):
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='bLacK')
-    xml_str = out.getvalue()
-    assert xml_str.startswith(b'<?xml')
-    root = _parse_xml(out)
-    assert 'viewBox' not in root.attrib
-    assert 'height' in root.attrib
-    assert 'width' in root.attrib
-    css_class = root.attrib.get('class')
-    assert css_class
-    assert 'segno' == css_class
-    path_el = _get_path(root)
-    assert path_el is not None
-    path_class = path_el.get('class')
-    assert 'qrline' == path_class
-    stroke = path_el.get('stroke')
-    assert stroke == '#000'
-    title_el = _get_title(root)
-    assert title_el is None
-    desc_el = _get_desc(root)
-    assert desc_el is None
-
-
-def test_write_svg_black2():
-    # Test with default options
-    qr = segno.make_qr('test')
-    out = io.BytesIO()
-    qr.save(out, kind='svg', dark='#000000')
-    xml_str = out.getvalue()
-    assert xml_str.startswith(b'<?xml')
-    root = _parse_xml(out)
-    assert 'viewBox' not in root.attrib
-    assert 'height' in root.attrib
-    assert 'width' in root.attrib
-    css_class = root.attrib.get('class')
-    assert css_class
-    assert 'segno' == css_class
-    path_el = _get_path(root)
-    assert path_el is not None
-    path_class = path_el.get('class')
-    assert 'qrline' == path_class
-    stroke = path_el.get('stroke')
-    assert stroke == '#000'
-    title_el = _get_title(root)
-    assert title_el is None
-    desc_el = _get_desc(root)
-    assert desc_el is None
-
-
-def test_write_svg_black3():
-    # Test with default options
-    qr = segno.make_qr('test')
-    out = io.BytesIO()
-    qr.save(out, kind='svg', dark=(0, 0, 0))
+    qr.save(out, kind='svg', dark=dark)
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
@@ -162,39 +111,12 @@ def test_write_svg_background_omitted():
     assert not path.attrib.get('fill')
 
 
-def test_write_svg_background_white():
+@pytest.mark.parametrize('light', ['wHitE', '#fff', (255, 255, 255), '#ffffff'])
+def test_write_svg_background_white(light):
     # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', light='white')
-    xml_str = out.getvalue()
-    assert xml_str.startswith(b'<?xml')
-    root = _parse_xml(out)
-    # Background should be the first path in the doc
-    path = _get_path(root)
-    assert path is not None
-    assert '#fff' == path.attrib.get('fill')
-
-
-def test_write_svg_background_white2():
-    # Test with default options
-    qr = segno.make_qr('test')
-    out = io.BytesIO()
-    qr.save(out, kind='svg', light='#fff')
-    xml_str = out.getvalue()
-    assert xml_str.startswith(b'<?xml')
-    root = _parse_xml(out)
-    # Background should be the first path in the doc
-    path = _get_path(root)
-    assert path is not None
-    assert '#fff' == path.attrib.get('fill')
-
-
-def test_write_svg_background_white3():
-    # Test with default options
-    qr = segno.make_qr('test')
-    out = io.BytesIO()
-    qr.save(out, kind='svg', light='#ffffff')
+    qr.save(out, kind='svg', light=light)
     xml_str = out.getvalue()
     assert xml_str.startswith(b'<?xml')
     root = _parse_xml(out)
