@@ -102,7 +102,7 @@ def colorful(dark, light):
                                 timing_light=timing_light, separator=separator,
                                 dark_module=dark_module, quiet_zone=quiet_zone)
             return f(matrix, version, out, cm, **kw)
-        if _PY2:
+        if _PY2:  # pragma: no cover
             wrapper.__wrapped__ = f  # Needed by CLI to inspect the arguments
         return wrapper
     return decorate
@@ -325,11 +325,11 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
                 clr, opacity = clr
             path.append(' stroke={0}'.format(quoteattr(clr)))
             if opacity is not None:
-                path.append(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
+                path.append(' stroke-opacity={}'.format(quoteattr(str(opacity))))
         if lineclass:
-            path.append(' class={0}'.format(quoteattr(lineclass)))
+            path.append(' class={}'.format(quoteattr(lineclass)))
         path.append(' d="')
-        path.append(''.join(['{moveto}{x} {y}h{length}'.format(moveto=('m' if i > 0 else 'M'), x=x, y=y, length=l) for i, (x, y, l) in enumerate(coord)]))
+        path.append(''.join(['{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'), x=x, y=y, l=l) for i, (x, y, l) in enumerate(coord)]))
         path.append('"/>')
         paths[color] = ''.join(path)
     if need_background:
@@ -341,7 +341,7 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
     if svgns:
         append(' xmlns="http://www.w3.org/2000/svg"')
     if svgversion is not None and svgversion < 2.0:
-        append(' version={0}'.format(quoteattr(str(svgversion))))
+        append(' version={}'.format(quoteattr(str(svgversion))))
     if not omitsize:
         append(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
     if omitsize or unit:
