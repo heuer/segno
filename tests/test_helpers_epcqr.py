@@ -49,6 +49,21 @@ def test_text_002(amount):
     assert 'M' == qr.error
 
 
+@pytest.mark.parametrize('expected_amount, amount', [('EUR1000', 1000),
+                                                     ('EUR1000', 1000.0),
+                                                     ('EUR2000', decimal.Decimal('2000'))])
+def test_trailing_zeros(expected_amount, amount):
+    name = "François D'Alsace S.A."
+    iban = 'FR1420041010050500013M02606'
+    text = 'Client:Marie Louise La Lune'
+    kw = dict(name=name, iban=iban, text=text, amount=amount)
+    data = make_epc_qr_data(**kw)
+    assert len(data) == 103  # See. EPC069-12 Version 2.1 dtd. 9 February 2012 example 2
+    encoding = 'iso-8859-1'
+    d = [x.decode(encoding) for x in data.split(b'\n')]
+    assert expected_amount == d[7]
+
+
 @pytest.mark.parametrize('amount', [5.0, 5, '5.00', decimal.Decimal('5.00000')])
 def test_remove_dot(amount):
     kw = _make_valid_kw()
