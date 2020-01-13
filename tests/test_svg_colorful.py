@@ -63,6 +63,19 @@ def test_merge_colors2():
     assert not any(p.attrib.get('transform') for p in paths)
 
 
+def test_nogroup():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
+            alignment_light='yellow', quiet_zone='yellow', scale=1.0)
+    root = _parse_xml(out)
+    paths = root.findall('.//{%s}path' % _SVG_NS)
+    assert 3 == len(paths)
+    assert all(p.attrib.get('transform') is None for p in paths)
+    group = _get_group(root)
+    assert not group
+
+
 def test_scale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
@@ -71,7 +84,7 @@ def test_scale():
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 3 == len(paths)
-    assert not any(p.attrib.get('transform') for p in paths)
+    assert all(p.attrib.get('transform') is None for p in paths)
     group = _get_group(root)
     assert group
     assert 'scale(1.5)' == group.attrib.get('transform')

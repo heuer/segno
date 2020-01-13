@@ -50,7 +50,6 @@ def _parse_xml(buff):
 
 
 def test_write_svg():
-    # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg')
@@ -79,7 +78,6 @@ def test_write_svg():
 
 @pytest.mark.parametrize('dark', ['bLack', '#000000', (0, 0, 0)])
 def test_write_svg_black(dark):
-    # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', dark=dark)
@@ -107,7 +105,6 @@ def test_write_svg_black(dark):
 
 
 def test_write_svg_background_omitted():
-    # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg')
@@ -124,7 +121,6 @@ def test_write_svg_background_omitted():
 
 @pytest.mark.parametrize('light', ['wHitE', '#fff', (255, 255, 255), '#ffffff'])
 def test_write_svg_background_white(light):
-    # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', light=light)
@@ -142,10 +138,21 @@ def test_write_svg_background_white(light):
     assert d
     expected = 'M0 0h{1}v{0}h-{1}z'.format(*qr.symbol_size())
     assert expected == d
+    g = _get_group(root)
+    assert not g
+
+
+def test_scale_background():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', dark='green', light='yellow', scale=10)
+    root = _parse_xml(out)
+    g = _get_group(root)
+    assert g
+    assert 'scale(10)' == g.attrib.get('transform')
 
 
 def test_write_svg_color_rgb():
-    # Test with default options
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', dark=(76, 131, 205))
