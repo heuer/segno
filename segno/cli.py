@@ -66,32 +66,67 @@ def make_parser():
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
                         dest='micro', action='store_false')
-    parser.add_argument('--pattern', '-p', help='Mask pattern to use. If unspecified (default), an optimal mask pattern is used. Valid values for QR Codes: 0 .. 7. Valid values for Micro QR Codes: 0 .. 3',
+    parser.add_argument('--pattern', '-p', help='Mask pattern to use. '
+                                                'If unspecified (default), an optimal mask pattern is used. '
+                                                'Valid values for QR Codes: 0 .. 7. '
+                                                'Valid values for Micro QR Codes: 0 .. 3',
                         required=False,
                         default=None,
                         type=int)
-    parser.add_argument('--no-error-boost', help='Disables the automatic error correction level incrementation. By default, the maximal error correction level is used (without changing the version).',
+    parser.add_argument('--no-error-boost', help='Disables the automatic error correction level incrementation. '
+                                                 'By default, the maximal error correction level is used (without changing the version).',
                         dest='boost_error', action='store_false')
     parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version or symbol count must be provided',
                         dest='seq', action='store_true')
     parser.add_argument('--symbol-count', '-sc', help='Number of symbols to create',
                         default=None,
                         type=int)
-    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) will be used. A value of 0 omits the border',
+    parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. '
+                                               'By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) '
+                                               'will be used. A value of 0 omits the border',
                         default=None,
                         type=int)
-    parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used which can result into too small images. Some output formats, i.e. SVG, accept a decimal value.',
+    parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used. '
+                                              'That may lead into too small images. '
+                                              'Some output formats, i.e. SVG, accept a decimal value.',
                         default=1,
                         type=_convert_scale)
     parser.add_argument('--color', help=argparse.SUPPRESS, dest='dark')
     parser.add_argument('--background', '-bg', help=argparse.SUPPRESS, dest='light')
-    parser.add_argument('--dark', help='Color of the dark modules. The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
-                                        'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) and some support "transparent" as color value.'
-                                        'The standard color is black.')
-    parser.add_argument('--light', help='Color of the light modules. See "dark" for a description of possible values. The standard light color is white.')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
-                        required=False,
-                        )
+                        required=False)
+
+    color_group = parser.add_argument_group('Module Colors', 'Arguments to specify the module colors. '
+                                                             'Multiple colors are supported for SVG and PNG. '
+                                                             'The module color support varies between the serialization formats. '
+                                                             'Most serializers support at least "--dark" and "--light". '
+                                                             'Unsupported arguments are ignored.')
+    color_group.add_argument('--dark', help='Color of the dark modules. '
+                                            'The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
+                                            'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) '
+                                            'and some support "transparent" / "trans" as color value for alpha transparency. '
+                                            'The standard color is black.')
+    color_group.add_argument('--light', help='Color of the light modules. '
+                                             'See "dark" for a description of possible values. '
+                                             'The standard light color is white.')
+    color_group.add_argument('--finder-dark', help='Sets the color of the dark finder modules')
+    color_group.add_argument('--finder-light', help='Sets the color of the light finder modules')
+    color_group.add_argument('--separator', help='Sets the color of the separator modules')
+    color_group.add_argument('--data-dark', help='Sets the color of the dark data modules')
+    color_group.add_argument('--data-light', help='Sets the color of the light data modules')
+    color_group.add_argument('--timing-dark', help='Sets the color of the dark timing modules')
+    color_group.add_argument('--timing-light', help='Sets the color of the light timing modules')
+    color_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules',
+                           dest='alignment_dark', )
+    color_group.add_argument('--align-light', help='Sets the color of the light alignment modules',
+                           dest='alignment_light', )
+    color_group.add_argument('--quiet-zone', help='Sets the color of the quiet zone (border)')
+    color_group.add_argument('--dark-module', help='Sets the color of the dark module')
+    color_group.add_argument('--format-dark', help='Sets the color of the dark format information modules')
+    color_group.add_argument('--format-light', help='Sets the color of the light format information modules')
+    color_group.add_argument('--version-dark', help='Sets the color of the dark version information modules')
+    color_group.add_argument('--version-light', help='Sets the color of the light version information modules')
+
     # SVG
     svg_group = parser.add_argument_group('SVG', 'SVG specific options')
     svg_group.add_argument('--no-classes', help='Omits the (default) SVG classes',
@@ -125,23 +160,6 @@ def make_parser():
     png_group.add_argument('--no-ad', help=argparse.SUPPRESS,
                            dest='addad',
                            action='store_false')
-    png_group.add_argument('--finder-dark', help='Sets the color of the dark finder modules')
-    png_group.add_argument('--finder-light', help='Sets the color of the light finder modules')
-    png_group.add_argument('--separator', help='Sets the color of the separator modules')
-    png_group.add_argument('--data-dark', help='Sets the color of the dark data modules')
-    png_group.add_argument('--data-light', help='Sets the color of the light data modules')
-    png_group.add_argument('--timing-dark', help='Sets the color of the dark timing modules')
-    png_group.add_argument('--timing-light', help='Sets the color of the light timing modules')
-    png_group.add_argument('--align-dark', help='Sets the color of the dark alignment modules',
-                           dest='alignment_dark', )
-    png_group.add_argument('--align-light', help='Sets the color of the light alignment modules',
-                           dest='alignment_light', )
-    png_group.add_argument('--quiet-zone', help='Sets the color of the quiet zone (border)')
-    png_group.add_argument('--dark-module', help='Sets the color of the dark module')
-    png_group.add_argument('--format-dark', help='Sets the color of the dark format information modules')
-    png_group.add_argument('--format-light', help='Sets the color of the light format information modules')
-    png_group.add_argument('--version-dark', help='Sets the color of the dark version information modules')
-    png_group.add_argument('--version-light', help='Sets the color of the light version information modules')
     # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
