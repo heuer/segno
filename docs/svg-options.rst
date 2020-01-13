@@ -97,7 +97,7 @@ Too squeeze the file size futher, omit the trailing newline character via ``nl=F
     >>> qr.save('penny-lane.svg', scale=4, xmldecl=False, svgns=False, svgclass=None, lineclass=None, omitsize=True, nl=False)
 
 
-The result is allmost he same, but you've saved a few (abt. 107) bytes
+The result is almost he same, but you've saved a few (abt. 107) bytes
 
 .. raw:: html
     :file: _static/svg/penny-lane-optimized.svg
@@ -133,3 +133,12 @@ lineclass
 ~~~~~~~~~
 String (default: "qrline").
 CSS class of all paths. Use ``None`` to omit it.
+
+
+omitsize
+~~~~~~~~
+Boolean to disable the ``width`` and ``height`` attributes.
+
+If set to ``True`` (default: ``False``) the attributes will be replaced by
+a ``viewBox`` attribute.
+

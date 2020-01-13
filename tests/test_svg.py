@@ -543,6 +543,13 @@ def test_write_unicode_filename():
     assert desc == _get_desc(root).text
 
 
+def test_encoding_none():
+    qr = segno.make_qr('Help!')
+    buff = io.BytesIO()
+    qr.save(buff, 'svg', encoding=None)
+    assert b'<?xml version="1.0"?>' in buff.getvalue()
+
+
 def svg_as_matrix(buff, border):
     """\
     Returns the QR code path as list of [0,1] lists.
