@@ -554,9 +554,9 @@ class QRCode:
 
         **Scalable Vector Graphics (SVG)**
 
-        =============    ==============================================================
+        ================ ==============================================================
         Name             Description
-        =============    ==============================================================
+        ================ ==============================================================
         out              Filename or :py:class:`io.BytesIO`
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
@@ -575,13 +575,43 @@ class QRCode:
                          document will have a color value of "#000". If the color
                          is "#FF0000", the resulting color is not "#F00", but
                          the web color name "red".
-        light            Default value ``None``. If this paramater is set to another
+        light            Default value ``None``. If this parameter is set to another
                          value, the resulting image will have another path which
                          is used to define the background color.
                          If an alpha channel is used, the resulting path may
                          have a "fill-opacity" attribute (for SVG version < 2.0)
                          or the "fill" attribute has a "rgba(R, G, B, A)" value.
-                         See keyword "dark" for further details.
+        finder_dark      Color of the dark modules of the finder patterns
+                         Default: undefined, use value of "dark"
+        finder_light     Color of the light modules of the finder patterns
+                         Default: undefined, use value of "light"
+        data_dark        Color of the dark data modules
+                         Default: undefined, use value of "dark"
+        data_light       Color of the light data modules.
+                         Default: undefined, use value of "light".
+        version_dark     Color of the dark modules of the version information.
+                         Default: undefined, use value of "dark".
+        version_light    Color of the light modules of the version information,
+                         Default: undefined, use value of "light".
+        format_dark      Color of the dark modules of the format information.
+                         Default: undefined, use value of "dark".
+        format_light     Color of the light modules of the format information.
+                         Default: undefined, use value of "light".
+        alignment_dark   Color of the dark modules of the alignment patterns.
+                         Default: undefined, use value of "dark".
+        alignment_light  Color of the light modules of the alignment patterns.
+                         Default: undefined, use value of "light".
+        timing_dark      Color of the dark modules of the timing patterns.
+                         Default: undefined, use value of "dark".
+        timing_light     Color of the light modules of the timing patterns.
+                         Default: undefined, use value of "light".
+        separator        Color of the separator.
+                         Default: undefined, use value of "light".
+        dark_module      Color of the dark module (a single dark module which
+                         occurs in all QR Codes but not in Micro QR Codes.
+                         Default: undefined, use value of "dark".
+        quiet_zone       Color of the quiet zone / border.
+                         Default: undefined, use value of "light".
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
@@ -623,7 +653,9 @@ class QRCode:
                          SVG document should be created (file extension "svgz").
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
-        =============    ==============================================================
+        draw_transparent Indicates if transparent SVG paths should be
+                         added to the graphic (default: ``False``)
+        ================ ==============================================================
 
 
         .. _png:

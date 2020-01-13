@@ -147,6 +147,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     :param float svgversion: SVG version (default: None)
     :param bool nl: Indicates if the document should have a trailing newline
             (default: ``True``)
+    :param bool draw_transparent: Indicates if transparent SVG paths should be
+            added to the graphic (default: ``False``)
     """
     def svg_color(clr):
         return colors.color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
@@ -259,12 +261,12 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
 
-def as_svg_data_uri(matrix, version, scale=1, border=None, dark='#000',
-                    light=None, xmldecl=False, svgns=True, title=None,
+def as_svg_data_uri(matrix, version, scale=1, border=None,
+                    xmldecl=False, svgns=True, title=None,
                     desc=None, svgid=None, svgclass='segno',
                     lineclass='qrline', omitsize=False, unit='',
                     encoding='utf-8', svgversion=None, nl=False,
-                    encode_minimal=False, omit_charset=False):
+                    encode_minimal=False, omit_charset=False, **kw):
     """\
     Converts the matrix to a SVG data URI.
 
@@ -285,11 +287,10 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, dark='#000',
     """
     encode = partial(quote, safe=b"") if not encode_minimal else partial(quote, safe=b" :/='")
     buff = io.BytesIO()
-    write_svg(matrix, version, buff, scale=scale, dark=dark, light=light,
-              border=border, xmldecl=xmldecl, svgns=svgns, title=title,
-              desc=desc, svgclass=svgclass, lineclass=lineclass,
-              omitsize=omitsize, encoding=encoding, svgid=svgid, unit=unit,
-              svgversion=svgversion, nl=nl)
+    write_svg(matrix, version, buff, scale=scale, border=border, xmldecl=xmldecl,
+              svgns=svgns, title=title, desc=desc, svgclass=svgclass,
+              lineclass=lineclass, omitsize=omitsize, encoding=encoding,
+              svgid=svgid, unit=unit, svgversion=svgversion, nl=nl, **kw)
     return 'data:image/svg+xml{0},{1}' \
                 .format(';charset=' + encoding if not omit_charset else '',
                         # Replace " quotes with ' and URL encode the result
@@ -448,8 +449,8 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         writeline('%%EOF')
 
 
-def as_png_data_uri(matrix, version, scale=1, border=None, dark='#000',
-                    light='#fff', compresslevel=9, addad=True):
+def as_png_data_uri(matrix, version, scale=1, border=None,
+                    compresslevel=9, addad=True, **kw):
     """\
     Converts the provided matrix into a PNG data URI.
 
@@ -458,8 +459,8 @@ def as_png_data_uri(matrix, version, scale=1, border=None, dark='#000',
     :rtype: str
     """
     buff = io.BytesIO()
-    write_png(matrix, version, buff, scale=scale, border=border, dark=dark,
-              light=light, compresslevel=compresslevel, addad=addad)
+    write_png(matrix, version, buff, scale=scale, border=border,
+              compresslevel=compresslevel, addad=addad, **kw)
     return 'data:image/png;base64,{0}' \
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
