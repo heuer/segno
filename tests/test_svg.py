@@ -138,6 +138,10 @@ def test_write_svg_background_white(light):
     assert path is not None
     assert '#fff' == path.attrib.get('fill')
     assert path.attrib.get('class') is None
+    d = path.attrib.get('d')
+    assert d
+    expected = 'M0 0h{1}v{0}h-{1}z'.format(*qr.symbol_size())
+    assert expected == d
 
 
 def test_write_svg_color_rgb():
@@ -547,7 +551,7 @@ def svg_as_matrix(buff, border):
     res = []
     res_row = None
     absolute_x = -border
-    for op, x, y, l in re.findall(r'([Mm])(\-?[0-9]+(?:\.[0-9]+)?) (\-?[0-9]+(?:\.[0-9]+)?)h([0-9]+)', d):
+    for op, x, y, l in re.findall(r'([Mm])(-?[0-9]+(?:\.[0-9]+)?) (-?[0-9]+(?:\.[0-9]+)?)h([0-9]+)', d):
         x = int(x)
         y = float(y)
         l = int(l)
