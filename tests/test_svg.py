@@ -148,7 +148,7 @@ def test_scale_background():
     qr.save(out, kind='svg', dark='green', light='yellow', scale=10)
     root = _parse_xml(out)
     g = _get_group(root)
-    assert g
+    assert g is not None
     assert 'scale(10)' == g.attrib.get('transform')
 
 

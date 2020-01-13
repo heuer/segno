@@ -86,7 +86,7 @@ def test_scale():
     assert 3 == len(paths)
     assert all(p.attrib.get('transform') is None for p in paths)
     group = _get_group(root)
-    assert group
+    assert group is not None
     assert 'scale(1.5)' == group.attrib.get('transform')
 
 
