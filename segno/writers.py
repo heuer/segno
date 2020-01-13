@@ -329,7 +329,10 @@ def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=Tru
         if lineclass:
             path.append(' class={}'.format(quoteattr(lineclass)))
         path.append(' d="')
-        path.append(''.join(['{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'), x=x, y=(int(y) if int(y) == y else y), l=l) for i, (x, y, l) in enumerate(coord)]))
+        path.append(''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
+                                                         x=x, l=l,
+                                                         y=(int(y) if int(y) == y else y))
+                            for i, (x, y, l) in enumerate(coord)))
         path.append('"/>')
         paths[color] = ''.join(path)
     if need_background:
@@ -670,7 +673,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     png_trans_idx = None
     if not is_greyscale:  # PLTE
         if number_of_colors > 2:
-            # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
+            # Max. 15 different colors are supported, no need to support
+            # bit depth 8 (more than 16 colors)
             png_bit_depth = 2 if number_of_colors < 5 else 4
         palette.sort(key=len, reverse=True)  # RGBA colors first
         if is_transparent:
@@ -870,7 +874,7 @@ def write_txt(matrix, version, out, border=None, dark='1', light='0'):
     with writable(out, 'wt') as f:
         write = f.write
         for row in row_iter:
-            write(''.join([colours[i] for i in row]))
+            write(''.join(colours[i] for i in row))
             write('\n')
 
 
@@ -934,7 +938,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
         return bytearray([b ^ 0x1 for b in row])
 
     def row_to_color_values(row, colours):
-        return b''.join([colours[b] for b in row])
+        return b''.join(colours[b] for b in row)
 
     if not dark:
         raise ValueError('Invalid stroke color "{0}"'.format(dark))
