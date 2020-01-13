@@ -108,128 +108,11 @@ def colorful(dark, light):
     return decorate
 
 
-def write_svg(matrix, version, out, scale=1, border=None, dark='#000',
-              light=None, xmldecl=True, svgns=True, title=None, desc=None,
-              svgid=None, svgclass='segno', lineclass='qrline', omitsize=False,
-              unit=None, encoding='utf-8', svgversion=None, nl=True):
-    """\
-    Serializes the QR Code as SVG document.
-
-    :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
-    :param out: Filename or a file-like object supporting to write bytes.
-    :param scale: Indicates the size of a single module (default: 1 which
-            corresponds to 1 x 1 pixel per module).
-    :param int border: Integer indicating the size of the quiet zone.
-            If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param dark: Color of the modules (default: ``#000``). Any value
-            which is supported by SVG can be used. In addition, ``None``
-            is a valid value. The resulting path won't have a ``stroke``
-            attribute.
-    :param light: Optional background color (default: ``None`` = no
-            background color). See `color` for valid values.
-    :param bool xmldecl: Inidcates if the XML declaration header should be
-            written (default: ``True``)
-    :param bool svgns: Indicates if the SVG namespace should be written
-            (default: ``True``).
-    :param str title: Optional title of the generated SVG document.
-    :param str desc: Optional description of the generated SVG document.
-    :param svgid: The ID of the SVG document (if set to ``None`` (default),
-            the SVG element won't have an ID).
-    :param svgclass: The CSS class of the SVG document
-            (if set to ``None``, the SVG element won't have a class).
-    :param lineclass: The CSS class of the path element (which draws the
-            "black" modules (if set to ``None``, the path won't have a class).
-    :param bool omitsize: Indicates if width and height attributes should be
-            omitted (default: ``False``). If these attributes are omitted,
-            a ``viewBox`` attribute will be added to the document.
-    :param str unit: Unit for width / height and other coordinates.
-            By default, the unit is unspecified and all values are
-            in the user space.
-            Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
-    :param str encoding: Encoding of the XML document. "utf-8" by default.
-    :param float svgversion: SVG version (default: None)
-    :param bool nl: Indicates if the document should have a trailing newline
-            (default: ``True``)
-    """
-    check_valid_scale(scale)
-    check_valid_border(border)
-    unit = unit or ''
-    if unit and omitsize:
-        raise ValueError('The unit "{0}" has no effect if the size '
-                         '(width and height) is omitted.'.format(unit))
-    with writable(out, 'wt', encoding=encoding) as f:
-        write = f.write
-        # Write the document header
-        if xmldecl:
-            write('<?xml version="1.0" encoding="{0}"?>\n'.format(encoding))
-        write('<svg')
-        if svgns:
-            write(' xmlns="http://www.w3.org/2000/svg"')
-        if svgversion is not None and svgversion < 2.0:
-            write(' version={0}'.format(quoteattr(str(svgversion))))
-        border = get_border(version, border)
-        width, height = get_symbol_size(version, scale, border)
-        if not omitsize:
-            write(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
-        if omitsize or unit:
-            write(' viewBox="0 0 {0} {1}"'.format(width, height))
-        if svgid:
-            write(' id={0}'.format(quoteattr(svgid)))
-        if svgclass:
-            write(' class={0}'.format(quoteattr(svgclass)))
-        write('>')
-        if title is not None:
-            write('<title>{0}</title>'.format(escape(title)))
-        if desc is not None:
-            write('<desc>{0}</desc>'.format(escape(desc)))
-        allow_css3_colors = svgversion is not None and svgversion >= 2.0
-        if light is not None:
-            bg_color = colors.color_to_webcolor(light, allow_css3_colors=allow_css3_colors)
-            fill_opacity = ''
-            if isinstance(bg_color, tuple):
-                bg_color, opacity = bg_color
-                fill_opacity = ' fill-opacity={0}'.format(quoteattr(str(opacity)))
-            write('<path fill="{0}"{1} d="M0 0h{2}v{3}h-{2}z"/>'
-                  .format(bg_color, fill_opacity, width, height))
-        write('<path')
-        if scale != 1:
-            write(' transform="scale({0})"'.format(scale))
-        if dark is not None:
-            opacity = None
-            stroke_color = colors.color_to_webcolor(dark, allow_css3_colors=allow_css3_colors)
-            if isinstance(stroke_color, tuple):
-                stroke_color, opacity = stroke_color
-            write(' stroke={0}'.format(quoteattr(stroke_color)))
-            if opacity is not None:
-                write(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
-        if lineclass:
-            write(' class={0}'.format(quoteattr(lineclass)))
-        write(' d="')
-        # Current pen pointer position
-        x, y = border, border + .5  # .5 == stroke-width / 2
-        line_iter = matrix_to_lines(matrix, x, y)
-        # 1st coord is absolute
-        (x1, y1), (x2, y2) = next(line_iter)
-        coord = ['M{0} {1}h{2}'.format(x1, y1, x2 - x1)]
-        append_coord = coord.append
-        x, y = x2, y2
-        for (x1, y1), (x2, y2) in line_iter:
-            append_coord('m{0} {1}h{2}'.format(x1 - x, int(y1 - y), x2 - x1))
-            x, y = x2, y2
-        write(''.join(coord))
-        # Close path and doc
-        write('"/></svg>')
-        if nl:
-            write('\n')
-
-
 @colorful(dark='#000', light=None)
-def write_svg2(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
-               svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
-               lineclass='qrline', omitsize=False, unit=None, encoding='utf-8',
-               svgversion=None, nl=True, draw_transparent=False):
+def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
+              svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
+              lineclass='qrline', omitsize=False, unit=None, encoding='utf-8',
+              svgversion=None, nl=True, draw_transparent=False):
     """\
     Serializes the QR Code as SVG document.
 
@@ -1266,7 +1149,7 @@ def _make_colormap(version, dark, light,
 
 
 _VALID_SERIALIZERS = {
-    'svg': write_svg2,
+    'svg': write_svg,
     'png': write_png,
     'eps': write_eps,
     'txt': write_txt,
