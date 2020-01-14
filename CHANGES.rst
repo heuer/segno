@@ -1,6 +1,14 @@
 Changes
 =======
 
+0.3.8 -- 2020-01-dd
+-------------------
+* Added support for multiple (more than two) colors to SVG (fixes #64)
+* Fixed several test cases
+* Removed ``QRCodeError`` and all derived exceptions from public API (still
+  available but not thrown and they will be removed in 0.4.0)
+* Documentation improvements
+
 
 0.3.7 -- 2020-01-09
 -------------------
