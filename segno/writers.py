@@ -174,6 +174,9 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     if unit and omitsize:
         raise ValueError('The unit "{}" has no effect if the size '
                          '(width and height) is omitted.'.format(unit))
+    omit_encoding = encoding is None
+    if omit_encoding:
+        encoding = 'utf-8'
     allow_css3_colors = svgversion is not None and svgversion >= 2.0
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
@@ -226,8 +229,13 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         # and it needs to be closed. Further, it has no class attribute.
         k = colormap[consts.TYPE_QUIET_ZONE]
         paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
-    l = [] if not xmldecl else ['<?xml version="1.0" encoding="{}"?>\n'.format(encoding)]
+    l = []
     append = l.append
+    if xmldecl:
+        append('<?xml version="1.0"')
+        if not omit_encoding:
+            append(' encoding="{}"'.format(encoding))
+        append('?>\n')
     append('<svg')
     if svgns:
         append(' xmlns="http://www.w3.org/2000/svg"')
