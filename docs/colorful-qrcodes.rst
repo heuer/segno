@@ -58,8 +58,8 @@ The keywords "dark" and "light" are supported by almost all serialization
 formats.
 
 
-dark
-~~~~
+dark / :option:`--dark <segno --dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the (default) color of dark modules.
 
@@ -70,8 +70,8 @@ Sets the (default) color of dark modules.
     :alt: Picture showing the dark modules of a Micro QR Code
 
 
-light
-~~~~~
+light / :option:`--light <segno --light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the (default) color of light modules.
 
@@ -82,8 +82,8 @@ Sets the (default) color of light modules.
     :alt: Picture showing the light modules of a Micro QR Code
 
 
-alignment_dark
-~~~~~~~~~~~~~~
+alignment_dark / :option:`--align-dark <segno --align-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark alignment pattern modules.
 
@@ -96,8 +96,8 @@ Micro QR Codes don't have alignment patterns.
     :alt: Picture showing the dark alignment modules of a Micro QR Code (None)
 
 
-alignment_light
-~~~~~~~~~~~~~~~
+alignment_light / :option:`--align-light <segno --align-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light alignment pattern modules.
 
@@ -110,8 +110,8 @@ Micro QR Codes don't have alignment patterns.
     :alt: Picture showing the light alignment modules of a Micro QR Code (None)
 
 
-dark_module
-~~~~~~~~~~~
+dark_module / :option:`--dark-module <segno --dark-module>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark module.
 
@@ -124,8 +124,8 @@ Micro QR Codes don't have a dark module.
     :alt: Picture showing the dark modules of a Micro QR Code (None)
 
 
-data_dark
-~~~~~~~~~
+data_dark / :option:`--data-dark <segno --data-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark data modules.
 
@@ -136,8 +136,8 @@ Sets the color of the dark data modules.
     :alt: Picture showing the dark data modules of a Micro QR Code
 
 
-data_light
-~~~~~~~~~~
+data_light / :option:`--data-light <segno --data-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light data modules.
 
@@ -148,8 +148,8 @@ Sets the color of the light data modules.
     :alt: Picture showing the light modules of a Micro QR Code
 
 
-finder_dark
-~~~~~~~~~~~
+finder_dark / :option:`--finder-dark <segno --finder-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark modules of the finder pattern.
 
@@ -160,8 +160,8 @@ Sets the color of the dark modules of the finder pattern.
     :alt: Picture showing the dark finder modules of a Micro QR Code
 
 
-finder_light
-~~~~~~~~~~~~
+finder_light / :option:`--finder-light <segno --finder-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light modules of the finder pattern.
 
@@ -172,8 +172,8 @@ Sets the color of the light modules of the finder pattern.
     :alt: Picture showing the light finder modules of a Micro QR Code
 
 
-format_dark
-~~~~~~~~~~~
+format_dark / :option:`--format-dark <segno --format-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark modules of the format information.
 
@@ -184,8 +184,8 @@ Sets the color of the dark modules of the format information.
     :alt: Picture showing the dark format information modules of a Micro QR Code (None)
 
 
-format_light
-~~~~~~~~~~~~
+format_light / :option:`--format-light <segno --format-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light modules of the format information.
 
@@ -196,8 +196,8 @@ Sets the color of the light modules of the format information.
     :alt: Picture showing the light format information modules of a Micro QR Code (None)
 
 
-quiet_zone
-~~~~~~~~~~
+quiet_zone / :option:`--quiet-zone <segno --quiet-zone>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the quiet zone.
 
@@ -208,8 +208,8 @@ Sets the color of the quiet zone.
     :alt: Picture showing the quiet zone of a Micro QR Code
 
 
-separator
-~~~~~~~~~
+separator / :option:`--separator <segno --separator>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the separator.
 
@@ -220,8 +220,8 @@ Sets the color of the separator.
     :alt: Picture showing the separator of a Micro QR Code
 
 
-timing_dark
-~~~~~~~~~~~
+timing_dark / :option:`--timing-dark <segno --timing-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark modules of the timing pattern.
 
@@ -232,8 +232,8 @@ Sets the color of the dark modules of the timing pattern.
     :alt: Picture showing the dark timing pattern modules of a Micro QR Code
 
 
-timing_light
-~~~~~~~~~~~~
+timing_light / :option:`--timing-light <segno --timing-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light modules of the timing pattern.
 
@@ -244,8 +244,8 @@ Sets the color of the light modules of the timing pattern.
     :alt: Picture showing the light timing pattern modules of a Micro QR Code
 
 
-version_dark
-~~~~~~~~~~~~
+version_dark / :option:`--version-dark <segno --version-dark>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the dark modules of the version information.
 
@@ -258,8 +258,8 @@ Micro QR Codes and QR Codes lesser than version 7 don't carry any version inform
     :alt: Picture showing the dark version modules of a Micro QR Code (None)
 
 
-version_light
-~~~~~~~~~~~~~
+version_light / :option:`--version-light <segno --version-light>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Sets the color of the light modules of the version information.
 
