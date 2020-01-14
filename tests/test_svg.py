@@ -139,7 +139,7 @@ def test_write_svg_background_white(light):
     expected = 'M0 0h{1}v{0}h-{1}z'.format(*qr.symbol_size())
     assert expected == d
     g = _get_group(root)
-    assert not g
+    assert g is None
 
 
 def test_scale_background():
