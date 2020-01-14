@@ -135,7 +135,7 @@ Micro QR Codes (or raises an error if the content is too large for a Micro QR Co
     >>> mqr = segno.make_micro('Nick Cave and the Bad Seeds')
     Traceback (most recent call last):
         ...
-    DataOverflowError: Data too large. No Micro QR Code can handle the provided data
+    ValueError: Data too large. No Micro QR Code can handle the provided data
 
 
 All factory functions use the same parameters to specify the desired error

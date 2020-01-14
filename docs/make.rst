@@ -69,7 +69,7 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
     '1-Q'
 
 
-If the provided content is too large, a :py:class:`segno.DataOverflowError` is thrown:
+If the provided content is too large, a :py:exc:`ValueError` is thrown:
 
 
 .. code-block:: python
@@ -78,7 +78,7 @@ If the provided content is too large, a :py:class:`segno.DataOverflowError` is t
     >>> qr = segno.make_micro('The Curse of Millhaven')
     Traceback (most recent call last):
         ...
-    DataOverflowError: Data too large. No Micro QR Code can handle the provided data
+    ValueError: Data too large. No Micro QR Code can handle the provided data
 
 
 
