@@ -1299,8 +1299,8 @@ def normalize_errorlevel(error, accept_none=False):
     except:  # KeyError or error.upper() fails
         if error in consts.ERROR_MAPPING.values():
             return error
-        raise ValueError('Illegal error correction level: "{0}". Supported levels: {1}'
-                         .format(error, ', '.join(sorted(consts.ERROR_MAPPING.keys()))))
+        raise ValueError('Illegal error correction level: "{0}". Supported levels: L, M, Q, H'
+                         .format(error))
 
 
 def get_mode_name(mode_const):

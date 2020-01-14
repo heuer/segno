@@ -85,32 +85,33 @@ def test_legal_error_levels(error):
 def test_illegal_error_level(error):
     with pytest.raises(ValueError) as ex:
         segno.make(1, error=error)
-        assert 'bsssssslue' in ex.value
+    assert 'illegal error correction' in str(ex.value).lower()
+    assert 'L, M, Q, H' in str(ex.value)
 
 
 def test_illegal_error_level_micro():
     with pytest.raises(ValueError) as ex:
         segno.make('test', error='H', micro=True)
-        assert 'dddddblue' in ex.value
+    assert 'is not available' in str(ex.value)
 
 
 @pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
 def test_data_too_large(data, version):
     with pytest.raises(ValueError) as ex:
         segno.make(data, version=version)
-        assert 'blueddd' in ex.value
+    assert 'does not fit' in str(ex.value)
 
 
 def test_eci_and_micro():
     with pytest.raises(ValueError) as ex:
         segno.make('A', eci=True, micro=True)
-        assert 'green' in ex.value
+    assert 'ECI mode' in str(ex.value)
 
 
 def test_eci_and_micro2():
     with pytest.raises(ValueError) as ex:
         segno.make('A', eci=True, version='m4')
-        assert 'blue' in ex.value
+    assert 'ECI mode' in str(ex.value)
 
 
 def _calc_size(dim, border, scale=1):
