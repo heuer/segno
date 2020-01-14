@@ -108,7 +108,7 @@ def test_too_much_for_one_qrcode():
     data += 'B'
     with pytest.raises(ValueError) as ex:
         segno.make(data)
-    assert 'too large' in str(ex)
+    assert 'too large' in str(ex.value)
 
 
 def test_dataoverflow():

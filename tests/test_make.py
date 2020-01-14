@@ -143,7 +143,7 @@ def test_m1_has_no_error_level():
 def test_micro_invalid_error():
     with pytest.raises(ValueError) as ex:
         segno.make_micro(1, error='h')
-    assert 'not available' in str(ex)
+    assert 'not available' in str(ex.value)
 
 
 if __name__ == '__main__':

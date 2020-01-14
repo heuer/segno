@@ -129,10 +129,10 @@ def test_invalid_amount(amount):
     kw['amount'] = amount
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'amount' in ex.value
+    assert 'amount' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'amount' in ex.value
+    assert 'amount' in str(ex.value)
 
 
 @pytest.mark.parametrize('bic', ['BHBLDE',  # Too short
@@ -145,10 +145,10 @@ def test_invalid_bic(bic):
     kw['bic'] = bic
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'BIC' in ex.value
+    assert 'BIC' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'BIC' in ex.value
+    assert 'BIC' in str(ex.value)
 
 
 def test_utf8_required():
@@ -175,10 +175,10 @@ def test_illegal_encoding(encoding):
     kw['encoding'] = encoding
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'encoding' in ex.value
+    assert 'encoding' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'encoding' in ex.value
+    assert 'encoding' in str(ex.value)
 
 
 @pytest.mark.parametrize('text,reference', [('', ''), (' ', '    '),
@@ -191,10 +191,10 @@ def test_no_text_no_reference(text, reference):
     kw['reference'] = reference
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'reference' in ex.value
+    assert 'reference' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'reference' in ex.value
+    assert 'reference' in str(ex.value)
 
 @pytest.mark.parametrize('iban', ['DE1' + '1' * 34,
                                   '',
@@ -204,10 +204,10 @@ def test_illegal_iban(iban):
     kw['iban'] = iban
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'IBAN' in ex.value
+    assert 'IBAN' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'IBAN' in ex.value
+    assert 'IBAN' in str(ex.value)
 
 
 @pytest.mark.parametrize('purpose', ['DE1', 'x', 'CDCBC'])
@@ -216,10 +216,10 @@ def test_illegal_purpose(purpose):
     kw['purpose'] = purpose
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'purpose' in ex.value
+    assert 'purpose' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'purpose' in ex.value
+    assert 'purpose' in str(ex.value)
 
 
 @pytest.mark.parametrize('name', [None, '',
@@ -230,10 +230,10 @@ def test_illegal_name(name):
     kw['name'] = name
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'name' in ex.value
+    assert 'name' in str(ex.value)
     with pytest.raises(ValueError) as ex:
         make_epc_qr(**kw)
-        assert 'name' in ex.value
+    assert 'name' in str(ex.value)
 
 
 def test_text_too_long():
@@ -242,7 +242,7 @@ def test_text_too_long():
     kw['reference'] = None
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'text' in ex.value
+    assert 'text' in str(ex.value)
 
 
 def test_refernce_too_long():
@@ -251,7 +251,7 @@ def test_refernce_too_long():
     kw['reference'] = 'r' * 36
     with pytest.raises(ValueError) as ex:
         make_epc_qr_data(**kw)
-        assert 'reference' in ex.value
+    assert 'reference' in str(ex.value)
 
 
 if __name__ == '__main__':

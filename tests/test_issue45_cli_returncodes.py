@@ -14,13 +14,7 @@ from segno import cli
 import pytest
 
 
-def test_issue_45_error():
-    with pytest.raises(SystemExit) as e:
-        cli.main(['--version=M1', '--seq', '"This is a test"'])
-        assert 1 == e.exception.code
-
-
-def test_issue_45_error2(capsys):
+def test_issue_45_error(capsys):
     try:
         cli.main(['--version=M1', '--seq', '"This is a test"'])
     except SystemExit as ex:
@@ -29,8 +23,7 @@ def test_issue_45_error2(capsys):
 
 
 def test_issue_45_no_error():
-    res = cli.main(['--version=1', '--seq', '"This is a test, test test test test"'])
-    assert 0 == res
+    assert 0 == cli.main(['--version=1', '--seq', '"This is a test, test test test test"'])
 
 
 if __name__ == '__main__':

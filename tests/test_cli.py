@@ -67,21 +67,24 @@ def test_defaults():
 
 
 def test_segno_version():
-    with pytest.raises(SystemExit) as e:
+    try:
         cli.parse(['--ver', ''])
-        assert 0 == e.exception.code
+    except SystemExit as ex:
+        assert 0 == ex.code
 
 
 def test_segno_version_shortcut():
-    with pytest.raises(SystemExit) as e:
+    try:
         cli.parse(['-V', ''])
-        assert 0 == e.exception.code
+    except SystemExit as ex:
+        assert 0 == ex.code
 
 
 def test_noargs():
-    with pytest.raises(SystemExit) as e:
+    try:
         cli.parse([])
-        assert 1 == e.exception.code
+    except SystemExit as ex:
+        assert 1 == ex.code
 
 
 def test_error():
@@ -289,10 +292,10 @@ def test_background_transparent(arg):
 
 
 def test_error_code():
-    with pytest.raises(SystemExit) as e:
+    try:
         cli.main(['--version=M1', '--seq', '"This is a test"'])
-        assert 1 == e.exception.code
-        assert e.exception.message
+    except SystemExit as ex:
+        assert 1 == ex.code
 
 
 @pytest.mark.parametrize('arg', ['-o', '--output'])
