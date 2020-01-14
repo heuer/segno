@@ -65,7 +65,7 @@ def test_calc_sa_parity(expected, data):
 
 
 def test_illegal_version():
-    with pytest.raises(segno.VersionError):
+    with pytest.raises(ValueError):
         segno.make_sequence('ABCD', version='M4')
 
 
@@ -106,8 +106,9 @@ def test_encode_multi_by_version_or_symbol_count(version, symbol_count):
 def test_too_much_for_one_qrcode():
     data = 'A' * 4296  # Version 40 supports max. 4296 alphanumeric chars (40-L)
     data += 'B'
-    with pytest.raises(segno.DataOverflowError):
+    with pytest.raises(ValueError) as ex:
         segno.make(data)
+    assert 'too large' in str(ex)
 
 
 def test_dataoverflow():
@@ -125,8 +126,9 @@ def test_dataoverflow_error():
     seq = segno.make_sequence(data, version=40)
     assert 16 == len(seq)
     data += 'B'
-    with pytest.raises(segno.DataOverflowError):
+    with pytest.raises(ValueError) as ex:
         segno.make_sequence(data, version=40)
+    assert 'does not fit' in str(ex.value)
 
 
 def test_no_version_provided():

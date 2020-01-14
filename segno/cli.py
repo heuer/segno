@@ -262,7 +262,7 @@ def main(args=sys.argv[1:]):
     config = parse(args)
     try:
         qr = make_code(config)
-    except segno.QRCodeError as ex:
+    except ValueError as ex:
         sys.stderr.writelines([str(ex), os.linesep])
         return sys.exit(1)
     output = config.pop('output')

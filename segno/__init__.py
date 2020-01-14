@@ -25,9 +25,7 @@ except NameError:  # pragma: no cover
 __version__ = '0.3.8.dev0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence',
-           'QRCodeError', 'ErrorLevelError', 'ModeError', 'MaskError',
-           'VersionError', 'DataOverflowError')
+           'QRCodeSequence')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -83,7 +81,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             ``None`` (default) the appropriate mode will automatically be
             determined.
             If `version` refers a to Micro QR Code, this function may raise a
-            :py:class:`ModeError` if the provided `mode` is not supported.
+            :py:exc:`ValueError` if the provided `mode` is not supported.
 
             ============    =======================
             Mode            (Micro) QR Code Version
@@ -99,7 +97,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is chosen automatically. If the `mask`
-            parameter is provided, this function may raise a :py:exc:`MaskError`
+            parameter is provided, this function may raise a :py:exc:`ValueError`
             if the mask is invalid.
     :type mask: int or None
     :param encoding: Indicates the encoding in mode "byte". By default
@@ -133,17 +131,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             parameter is interpreted as minimum error level. If set to ``False``,
             the resulting (Micro) QR Code uses the provided `error` level
             (or the default error correction level, if error is ``None``)
-    :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
-            likely that a derived exception is thrown:
-            :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
-            mode or invalid `mode` / `version` combination.
-            :py:exc:`VersionError`: In case the `version` is invalid or the
-            `micro` parameter contradicts the provided `version`.
-            :py:exc:`ErrorLevelError`: In case the error level is invalid or the
-            error level is not supported by the provided `version`.
-            :py:exc:`DataOverflowError`: In case the data does not fit into a
-            (Micro) QR Code or it does not fit into the provided `version`.
-            :py:exc:`MaskError`: In case an invalid data mask was specified.
+    :raises: :py:exc:`ValueError`
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,

@@ -444,14 +444,16 @@ def test_is_mode_supported_micro(version, mode):
                                            (10, 1), (10, consts.VERSION_M1),
                                            (9, 39)])
 def test_is_mode_supported_invalid_mode(mode, version):
-    with pytest.raises(encoder.ModeError):
+    with pytest.raises(ValueError) as ex:
         encoder.is_mode_supported(mode, version)
+    assert 'mode' in str(ex.value)
 
 
 @pytest.mark.parametrize('mode', ('kanij', 'binary', 'blub', ''))
 def test_normalize_mode_illegal(mode):
-    with pytest.raises(encoder.ModeError):
+    with pytest.raises(ValueError) as ex:
         encoder.normalize_mode(mode)
+    assert 'mode' in str(ex.value)
 
 
 @pytest.mark.parametrize('mask', tuple(range(8)))
@@ -471,27 +473,27 @@ def test_normalize_mask_none():
 
 @pytest.mark.parametrize('version, mask', [(consts.VERSION_M1, 8), (1, 9), (1, -1)])
 def test_normalize_mask_illegal(version, mask):
-    with pytest.raises(encoder.MaskError):
+    with pytest.raises(ValueError):
         encoder.normalize_mask(mask, version < 1)
 
 
 def test_mode_name_illegal():
-    with pytest.raises(encoder.ModeError):
+    with pytest.raises(ValueError):
         encoder.get_mode_name(7)
 
 
 def test_error_name_illegal():
-    with pytest.raises(encoder.ErrorLevelError):
+    with pytest.raises(ValueError):
         encoder.get_error_name(7)
 
 
 def test_version_name_illegal():
-    with pytest.raises(encoder.VersionError):
+    with pytest.raises(ValueError):
         encoder.get_version_name(41)
 
 
 def test_version_range_illegal():
-    with pytest.raises(encoder.VersionError):
+    with pytest.raises(ValueError):
         encoder.version_range(41)
 
 
@@ -503,13 +505,14 @@ def test_normalize_errorlevel():
 
 
 def test_normalize_errorlevel_illegal():
-    with pytest.raises(encoder.ErrorLevelError):
+    with pytest.raises(ValueError):
         encoder.normalize_errorlevel('g')
 
 
 def test_normalize_errorlevel_illegal2():
-    with pytest.raises(encoder.ErrorLevelError):
+    with pytest.raises(ValueError) as ex:
         encoder.normalize_errorlevel(None)
+    assert 'error' in str(ex.value)
 
 
 _test_find_version_test_data = (
