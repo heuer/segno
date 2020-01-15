@@ -26,7 +26,6 @@ Contents:
     man/index
     plugins
     api
-    api-low-level
     python2
     changes
 
