@@ -115,8 +115,9 @@ def test_make_micro_overflow():
     qr = segno.make(data, micro=True)
     assert 'M4-L' == qr.designator
     data += 'A'
-    with pytest.raises(segno.DataOverflowError):
+    with pytest.raises(ValueError) as ex:
         segno.make(data, micro=True)
+    assert 'too large' in str(ex.value)
 
 
 def test_enforce_qrcode():
@@ -140,8 +141,9 @@ def test_m1_has_no_error_level():
 
 
 def test_micro_invalid_error():
-    with pytest.raises(segno.ErrorLevelError):
+    with pytest.raises(ValueError) as ex:
         segno.make_micro(1, error='h')
+    assert 'not available' in str(ex.value)
 
 
 if __name__ == '__main__':

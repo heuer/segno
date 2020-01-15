@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "SEGNO" "1" "Jan 06, 2020" "" "Segno"
+.TH "SEGNO" "1" "Jan 15, 2020" "" "Segno"
 .SH NAME
 segno \- Segno QR Code encoder
 .
@@ -102,6 +102,13 @@ The \fI\%\-\-version\fP or \fI\%\-\-symbol\-count\fP must be provided
 .B \-\-symbol\-count SYMBOL_COUNT, \-sc SYMBOL_COUNT
 Number of symbols to create
 .UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-border BORDER, \-b BORDER
+Size of the border / quiet zone of the output.
+By default, the standard border (4 modules for QR Codes, 2 modules for
+Micro QR Codes) will be used. A value of 0 omits the border
+.UNINDENT
 Output Options.INDENT 0.0
 .TP
 .B \-\-scale SCALE, \-s SCALE
@@ -111,31 +118,119 @@ images. Some output formats, i.e. SVG, accept a decimal value.
 .UNINDENT
 .INDENT 0.0
 .TP
-.B \-\-border BORDER, \-b BORDER
-Size of the border / quiet zone of the output.
-By default, the standard border (4 modules for QR Codes, 2 modules for
-Micro QR Codes) will be used. A value of 0 omits the border
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-dark COLOR
-Color of the dark modules. The color may be specified as web color name,
-i.e. “red” or as hexadecimal value, i.e. “#0033cc”. Some serializers, i.e.
-SVG and PNG, support alpha channels (8\-digit hexadecimal value) and
-some support “transparent” as color value. The standard color is black.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-light COLOR
-Color of the light modules.
-See \fI\%\-\-dark\fP for a description of allowed values.
-The standard background color is white.
-.UNINDENT
-.INDENT 0.0
-.TP
 .B \-\-output OUTPUT, \-o OUTPUT
 Output file.
 If not specified, the QR Code is printed to the terminal
+.UNINDENT
+Module Colors
+Arguments to specify the module colors. Multiple colors are supported for
+SVG and PNG. The module color support varies between the serialization
+formats. Most serializers support at least “–dark” and “–light”.
+Unsupported arguments are ignored..INDENT 0.0
+.TP
+.B \-\-dark DARK
+Sets the (default) color of the dark modules.
+The color may be specified as web color name, i.e. “red” or as hexadecimal
+value, i.e. “#0033cc”. Some serializers, i.e. SVG and PNG, support alpha
+channels (8\-digit hexadecimal value) and some support “transparent” as color
+value. The standard color is black
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-light LIGHT
+Sets the (default) color of the light modules.
+The standard value is either white or transparent.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-align\-dark ALIGN_DARK
+Sets the color of the dark modules of the alignment patterns.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-align\-light ALIGN_LIGHT
+Sets the color of the light modules of the alignment patterns.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-dark\-module DARK_MODULE
+Sets the color of the dark module.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-data\-dark DATA_DARK
+Sets the color of the dark data modules.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-data\-light DATA_LIGHT
+Sets the color of the light data modules.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-finder\-dark FINDER_DARK
+Sets the color of the dark modules of the finder pattern.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-finder\-light FINDER_LIGHT
+Sets the color of the light modules of the finder pattern.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-format\-dark FORMAT_DARK
+Sets the color of the dark modules of the format information.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-format\-light FORMAT_LIGHT
+Sets the color of the light modules of the format information.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-quiet\-zone QUIET_ZONE
+Sets the color of the quiet zone (border).
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-separator SEPARATOR
+Sets the color of the separator.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-timing\-dark TIMING_DARK
+Sets the color of the dark modules of the timing pattern.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-timing\-light TIMING_LIGHT
+Sets the color of the light modules of the timing pattern.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-version\-dark VERSION_DARK
+Sets the color of the dark modules of the version information.
+See \fI\%\-\-dark\fP for a description of allowed values.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-version\-light VERSION_LIGHT
+Sets the color of the light modules of the version information.
+See \fI\%\-\-dark\fP for a description of allowed values.
 .UNINDENT
 SVG Options.INDENT 0.0
 .TP
@@ -206,96 +301,6 @@ PNG Options.INDENT 0.0
 .TP
 .B \-\-dpi DPI
 Sets the DPI value of the PNG file
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-finder\-dark COLOR
-Sets the color of the dark modules of the finder pattern.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-finder\-light COLOR
-Sets the color of the light modules of the finder pattern.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-separator COLOR
-Sets the color of the separator.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-data\-dark COLOR
-Sets the color of the dark data modules.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-data\-light COLOR
-Sets the color of the light data modules.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-quiet\-zone COLOR
-Sets the color of the quiet zone (border).
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-align\-dark COLOR
-Sets the color of the dark modules of the alignment patterns.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-align\-light COLOR
-Sets the color of the light modules of the alignment patterns.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-timing\-dark COLOR
-Sets the color of the dark modules of the timing pattern.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-timing\-light COLOR
-Sets the color of the light modules of the timing pattern.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-format\-dark COLOR
-Sets the color of the dark modules of the format information.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-format\-light COLOR
-Sets the color of the light modules of the format information.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-version\-dark COLOR
-Sets the color of the dark modules of the version information.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-version\-light COLOR
-Sets the color of the light modules of the version information.
-See \fI\%\-\-dark\fP for a description of allowed values.
-.UNINDENT
-.INDENT 0.0
-.TP
-.B \-\-dark\-module COLOR
-Sets the color of the dark module.
-See \fI\%\-\-dark\fP for a description of allowed values.
 .UNINDENT
 .SH EXIT STATUS
 .sp

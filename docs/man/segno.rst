@@ -76,6 +76,12 @@ Command Line Options
 
     Number of symbols to create
 
+.. option:: --border BORDER, -b BORDER
+
+    Size of the border / quiet zone of the output.
+    By default, the standard border (4 modules for QR Codes, 2 modules for
+    Micro QR Codes) will be used. A value of 0 omits the border
+
 
 .. rubric:: Output Options
 
@@ -85,29 +91,106 @@ Command Line Options
     By default, a scaling factor of 1 is used which can result into too small
     images. Some output formats, i.e. SVG, accept a decimal value.
 
-.. option:: --border BORDER, -b BORDER
-
-    Size of the border / quiet zone of the output.
-    By default, the standard border (4 modules for QR Codes, 2 modules for
-    Micro QR Codes) will be used. A value of 0 omits the border
-
-.. option:: --dark COLOR
-
-    Color of the dark modules. The color may be specified as web color name,
-    i.e. "red" or as hexadecimal value, i.e. "#0033cc". Some serializers, i.e.
-    SVG and PNG, support alpha channels (8-digit hexadecimal value) and
-    some support "transparent" as color value. The standard color is black.
-
-.. option:: --light COLOR
-
-    Color of the light modules.
-    See :option:`--dark` for a description of allowed values.
-    The standard background color is white.
-
 .. option:: --output OUTPUT, -o OUTPUT
 
     Output file.
     If not specified, the QR Code is printed to the terminal
+
+
+.. rubric:: Module Colors
+    Arguments to specify the module colors. Multiple colors are supported for
+    SVG and PNG. The module color support varies between the serialization
+    formats. Most serializers support at least "--dark" and "--light".
+    Unsupported arguments are ignored.
+
+.. option:: --dark DARK
+
+    Sets the (default) color of the dark modules.
+    The color may be specified as web color name, i.e. "red" or as hexadecimal
+    value, i.e. "#0033cc". Some serializers, i.e. SVG and PNG, support alpha
+    channels (8-digit hexadecimal value) and some support "transparent" as color
+    value. The standard color is black
+
+.. option:: --light LIGHT
+
+    Sets the (default) color of the light modules.
+    The standard value is either white or transparent.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --align-dark ALIGN_DARK
+
+    Sets the color of the dark modules of the alignment patterns.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --align-light ALIGN_LIGHT
+
+    Sets the color of the light modules of the alignment patterns.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --dark-module DARK_MODULE
+
+    Sets the color of the dark module.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --data-dark DATA_DARK
+
+    Sets the color of the dark data modules.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --data-light DATA_LIGHT
+
+    Sets the color of the light data modules.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --finder-dark FINDER_DARK
+
+    Sets the color of the dark modules of the finder pattern.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --finder-light FINDER_LIGHT
+
+    Sets the color of the light modules of the finder pattern.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --format-dark FORMAT_DARK
+
+    Sets the color of the dark modules of the format information.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --format-light FORMAT_LIGHT
+
+    Sets the color of the light modules of the format information.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --quiet-zone QUIET_ZONE
+
+    Sets the color of the quiet zone (border).
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --separator SEPARATOR
+
+    Sets the color of the separator.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --timing-dark TIMING_DARK
+
+    Sets the color of the dark modules of the timing pattern.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --timing-light TIMING_LIGHT
+
+    Sets the color of the light modules of the timing pattern.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --version-dark VERSION_DARK
+
+    Sets the color of the dark modules of the version information.
+    See :option:`--dark` for a description of allowed values.
+
+.. option:: --version-light VERSION_LIGHT
+
+    Sets the color of the light modules of the version information.
+    See :option:`--dark` for a description of allowed values.
 
 
 .. rubric:: SVG Options
@@ -170,82 +253,6 @@ Command Line Options
 .. option:: --dpi DPI
 
     Sets the DPI value of the PNG file
-
-.. option:: --finder-dark COLOR
-
-    Sets the color of the dark modules of the finder pattern.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --finder-light COLOR
-
-    Sets the color of the light modules of the finder pattern.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --separator COLOR
-
-    Sets the color of the separator.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --data-dark COLOR
-
-    Sets the color of the dark data modules.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --data-light COLOR
-
-    Sets the color of the light data modules.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --quiet-zone COLOR
-
-    Sets the color of the quiet zone (border).
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --align-dark COLOR
-
-    Sets the color of the dark modules of the alignment patterns.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --align-light COLOR
-
-    Sets the color of the light modules of the alignment patterns.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --timing-dark COLOR
-
-    Sets the color of the dark modules of the timing pattern.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --timing-light COLOR
-
-    Sets the color of the light modules of the timing pattern.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --format-dark COLOR
-
-    Sets the color of the dark modules of the format information.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --format-light COLOR
-
-    Sets the color of the light modules of the format information.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --version-dark COLOR
-
-    Sets the color of the dark modules of the version information.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --version-light COLOR
-
-    Sets the color of the light modules of the version information.
-    See :option:`--dark` for a description of allowed values.
-
-.. option:: --dark-module COLOR
-
-    Sets the color of the dark module.
-    See :option:`--dark` for a description of allowed values.
-
 
 
 Exit Status

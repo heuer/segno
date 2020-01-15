@@ -20,15 +20,17 @@ from segno import encoder
                                            (1, -1),
                                            (consts.VERSION_M2, -1)])
 def test_normalize_mask_illegal(version, mask):
-    with pytest.raises(encoder.MaskError):
+    with pytest.raises(ValueError) as ex:
         encoder.normalize_mask(mask, version < 1)
+    assert 'Invalid data mask' in str(ex.value)
 
 
 @pytest.mark.parametrize('version, mask', [(consts.VERSION_M1, 'A'),
                                            (1, 'B')])
 def test_normalize_mask_not_int(version, mask):
-    with pytest.raises(encoder.MaskError):
+    with pytest.raises(ValueError) as ex:
         encoder.normalize_mask(mask, version < 1)
+    assert 'Invalid data mask' in str(ex.value)
 
 
 if __name__ == '__main__':

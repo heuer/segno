@@ -35,8 +35,7 @@ import sys
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
-__all__ = ('encode', 'encode_sequence', 'QRCodeError', 'VersionError',
-           'ModeError', 'ErrorLevelError', 'MaskError', 'DataOverflowError')
+__all__ = ('encode', 'encode_sequence')
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
 __metaclass__ = type
@@ -100,32 +99,29 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     """
     version = normalize_version(version)
     if not micro and micro is not None and version in consts.MICRO_VERSIONS:
-        raise VersionError('A Micro QR Code version ("{0}") is provided but '
-                           'parameter "micro" is False'
-                           .format(get_version_name(version)))
+        raise ValueError('A Micro QR Code version ("{0}") is provided but '
+                         'parameter "micro" is False'
+                         .format(get_version_name(version)))
     if micro and version is not None and version not in consts.MICRO_VERSIONS:
-        raise VersionError('Illegal Micro QR Code version "{0}"'
-                           .format(get_version_name(version)))
+        raise ValueError('Illegal Micro QR Code version "{0}"'
+                         .format(get_version_name(version)))
     error = normalize_errorlevel(error, accept_none=True)
     mode = normalize_mode(mode)
     if mode is not None and version is not None \
             and not is_mode_supported(mode, version):
-        raise ModeError('Mode "{0}" is not available in version "{1}"'
-                        .format(get_mode_name(mode), get_version_name(version)))
+        raise ValueError('Mode "{0}" is not available in version "{1}"'
+                         .format(get_mode_name(mode), get_version_name(version)))
     if error == consts.ERROR_LEVEL_H and (micro or version in consts.MICRO_VERSIONS):
-        raise ErrorLevelError('Error correction level "H" is not available for '
-                              'Micro QR Codes')
+        raise ValueError('Error correction level "H" is not available for Micro QR Codes')
     if eci and (micro or version in consts.MICRO_VERSIONS):
-        raise VersionError('The ECI mode is not available for Micro QR Codes')
+        raise ValueError('The ECI mode is not available for Micro QR Codes')
     segments = prepare_data(content, mode, encoding, version)
     guessed_version = find_version(segments, error, eci=eci, micro=micro)
     if version is None:
         version = guessed_version
     elif guessed_version > version:
-        raise DataOverflowError('The provided data does not fit into version '
-                                '"{0}". Proposal: version {1}'
-                                .format(get_version_name(version),
-                                        get_version_name(guessed_version)))
+        raise ValueError('The provided data does not fit into version "{0}". Proposal: version {1}'
+                         .format(get_version_name(version), get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_L
     is_micro = version < 1
@@ -196,8 +192,8 @@ def encode_sequence(content, error=None, version=None, mode=None,
     version = normalize_version(version)
     if version is not None:
         if version < 1:
-            raise VersionError('This function does not accept Micro QR Code versions. '
-                               'Provided: "{0}"'.format(get_version_name(version)))
+            raise ValueError('This function does not accept Micro QR Code versions. '
+                             'Provided: "{0}"'.format(get_version_name(version)))
     elif symbol_count is None:
         raise ValueError('Please provide a QR Code version or the symbol count')
     if symbol_count is not None and not 1 <= symbol_count <= 16:
@@ -213,7 +209,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
         try:
             # Try to find a version which fits without using Structured Append
             guessed_version = find_version(segments, error, eci=eci, micro=False)
-        except DataOverflowError:
+        except ValueError:
             # Data does fit into a usual QR Code but ignore the error silently,
             # guessed_version is None
             pass
@@ -234,7 +230,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
     if version is not None:
         num_symbols = number_of_symbols_by_version(content, version, error, mode)
     if num_symbols > 16:
-        raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
+        raise ValueError('The data does not fit into Structured Append version {0}'.format(version))
     chunks = divide_into_chunks(content, num_symbols)
     if symbol_count is not None:
         segments = one_item_segments(max(chunks, key=len), mode)
@@ -551,8 +547,8 @@ def add_codewords(matrix, codewords, version):
                     row[j] = codewords[idx]
                     idx += 1
     if idx != len(codewords):  # pragma: no cover
-        raise QRCodeError('Internal error: Adding codewords to matrix failed. '
-                          'Added {0} of {1} codewords'.format(idx, len(codewords)))
+        raise ValueError('Internal error: Adding codewords to matrix failed. '
+                         'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
 
 def make_final_message(version, error, codewords):
@@ -1092,11 +1088,10 @@ def make_segment(data, mode, encoding=None):
     if segment_mode is not None:
         # Check if user provided mode is applicable for the given segment_data
         if segment_mode < guessed_mode:
-            raise ModeError('The provided mode "{0}" is not applicable '
-                            'for {1}. Proposal: {2}'
-                            .format(get_mode_name(segment_mode),
-                                    repr(segment_data),
-                                    get_mode_name(guessed_mode)))
+            raise ValueError('The provided mode "{0}" is not applicable for {1}. Proposal: {2}'
+                             .format(get_mode_name(segment_mode),
+                                     repr(segment_data),
+                                     get_mode_name(guessed_mode)))
     else:
         segment_mode = guessed_mode
     if segment_mode != consts.MODE_BYTE:
@@ -1230,8 +1225,7 @@ def normalize_version(version):
         except (KeyError, AttributeError):
             error = True
     if error or not 0 < version < 41 and version not in consts.MICRO_VERSIONS:
-        raise VersionError('Unsupported version "{0}". '
-                           'Supported: {1} and 1 .. 40'
+        raise ValueError('Unsupported version "{0}". Supported: {1} and 1 .. 40'
                            .format(version, ', '.join(sorted(consts.MICRO_VERSION_MAPPING.keys()))))
     return version
 
@@ -1255,8 +1249,8 @@ def normalize_mode(mode):
     try:
         return consts.MODE_MAPPING[mode.lower()]
     except:  # KeyError or mode.lower() fails
-        raise ModeError('Illegal mode "{0}". Supported values: {1}'
-                        .format(mode, ', '.join(sorted(consts.MODE_MAPPING.keys()))))
+        raise ValueError('Illegal mode "{0}". Supported values: {1}'
+                         .format(mode, ', '.join(sorted(consts.MODE_MAPPING.keys()))))
 
 
 def normalize_mask(mask, is_micro):
@@ -1273,13 +1267,13 @@ def normalize_mask(mask, is_micro):
     try:
         mask = int(mask)
     except ValueError:
-        raise MaskError('Invalid data mask "{0}". Must be an integer or a string which represents an integer value.'.format(mask))
+        raise ValueError('Invalid data mask "{0}". Must be an integer or a string which represents an integer value.'.format(mask))
     if is_micro:
         if not 0 <= mask < 4:
-            raise MaskError('Invalid data mask "{0}" for Micro QR Code. Must be in range 0 .. 3'.format(mask))
+            raise ValueError('Invalid data mask "{0}" for Micro QR Code. Must be in range 0 .. 3'.format(mask))
     else:
         if not 0 <= mask < 8:
-            raise MaskError('Invalid data mask "{0}". Must be in range 0 .. 7'.format(mask))
+            raise ValueError('Invalid data mask "{0}". Must be in range 0 .. 7'.format(mask))
     return mask
 
 
@@ -1298,16 +1292,15 @@ def normalize_errorlevel(error, accept_none=False):
     """
     if error is None:
         if not accept_none:
-            raise ErrorLevelError('The error level must be provided')
+            raise ValueError('The error level must be provided')
         return error
     try:
         return consts.ERROR_MAPPING[error.upper()]
     except:  # KeyError or error.upper() fails
         if error in consts.ERROR_MAPPING.values():
             return error
-        raise ErrorLevelError('Illegal error correction level: "{0}".'
-                              'Supported levels: {1}'
-                              .format(error, ', '.join(sorted(consts.ERROR_MAPPING.keys()))))
+        raise ValueError('Illegal error correction level: "{0}". Supported levels: L, M, Q, H'
+                         .format(error))
 
 
 def get_mode_name(mode_const):
@@ -1319,7 +1312,7 @@ def get_mode_name(mode_const):
     for name, val in consts.MODE_MAPPING.items():
         if val == mode_const:
             return name
-    raise ModeError('Unknown mode "{0}"'.format(mode_const))
+    raise ValueError('Unknown mode "{0}"'.format(mode_const))
 
 
 def get_error_name(error_const):
@@ -1331,7 +1324,7 @@ def get_error_name(error_const):
     for name, val in consts.ERROR_MAPPING.items():
         if val == error_const:
             return name
-    raise ErrorLevelError('Unknown error level "{0}"'.format(error_const))
+    raise ValueError('Unknown error level "{0}"'.format(error_const))
 
 
 def get_version_name(version_const):
@@ -1348,7 +1341,7 @@ def get_version_name(version_const):
     for name, v in consts.MICRO_VERSION_MAPPING.items():
         if v == version_const:
             return name
-    raise VersionError('Unknown version constant "{0}"'.format(version_const))
+    raise ValueError('Unknown version constant "{0}"'.format(version_const))
 
 
 
@@ -1435,8 +1428,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
         help_txt = '(Micro) '
     elif micro:
         help_txt = 'Micro '
-    raise DataOverflowError('Data too large. No {0}QR Code can handle the '
-                            'provided data'.format(help_txt))
+    raise ValueError('Data too large. No {0}QR Code can handle the provided data'.format(help_txt))
 
 
 def calc_matrix_size(ver):
@@ -1490,7 +1482,7 @@ def is_mode_supported(mode, ver):
     try:
         return ver in consts.SUPPORTED_MODES[mode]
     except KeyError:
-        raise ModeError('Unknown mode "{0}"'.format(mode))
+        raise ValueError('Unknown mode "{0}"'.format(mode))
 
 
 def find_minimum_version_for_mode(mode):
@@ -1522,7 +1514,7 @@ def version_range(version):
         return consts.VERSION_RANGE_10_26
     elif 26 < version < 41:
         return consts.VERSION_RANGE_27_40
-    raise VersionError('Unknown version "{0}"'.format(version))
+    raise ValueError('Unknown version "{0}"'.format(version))
 
 
 def get_eci_assignment_number(encoding):
@@ -1535,8 +1527,8 @@ def get_eci_assignment_number(encoding):
     try:
         return consts.ECI_ASSIGNMENT_NUM[codecs.lookup(encoding).name]
     except KeyError:
-        raise QRCodeError('Unknown ECI assignment number for encoding "{0}".'
-                          .format(encoding))
+        raise ValueError('Unknown ECI assignment number for encoding "{0}".'
+                         .format(encoding))
 
 
 def get_data_mask_functions(is_micro):

@@ -22,12 +22,10 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence',
-           'QRCodeError', 'ErrorLevelError', 'ModeError', 'MaskError',
-           'VersionError', 'DataOverflowError')
+           'QRCodeSequence')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -83,7 +81,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             ``None`` (default) the appropriate mode will automatically be
             determined.
             If `version` refers a to Micro QR Code, this function may raise a
-            :py:class:`ModeError` if the provided `mode` is not supported.
+            :py:exc:`ValueError` if the provided `mode` is not supported.
 
             ============    =======================
             Mode            (Micro) QR Code Version
@@ -99,7 +97,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
             appropriate data mask is chosen automatically. If the `mask`
-            parameter is provided, this function may raise a :py:exc:`MaskError`
+            parameter is provided, this function may raise a :py:exc:`ValueError`
             if the mask is invalid.
     :type mask: int or None
     :param encoding: Indicates the encoding in mode "byte". By default
@@ -133,17 +131,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             parameter is interpreted as minimum error level. If set to ``False``,
             the resulting (Micro) QR Code uses the provided `error` level
             (or the default error correction level, if error is ``None``)
-    :raises: :py:exc:`QRCodeError`: In case of a problem. In fact, it's more
-            likely that a derived exception is thrown:
-            :py:exc:`ModeError`: In case of problems with the mode (i.e. invalid
-            mode or invalid `mode` / `version` combination.
-            :py:exc:`VersionError`: In case the `version` is invalid or the
-            `micro` parameter contradicts the provided `version`.
-            :py:exc:`ErrorLevelError`: In case the error level is invalid or the
-            error level is not supported by the provided `version`.
-            :py:exc:`DataOverflowError`: In case the data does not fit into a
-            (Micro) QR Code or it does not fit into the provided `version`.
-            :py:exc:`MaskError`: In case an invalid data mask was specified.
+    :raises: :py:exc:`ValueError`
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
@@ -554,9 +542,9 @@ class QRCode:
 
         **Scalable Vector Graphics (SVG)**
 
-        =============    ==============================================================
+        ================ ==============================================================
         Name             Description
-        =============    ==============================================================
+        ================ ==============================================================
         out              Filename or :py:class:`io.BytesIO`
         kind             "svg" or "svgz" (to create a gzip compressed SVG)
         scale            integer or float
@@ -575,13 +563,43 @@ class QRCode:
                          document will have a color value of "#000". If the color
                          is "#FF0000", the resulting color is not "#F00", but
                          the web color name "red".
-        light            Default value ``None``. If this paramater is set to another
+        light            Default value ``None``. If this parameter is set to another
                          value, the resulting image will have another path which
                          is used to define the background color.
                          If an alpha channel is used, the resulting path may
                          have a "fill-opacity" attribute (for SVG version < 2.0)
                          or the "fill" attribute has a "rgba(R, G, B, A)" value.
-                         See keyword "dark" for further details.
+        finder_dark      Color of the dark modules of the finder patterns
+                         Default: undefined, use value of "dark"
+        finder_light     Color of the light modules of the finder patterns
+                         Default: undefined, use value of "light"
+        data_dark        Color of the dark data modules
+                         Default: undefined, use value of "dark"
+        data_light       Color of the light data modules.
+                         Default: undefined, use value of "light".
+        version_dark     Color of the dark modules of the version information.
+                         Default: undefined, use value of "dark".
+        version_light    Color of the light modules of the version information,
+                         Default: undefined, use value of "light".
+        format_dark      Color of the dark modules of the format information.
+                         Default: undefined, use value of "dark".
+        format_light     Color of the light modules of the format information.
+                         Default: undefined, use value of "light".
+        alignment_dark   Color of the dark modules of the alignment patterns.
+                         Default: undefined, use value of "dark".
+        alignment_light  Color of the light modules of the alignment patterns.
+                         Default: undefined, use value of "light".
+        timing_dark      Color of the dark modules of the timing patterns.
+                         Default: undefined, use value of "dark".
+        timing_light     Color of the light modules of the timing patterns.
+                         Default: undefined, use value of "light".
+        separator        Color of the separator.
+                         Default: undefined, use value of "light".
+        dark_module      Color of the dark module (a single dark module which
+                         occurs in all QR Codes but not in Micro QR Codes.
+                         Default: undefined, use value of "dark".
+        quiet_zone       Color of the quiet zone / border.
+                         Default: undefined, use value of "light".
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
@@ -623,7 +641,9 @@ class QRCode:
                          SVG document should be created (file extension "svgz").
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
-        =============    ==============================================================
+        draw_transparent Indicates if transparent SVG paths should be
+                         added to the graphic (default: ``False``)
+        ================ ==============================================================
 
 
         .. _png:

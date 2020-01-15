@@ -16,7 +16,6 @@ import gzip
 import tempfile
 import pytest
 import segno
-from segno import ModeError, VersionError, ErrorLevelError, DataOverflowError
 from segno import consts
 try:  # Py 2
     unicode
@@ -34,28 +33,32 @@ _LEGAL_ERROR_LEVELS = tuple(chain(consts.ERROR_MAPPING.keys(),
 
 @pytest.mark.parametrize('version, mode', [('M1', 'alphanumeric'), ('M1', 'byte'), ('M2', 'byte')])
 def test_illegal_mode_micro(version, mode):
-    with pytest.raises(ModeError):
+    with pytest.raises(ValueError) as ex:
         segno.make(1, version=version, mode=mode)
-    with pytest.raises(ModeError):
+    assert 'is not available' in str(ex.value)
+    with pytest.raises(ValueError) as ex:
         segno.make(1, version=version.lower(), mode=mode)
 
 
 @pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
 def test_micro_version_contradicts_micro(version):
-    with pytest.raises(VersionError):
+    with pytest.raises(ValueError) as ex:
         segno.make(1, version=version, micro=False)
+    assert '"micro" is False' in str(ex.value)
 
 
 @pytest.mark.parametrize('version', _LEGAL_VERSIONS)
 def test_version_contradicts_micro(version):
-    with pytest.raises(VersionError):
+    with pytest.raises(ValueError) as ex:
         segno.make(1, version=version, micro=True)
+    assert 'version' in str(ex.value)
 
 
 @pytest.mark.parametrize('version', ['M0', 'M5', -1, 0, 41, 'M1 ', object()])
 def test_illegal_version(version):
-    with pytest.raises(VersionError):
+    with pytest.raises(ValueError) as ex:
         segno.make('a', version=version)
+    assert 'version' in str(ex.value)
 
 
 @pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
@@ -80,29 +83,35 @@ def test_legal_error_levels(error):
 
 @pytest.mark.parametrize('error', ['R', 'M ', ' L'])
 def test_illegal_error_level(error):
-    with pytest.raises(ErrorLevelError):
+    with pytest.raises(ValueError) as ex:
         segno.make(1, error=error)
+    assert 'illegal error correction' in str(ex.value).lower()
+    assert 'L, M, Q, H' in str(ex.value)
 
 
 def test_illegal_error_level_micro():
-    with pytest.raises(ErrorLevelError):
+    with pytest.raises(ValueError) as ex:
         segno.make('test', error='H', micro=True)
+    assert 'is not available' in str(ex.value)
 
 
 @pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
 def test_data_too_large(data, version):
-    with pytest.raises(DataOverflowError):
+    with pytest.raises(ValueError) as ex:
         segno.make(data, version=version)
+    assert 'does not fit' in str(ex.value)
 
 
 def test_eci_and_micro():
-    with pytest.raises(VersionError):
+    with pytest.raises(ValueError) as ex:
         segno.make('A', eci=True, micro=True)
+    assert 'ECI mode' in str(ex.value)
 
 
 def test_eci_and_micro2():
-    with pytest.raises(VersionError):
+    with pytest.raises(ValueError) as ex:
         segno.make('A', eci=True, version='m4')
+    assert 'ECI mode' in str(ex.value)
 
 
 def _calc_size(dim, border, scale=1):

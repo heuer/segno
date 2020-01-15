@@ -22,10 +22,12 @@ import gzip
 from xml.sax.saxutils import quoteattr, escape
 from struct import pack
 from itertools import chain
+import functools
 from functools import partial
 from functools import reduce
 from operator import itemgetter
 from contextlib import contextmanager
+from collections import defaultdict
 import time
 _PY2 = False
 try:  # pragma: no cover
@@ -80,10 +82,37 @@ def writable(file_or_path, mode, encoding=None):
             f.close()
 
 
-def write_svg(matrix, version, out, scale=1, border=None, dark='#000',
-              light=None, xmldecl=True, svgns=True, title=None, desc=None,
-              svgid=None, svgclass='segno', lineclass='qrline', omitsize=False,
-              unit=None, encoding='utf-8', svgversion=None, nl=True):
+def colorful(dark, light):
+    """\
+    Decorator to inject a module type -> color mapping into the decorated function.
+    """
+    def decorate(f):
+        @functools.wraps(f)
+        def wrapper(matrix, version, out, dark=dark, light=light, finder_dark=False, finder_light=False,
+                    data_dark=False, data_light=False, version_dark=False, version_light=False,
+                    format_dark=False, format_light=False, alignment_dark=False, alignment_light=False,
+                    timing_dark=False, timing_light=False, separator=False, dark_module=False,
+                    quiet_zone=False, **kw):
+            cm = _make_colormap(version, dark=dark, light=light, finder_dark=finder_dark,
+                                finder_light=finder_light, data_dark=data_dark,
+                                data_light=data_light, version_dark=version_dark,
+                                version_light=version_light, format_dark=format_dark,
+                                format_light=format_light, alignment_dark=alignment_dark,
+                                alignment_light=alignment_light, timing_dark=timing_dark,
+                                timing_light=timing_light, separator=separator,
+                                dark_module=dark_module, quiet_zone=quiet_zone)
+            return f(matrix, version, out, cm, **kw)
+        if _PY2:  # pragma: no cover
+            wrapper.__wrapped__ = f  # Needed by CLI to inspect the arguments
+        return wrapper
+    return decorate
+
+
+@colorful(dark='#000', light=None)
+def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
+              svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
+              lineclass='qrline', omitsize=False, unit=None, encoding='utf-8',
+              svgversion=None, nl=True, draw_transparent=False):
     """\
     Serializes the QR Code as SVG document.
 
@@ -95,12 +124,6 @@ def write_svg(matrix, version, out, scale=1, border=None, dark='#000',
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param dark: Color of the modules (default: ``#000``). Any value
-            which is supported by SVG can be used. In addition, ``None``
-            is a valid value. The resulting path won't have a ``stroke``
-            attribute.
-    :param light: Optional background color (default: ``None`` = no
-            background color). See `color` for valid values.
     :param bool xmldecl: Inidcates if the XML declaration header should be
             written (default: ``True``)
     :param bool svgns: Indicates if the SVG namespace should be written
@@ -124,87 +147,134 @@ def write_svg(matrix, version, out, scale=1, border=None, dark='#000',
     :param float svgversion: SVG version (default: None)
     :param bool nl: Indicates if the document should have a trailing newline
             (default: ``True``)
+    :param bool draw_transparent: Indicates if transparent SVG paths should be
+            added to the graphic (default: ``False``)
     """
+    def svg_color(clr):
+        return colors.color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
+
+    def matrix_to_lines_verbose():
+        j = -.5
+        invalid_color = -1
+        for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
+            last_color = invalid_color
+            x1, x2 = 0, 0
+            j += 1
+            for c in (colormap[mt] for mt in row):
+                if last_color != invalid_color and last_color != c:
+                    yield last_color, (x1, x2, j)
+                    x1 = x2
+                x2 += 1
+                last_color = c
+            yield last_color, (x1, x2, j)
+
     check_valid_scale(scale)
     check_valid_border(border)
     unit = unit or ''
     if unit and omitsize:
-        raise ValueError('The unit "{0}" has no effect if the size '
+        raise ValueError('The unit "{}" has no effect if the size '
                          '(width and height) is omitted.'.format(unit))
-    with writable(out, 'wt', encoding=encoding) as f:
-        write = f.write
-        # Write the document header
-        if xmldecl:
-            write('<?xml version="1.0" encoding="{0}"?>\n'.format(encoding))
-        write('<svg')
-        if svgns:
-            write(' xmlns="http://www.w3.org/2000/svg"')
-        if svgversion is not None and svgversion < 2.0:
-            write(' version={0}'.format(quoteattr(str(svgversion))))
-        border = get_border(version, border)
-        width, height = get_symbol_size(version, scale, border)
-        if not omitsize:
-            write(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
-        if omitsize or unit:
-            write(' viewBox="0 0 {0} {1}"'.format(width, height))
-        if svgid:
-            write(' id={0}'.format(quoteattr(svgid)))
-        if svgclass:
-            write(' class={0}'.format(quoteattr(svgclass)))
-        write('>')
-        if title is not None:
-            write('<title>{0}</title>'.format(escape(title)))
-        if desc is not None:
-            write('<desc>{0}</desc>'.format(escape(desc)))
-        allow_css3_colors = svgversion is not None and svgversion >= 2.0
-        if light is not None:
-            bg_color = colors.color_to_webcolor(light, allow_css3_colors=allow_css3_colors)
-            fill_opacity = ''
-            if isinstance(bg_color, tuple):
-                bg_color, opacity = bg_color
-                fill_opacity = ' fill-opacity={0}'.format(quoteattr(str(opacity)))
-            write('<path fill="{0}"{1} d="M0 0h{2}v{3}h-{2}z"/>'
-                  .format(bg_color, fill_opacity, width, height))
-        write('<path')
-        if scale != 1:
-            write(' transform="scale({0})"'.format(scale))
-        if dark is not None:
-            opacity = None
-            stroke_color = colors.color_to_webcolor(dark, allow_css3_colors=allow_css3_colors)
-            if isinstance(stroke_color, tuple):
-                stroke_color, opacity = stroke_color
-            write(' stroke={0}'.format(quoteattr(stroke_color)))
+    omit_encoding = encoding is None
+    if omit_encoding:
+        encoding = 'utf-8'
+    allow_css3_colors = svgversion is not None and svgversion >= 2.0
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale, border)
+    is_multicolor = len(set(colormap.values())) > 2
+    need_background = not is_multicolor and colormap[consts.TYPE_QUIET_ZONE] is not None and not draw_transparent
+    need_svg_group = scale != 1 and (need_background or is_multicolor)
+    if is_multicolor:
+        miter = matrix_to_lines_verbose()
+    else:
+        x, y = border, border + .5
+        dark = colormap[consts.TYPE_DATA_DARK]
+        miter = ((dark, (x1, x2, y1)) for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y))
+    xy = defaultdict(lambda: (0, 0))
+    coordinates = defaultdict(list)
+    for clr, (x1, x2, y1) in miter:
+        x, y = xy[clr]
+        coordinates[clr].append((x1 - x, y1 - y, x2 - x1))
+        xy[clr] = x2, y1
+    if need_background:
+        coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width // scale)]
+    if not draw_transparent:
+        try:
+            del coordinates[None]
+        except KeyError:
+            pass
+    paths = {}
+    scale_info = ' transform="scale({})"'.format(scale) if scale != 1 else ''
+    for color, coord in coordinates.items():
+        path = ['<path{}'.format(scale_info if not need_svg_group else '')]
+        opacity = None
+        clr = svg_color(color)
+        if clr is not None:
+            if isinstance(clr, tuple):
+                clr, opacity = clr
+            path.append(' stroke={}'.format(quoteattr(clr)))
             if opacity is not None:
-                write(' stroke-opacity={0}'.format(quoteattr(str(opacity))))
+                path.append(' stroke-opacity={}'.format(quoteattr(str(opacity))))
         if lineclass:
-            write(' class={0}'.format(quoteattr(lineclass)))
-        write(' d="')
-        # Current pen pointer position
-        x, y = border, border + .5  # .5 == stroke-width / 2
-        line_iter = matrix_to_lines(matrix, x, y)
-        # 1st coord is absolute
-        (x1, y1), (x2, y2) = next(line_iter)
-        coord = ['M{0} {1}h{2}'.format(x1, y1, x2 - x1)]
-        append_coord = coord.append
-        x, y = x2, y2
-        for (x1, y1), (x2, y2) in line_iter:
-            append_coord('m{0} {1}h{2}'.format(x1 - x, int(y1 - y), x2 - x1))
-            x, y = x2, y2
-        write(''.join(coord))
-        # Close path and doc
-        write('"/></svg>')
-        if nl:
-            write('\n')
+            path.append(' class={}'.format(quoteattr(lineclass)))
+        path.append(' d="')
+        path.append(''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
+                                                         x=x, l=l,
+                                                         y=(int(y) if int(y) == y else y))
+                            for i, (x, y, l) in enumerate(coord)))
+        path.append('"/>')
+        paths[color] = ''.join(path)
+    if need_background:
+        # This code is necessary since the path was generated by the loop above
+        # but the background path is special: It has no stroke- but a fill-color
+        # and it needs to be closed. Further, it has no class attribute.
+        k = colormap[consts.TYPE_QUIET_ZONE]
+        paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
+    l = []
+    append = l.append
+    if xmldecl:
+        append('<?xml version="1.0"')
+        if not omit_encoding:
+            append(' encoding="{}"'.format(encoding))
+        append('?>\n')
+    append('<svg')
+    if svgns:
+        append(' xmlns="http://www.w3.org/2000/svg"')
+    if svgversion is not None and svgversion < 2.0:
+        append(' version={}'.format(quoteattr(str(svgversion))))
+    if not omitsize:
+        append(' width="{0}{2}" height="{1}{2}"'.format(width, height, unit))
+    if omitsize or unit:
+        append(' viewBox="0 0 {} {}"'.format(width, height))
+    if svgid:
+        append(' id={}'.format(quoteattr(svgid)))
+    if svgclass:
+        append(' class={}'.format(quoteattr(svgclass)))
+    append('>')
+    if title is not None:
+        append('<title>{}</title>'.format(escape(title)))
+    if desc is not None:
+        append('<desc>{}</desc>'.format(escape(desc)))
+    if need_svg_group:
+        append('<g{}>'.format(scale_info))
+    append(''.join(sorted(paths.values(), key=len)))
+    if need_svg_group:
+        append('</g>')
+    append('</svg>')
+    if nl:
+        append('\n')
+    svg_data = ''.join(l)
+    with writable(out, 'wt', encoding=encoding) as f:
+        f.write(svg_data)
 
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
 
-def as_svg_data_uri(matrix, version, scale=1, border=None, dark='#000',
-                    light=None, xmldecl=False, svgns=True, title=None,
+def as_svg_data_uri(matrix, version, scale=1, border=None,
+                    xmldecl=False, svgns=True, title=None,
                     desc=None, svgid=None, svgclass='segno',
                     lineclass='qrline', omitsize=False, unit='',
                     encoding='utf-8', svgversion=None, nl=False,
-                    encode_minimal=False, omit_charset=False):
+                    encode_minimal=False, omit_charset=False, **kw):
     """\
     Converts the matrix to a SVG data URI.
 
@@ -225,11 +295,10 @@ def as_svg_data_uri(matrix, version, scale=1, border=None, dark='#000',
     """
     encode = partial(quote, safe=b"") if not encode_minimal else partial(quote, safe=b" :/='")
     buff = io.BytesIO()
-    write_svg(matrix, version, buff, scale=scale, dark=dark, light=light,
-              border=border, xmldecl=xmldecl, svgns=svgns, title=title,
-              desc=desc, svgclass=svgclass, lineclass=lineclass,
-              omitsize=omitsize, encoding=encoding, svgid=svgid, unit=unit,
-              svgversion=svgversion, nl=nl)
+    write_svg(matrix, version, buff, scale=scale, border=border, xmldecl=xmldecl,
+              svgns=svgns, title=title, desc=desc, svgclass=svgclass,
+              lineclass=lineclass, omitsize=omitsize, encoding=encoding,
+              svgid=svgid, unit=unit, svgversion=svgversion, nl=nl, **kw)
     return 'data:image/svg+xml{0},{1}' \
                 .format(';charset=' + encoding if not omit_charset else '',
                         # Replace " quotes with ' and URL encode the result
@@ -246,7 +315,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     This function is not exposed to the QRCode class by intention and the
     resulting SVG document is very inefficient (a lot of ``<rect/>`` elements).
     Dark modules are black and light modules are white by default. Provide
-    a custom `color_mapping` to override these defaults.
+    a custom `colormap` to override these defaults.
     Unknown modules are red by default.
 
     :param matrix: The matrix
@@ -388,8 +457,8 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         writeline('%%EOF')
 
 
-def as_png_data_uri(matrix, version, scale=1, border=None, dark='#000',
-                    light='#fff', compresslevel=9, addad=True):
+def as_png_data_uri(matrix, version, scale=1, border=None,
+                    compresslevel=9, addad=True, **kw):
     """\
     Converts the provided matrix into a PNG data URI.
 
@@ -398,21 +467,15 @@ def as_png_data_uri(matrix, version, scale=1, border=None, dark='#000',
     :rtype: str
     """
     buff = io.BytesIO()
-    write_png(matrix, version, buff, scale=scale, border=border, dark=dark,
-              light=light, compresslevel=compresslevel, addad=addad)
+    write_png(matrix, version, buff, scale=scale, border=border,
+              compresslevel=compresslevel, addad=addad, **kw)
     return 'data:image/png;base64,{0}' \
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
-def write_png(matrix, version, out, scale=1, border=None, dark='#000',
-              light='#fff', finder_dark=False, finder_light=False,
-              data_dark=False, data_light=False,
-              version_dark=False, version_light=False,
-              format_dark=False, format_light=False,
-              alignment_dark=False, alignment_light=False,
-              timing_dark=False, timing_light=False,
-              separator=False, dark_module=False,
-              quiet_zone=False, compresslevel=9, dpi=None, addad=True):
+@colorful(dark='#000', light='#fff')
+def write_png(matrix, version, out, colormap, scale=1, border=None,
+              compresslevel=9, dpi=None, addad=True):
     """\
     Serializes the QR Code as PNG image.
 
@@ -429,43 +492,6 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
-    :param dark: Color of the modules (default: black). The
-            color can be provided as ``(R, G, B)`` tuple, as web color name
-            (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
-            ``None`` can be used to define transparency.
-    :param light: Optional background color (default: white).
-            See :paramref:`write_png.dark` for valid values. In addition, ``None`` is
-            accepted which indicates a transparent background.
-    :param finder_dark: Color of the dark modules of the finder patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param finder_light: Color of the light modules of the finder patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param data_dark: Color of the dark data modules.
-            See :paramref:`write_png.dark` for valid values.
-    :param data_light: Color of the light data modules.
-            See :paramref:`write_png.dark` for valid values.
-    :param version_dark: Color of the dark modules of the version information.
-            See :paramref:`write_png.dark` for valid values.
-    :param version_light: Color of the light modules of the version information.
-            See :paramref:`write_png.dark` for valid values.
-    :param format_dark: Color of the dark modules of the format information.
-            See :paramref:`write_png.dark` for valid values.
-    :param format_light: Color of the light modules of the format information.
-            See :paramref:`write_png.dark` for valid values.
-    :param alignment_dark: Color of the dark modules of the alignment patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param alignment_light: Color of the light modules of the alignment patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param timing_dark: Color of the dark modules of the timing patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param timing_light: Color of the light modules of the timing patterns.
-            See :paramref:`write_png.dark` for valid values.
-    :param separator: Color of the separator.
-            See :paramref:`write_png.dark` for valid values.
-    :param dark_module: Color of the dark module.
-            See :paramref:`write_png.dark` for valid values.
-    :param quiet_zone: Color of the quiet zone / border.
-            See :paramref:`write_png.dark` for valid values.
     :param int dpi: Optional DPI setting. By default (``None``), the PNG won't
             have any DPI information. Note that the DPI value is converted into
             meters since PNG does not support any DPI information.
@@ -524,18 +550,10 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
     dark_idx = consts.TYPE_FINDER_PATTERN_DARK
     qz_idx = consts.TYPE_QUIET_ZONE
-    color_mapping = _make_colormap(version, dark=dark, light=light, finder_dark=finder_dark,
-                              finder_light=finder_light, data_dark=data_dark,
-                              data_light=data_light, version_dark=version_dark,
-                              version_light=version_light, format_dark=format_dark,
-                              format_light=format_light, alignment_dark=alignment_dark,
-                              alignment_light=alignment_light, timing_dark=timing_dark,
-                              timing_light=timing_light, separator=separator, dark_module=dark_module,
-                              quiet_zone=quiet_zone)
-    for mt, clr in color_mapping.items():
-        color_mapping[mt] = png_color(clr)
+    for mt, clr in colormap.items():
+        colormap[mt] = png_color(clr)
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)
-    palette = sorted(set(color_mapping.values()), key=itemgetter(0, 1, 2))
+    palette = sorted(set(colormap.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
     number_of_colors = len(palette)
     if number_of_colors == 1:
@@ -547,7 +565,8 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     png_trans_idx = None
     if not is_greyscale:  # PLTE
         if number_of_colors > 2:
-            # Max. 15 different colors are supported, no need to support bit depth 8 (more than 16 colors)
+            # Max. 15 different colors are supported, no need to support
+            # bit depth 8 (more than 16 colors)
             png_bit_depth = 2 if number_of_colors < 5 else 4
         palette.sort(key=len, reverse=True)  # RGBA colors first
         if is_transparent:
@@ -562,9 +581,9 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
                     transparent_color = clr_val
                     break
             palette[0] = transparent_color
-            for module_type, clr in color_mapping.items():
+            for module_type, clr in colormap.items():
                 if clr == transparent:
-                    color_mapping[module_type] = transparent_color
+                    colormap[module_type] = transparent_color
     elif is_transparent:  # Greyscale and transparent
         if black in palette:
             # Since black is zero, it should be the first entry
@@ -575,15 +594,15 @@ def write_png(matrix, version, out, scale=1, border=None, dark='#000',
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
         miter = matrix_iter_verbose(matrix, version, scale=1, border=0)
-        for module_type, clr in color_mapping.items():
+        for module_type, clr in colormap.items():
             color_index[module_type] = palette.index(clr)
     else:
         # Just two colors, use the cheap iterator which returns 0x0 or 0x1
         miter = iter(matrix)
         # The code to create the image requires that TYPE_QUIET_ZONE is available
-        color_index[qz_idx] = palette.index(color_mapping[qz_idx])
+        color_index[qz_idx] = palette.index(colormap[qz_idx])
         color_index[0] = color_index[qz_idx]
-        color_index[1] = palette.index(color_mapping[dark_idx])
+        color_index[1] = palette.index(colormap[dark_idx])
     miter = ((color_index[b] for b in r) for r in miter)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
@@ -699,9 +718,9 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
     y = get_symbol_size(version, scale=1, border=0)[1] + border - .5
     # Set the origin in the upper left corner
     append_cmd('1 0 0 1 {0} {1} cm'.format(border, y))
+    miter = matrix_to_lines(matrix, 0, 0, incby=-1)
     # PDF supports absolute coordinates, only
-    for (x1, y1), (x2, y2) in matrix_to_lines(matrix, 0, 0, incby=-1):
-        append_cmd('{0} {1} m {2} {1} l'.format(x1, y1, x2, y2))
+    cmds.extend('{0} {1} m {2} {1} l'.format(x1, y1, x2, y2) for (x1, y1), (x2, y2) in miter)
     append_cmd('S')
     graphic = zlib.compress((' '.join(cmds)).encode('ascii'), compresslevel)
     with writable(out, 'wb') as f:
@@ -747,7 +766,7 @@ def write_txt(matrix, version, out, border=None, dark='1', light='0'):
     with writable(out, 'wt') as f:
         write = f.write
         for row in row_iter:
-            write(''.join([colours[i] for i in row]))
+            write(''.join(colours[i] for i in row))
             write('\n')
 
 
@@ -784,8 +803,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
                 write(b'\n')
 
 
-def write_pam(matrix, version, out, scale=1, border=None, dark='#000',
-              light='#fff'):
+def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#fff'):
     """\
     Serializes the matrix as `PAM <http://netpbm.sourceforge.net/doc/pam.html>`_
     image.
@@ -812,7 +830,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000',
         return bytearray([b ^ 0x1 for b in row])
 
     def row_to_color_values(row, colours):
-        return b''.join([colours[b] for b in row])
+        return b''.join(colours[b] for b in row)
 
     if not dark:
         raise ValueError('Invalid stroke color "{0}"'.format(dark))
@@ -1112,13 +1130,13 @@ def _make_colormap(version, dark, light,
     :param quiet_zone: Color of the quiet zone / border.
     :rtype: dict
     """
-    unsupported = []
+    unsupported = ()
     if version < 7:
         unsupported = [consts.TYPE_VERSION_DARK, consts.TYPE_VERSION_LIGHT]
-    if version < 1:  # Micro QR Code
-        unsupported.extend([consts.TYPE_DARKMODULE,
-                            consts.TYPE_ALIGNMENT_PATTERN_DARK,
-                            consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
+        if version < 1:  # Micro QR Code
+            unsupported.extend([consts.TYPE_DARKMODULE,
+                                consts.TYPE_ALIGNMENT_PATTERN_DARK,
+                                consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
     mt2color = {
         consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
         consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
