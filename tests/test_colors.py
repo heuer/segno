@@ -10,7 +10,7 @@ Tests against the colors module.
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
-from segno import colors
+from segno import writers as colors
 
 
 def test_illegal():

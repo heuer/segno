@@ -12,7 +12,7 @@ from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno
-from segno import colors
+from segno import writers as colors
 from png import Reader as PNGReader
 
 

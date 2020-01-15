@@ -13,7 +13,7 @@ import io
 import os
 import tempfile
 import pytest
-from segno import cli, colors
+from segno import cli, writers as colors
 from png import Reader as PNGReader
 
 

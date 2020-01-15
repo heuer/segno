@@ -13,7 +13,7 @@ import io
 import xml.etree.ElementTree as etree
 import pytest
 import segno
-from segno import colors
+from segno import writers as colors
 
 _SVG_NS = 'http://www.w3.org/2000/svg'
 
