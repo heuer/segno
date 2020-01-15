@@ -1,7 +1,7 @@
 Changes
 =======
 
-0.3.8 -- 2020-01-dd
+0.3.8 -- 2020-01-15
 -------------------
 * Added support for multiple (more than two) colors to SVG (fixes #64)
 * Fixed several test cases
