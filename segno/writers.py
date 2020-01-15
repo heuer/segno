@@ -208,18 +208,18 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             pass
     paths = {}
     scale_info = ' transform="scale({})"'.format(scale) if scale != 1 else ''
+    p = '<path{}{}'.format(scale_info if not need_svg_group else '',
+                           '' if not lineclass else ' class={}'.format(quoteattr(lineclass)))
     for color, coord in coordinates.items():
-        path = ['<path{}'.format(scale_info if not need_svg_group else '')]
-        opacity = None
+        path = [p]
         clr = svg_color(color)
         if clr is not None:
+            opacity = None
             if isinstance(clr, tuple):
                 clr, opacity = clr
             path.append(' stroke={}'.format(quoteattr(clr)))
             if opacity is not None:
                 path.append(' stroke-opacity={}'.format(quoteattr(str(opacity))))
-        if lineclass:
-            path.append(' class={}'.format(quoteattr(lineclass)))
         path.append(' d="')
         path.append(''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
                                                          x=x, l=length,
@@ -233,8 +233,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         # and it needs to be closed. Further, it has no class attribute.
         k = colormap[consts.TYPE_QUIET_ZONE]
         paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
-    l = []
-    append = l.append
+    svg = []
+    append = svg.append
     if xmldecl:
         append('<?xml version="1.0"')
         if not omit_encoding:
@@ -266,9 +266,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     append('</svg>')
     if nl:
         append('\n')
-    svg_data = ''.join(l)
     with writable(out, 'wt', encoding=encoding) as f:
-        f.write(svg_data)
+        f.write(''.join(svg))
 
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
