@@ -1,6 +1,11 @@
 Changes
 =======
 
+0.3.9 -- 2020-mm-dd
+-------------------
+* Removed segno.encoder, segno.writers and segno.utils from public API (fixes #69)
+
+
 0.3.8 -- 2020-01-15
 -------------------
 * Added support for multiple (more than two) colors to SVG (fixes #64)
