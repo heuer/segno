@@ -300,7 +300,7 @@ class QRCode:
         return self._version < 1
 
     def __eq__(self, other):
-        return self.matrix == other.matrix
+        return self.__class__ == other.__class__ and self.matrix == other.matrix
 
     def symbol_size(self, scale=1, border=None):
         """\

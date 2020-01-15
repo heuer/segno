@@ -31,6 +31,17 @@ _LEGAL_ERROR_LEVELS = tuple(chain(consts.ERROR_MAPPING.keys(),
                                   [e.lower() for e in consts.ERROR_MAPPING.keys()]))
 
 
+def test_eq():
+    qr = segno.make('Equals')
+    assert qr != qr.matrix
+
+
+def test_eq2():
+    qr = segno.make('Equals')
+    qr2 = segno.make('Equals')
+    assert qr == qr2
+
+
 @pytest.mark.parametrize('version, mode', [('M1', 'alphanumeric'), ('M1', 'byte'), ('M2', 'byte')])
 def test_illegal_mode_micro(version, mode):
     with pytest.raises(ValueError) as ex:
@@ -211,12 +222,6 @@ def test_default_border():
 def test_default_border_mirco():
     qr = segno.make_micro(12, version='m4')
     assert 2 == qr.default_border_size
-
-
-def test_eq():
-    qr = segno.make('Hello')
-    qr2 = segno.make('Hello')
-    assert qr == qr2
 
 
 def test_neq():
