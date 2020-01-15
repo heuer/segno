@@ -54,7 +54,8 @@ The following examples show the results of all supported module types.
 The unaffected modules are rendered as grey or white modules, the red modules
 show the usage of the keyword.
 
-The keywords "dark" and "light" are supported by almost all serialization
+The keywords "dark" and "light" (at the command line  :option:`--dark <segno --dark>`
+and :option:`--light <segno --light>`) are supported by almost all serialization
 formats.
 
 
