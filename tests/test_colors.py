@@ -15,32 +15,32 @@ from segno import writers as colors
 
 def test_illegal():
     with pytest.raises(ValueError):
-        colors.color_to_rgb('unknown')
+        colors._color_to_rgb('unknown')
 
 
 def test_illegal2():
     with pytest.raises(ValueError):
-        colors.color_to_rgb((1, 2, 3, 256))
+        colors._color_to_rgb((1, 2, 3, 256))
 
 
 def test_illegal3():
     with pytest.raises(ValueError):
-        colors.color_to_rgb((300, 300, 300))
+        colors._color_to_rgb((300, 300, 300))
 
 
 def test_illegal4():
     with pytest.raises(ValueError):
-        colors.color_to_rgb((0, 0, 256))
+        colors._color_to_rgb((0, 0, 256))
 
 
 def test_illegal5():
     with pytest.raises(ValueError):
-        colors.color_to_rgb((256, 0, 0))
+        colors._color_to_rgb((256, 0, 0))
 
 
 def test_rgba_vs_rgb_conflict():
     with pytest.raises(ValueError):
-        colors.color_to_rgb('#949494E8')
+        colors._color_to_rgb('#949494E8')
 
 
 @pytest.mark.parametrize('clr, expected', [((0, 0, 0, 0), False),
@@ -55,7 +55,7 @@ def test_rgba_vs_rgb_conflict():
                                            ('BLACK', True),
                                            ('blacK', True),])
 def test_color_is_black(clr, expected):
-    assert expected == colors.color_is_black(clr)
+    assert expected == colors._color_is_black(clr)
 
 
 @pytest.mark.parametrize('clr, expected', (((255, 255, 255, 0), False),
@@ -75,7 +75,7 @@ def test_color_is_black(clr, expected):
                                             ('whitE', True),
                                             ))
 def test_color_is_white(clr, expected):
-    assert expected == colors.color_is_white(clr)
+    assert expected == colors._color_is_white(clr)
 
 
 @pytest.mark.parametrize('clr, expected', (('black', '#000'),
@@ -95,7 +95,7 @@ def test_color_is_white(clr, expected):
                                             ('#949494E8', 'rgba(148,148,148,0.91)'),
                                     ))
 def test_color_to_webcolor(clr, expected):
-    assert expected == colors.color_to_webcolor(clr)
+    assert expected == colors._color_to_webcolor(clr)
 
 
 @pytest.mark.parametrize('clr, expected', (('black', '#000'),
@@ -107,7 +107,7 @@ def test_color_to_webcolor(clr, expected):
                                             ((255, 255, 255, 1.0), '#fff'),
     ))
 def test_color_to_webcolor_dont_optimize(clr, expected):
-    assert expected == colors.color_to_webcolor(clr, optimize=False)
+    assert expected == colors._color_to_webcolor(clr, optimize=False)
 
 
 def _make_valid_colornames_data():
@@ -129,7 +129,7 @@ def _make_valid_colornames_data():
 
 @pytest.mark.parametrize('name, expected', _make_valid_colornames_data())
 def test_valid_colornames(name, expected):
-    rgb = colors.color_to_rgb(name)
+    rgb = colors._color_to_rgb(name)
     assert 3 == len(rgb)
     assert expected == rgb
 
@@ -170,7 +170,7 @@ def _make_valid_hexcodes_rgb_data():
 
 @pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgb_data())
 def test_valid_hexcodes_rgb(name, expected):
-    rgb = colors.color_to_rgb(name)
+    rgb = colors._color_to_rgb(name)
     assert 3 == len(rgb)
     assert expected == rgb
 
@@ -189,7 +189,7 @@ def _make_valid_hexcodes_rgba_data():
 
 @pytest.mark.parametrize('name, expected', _make_valid_hexcodes_rgba_data())
 def test_valid_hexcodes_rgba(name, expected):
-    rgba = colors.color_to_rgba(name)
+    rgba = colors._color_to_rgba(name)
     assert 4 == len(rgba)
     assert expected == rgba
 
@@ -200,7 +200,7 @@ def test_valid_hexcodes_rgba(name, expected):
                                             ((255, 0, 0, .2), (255, 0, 0, .2)),
     ))
 def test_tuple_to_rgba(t, expected):
-    rgba = colors.color_to_rgba(t)
+    rgba = colors._color_to_rgba(t)
     assert expected == rgba
 
 
@@ -210,7 +210,7 @@ def test_tuple_to_rgba(t, expected):
                                         ((0, 0, 255, .8), (0, 0, 255, 204)),
     ))
 def test_tuple_to_rgba_int(t, expected):
-    rgba = colors.color_to_rgba(t, alpha_float=False)
+    rgba = colors._color_to_rgba(t, alpha_float=False)
     assert expected == rgba
 
 
@@ -221,7 +221,7 @@ def test_tuple_to_rgba_int(t, expected):
                                             ((60, 70, 80), (195, 185, 175)),
     ))
 def test_invert_color(color, expected):
-    assert expected == colors.invert_color(color)
+    assert expected == colors._invert_color(color)
 
 
 if __name__ == '__main__':

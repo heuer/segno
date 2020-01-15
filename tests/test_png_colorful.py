@@ -88,9 +88,9 @@ def test_plte_colors():
     assert 5 == len(palette)
     assert dark in palette
     assert light in palette
-    assert colors.color_to_rgb('green') in palette
-    assert colors.color_to_rgb('purple') in palette
-    assert colors.color_to_rgb('yellow') in palette
+    assert colors._color_to_rgb('green') in palette
+    assert colors._color_to_rgb('purple') in palette
+    assert colors._color_to_rgb('yellow') in palette
 
 
 if __name__ == '__main__':

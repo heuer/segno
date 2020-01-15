@@ -844,7 +844,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
     if bg_color is None:
         tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
         transparency = True
-        bg_color = invert_color(stroke_color[:3])
+        bg_color = _invert_color(stroke_color[:3])
         bg_color += (0,)
         if len(stroke_color) != 4:
             stroke_color += (255,)
@@ -1295,7 +1295,7 @@ def _alpha_value(color, alpha_float):
     raise ValueError('Invalid alpha channel value: {0}'.format(color))
 
 
-def invert_color(rgb_or_rgba):
+def _invert_color(rgb_or_rgba):
     """\
     Returns the inverse color for the provided color.
 
