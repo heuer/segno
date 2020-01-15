@@ -153,7 +153,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             added to the graphic (default: ``False``)
     """
     def svg_color(clr):
-        return color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
+        return _color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
 
     def matrix_to_lines_verbose():
         j = -.5  # stroke width
@@ -410,13 +410,13 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
                 return c
             return 1 / 255.0 * c if c != 1 else c
 
-        return tuple([to_float(i) for i in color_to_rgb(clr)])
+        return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale, border)
-    stroke_color_is_black = color_is_black(dark)
+    stroke_color_is_black = _color_is_black(dark)
     stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
     with writable(out, 'wt') as f:
         writeline = partial(write_line, f.write)
@@ -509,7 +509,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     """
 
     def png_color(clr):
-        return color_to_rgb_or_rgba(clr, alpha_float=False) if clr is not None else transparent
+        return _color_to_rgb_or_rgba(clr, alpha_float=False) if clr is not None else transparent
 
     def chunk(name, data):
         """\
@@ -692,7 +692,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
                                      .format(c))
                 return c
             return 1 / 255.0 * c if c != 1 else c
-        return tuple([to_float(i) for i in color_to_rgb(clr)])
+        return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
     check_valid_scale(scale)
     check_valid_border(border)
@@ -711,7 +711,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         append_cmd('0 0 {} {} re'.format(width, height))
         append_cmd('f q')
     # Set the stroke color only iff it is not black (default)
-    if not color_is_black(dark):
+    if not _color_is_black(dark):
         append_cmd('{} {} {} RG'.format(*to_pdf_color(dark)))
     # Current pen position y-axis
     # Note: 0, 0 = lower left corner in PDF coordinate system
@@ -838,9 +838,9 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
     width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
-    stroke_color = color_to_rgb_or_rgba(dark, alpha_float=False)
-    bg_color = color_to_rgb_or_rgba(light, alpha_float=False) if light is not None else None
-    colored_stroke = not (color_is_black(stroke_color) or color_is_white(stroke_color))
+    stroke_color = _color_to_rgb_or_rgba(dark, alpha_float=False)
+    bg_color = _color_to_rgb_or_rgba(light, alpha_float=False) if light is not None else None
+    colored_stroke = not (_color_is_black(stroke_color) or _color_is_white(stroke_color))
     if bg_color is None:
         tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
         transparency = True
@@ -848,7 +848,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
         bg_color += (0,)
         if len(stroke_color) != 4:
             stroke_color += (255,)
-    elif colored_stroke or not (color_is_black(bg_color) or color_is_white(bg_color)):
+    elif colored_stroke or not (_color_is_black(bg_color) or _color_is_white(bg_color)):
         tuple_type = 'RGB'
     is_rgb = tuple_type.startswith('RGB')
     colours = None
@@ -1081,7 +1081,7 @@ def _pack_bits_into_byte(iterable):
             for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
-def color_to_rgb_or_rgba(color, alpha_float=True):
+def _color_to_rgb_or_rgba(color, alpha_float=True):
     """\
     Returns the provided color as ``(R, G, B)`` or ``(R, G, B, A)`` tuple.
 
@@ -1096,13 +1096,13 @@ def color_to_rgb_or_rgba(color, alpha_float=True):
             the range of ``0 .. 254``.
     :rtype: tuple
     """
-    rgba = color_to_rgba(color, alpha_float=alpha_float)
+    rgba = _color_to_rgba(color, alpha_float=alpha_float)
     if rgba[3] in (1.0, 255):
         return rgba[:3]
     return rgba
 
 
-def color_to_webcolor(color, allow_css3_colors=True, optimize=True):
+def _color_to_webcolor(color, allow_css3_colors=True, optimize=True):
     """\
     Returns either a hexadecimal code or a color name.
 
@@ -1117,11 +1117,11 @@ def color_to_webcolor(color, allow_css3_colors=True, optimize=True):
     :return: The provided color as web color: ``#RGB``, ``#RRGGBB``,
             ``rgba(R, G, B, A)``, or web color name.
     """
-    if color_is_black(color):
+    if _color_is_black(color):
         return '#000'
-    elif color_is_white(color):
+    elif _color_is_white(color):
         return '#fff'
-    clr = color_to_rgb_or_rgba(color)
+    clr = _color_to_rgb_or_rgba(color)
     alpha_channel = None
     if len(clr) == 4:
         if allow_css3_colors:
@@ -1148,10 +1148,10 @@ def color_to_rgb_hex(color):
             ``(R, G, B, A)``)
     :returns: ``#RRGGBB``.
     """
-    return '#{0:02x}{1:02x}{2:02x}'.format(*color_to_rgb(color))
+    return '#{0:02x}{1:02x}{2:02x}'.format(*_color_to_rgb(color))
 
 
-def color_is_black(color):
+def _color_is_black(color):
     """\
     Returns if the provided color represents "black".
 
@@ -1168,7 +1168,7 @@ def color_is_black(color):
                      (0, 0, 0, 1.0))
 
 
-def color_is_white(color):
+def _color_is_white(color):
     """\
     Returns if the provided color represents "black".
 
@@ -1185,7 +1185,7 @@ def color_is_white(color):
                      (255, 255, 255, 255), (255, 255, 255, 1.0))
 
 
-def color_to_rgb(color):
+def _color_to_rgb(color):
     """\
     Converts web color names like "red" or hexadecimal values like "#36c",
     "#FFFFFF" and RGB tuples like ``(255, 255 255)`` into a (R, G, B) tuple.
@@ -1194,14 +1194,14 @@ def color_to_rgb(color):
             (``#RGB`` or ``#RRGGBB``) or a RGB tuple (i.e. ``(R, G, B)``))
     :return: ``(R, G, B)`` tuple.
     """
-    rgb = color_to_rgb_or_rgba(color)
+    rgb = _color_to_rgb_or_rgba(color)
     if len(rgb) != 3:
         raise ValueError('The alpha channel {0} in color "{1}" cannot be '
                          'converted to RGB'.format(rgb[3], color))
     return rgb
 
 
-def color_to_rgba(color, alpha_float=True):
+def _color_to_rgba(color, alpha_float=True):
     """\
     Returns a (R, G, B, A) tuple.
 
