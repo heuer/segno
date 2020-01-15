@@ -7,6 +7,8 @@
 #
 """\
 Color utility functions.
+
+DOES NOT belong to the public API.
 """
 from __future__ import absolute_import, unicode_literals
 

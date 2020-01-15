@@ -8,6 +8,8 @@
 """\
 Standard serializers and utility functions for serializers.
 
+DOES NOT belong to the public API.
+
 The serializers are independent of the :py:class:`segno.QRCode` (and the
 :py:class:`segno.encoder.Code`) class; they just need a matrix (tuple of
 bytearrays) and the version constant.

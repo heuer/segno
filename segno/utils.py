@@ -7,6 +7,8 @@
 #
 """\
 Utility functions useful for writers or QR Code objects.
+
+DOES NOT belong to the public API.
 """
 from __future__ import absolute_import, unicode_literals
 from itertools import chain

@@ -8,6 +8,8 @@
 """\
 QR Code and Micro QR Code encoder.
 
+DOES NOT belong to the public API.
+
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
 from __future__ import absolute_import, division
