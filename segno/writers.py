@@ -156,7 +156,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         return colors.color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
 
     def matrix_to_lines_verbose():
-        j = -.5
+        j = -.5  # stroke width
         invalid_color = -1
         for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
             last_color = invalid_color
@@ -198,6 +198,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         coordinates[clr].append((x1 - x, y1 - y, x2 - x1))
         xy[clr] = x2, y1
     if need_background:
+        # Add an additional path for the background, will be modified after
+        # the SVG paths have been generated
         coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width // scale)]
     if not draw_transparent:
         try:
@@ -220,9 +222,9 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             path.append(' class={}'.format(quoteattr(lineclass)))
         path.append(' d="')
         path.append(''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
-                                                         x=x, l=l,
+                                                         x=x, l=length,
                                                          y=(int(y) if int(y) == y else y))
-                            for i, (x, y, l) in enumerate(coord)))
+                            for i, (x, y, length) in enumerate(coord)))
         path.append('"/>')
         paths[color] = ''.join(path)
     if need_background:
@@ -413,11 +415,12 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
 
     check_valid_scale(scale)
     check_valid_border(border)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale, border)
+    stroke_color_is_black = colors.color_is_black(dark)
+    stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
     with writable(out, 'wt') as f:
         writeline = partial(write_line, f.write)
-        border = get_border(version, border)
-        width, height = get_symbol_size(version, scale, border)
-        # Write common header
         writeline('%!PS-Adobe-3.0 EPSF-3.0')
         writeline('%%Creator: {0}'.format(CREATOR))
         writeline('%%CreationDate: {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S")))
@@ -426,8 +429,6 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         # Write the shortcuts
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
-        stroke_color_is_black = colors.color_is_black(dark)
-        stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
         if light is not None:
             writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
                       .format(*rgb_to_floats(light)))
@@ -561,7 +562,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     if number_of_colors == 1:
         raise ValueError('Provide at least two different colors')
     # Check if greyscale mode is applicable
-    is_greyscale = number_of_colors == 2 and all((clr in (transparent, black, white) for clr in palette))
+    is_greyscale = number_of_colors == 2 and all(clr in (transparent, black, white) for clr in palette)
     png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
@@ -1156,7 +1157,7 @@ def _make_colormap(version, dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    return dict([(mt, val) for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported])
+    return dict((mt, val) for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported)
 
 
 _VALID_SERIALIZERS = {

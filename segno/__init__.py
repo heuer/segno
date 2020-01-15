@@ -962,28 +962,15 @@ class QRCodeSequence(tuple):
 
         See :py:meth:`QRCode.save()` for a detailed enumeration of options.
         """
+        filename = lambda o, n: o
         m = len(self)
-
-        def prepare_fn_noop(o, n):
-            """\
-            Function to enumerate file names, does nothing by default
-            """
-            return o
-
-        def prepare_filename(o, n):
-            """\
-            Function to enumerate file names.
-            """
-            return o.format(m, n)
-
-        prepare_fn = prepare_fn_noop
         if m > 1 and isinstance(out, str_type):
             dot_idx = out.rfind('.')
             if dot_idx > -1:
                 out = out[:dot_idx] + '-{0:02d}-{1:02d}' + out[dot_idx:]
-                prepare_fn = prepare_filename
+                filename = lambda o, n: o.format(m, n)
         for n, qrcode in enumerate(self, start=1):
-            qrcode.save(prepare_fn(out, n), kind=kind, **kw)
+            qrcode.save(filename(out, n), kind=kind, **kw)
 
     def __getattr__(self, item):
         """\

@@ -266,27 +266,27 @@ def test_sequence_output():
     assert 4 == number_of_files
 
 
-def test_color():
-    args = cli.parse(['--color', 'green', ''])
+def test_dark():
+    args = cli.parse(['--dark', 'green', ''])
     assert args.dark == 'green'
     assert cli.build_config(args)['dark'] == 'green'
 
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
-def test_color_transparent(arg):
-    args = cli.parse(['--color={}'.format(arg), '-output=x.png', ''])
+def test_dark_transparent(arg):
+    args = cli.parse(['--dark={}'.format(arg), '-output=x.png', ''])
     assert args.dark == arg
     assert cli.build_config(args)['dark'] is None
 
 
-def test_background():
-    args = cli.parse(['--background', 'red', ''])
+def test_light():
+    args = cli.parse(['--light', 'red', ''])
     assert args.light == 'red'
 
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
-def test_background_transparent(arg):
-    args = cli.parse(['--background={}'.format(arg), '-output=x.png', ''])
+def test_light_transparent(arg):
+    args = cli.parse(['--light={}'.format(arg), '-output=x.png', ''])
     assert args.light == arg
     assert cli.build_config(args)['light'] is None
 
