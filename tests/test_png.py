@@ -41,10 +41,11 @@ def test_hexcolor_too_long_background():
         qr.save(io.BytesIO(), kind='png', light='#0000000')
 
 
-def test_color_eq_background():
+def test_dark_eq_light():
     qr = segno.make_qr('test')
-    with pytest.raises(ValueError):
-        qr.save(io.BytesIO(), kind='png', dark='#000', light='#000')
+    out = io.BytesIO()
+    qr.save(out, kind='png', dark='#000', light='#000')
+    assert out.getvalue()
 
 _has_palette = re.compile(br'PLTE').search
 _has_transparency = re.compile(br'tRNS').search

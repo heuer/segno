@@ -558,8 +558,6 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     palette = sorted(set(colormap.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
     number_of_colors = len(palette)
-    if number_of_colors == 1:
-        raise ValueError('Provide at least two different colors')
     # Check if greyscale mode is applicable
     is_greyscale = number_of_colors == 2 and all(clr in (transparent, black, white) for clr in palette)
     png_color_type = 0 if is_greyscale else 3
