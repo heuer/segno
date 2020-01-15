@@ -4,6 +4,7 @@ Changes
 0.3.9 -- 2020-mm-dd
 -------------------
 * Removed segno.encoder, segno.writers and segno.utils from public API (fixes #69)
+* Removed segno.colors (part of segno.writers now)
 
 
 0.3.8 -- 2020-01-15
