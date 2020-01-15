@@ -100,3 +100,44 @@ The result is almost he same, but you've saved a few (abt. 130) bytes
 
 .. raw:: html
     :file: _static/svg/penny-lane-optimized.svg
+
+
+Options
+-------
+
+
+xmldecl
+~~~~~~~
+Boolean to enable (default) or omit the XML declaration
+
+
+svgns
+~~~~~
+Boolean to enable (default) or omit the SVG namespace declaration.
+
+
+svgid
+~~~~~
+String (default: ``None``).
+CSS identifier of the ``svg`` element.
+
+
+svgclass
+~~~~~~~~
+String (default: "segno").
+CSS class of the ``svg`` element. Use ``None`` to omit it.
+
+
+lineclass
+~~~~~~~~~
+String (default: "qrline").
+CSS class of all paths. Use ``None`` to omit it.
+
+
+omitsize
+~~~~~~~~
+Boolean to disable the ``width`` and ``height`` attributes.
+
+If set to ``True`` (default: ``False``) the attributes will be replaced by
+a ``viewBox`` attribute.
+
