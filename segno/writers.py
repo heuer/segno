@@ -232,13 +232,15 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         # but the background path is special: It has no stroke- but a fill-color
         # and it needs to be closed. Further, it has no class attribute.
         k = colormap[consts.TYPE_QUIET_ZONE]
-        paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
+        paths[k] = re.sub(r'\sclass="[^"]+"', '',
+                          paths[k].replace('stroke', 'fill')
+                                  .replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
     svg = []
     append = svg.append
     if xmldecl:
         append('<?xml version="1.0"')
         if not omit_encoding:
-            append(' encoding="{}"'.format(encoding))
+            append(' encoding={}'.format(quoteattr(encoding)))
         append('?>\n')
     append('<svg')
     if svgns:
