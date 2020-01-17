@@ -1514,8 +1514,8 @@ def _make_colormap(version, dark, light,
                                 consts.TYPE_ALIGNMENT_PATTERN_DARK,
                                 consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
     mt2color = {
-        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
-        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
+        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark is not False else dark,
+        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light is not False else light,
         consts.TYPE_DATA_DARK: data_dark if data_dark is not False else dark,
         consts.TYPE_DATA_LIGHT: data_light if data_light is not False else light,
         consts.TYPE_VERSION_DARK: version_dark if version_dark is not False else dark,
@@ -1530,7 +1530,7 @@ def _make_colormap(version, dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    return dict((mt, val) for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported)
+    return {mt: val for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported}
 
 
 _VALID_SERIALIZERS = {
