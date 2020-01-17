@@ -110,6 +110,18 @@ def colorful(dark, light):
     return decorate
 
 
+def _valid_width_height_and_border(version, scale, border):
+    """"\
+    Validates the scale and border and returns the width, height and the border.
+    If the border is ``None´` the default border is returned.
+    """
+    check_valid_scale(scale)
+    check_valid_border(border)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale, border)
+    return width, height, border
+
+
 @colorful(dark='#000', light=None)
 def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
               svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
@@ -170,8 +182,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
                 last_color = c
             yield last_color, (x1, x2, j)
 
-    check_valid_scale(scale)
-    check_valid_border(border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     unit = unit or ''
     if unit and omitsize:
         raise ValueError('The unit "{}" has no effect if the size '
@@ -180,8 +191,6 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     if omit_encoding:
         encoding = 'utf-8'
     allow_css3_colors = svgversion is not None and svgversion >= 2.0
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
     is_multicolor = len(set(colormap.values())) > 2
     need_background = not is_multicolor and colormap[consts.TYPE_QUIET_ZONE] is not None and not draw_transparent
     need_svg_group = scale != 1 and (need_background or is_multicolor)
@@ -344,8 +353,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     }
     if colormap is not None:
         clr_mapping.update(colormap)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     matrix_size = get_symbol_size(version, scale=1, border=0)[0]
     with writable(out, 'wt', encoding='utf-8') as f:
         legend = []
@@ -414,10 +422,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
 
         return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    check_valid_scale(scale)
-    check_valid_border(border)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     stroke_color_is_black = _color_is_black(dark)
     stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
     with writable(out, 'wt') as f:
@@ -539,10 +544,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
                                (reduce(lambda x, y: (x << png_bit_depth) + y, e)
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
 
-    # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
-    check_valid_scale(scale)
-    check_valid_border(border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     if dpi:
         dpi = int(dpi)
         if dpi < 0:
@@ -606,8 +609,6 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         color_index[0] = color_index[qz_idx]
         color_index[1] = palette.index(colormap[dark_idx])
     miter = ((color_index[b] for b in r) for r in miter)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
     horizontal_border = b''
     vertical_border = b''
     if border > 0:
@@ -696,10 +697,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
             return 1 / 255.0 * c if c != 1 else c
         return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    check_valid_scale(scale)
-    check_valid_border(border)
-    width, height = get_symbol_size(version, scale, border)
-    border = get_border(version, border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     creation_date = "{0}{1:+03d}'{2:02d}'".format(time.strftime('%Y%m%d%H%M%S'),
                                                   time.timezone // 3600,
                                                   abs(time.timezone) % 60)
@@ -788,8 +786,8 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wb') as f:
         write = f.write
         write('{0}\n'
@@ -836,8 +834,8 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
 
     if not dark:
         raise ValueError('Invalid stroke color "{0}"'.format(dark))
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
     stroke_color = _color_to_rgb_or_rgba(dark, alpha_float=False)
@@ -899,8 +897,8 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
     :param str name: Name of the image (must be a valid C-identifier).
             Default: "img".
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     stroke_color = color_to_rgb_hex(dark)
     bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
@@ -932,9 +930,8 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wt') as f:
         write = f.write
         write('#define {0}_width {1}\n'
