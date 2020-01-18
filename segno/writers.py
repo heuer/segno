@@ -1530,7 +1530,7 @@ def _make_colormap(version, dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    return {mt: val for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported}
+    return {mt: val for mt, val in mt2color.items() if mt not in unsupported}
 
 
 _VALID_SERIALIZERS = {
