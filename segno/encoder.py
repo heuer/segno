@@ -415,7 +415,7 @@ def write_pad_codewords(buff, version, capacity, length):
 
 def add_finder_patterns(matrix, is_micro):
     """\
-    Adds the finder pattern(s) to the matrix.
+    Adds the finder pattern(s) with the separators to the matrix.
 
     QR Codes get three finder patterns, Micro QR Codes have just one finder
     pattern.
@@ -438,29 +438,15 @@ def add_finder_patterns(matrix, is_micro):
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
                (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
 
-    def add_finder_pattern(x, y):
-        """\
-        Adds the finder pattern (black rect with black square) and
-        the finder separator (white horizontal line and white vertical line) to the
-        provided `matrix`.
-
-        ISO/IEC 18004:2015(E) -- 6.3.3 Finder pattern (page 16)
-        ISO/IEC 18004:2015(E) -- 6.3.4 Separator (page 17)
-
-        :param x: x-index of the first *black* module (upper left corner)
-        :param y: y-index of the first *black* module (upper left corner)
-        """
-        fidx1, fidx2 = (0, 8) if y != 0 else (1, 9)
-        fyoff = 1 if x == 0 else 0
-        idx1, idx2 = (0, 8) if y > -1 else (y - 1, matrix_size)
-        x -= fyoff ^ 0x1
-        for i in range(8):
-            matrix[x + i][idx1:idx2] = pattern[fyoff + i][fidx1:fidx2]
-
-    add_finder_pattern(0, 0)  # Upper left corner
-    if not is_micro:
-        add_finder_pattern(0, -7)  # Upper right corner
-        add_finder_pattern(-7, 0)  # Bottom left corner
+    corners = ((0, 0), (0, matrix_size - 8), (-8, 0))  # Upper left, upper, right, bottom left
+    if is_micro:
+        corners = (corners[0],)
+    finder_range = range(8)
+    for i, j in corners:
+        offset = 1 if i == 0 else 0
+        sepoffset = 0 if j != 0 else 1
+        for r in finder_range:
+            matrix[i + r][j:j + 8] = pattern[offset + r][sepoffset:sepoffset + 8]
 
 
 def add_timing_pattern(matrix, is_micro):
@@ -473,9 +459,9 @@ def add_timing_pattern(matrix, is_micro):
     :param bool is_micro: Indicates if the timing pattern for a Micro QR Code
         should be added.
     """
-    bit = 0x1
     j, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
     col = matrix[j]
+    bit = 0x1
     for i in range(8, stop):
         matrix[i][j] = bit
         col[i] = bit
@@ -507,9 +493,10 @@ def add_alignment_patterns(matrix, version):
            or x == min_pos and y == max_pos \
            or x == max_pos and y == min_pos:
             continue
-        j = y - 2
+        # The x and y values represent the center of the alignment pattern
+        i, j = x -2, y - 2
         for r in alignment_range:
-            matrix[x - 2 + r][j:j + 5] = pattern[r*5:r*5 + 5]
+            matrix[i + r][j:j + 5] = pattern[r*5:r*5 + 5]
 
 
 def add_codewords(matrix, codewords, version):
