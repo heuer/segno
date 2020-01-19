@@ -798,8 +798,8 @@ def mask_scores(matrix, matrix_size):
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
-        row_cnt = 0
-        col_cnt = 0
+        n1_row_counter = 0
+        n1_col_counter = 0
         for j in module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
@@ -807,18 +807,18 @@ def mask_scores(matrix, matrix_size):
             dark_module_counter += row_current_bit
             # N1 -- row-wise
             if row_current_bit == row_prev_bit:
-                row_cnt += 1
+                n1_row_counter += 1
             else:
-                if row_cnt >= 5:
-                    score_n1 += row_cnt - 2
-                row_cnt = 1
+                if n1_row_counter >= 5:
+                    score_n1 += n1_row_counter - 2
+                n1_row_counter = 1
             # N1 -- col-wise
             if col_current_bit == col_prev_bit:
-                col_cnt += 1
+                n1_col_counter += 1
             else:
-                if col_cnt >= 5:
-                    score_n1 += col_cnt - 2
-                col_cnt = 1
+                if n1_col_counter >= 5:
+                    score_n1 += n1_col_counter - 2
+                n1_col_counter = 1
             # N2
             if last_row and j and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
                 score_n2 += 3
@@ -829,10 +829,10 @@ def mask_scores(matrix, matrix_size):
         score_n3 += n3_pattern_occurrences(row)
         score_n3 += n3_pattern_occurrences(n3_column)
         # N1
-        if row_cnt >= 5:
-            score_n1 += row_cnt - 2
-        if col_cnt >= 5:
-            score_n1 += col_cnt - 2
+        if n1_row_counter >= 5:
+            score_n1 += n1_row_counter - 2
+        if n1_col_counter >= 5:
+            score_n1 += n1_col_counter - 2
     # N4
     percent = float(dark_module_counter) / (matrix_size ** 2)
     score_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
