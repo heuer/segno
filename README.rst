@@ -91,7 +91,7 @@ Library
     >>> qr.save('up-jumped-the-devil-3.png', light=None)  # Transparent light modules
     >>> qr.save('up-jumped-the-devil.pdf', scale=10)  # Save as PDF
     >>> # SVG drawing the dark modules in "dark blue"
-    >>> qr.save('up-jumped-the-devil.svg', scale=10, color='darkblue')
+    >>> qr.save('up-jumped-the-devil.svg', scale=10, dark='darkblue')
 
 
 If the content to encode is small enough, a Micro QR Code is generated:

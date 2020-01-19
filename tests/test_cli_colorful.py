@@ -13,7 +13,7 @@ import io
 import os
 import tempfile
 import pytest
-from segno import cli, colors
+from segno import cli, writers as colors
 from png import Reader as PNGReader
 
 
@@ -66,9 +66,9 @@ def test_plte_colors():
     assert 5 == len(palette)
     assert (0, 0, 0) in palette
     assert (255, 255, 255) in palette
-    assert colors.color_to_rgb('green') in palette
-    assert colors.color_to_rgb('purple') in palette
-    assert colors.color_to_rgb('yellow') in palette
+    assert colors._color_to_rgb('green') in palette
+    assert colors._color_to_rgb('purple') in palette
+    assert colors._color_to_rgb('yellow') in palette
 
 
 if __name__ == '__main__':

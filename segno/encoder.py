@@ -8,6 +8,8 @@
 """\
 QR Code and Micro QR Code encoder.
 
+DOES NOT belong to the public API.
+
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
 from __future__ import absolute_import, division
@@ -413,7 +415,7 @@ def write_pad_codewords(buff, version, capacity, length):
 
 def add_finder_patterns(matrix, is_micro):
     """\
-    Adds the finder pattern(s) to the matrix.
+    Adds the finder pattern(s) with the separators to the matrix.
 
     QR Codes get three finder patterns, Micro QR Codes have just one finder
     pattern.
@@ -424,7 +426,6 @@ def add_finder_patterns(matrix, is_micro):
     :param matrix: The matrix.
     :param bool is_micro: Indicates if the matrix represents a Micro QR Code.
     """
-    matrix_size = len(matrix)
     # Finder pattern (includes separator around each side!)
     pattern = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
@@ -435,30 +436,15 @@ def add_finder_patterns(matrix, is_micro):
                (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
                (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
-
-    def add_finder_pattern(x, y):
-        """\
-        Adds the finder pattern (black rect with black square) and
-        the finder separator (white horizontal line and white vertical line) to the
-        provided `matrix`.
-
-        ISO/IEC 18004:2015(E) -- 6.3.3 Finder pattern (page 16)
-        ISO/IEC 18004:2015(E) -- 6.3.4 Separator (page 17)
-
-        :param x: x-index of the first *black* module (upper left corner)
-        :param y: y-index of the first *black* module (upper left corner)
-        """
-        fidx1, fidx2 = (0, 8) if y != 0 else (1, 9)
-        fyoff = 1 if x == 0 else 0
-        idx1, idx2 = (0, 8) if y > -1 else (y - 1, matrix_size)
-        x -= fyoff ^ 0x1
-        for i in range(8):
-            matrix[x + i][idx1:idx2] = pattern[fyoff + i][fidx1:fidx2]
-
-    add_finder_pattern(0, 0)  # Upper left corner
-    if not is_micro:
-        add_finder_pattern(0, -7)  # Upper right corner
-        add_finder_pattern(-7, 0)  # Bottom left corner
+    corners = ((0, 0), (0, len(matrix) - 8), (-8, 0))  # Upper left, upper, right, bottom left
+    if is_micro:
+        corners = ((0, 0),)
+    finder_range = range(8)
+    for i, j in corners:
+        offset = 1 if i == 0 else 0
+        sepoffset = 0 if j != 0 else 1
+        for r in finder_range:
+            matrix[i + r][j:j + 8] = pattern[offset + r][sepoffset:sepoffset + 8]
 
 
 def add_timing_pattern(matrix, is_micro):
@@ -471,9 +457,9 @@ def add_timing_pattern(matrix, is_micro):
     :param bool is_micro: Indicates if the timing pattern for a Micro QR Code
         should be added.
     """
-    bit = 0x1
     j, stop = (0, len(matrix)) if is_micro else (6, len(matrix) - 8)
     col = matrix[j]
+    bit = 0x1
     for i in range(8, stop):
         matrix[i][j] = bit
         col[i] = bit
@@ -505,9 +491,10 @@ def add_alignment_patterns(matrix, version):
            or x == min_pos and y == max_pos \
            or x == max_pos and y == min_pos:
             continue
-        j = y - 2
+        # The x and y values represent the center of the alignment pattern
+        i, j = x -2, y - 2
         for r in alignment_range:
-            matrix[x - 2 + r][j:j + 5] = pattern[r*5:r*5 + 5]
+            matrix[i + r][j:j + 5] = pattern[r*5:r*5 + 5]
 
 
 def add_codewords(matrix, codewords, version):
@@ -681,7 +668,7 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         best_score = -1
         eval_mask = evaluate_micro_mask
     # Matrix to check if a module belongs to the encoding region
-    # or function patterns
+    # or to the function patterns
     function_matrix = make_matrix(version)
     add_finder_patterns(function_matrix, is_micro)
     add_alignment_patterns(function_matrix, version)
@@ -798,11 +785,11 @@ def mask_scores(matrix, matrix_size):
             idx = seq.find(n3_pattern, offset)
         return count
 
-    s_n1 = 0
-    s_n2 = 0
-    s_n3 = 0
+    score_n1 = 0
+    score_n2 = 0
+    score_n3 = 0
     module_range = range(matrix_size)
-    dark_modules = 0
+    dark_module_counter = 0
     last_row = None
     # Collects the bytes column-wise (required to calculate score N3)
     n3_column = bytearray(matrix_size)
@@ -811,45 +798,45 @@ def mask_scores(matrix, matrix_size):
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
-        row_cnt = 0
-        col_cnt = 0
+        n1_row_counter = 0
+        n1_col_counter = 0
         for j in module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
             n3_column[j] = col_current_bit
-            dark_modules += row_current_bit
+            dark_module_counter += row_current_bit
             # N1 -- row-wise
             if row_current_bit == row_prev_bit:
-                row_cnt += 1
+                n1_row_counter += 1
             else:
-                if row_cnt >= 5:
-                    s_n1 += row_cnt - 2
-                row_cnt = 1
+                if n1_row_counter >= 5:
+                    score_n1 += n1_row_counter - 2
+                n1_row_counter = 1
             # N1 -- col-wise
             if col_current_bit == col_prev_bit:
-                col_cnt += 1
+                n1_col_counter += 1
             else:
-                if col_cnt >= 5:
-                    s_n1 += col_cnt - 2
-                col_cnt = 1
+                if n1_col_counter >= 5:
+                    score_n1 += n1_col_counter - 2
+                n1_col_counter = 1
             # N2
             if last_row and j and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
-                s_n2 += 3
+                score_n2 += 3
             row_prev_bit = row_current_bit
             col_prev_bit = col_current_bit
         last_row = row
         # N3
-        s_n3 += n3_pattern_occurrences(row)
-        s_n3 += n3_pattern_occurrences(n3_column)
+        score_n3 += n3_pattern_occurrences(row)
+        score_n3 += n3_pattern_occurrences(n3_column)
         # N1
-        if row_cnt >= 5:
-            s_n1 += row_cnt - 2
-        if col_cnt >= 5:
-            s_n1 += col_cnt - 2
+        if n1_row_counter >= 5:
+            score_n1 += n1_row_counter - 2
+        if n1_col_counter >= 5:
+            score_n1 += n1_col_counter - 2
     # N4
-    percent = float(dark_modules) / (matrix_size ** 2)
-    s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
-    return s_n1, s_n2, s_n3, s_n4
+    percent = float(dark_module_counter) / (matrix_size ** 2)
+    score_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
+    return score_n1, score_n2, score_n3, score_n4
 
 
 def evaluate_micro_mask(matrix, matrix_size):

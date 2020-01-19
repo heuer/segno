@@ -1,6 +1,15 @@
 Changes
 =======
 
+0.3.9 -- 2020-01-19
+-------------------
+* Fixed #71: Dark / light modules of the finder pattern may be interpreted
+  wrong if set to ``None``
+* Removed segno.encoder, segno.writers and segno.utils from public API (fixes #69)
+* Removed segno.colors (part of segno.writers now)
+* Documentation improvements
+
+
 0.3.8 -- 2020-01-15
 -------------------
 * Added support for multiple (more than two) colors to SVG (fixes #64)

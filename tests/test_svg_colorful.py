@@ -13,7 +13,7 @@ import io
 import xml.etree.ElementTree as etree
 import pytest
 import segno
-from segno import colors
+from segno import writers as colors
 
 _SVG_NS = 'http://www.w3.org/2000/svg'
 
@@ -38,7 +38,7 @@ def test_merge_colors():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='green')
-    green = colors.color_to_webcolor('green')
+    green = colors._color_to_webcolor('green')
     assert green in out.getvalue().decode('utf-8')
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
@@ -50,9 +50,9 @@ def test_merge_colors2():
     out = io.BytesIO()
     qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
             alignment_light='yellow', quiet_zone='yellow')
-    green = colors.color_to_webcolor('green')
-    yellow = colors.color_to_webcolor('yellow')
-    blue = colors.color_to_webcolor('blue')
+    green = colors._color_to_webcolor('green')
+    yellow = colors._color_to_webcolor('yellow')
+    blue = colors._color_to_webcolor('blue')
     res = out.getvalue().decode('utf-8')
     assert green in res
     assert yellow in res

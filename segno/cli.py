@@ -230,9 +230,7 @@ def build_config(config, filename=None):
         supported_args = _EXT_TO_KW_MAPPING.get(ext, ())
         # Drop unsupported arguments from config rather than getting a
         # "unsupported keyword" exception
-        for k in list(config):
-            if k not in supported_args:
-                del config[k]
+        config = {k: config[k] for k in config if k in supported_args}
     return config
 
 

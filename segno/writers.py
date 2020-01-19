@@ -8,6 +8,8 @@
 """\
 Standard serializers and utility functions for serializers.
 
+DOES NOT belong to the public API.
+
 The serializers are independent of the :py:class:`segno.QRCode` (and the
 :py:class:`segno.encoder.Code`) class; they just need a matrix (tuple of
 bytearrays) and the version constant.
@@ -40,7 +42,7 @@ except ImportError:  # pragma: no cover
     range = xrange
     str = unicode
     from io import open
-from . import colors, consts
+from . import consts
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 
@@ -108,6 +110,18 @@ def colorful(dark, light):
     return decorate
 
 
+def _valid_width_height_and_border(version, scale, border):
+    """"\
+    Validates the scale and border and returns the width, height and the border.
+    If the border is ``None´` the default border is returned.
+    """
+    check_valid_scale(scale)
+    check_valid_border(border)
+    border = get_border(version, border)
+    width, height = get_symbol_size(version, scale, border)
+    return width, height, border
+
+
 @colorful(dark='#000', light=None)
 def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
               svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
@@ -151,10 +165,10 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             added to the graphic (default: ``False``)
     """
     def svg_color(clr):
-        return colors.color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
+        return _color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
 
     def matrix_to_lines_verbose():
-        j = -.5
+        j = -.5  # stroke width
         invalid_color = -1
         for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
             last_color = invalid_color
@@ -168,8 +182,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
                 last_color = c
             yield last_color, (x1, x2, j)
 
-    check_valid_scale(scale)
-    check_valid_border(border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     unit = unit or ''
     if unit and omitsize:
         raise ValueError('The unit "{}" has no effect if the size '
@@ -178,8 +191,6 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     if omit_encoding:
         encoding = 'utf-8'
     allow_css3_colors = svgversion is not None and svgversion >= 2.0
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
     is_multicolor = len(set(colormap.values())) > 2
     need_background = not is_multicolor and colormap[consts.TYPE_QUIET_ZONE] is not None and not draw_transparent
     need_svg_group = scale != 1 and (need_background or is_multicolor)
@@ -196,6 +207,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         coordinates[clr].append((x1 - x, y1 - y, x2 - x1))
         xy[clr] = x2, y1
     if need_background:
+        # Add an additional path for the background, will be modified after
+        # the SVG paths have been generated
         coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width // scale)]
     if not draw_transparent:
         try:
@@ -204,23 +217,23 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             pass
     paths = {}
     scale_info = ' transform="scale({})"'.format(scale) if scale != 1 else ''
+    p = '<path{}{}'.format(scale_info if not need_svg_group else '',
+                           '' if not lineclass else ' class={}'.format(quoteattr(lineclass)))
     for color, coord in coordinates.items():
-        path = ['<path{}'.format(scale_info if not need_svg_group else '')]
-        opacity = None
+        path = [p]
         clr = svg_color(color)
         if clr is not None:
+            opacity = None
             if isinstance(clr, tuple):
                 clr, opacity = clr
             path.append(' stroke={}'.format(quoteattr(clr)))
             if opacity is not None:
                 path.append(' stroke-opacity={}'.format(quoteattr(str(opacity))))
-        if lineclass:
-            path.append(' class={}'.format(quoteattr(lineclass)))
         path.append(' d="')
         path.append(''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
-                                                         x=x, l=l,
+                                                         x=x, l=length,
                                                          y=(int(y) if int(y) == y else y))
-                            for i, (x, y, l) in enumerate(coord)))
+                            for i, (x, y, length) in enumerate(coord)))
         path.append('"/>')
         paths[color] = ''.join(path)
     if need_background:
@@ -228,13 +241,15 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         # but the background path is special: It has no stroke- but a fill-color
         # and it needs to be closed. Further, it has no class attribute.
         k = colormap[consts.TYPE_QUIET_ZONE]
-        paths[k] = re.sub(r'\sclass="[^"]+"', '', paths[k].replace('stroke', 'fill').replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
-    l = []
-    append = l.append
+        paths[k] = re.sub(r'\sclass="[^"]+"', '',
+                          paths[k].replace('stroke', 'fill')
+                                  .replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
+    svg = []
+    append = svg.append
     if xmldecl:
         append('<?xml version="1.0"')
         if not omit_encoding:
-            append(' encoding="{}"'.format(encoding))
+            append(' encoding={}'.format(quoteattr(encoding)))
         append('?>\n')
     append('<svg')
     if svgns:
@@ -262,9 +277,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     append('</svg>')
     if nl:
         append('\n')
-    svg_data = ''.join(l)
     with writable(out, 'wt', encoding=encoding) as f:
-        f.write(svg_data)
+        f.write(''.join(svg))
 
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
@@ -339,8 +353,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     }
     if colormap is not None:
         clr_mapping.update(colormap)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     matrix_size = get_symbol_size(version, scale=1, border=0)[0]
     with writable(out, 'wt', encoding='utf-8') as f:
         legend = []
@@ -407,15 +420,13 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
                 return c
             return 1 / 255.0 * c if c != 1 else c
 
-        return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
+        return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    check_valid_scale(scale)
-    check_valid_border(border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
+    stroke_color_is_black = _color_is_black(dark)
+    stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
     with writable(out, 'wt') as f:
         writeline = partial(write_line, f.write)
-        border = get_border(version, border)
-        width, height = get_symbol_size(version, scale, border)
-        # Write common header
         writeline('%!PS-Adobe-3.0 EPSF-3.0')
         writeline('%%Creator: {0}'.format(CREATOR))
         writeline('%%CreationDate: {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S")))
@@ -424,8 +435,6 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         # Write the shortcuts
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
-        stroke_color_is_black = colors.color_is_black(dark)
-        stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
         if light is not None:
             writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
                       .format(*rgb_to_floats(light)))
@@ -507,7 +516,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     """
 
     def png_color(clr):
-        return colors.color_to_rgb_or_rgba(clr, alpha_float=False) if clr is not None else transparent
+        return _color_to_rgb_or_rgba(clr, alpha_float=False) if clr is not None else transparent
 
     def chunk(name, data):
         """\
@@ -535,10 +544,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
                                (reduce(lambda x, y: (x << png_bit_depth) + y, e)
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
 
-    # PNG writing by "hand" since this lib should not rely on other libs
     scale = int(scale)
-    check_valid_scale(scale)
-    check_valid_border(border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     if dpi:
         dpi = int(dpi)
         if dpi < 0:
@@ -556,10 +563,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     palette = sorted(set(colormap.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
     number_of_colors = len(palette)
-    if number_of_colors == 1:
-        raise ValueError('Provide at least two different colors')
     # Check if greyscale mode is applicable
-    is_greyscale = number_of_colors == 2 and all((clr in (transparent, black, white) for clr in palette))
+    is_greyscale = number_of_colors == 2 and all(clr in (transparent, black, white) for clr in palette)
     png_color_type = 0 if is_greyscale else 3
     png_bit_depth = 1  # Assume a bit depth of 1 (may change if PLTE is used)
     png_trans_idx = None
@@ -574,7 +579,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
             need_rgba = len(palette[1]) == 4
             transparent_color = None
             # Choose a random color which becomes transparent. TODO: Better alternatives? More elegant code?
-            for clr_val in colors._NAME2RGB.values():
+            for clr_val in _NAME2RGB.values():
                 if need_rgba:
                     clr_val += (0,)
                 if clr_val not in palette:
@@ -604,8 +609,6 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         color_index[0] = color_index[qz_idx]
         color_index[1] = palette.index(colormap[dark_idx])
     miter = ((color_index[b] for b in r) for r in miter)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
     horizontal_border = b''
     vertical_border = b''
     if border > 0:
@@ -692,12 +695,9 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
                                      .format(c))
                 return c
             return 1 / 255.0 * c if c != 1 else c
-        return tuple([to_float(i) for i in colors.color_to_rgb(clr)])
+        return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    check_valid_scale(scale)
-    check_valid_border(border)
-    width, height = get_symbol_size(version, scale, border)
-    border = get_border(version, border)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     creation_date = "{0}{1:+03d}'{2:02d}'".format(time.strftime('%Y%m%d%H%M%S'),
                                                   time.timezone // 3600,
                                                   abs(time.timezone) % 60)
@@ -711,7 +711,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         append_cmd('0 0 {} {} re'.format(width, height))
         append_cmd('f q')
     # Set the stroke color only iff it is not black (default)
-    if not colors.color_is_black(dark):
+    if not _color_is_black(dark):
         append_cmd('{} {} {} RG'.format(*to_pdf_color(dark)))
     # Current pen position y-axis
     # Note: 0, 0 = lower left corner in PDF coordinate system
@@ -786,8 +786,8 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wb') as f:
         write = f.write
         write('{0}\n'
@@ -834,21 +834,21 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
 
     if not dark:
         raise ValueError('Invalid stroke color "{0}"'.format(dark))
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
-    stroke_color = colors.color_to_rgb_or_rgba(dark, alpha_float=False)
-    bg_color = colors.color_to_rgb_or_rgba(light, alpha_float=False) if light is not None else None
-    colored_stroke = not (colors.color_is_black(stroke_color) or colors.color_is_white(stroke_color))
+    stroke_color = _color_to_rgb_or_rgba(dark, alpha_float=False)
+    bg_color = _color_to_rgb_or_rgba(light, alpha_float=False) if light is not None else None
+    colored_stroke = not (_color_is_black(stroke_color) or _color_is_white(stroke_color))
     if bg_color is None:
         tuple_type = 'GRAYSCALE_ALPHA' if not colored_stroke else 'RGB_ALPHA'
         transparency = True
-        bg_color = colors.invert_color(stroke_color[:3])
+        bg_color = _invert_color(stroke_color[:3])
         bg_color += (0,)
         if len(stroke_color) != 4:
             stroke_color += (255,)
-    elif colored_stroke or not (colors.color_is_black(bg_color) or colors.color_is_white(bg_color)):
+    elif colored_stroke or not (_color_is_black(bg_color) or _color_is_white(bg_color)):
         tuple_type = 'RGB'
     is_rgb = tuple_type.startswith('RGB')
     colours = None
@@ -897,10 +897,10 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
     :param str name: Name of the image (must be a valid C-identifier).
             Default: "img".
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
-    stroke_color = colors.color_to_rgb_hex(dark)
-    bg_color = colors.color_to_rgb_hex(light) if light is not None else 'None'
+    stroke_color = color_to_rgb_hex(dark)
+    bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
         write = f.write
         write('/* XPM */\n'
@@ -930,9 +930,8 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
+    width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale=scale, border=border)
     with writable(out, 'wt') as f:
         write = f.write
         write('#define {0}_width {1}\n'
@@ -1081,6 +1080,383 @@ def _pack_bits_into_byte(iterable):
             for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
+def _color_to_rgb_or_rgba(color, alpha_float=True):
+    """\
+    Returns the provided color as ``(R, G, B)`` or ``(R, G, B, A)`` tuple.
+
+    If the alpha value is opaque, an RGB tuple is returned, otherwise an RGBA
+    tuple.
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :param bool alpha_float: Indicates if the alpha value should be returned as
+            float value. If ``False``, the alpha value is an integer value in
+            the range of ``0 .. 254``.
+    :rtype: tuple
+    """
+    rgba = _color_to_rgba(color, alpha_float=alpha_float)
+    if rgba[3] in (1.0, 255):
+        return rgba[:3]
+    return rgba
+
+
+def _color_to_webcolor(color, allow_css3_colors=True, optimize=True):
+    """\
+    Returns either a hexadecimal code or a color name.
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :param bool allow_css3_colors: Indicates if a CSS3 color value like
+            rgba(R G, B, A) is an acceptable result.
+    :param bool optimize: Inidcates if the shortest possible color value should
+            be returned (default: ``True``).
+    :rtype: str
+    :return: The provided color as web color: ``#RGB``, ``#RRGGBB``,
+            ``rgba(R, G, B, A)``, or web color name.
+    """
+    if _color_is_black(color):
+        return '#000'
+    elif _color_is_white(color):
+        return '#fff'
+    clr = _color_to_rgb_or_rgba(color)
+    alpha_channel = None
+    if len(clr) == 4:
+        if allow_css3_colors:
+            return 'rgba({0},{1},{2},{3})'.format(*clr)
+        alpha_channel = clr[3]
+        clr = clr[:3]
+    hx = '#{0:02x}{1:02x}{2:02x}'.format(*clr)
+    if optimize:
+        if hx == '#d2b48c':
+            hx = 'tan'  # shorter
+        elif hx == '#ff0000':
+            hx = 'red'  # shorter
+        elif hx[1] == hx[2] and hx[3] == hx[4] and hx[5] == hx[6]:
+            hx = '#{0}{1}{2}'.format(hx[1], hx[3], hx[5])
+    return hx if alpha_channel is None else (hx, alpha_channel)
+
+
+def color_to_rgb_hex(color):
+    """\
+    Returns the provided color in hexadecimal representation.
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :returns: ``#RRGGBB``.
+    """
+    return '#{0:02x}{1:02x}{2:02x}'.format(*_color_to_rgb(color))
+
+
+def _color_is_black(color):
+    """\
+    Returns if the provided color represents "black".
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :return: ``True`` if color is represents black, otherwise ``False``.
+    """
+    try:
+        color = color.lower()
+    except AttributeError:
+        pass
+    return color in ('#000', '#000000', 'black', (0, 0, 0), (0, 0, 0, 255),
+                     (0, 0, 0, 1.0))
+
+
+def _color_is_white(color):
+    """\
+    Returns if the provided color represents "black".
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :return: ``True`` if color is represents white, otherwise ``False``.
+    """
+    try:
+        color = color.lower()
+    except AttributeError:
+        pass
+    return color in ('#fff', '#ffffff', 'white', (255, 255, 255),
+                     (255, 255, 255, 255), (255, 255, 255, 1.0))
+
+
+def _color_to_rgb(color):
+    """\
+    Converts web color names like "red" or hexadecimal values like "#36c",
+    "#FFFFFF" and RGB tuples like ``(255, 255 255)`` into a (R, G, B) tuple.
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB tuple (i.e. ``(R, G, B)``))
+    :return: ``(R, G, B)`` tuple.
+    """
+    rgb = _color_to_rgb_or_rgba(color)
+    if len(rgb) != 3:
+        raise ValueError('The alpha channel {0} in color "{1}" cannot be '
+                         'converted to RGB'.format(rgb[3], color))
+    return rgb
+
+
+def _color_to_rgba(color, alpha_float=True):
+    """\
+    Returns a (R, G, B, A) tuple.
+
+    :param color: A web color name (i.e. ``darkblue``) or a hexadecimal value
+            (``#RGB`` or ``#RRGGBB``) or a RGB(A) tuple (i.e. ``(R, G, B)`` or
+            ``(R, G, B, A)``)
+    :param bool alpha_float: Indicates if the alpha value should be returned as
+            float value. If ``False``, the alpha value is an integer value in
+            the range of ``0 .. 254``.
+    :return: ``(R, G, B, A)`` tuple.
+    """
+    res = []
+    alpha_channel = (1.0,) if alpha_float else (255,)
+    if isinstance(color, tuple):
+        col_length = len(color)
+        is_valid = False
+        if 3 <= col_length <= 4:
+            for i, part in enumerate(color[:3]):
+                is_valid = 0 <= part <= 255
+                res.append(part)
+                if not is_valid or i == 2:
+                    break
+            if is_valid:
+                if col_length == 4:
+                    res.append(_alpha_value(color[3], alpha_float))
+                else:
+                    res.append(alpha_channel[0])
+        if is_valid:
+            return tuple(res)
+        raise ValueError('Unsupported color "{0}"'.format(color))
+    try:
+        return _NAME2RGB[color.lower()] + alpha_channel
+    except KeyError:
+        try:
+            clr = _hex_to_rgb_or_rgba(color, alpha_float=alpha_float)
+            if len(clr) == 4:
+                return clr
+            else:
+                return clr + alpha_channel
+        except ValueError:
+            raise ValueError('Unsupported color "{0}". Neither a known web '
+                             'color name nor a color in hexadecimal format.'
+                             .format(color))
+
+
+def _hex_to_rgb_or_rgba(color, alpha_float=True):
+    """\
+    Helper function to convert a color provided in hexadecimal format (``#RGB``
+    or ``#RRGGBB``) to a RGB(A) tuple.
+
+    :param str color: Hexadecimal color name.
+    :param bool alpha_float: Indicates if the alpha value should be returned as
+            float value. If ``False``, the alpha value is an integer value in
+            the range of ``0 .. 254``.
+    :return: Tuple of integer values representing a RGB(A) color.
+    :rtype: tuple
+    :raises: :py:exc:`ValueError` in case the provided string could not
+                converted into a RGB(A) tuple
+    """
+    if color[0] == '#':
+        color = color[1:]
+    if 2 < len(color) < 5:
+        # Expand RGB -> RRGGBB and RGBA -> RRGGBBAA
+        color = ''.join([color[i] * 2 for i in range(len(color))])
+    color_len = len(color)
+    if color_len not in (6, 8):
+        raise ValueError('Input #{0} is not in #RRGGBB nor in #RRGGBBAA format'.format(color))
+    res = tuple([int(color[i:i+2], 16) for i in range(0, color_len, 2)])
+    if alpha_float and color_len == 8:
+        res = res[:3] + (_alpha_value(res[3], alpha_float),)
+    return res
+
+
+_ALPHA_COMMONS = {255: 1.0, 128: .5, 64: .25, 32: .125, 16: .625, 0: 0.0}
+
+def _alpha_value(color, alpha_float):
+    if alpha_float:
+        if not isinstance(color, float):
+            if 0 <= color <= 255:
+                return _ALPHA_COMMONS.get(color, float('%.02f' % (color / 255.0)))
+        else:
+            if 0 <= color <= 1.0:
+                return color
+    else:
+        if not isinstance(color, float):
+            if 0 <= color <= 255:
+                return color
+        else:
+            if 0 <= color <= 1.0:
+                return color * 255.0
+    raise ValueError('Invalid alpha channel value: {0}'.format(color))
+
+
+def _invert_color(rgb_or_rgba):
+    """\
+    Returns the inverse color for the provided color.
+
+    This function does not check if the color is a valid RGB / RGBA color.
+
+    :param rgb: (R, G, B) or (R, G, B, A) tuple.
+    """
+    return tuple([255 - c for c in rgb_or_rgba])
+
+
+# <http://www.w3.org/TR/css3-color/#svg-color>
+_NAME2RGB = {
+    'aliceblue': (240, 248, 255),
+    'antiquewhite': (250, 235, 215),
+    'aqua': (0, 255, 255),
+    'aquamarine': (127, 255, 212),
+    'azure': (240, 255, 255),
+    'beige': (245, 245, 220),
+    'bisque': (255, 228, 196),
+    'black': (0, 0, 0),
+    'blanchedalmond': (255, 235, 205),
+    'blue': (0, 0, 255),
+    'blueviolet': (138, 43, 226),
+    'brown': (165, 42, 42),
+    'burlywood': (222, 184, 135),
+    'cadetblue': (95, 158, 160),
+    'chartreuse': (127, 255, 0),
+    'chocolate': (210, 105, 30),
+    'coral': (255, 127, 80),
+    'cornflowerblue': (100, 149, 237),
+    'cornsilk': (255, 248, 220),
+    'crimson': (220, 20, 60),
+    'cyan': (0, 255, 255),
+    'darkblue': (0, 0, 139),
+    'darkcyan': (0, 139, 139),
+    'darkgoldenrod': (184, 134, 11),
+    'darkgray': (169, 169, 169),
+    'darkgreen': (0, 100, 0),
+    'darkgrey': (169, 169, 169),
+    'darkkhaki': (189, 183, 107),
+    'darkmagenta': (139, 0, 139),
+    'darkolivegreen': (85, 107, 47),
+    'darkorange': (255, 140, 0),
+    'darkorchid': (153, 50, 204),
+    'darkred': (139, 0, 0),
+    'darksalmon': (233, 150, 122),
+    'darkseagreen': (143, 188, 143),
+    'darkslateblue': (72, 61, 139),
+    'darkslategray': (47, 79, 79),
+    'darkslategrey': (47, 79, 79),
+    'darkturquoise': (0, 206, 209),
+    'darkviolet': (148, 0, 211),
+    'deeppink': (255, 20, 147),
+    'deepskyblue': (0, 191, 255),
+    'dimgray': (105, 105, 105),
+    'dimgrey': (105, 105, 105),
+    'dodgerblue': (30, 144, 255),
+    'firebrick': (178, 34, 34),
+    'floralwhite': (255, 250, 240),
+    'forestgreen': (34, 139, 34),
+    'fuchsia': (255, 0, 255),
+    'gainsboro': (220, 220, 220),
+    'ghostwhite': (248, 248, 255),
+    'gold': (255, 215, 0),
+    'goldenrod': (218, 165, 32),
+    'gray': (128, 128, 128),
+    'green': (0, 128, 0),
+    'greenyellow': (173, 255, 47),
+    'grey': (128, 128, 128),
+    'honeydew': (240, 255, 240),
+    'hotpink': (255, 105, 180),
+    'indianred': (205, 92, 92),
+    'indigo': (75, 0, 130),
+    'ivory': (255, 255, 240),
+    'khaki': (240, 230, 140),
+    'lavender': (230, 230, 250),
+    'lavenderblush': (255, 240, 245),
+    'lawngreen': (124, 252, 0),
+    'lemonchiffon': (255, 250, 205),
+    'lightblue': (173, 216, 230),
+    'lightcoral': (240, 128, 128),
+    'lightcyan': (224, 255, 255),
+    'lightgoldenrodyellow': (250, 250, 210),
+    'lightgray': (211, 211, 211),
+    'lightgreen': (144, 238, 144),
+    'lightgrey': (211, 211, 211),
+    'lightpink': (255, 182, 193),
+    'lightsalmon': (255, 160, 122),
+    'lightseagreen': (32, 178, 170),
+    'lightskyblue': (135, 206, 250),
+    'lightslategray': (119, 136, 153),
+    'lightslategrey': (119, 136, 153),
+    'lightsteelblue': (176, 196, 222),
+    'lightyellow': (255, 255, 224),
+    'lime': (0, 255, 0),
+    'limegreen': (50, 205, 50),
+    'linen': (250, 240, 230),
+    'magenta': (255, 0, 255),
+    'maroon': (128, 0, 0),
+    'mediumaquamarine': (102, 205, 170),
+    'mediumblue': (0, 0, 205),
+    'mediumorchid': (186, 85, 211),
+    'mediumpurple': (147, 112, 219),
+    'mediumseagreen': (60, 179, 113),
+    'mediumslateblue': (123, 104, 238),
+    'mediumspringgreen': (0, 250, 154),
+    'mediumturquoise': (72, 209, 204),
+    'mediumvioletred': (199, 21, 133),
+    'midnightblue': (25, 25, 112),
+    'mintcream': (245, 255, 250),
+    'mistyrose': (255, 228, 225),
+    'moccasin': (255, 228, 181),
+    'navajowhite': (255, 222, 173),
+    'navy': (0, 0, 128),
+    'oldlace': (253, 245, 230),
+    'olive': (128, 128, 0),
+    'olivedrab': (107, 142, 35),
+    'orange': (255, 165, 0),
+    'orangered': (255, 69, 0),
+    'orchid': (218, 112, 214),
+    'palegoldenrod': (238, 232, 170),
+    'palegreen': (152, 251, 152),
+    'paleturquoise': (175, 238, 238),
+    'palevioletred': (219, 112, 147),
+    'papayawhip': (255, 239, 213),
+    'peachpuff': (255, 218, 185),
+    'peru': (205, 133, 63),
+    'pink': (255, 192, 203),
+    'plum': (221, 160, 221),
+    'powderblue': (176, 224, 230),
+    'purple': (128, 0, 128),
+    'red': (255, 0, 0),
+    'rosybrown': (188, 143, 143),
+    'royalblue': (65, 105, 225),
+    'saddlebrown': (139, 69, 19),
+    'salmon': (250, 128, 114),
+    'sandybrown': (244, 164, 96),
+    'seagreen': (46, 139, 87),
+    'seashell': (255, 245, 238),
+    'sienna': (160, 82, 45),
+    'silver': (192, 192, 192),
+    'skyblue': (135, 206, 235),
+    'slateblue': (106, 90, 205),
+    'slategray': (112, 128, 144),
+    'slategrey': (112, 128, 144),
+    'snow': (255, 250, 250),
+    'springgreen': (0, 255, 127),
+    'steelblue': (70, 130, 180),
+    'tan': (210, 180, 140),
+    'teal': (0, 128, 128),
+    'thistle': (216, 191, 216),
+    'tomato': (255, 99, 71),
+    'turquoise': (64, 224, 208),
+    'violet': (238, 130, 238),
+    'wheat': (245, 222, 179),
+    'white': (255, 255, 255),
+    'whitesmoke': (245, 245, 245),
+    'yellow': (255, 255, 0),
+    'yellowgreen': (154, 205, 50),
+}
+
+
 def _make_colormap(version, dark, light,
                    finder_dark=False, finder_light=False,
                    data_dark=False, data_light=False,
@@ -1138,8 +1514,8 @@ def _make_colormap(version, dark, light,
                                 consts.TYPE_ALIGNMENT_PATTERN_DARK,
                                 consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
     mt2color = {
-        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark else dark,
-        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light else light,
+        consts.TYPE_FINDER_PATTERN_DARK: finder_dark if finder_dark is not False else dark,
+        consts.TYPE_FINDER_PATTERN_LIGHT: finder_light if finder_light is not False else light,
         consts.TYPE_DATA_DARK: data_dark if data_dark is not False else dark,
         consts.TYPE_DATA_LIGHT: data_light if data_light is not False else light,
         consts.TYPE_VERSION_DARK: version_dark if version_dark is not False else dark,
@@ -1154,7 +1530,7 @@ def _make_colormap(version, dark, light,
         consts.TYPE_DARKMODULE: dark_module if dark_module is not False else dark,
         consts.TYPE_QUIET_ZONE: quiet_zone if quiet_zone is not False else light,
     }
-    return dict([(mt, val) for mt, val in mt2color.items() if (val or val is None) and mt not in unsupported])
+    return {mt: val for mt, val in mt2color.items() if mt not in unsupported}
 
 
 _VALID_SERIALIZERS = {
