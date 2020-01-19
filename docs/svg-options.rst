@@ -1,6 +1,9 @@
 SVG Options
 ===========
 
+Optimizing SVG
+--------------
+
 The SVG serializer supports several options to optimize the output.
 By default, a minimal, standalone SVG graphic is generated which includes
 the XML declaration, the SVG namespace and a trailing newline.
@@ -42,7 +45,6 @@ XML markup:
 If the SVG graphic should be embedded into a HTML 5 context, the namespace
 declaration is superfluous, omit it via ``svgns=False``.
 
-
 .. code-block:: python
 
     >>> import segno
@@ -82,7 +84,6 @@ Since the graphic should take all available space, the ``scale`` may be omitted,
 
 XML markup.
 
-
 .. code-block:: xml
 
     <svg viewBox="0 0 33 33"><path stroke="#000" d="M4 4.5h7m3 0h1m1 0h1m1 0h1m3 0h7m-25 1h1m5 0h1m3 0h2m1 0h4m1 0h1m5 0h1m-25 1h1m1 0h3m1 0h1m2 0h2m5 0h1m1 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m2 0h2m1 0h1m1 0h1m3 0h1m1 0h3m1 0h1m-25 1h1m1 0h3m1 0h1m1 0h2m4 0h3m1 0h1m1 0h3m1 0h1m-25 1h1m5 0h1m2 0h1m2 0h2m2 0h1m1 0h1m5 0h1m-25 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-17 1h1m2 0h1m1 0h4m-15 1h2m2 0h5m3 0h1m1 0h3m1 0h1m-19 1h2m1 0h1m1 0h10m2 0h1m2 0h1m-23 1h2m1 0h5m1 0h1m1 0h1m1 0h1m2 0h1m5 0h1m-23 1h1m1 0h3m2 0h1m2 0h3m1 0h2m1 0h1m2 0h4m-24 1h1m1 0h1m1 0h1m1 0h2m3 0h2m1 0h1m3 0h1m1 0h5m-21 1h1m2 0h4m1 0h3m1 0h2m1 0h6m-24 1h1m1 0h1m1 0h5m1 0h3m1 0h2m6 0h1m-24 1h1m2 0h2m2 0h1m3 0h1m4 0h1m1 0h1m5 0h1m-22 1h1m2 0h2m2 0h1m2 0h11m-16 1h1m2 0h1m1 0h1m1 0h2m3 0h1m2 0h1m-24 1h7m1 0h5m2 0h2m1 0h1m1 0h1m2 0h2m-25 1h1m5 0h1m4 0h1m1 0h2m1 0h1m3 0h1m2 0h2m-25 1h1m1 0h3m1 0h1m6 0h1m2 0h5m3 0h1m-25 1h1m1 0h3m1 0h1m1 0h2m3 0h1m4 0h1m1 0h2m2 0h1m-25 1h1m1 0h3m1 0h1m1 0h7m2 0h1m1 0h2m2 0h1m-24 1h1m5 0h1m2 0h2m2 0h1m2 0h4m1 0h2m-23 1h7m5 0h1m1 0h1m1 0h1m2 0h3m1 0h2"/></svg>
@@ -105,34 +106,28 @@ The result is almost he same, but you've saved a few (abt. 130) bytes
 Options
 -------
 
-
 xmldecl
 ~~~~~~~
 Boolean to enable (default) or omit the XML declaration
 
-
 svgns
 ~~~~~
 Boolean to enable (default) or omit the SVG namespace declaration.
-
 
 svgid
 ~~~~~
 String (default: ``None``).
 CSS identifier of the ``svg`` element.
 
-
 svgclass
 ~~~~~~~~
 String (default: "segno").
 CSS class of the ``svg`` element. Use ``None`` to omit it.
 
-
 lineclass
 ~~~~~~~~~
 String (default: "qrline").
 CSS class of all paths. Use ``None`` to omit it.
-
 
 omitsize
 ~~~~~~~~
@@ -140,4 +135,50 @@ Boolean to disable the ``width`` and ``height`` attributes.
 
 If set to ``True`` (default: ``False``) the attributes will be replaced by
 a ``viewBox`` attribute.
+
+nl
+~~
+Boolean (default: ``True``) to enable / disable a trailing new line character
+(``\n``). It's enabled by default.
+
+title
+~~~~~
+String (default: ``None``).
+
+Sets the title of the graphic. If empty or ``None``, the title is omitted.
+
+desc
+~~~~
+String (default: ``None``).
+
+Sets the description of the graphic. If empty or ``None``, the description is
+omitted.
+
+unit
+~~~~
+String (default: ``None``).
+
+Sets the unit of the ``width`` / ``height`` attributes. The unit is not checked,
+any non empty value is used as appendix to the numeric width / height attributes.
+Common values are "mm" or "cm".
+
+encoding
+~~~~~~~~
+String (default: "utf--8").
+
+Sets the encoding of the XML document. If set to ``None``, the encoding
+parameter is omitted.
+
+svgversion
+~~~~~~~~~~
+:class:`int` or :class:`float` (default: ``None``)
+
+Sets the SVG ``version`` attribute.
+By default, the attribute is omitted. Any given value is converted into a string.
+The value may have an impact on the generated paths since this lib assumes that
+a value lesser than ``2`` does not support `CSS Color Module Level 3 <https://www.w3.org/TR/2018/REC-css-color-3-20180619/>`_.
+
+    .. note::
+        It's recommended to keep the default value.
+
 
