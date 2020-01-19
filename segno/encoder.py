@@ -668,7 +668,7 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         best_score = -1
         eval_mask = evaluate_micro_mask
     # Matrix to check if a module belongs to the encoding region
-    # or function patterns
+    # or to the function patterns
     function_matrix = make_matrix(version)
     add_finder_patterns(function_matrix, is_micro)
     add_alignment_patterns(function_matrix, version)
@@ -785,11 +785,11 @@ def mask_scores(matrix, matrix_size):
             idx = seq.find(n3_pattern, offset)
         return count
 
-    s_n1 = 0
-    s_n2 = 0
-    s_n3 = 0
+    score_n1 = 0
+    score_n2 = 0
+    score_n3 = 0
     module_range = range(matrix_size)
-    dark_modules = 0
+    dark_module_counter = 0
     last_row = None
     # Collects the bytes column-wise (required to calculate score N3)
     n3_column = bytearray(matrix_size)
@@ -804,39 +804,39 @@ def mask_scores(matrix, matrix_size):
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
             n3_column[j] = col_current_bit
-            dark_modules += row_current_bit
+            dark_module_counter += row_current_bit
             # N1 -- row-wise
             if row_current_bit == row_prev_bit:
                 row_cnt += 1
             else:
                 if row_cnt >= 5:
-                    s_n1 += row_cnt - 2
+                    score_n1 += row_cnt - 2
                 row_cnt = 1
             # N1 -- col-wise
             if col_current_bit == col_prev_bit:
                 col_cnt += 1
             else:
                 if col_cnt >= 5:
-                    s_n1 += col_cnt - 2
+                    score_n1 += col_cnt - 2
                 col_cnt = 1
             # N2
             if last_row and j and row_current_bit == row_prev_bit == last_row[j] == last_row[j - 1]:
-                s_n2 += 3
+                score_n2 += 3
             row_prev_bit = row_current_bit
             col_prev_bit = col_current_bit
         last_row = row
         # N3
-        s_n3 += n3_pattern_occurrences(row)
-        s_n3 += n3_pattern_occurrences(n3_column)
+        score_n3 += n3_pattern_occurrences(row)
+        score_n3 += n3_pattern_occurrences(n3_column)
         # N1
         if row_cnt >= 5:
-            s_n1 += row_cnt - 2
+            score_n1 += row_cnt - 2
         if col_cnt >= 5:
-            s_n1 += col_cnt - 2
+            score_n1 += col_cnt - 2
     # N4
-    percent = float(dark_modules) / (matrix_size ** 2)
-    s_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
-    return s_n1, s_n2, s_n3, s_n4
+    percent = float(dark_module_counter) / (matrix_size ** 2)
+    score_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
+    return score_n1, score_n2, score_n3, score_n4
 
 
 def evaluate_micro_mask(matrix, matrix_size):
