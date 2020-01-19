@@ -426,7 +426,6 @@ def add_finder_patterns(matrix, is_micro):
     :param matrix: The matrix.
     :param bool is_micro: Indicates if the matrix represents a Micro QR Code.
     """
-    matrix_size = len(matrix)
     # Finder pattern (includes separator around each side!)
     pattern = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
@@ -437,10 +436,9 @@ def add_finder_patterns(matrix, is_micro):
                (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
                (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
-
-    corners = ((0, 0), (0, matrix_size - 8), (-8, 0))  # Upper left, upper, right, bottom left
+    corners = ((0, 0), (0, len(matrix) - 8), (-8, 0))  # Upper left, upper, right, bottom left
     if is_micro:
-        corners = (corners[0],)
+        corners = ((0, 0),)
     finder_range = range(8)
     for i, j in corners:
         offset = 1 if i == 0 else 0

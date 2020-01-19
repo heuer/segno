@@ -3,6 +3,8 @@ Changes
 
 0.3.9 -- 2020-mm-dd
 -------------------
+* Fixed #71: Dark / light modules of the finder pattern may be interpreted
+  wrong if set to ``None``
 * Removed segno.encoder, segno.writers and segno.utils from public API (fixes #69)
 * Removed segno.colors (part of segno.writers now)
 
