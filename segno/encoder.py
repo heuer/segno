@@ -43,43 +43,6 @@ __all__ = ('encode', 'encode_sequence')
 __metaclass__ = type
 
 
-class QRCodeError(ValueError):
-    """\
-    Generic QR Code error.
-    """
-
-
-class VersionError(QRCodeError):
-    """\
-    Indicates errors related to the QR Code version.
-    """
-
-
-class ModeError(QRCodeError):
-    """\
-    Indicates errors related to QR Code mode.
-    """
-
-
-class ErrorLevelError(QRCodeError):
-    """\
-    Indicates errors related to QR Code error correction level.
-    """
-
-
-class MaskError(QRCodeError):
-    """\
-    Indicates errors related to QR Code data mask.
-    """
-
-
-class DataOverflowError(QRCodeError):
-    """\
-    Indicates a problem that the provided data does not fit into the
-    provided QR Code version or the data is too large in general.
-    """
-
-
 Code = namedtuple('Code', 'matrix version error mask segments')
 
 

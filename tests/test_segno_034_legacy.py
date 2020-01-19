@@ -14,11 +14,6 @@ import pytest
 import segno
 
 
-def test_deprecation_moduletypes():
-    with pytest.deprecated_call():
-        from segno import moduletypes
-
-
 def test_deprecation():
     from segno import consts as mt
     qr = segno.make('Yellow Submarine', error='h')
