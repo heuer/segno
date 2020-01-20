@@ -1355,7 +1355,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
     :type micro: bool or None
     :param bool is_sa: Indicator if Structured Append is used.
     :rtype: int
-    :raises: :py:exc:`DataOverflowError` if the content does not fit into a QR Code.
+    :raises: :py:exc:`ValueError` if the content does not fit into a QR Code.
     """
     assert not (eci and micro)
     micro_allowed = micro or micro is None
