@@ -230,10 +230,10 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
             if opacity is not None:
                 path += ' stroke-opacity={}'.format(quoteattr(str(opacity)))
         path += ' d="'
-        path += (''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
-                                                      x=x, l=length,
-                                                      y=(int(y) if int(y) == y else y))
-                         for i, (x, y, length) in enumerate(coord)))
+        path += ''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
+                                                     x=x, l=length,
+                                                     y=(int(y) if int(y) == y else y))
+                        for i, (x, y, length) in enumerate(coord))
         path += '"/>'
         paths[color] = path
     if need_background:
