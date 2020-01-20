@@ -1637,7 +1637,7 @@ class Buffer:
         self._data.extend(iterable)
 
     def append_bits(self, val, length):
-        self._data.extend([(val >> i) & 1 for i in reversed(range(length))])
+        self._data.extend((val >> i) & 1 for i in reversed(range(length)))
 
     def getbits(self):
         return self._data
