@@ -467,7 +467,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
 
 
 def as_png_data_uri(matrix, version, scale=1, border=None,
-                    compresslevel=9, addad=True, **kw):
+                    compresslevel=9, **kw):
     """\
     Converts the provided matrix into a PNG data URI.
 
@@ -477,14 +477,14 @@ def as_png_data_uri(matrix, version, scale=1, border=None,
     """
     buff = io.BytesIO()
     write_png(matrix, version, buff, scale=scale, border=border,
-              compresslevel=compresslevel, addad=addad, **kw)
+              compresslevel=compresslevel, **kw)
     return 'data:image/png;base64,{0}' \
                 .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
 @colorful(dark='#000', light='#fff')
 def write_png(matrix, version, out, colormap, scale=1, border=None,
-              compresslevel=9, dpi=None, addad=True):
+              compresslevel=9, dpi=None):
     """\
     Serializes the QR Code as PNG image.
 
