@@ -1,6 +1,13 @@
 Changes
 =======
 
+0.4.0 -- 2020-mm-dd
+-------------------
+* Removed deprecated functions, modules etc. See #56, #57, #59, #61, #67.
+* Deprecated usage of keywords "color" and "background". Replacements: "dark"
+  and "light". See #60. The deprecated keywords will be removed in 1.0.0.
+
+
 0.3.9 -- 2020-01-19
 -------------------
 * Fixed #71: Dark / light modules of the finder pattern may be interpreted
