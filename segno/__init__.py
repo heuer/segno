@@ -879,32 +879,6 @@ class QRCode:
             kw['light'] = kw.pop('background')
         except KeyError:
             pass
-        # Segno 0.3.4 and 0.3.5
-        try:
-            cm = kw.pop('colormap')
-            warnings.warn('"colormap" is deprecated, use the keywords for QRCode.save(). Support will be removed in 0.4.0', DeprecationWarning)
-            from segno import consts
-            mt2name = {
-                consts.TYPE_FINDER_PATTERN_DARK: 'finder_dark',
-                consts.TYPE_FINDER_PATTERN_LIGHT: 'finder_light',
-                consts.TYPE_DATA_DARK: 'data_dark',
-                consts.TYPE_DATA_LIGHT: 'data_light',
-                consts.TYPE_VERSION_DARK: 'version_dark',
-                consts.TYPE_VERSION_LIGHT: 'version_light',
-                consts.TYPE_ALIGNMENT_PATTERN_DARK: 'alignment_dark',
-                consts.TYPE_ALIGNMENT_PATTERN_LIGHT: 'alignment_light',
-                consts.TYPE_TIMING_DARK: 'timing_dark',
-                consts.TYPE_TIMING_LIGHT: 'timing_light',
-                consts.TYPE_FORMAT_DARK: 'format_dark',
-                consts.TYPE_FORMAT_LIGHT: 'format_light',
-                consts.TYPE_SEPARATOR: 'separator',
-                consts.TYPE_DARKMODULE: 'dark_module',
-                consts.TYPE_QUIET_ZONE: 'quiet_zone'
-            }
-            for mt, clr in cm.items():
-                kw[mt2name[mt]] = clr
-        except KeyError:
-            pass
         writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
