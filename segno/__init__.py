@@ -873,10 +873,12 @@ class QRCode:
         # Segno <= 0.3.6
         try:
             kw['dark'] = kw.pop('color')
+            warnings.warn('"color" is deprecated, use "dark". Support will be removed in 1.0.0', DeprecationWarning)
         except KeyError:
             pass
         try:
             kw['light'] = kw.pop('background')
+            warnings.warn('"background" is deprecated, use "light". Support will be removed in 1.0.0', DeprecationWarning)
         except KeyError:
             pass
         writers.save(self.matrix, self._version, out, kind, **kw)
