@@ -1096,7 +1096,7 @@ def make_segment(data, mode, encoding=None):
                 # a) Subtract C140HEX from Shift JIS value;
                 diff = code - 0xc140
             else:  # pragma: no cover
-                raise QRCodeError('Invalid Kanji bytes: {0}'.format(code))
+                raise ValueError('Invalid Kanji bytes: {0}'.format(code))
             # b) Multiply most significant byte of result by C0HEX;
             # c) Add least significant byte to product from b);
             # d) Convert result to a 13-bit binary string.
@@ -1626,7 +1626,7 @@ class _Segment(tuple):
 
 class Buffer:
     """\
-    Wraps a bytearray and provides some useful methods to add bits.
+    Wraps a :cls:`bytearray` and provides some useful methods to add bits.
     """
     __slots__ = ['_data']
 
