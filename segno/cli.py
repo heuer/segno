@@ -14,7 +14,6 @@ Command line script to generate QR Codes with Segno.
 from __future__ import absolute_import, unicode_literals
 import os
 import sys
-import warnings
 import argparse
 import segno
 from segno import writers
@@ -92,8 +91,6 @@ def make_parser():
                                               'Some output formats, i.e. SVG, accept a decimal value.',
                         default=1,
                         type=_convert_scale)
-    parser.add_argument('--color', help=argparse.SUPPRESS, dest='color', default='--invalid--')
-    parser.add_argument('--background', '-bg', help=argparse.SUPPRESS, dest='background', default='--invalid--')
     parser.add_argument('--output', '-o', help='Output file. If not specified, the QR Code is printed to the terminal',
                         required=False)
 
@@ -204,12 +201,6 @@ def build_config(config, filename=None):
     # was supplied by the user or if it's the default argument.
     # If using type=lambda v: None if v in ('transparent', 'trans') else v
     # we cannot detect if "None" comes from "transparent" or the default value
-    if config['color'] != '--invalid--':
-        config['dark'] = config['color']
-        warnings.warn('"--color" is deprecated, use "--dark". Support will be removed in 1.0.0', DeprecationWarning)
-    if config['background'] != '--invalid--':
-        config['light'] = config['background']
-        warnings.warn('"--background" is deprecated, use "--light". Support will be removed in 1.0.0', DeprecationWarning)
     for clr in ('dark', 'light', 'finder_dark', 'finder_light',
                 'format_dark', 'format_light', 'alignment_dark', 'alignment_light',
                 'timing_dark', 'timing_light', 'data_dark', 'data_light',
