@@ -168,7 +168,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         return _color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
 
     def matrix_to_lines_verbose():
-        j = -.5  # stroke width
+        j = -.5  # stroke width / 2
         invalid_color = -1
         for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
             last_color = invalid_color
