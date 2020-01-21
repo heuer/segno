@@ -136,14 +136,14 @@ The generated QR Codes will have a recommended quiet zone / border around the
 symbol. To change the size of the border, :option:`--border <segno --border>`
 can be utilized::
 
-    $ segno --border=0 --output=black-magic-woman.svg "Black Magic Woman"
+    $ segno --border 0 --scale 4 --output=black-magic-woman.svg "Black Magic Woman"
 
 .. image:: _static/cli/black-magic-woman.svg
     :alt: QR Code "Black Magic Woman" using quiet zone of zero.
 
 ::
 
-    $ segno --border=10 --output=diamond.png "Shine On You Crazy Diamond"
+    $ segno --border 10 --scale 4 --output diamond.png "Shine On You Crazy Diamond"
 
 .. image:: _static/cli/diamond.png
     :alt: QR Code "Shine On You Crazy Diamond" using quiet zone of ten.
@@ -151,7 +151,7 @@ can be utilized::
 
 ::
 
-    $ segno -b=30 --output=boom-boom.svg Boom Boom
+    $ segno -b 30 --scale 4 --output=boom-boom.svg Boom Boom
 
 .. image:: _static/cli/boom-boom.svg
     :alt: QR Code "Boom Boom" using quiet zone of 30.
@@ -166,7 +166,7 @@ Usually, all QR Codes are serialized in black and white. Use
 
 Change the foreground color to darkblue::
 
-    $ segno --dark=darkblue --output=excited.png "So Excited"
+    $ segno --dark=darkblue --scale 4 --output=excited.png "So Excited"
 
 .. image:: _static/cli/excited.png
     :alt: QR Code "So Excited" with foreground color "darkblue"
@@ -174,15 +174,16 @@ Change the foreground color to darkblue::
 
 Change the background color to transparent::
 
-    $ segno --light=transparent --output=hotel.png "Hotel California"
+    $ segno --light=transparent --scale 4 --output=hotel.png "Hotel California"
 
 .. image:: _static/cli/hotel.png
     :alt: QR Code "Hotel California" with background color "transparent"
 
 
-Change the foreground color to darkblue and background to yellow::
+Change the color of the dark modules to darkblue and the color of the light
+modules to yellow::
 
-    $ segno --dark=darkblue --light=yellow --output=dontgiveup.svg "Don't Give Up"
+    $ segno --dark=darkblue --light=yellow --scale 4 --output=dontgiveup.svg "Don't Give Up"
 
 .. image:: _static/cli/dontgiveup.svg
     :alt: QR Code "Don't Give Up" with foreground color "transparent"
