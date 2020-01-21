@@ -1,6 +1,14 @@
 Changes
 =======
 
+Versions follow `Semantic Versioning <https://semver.org/>`_.
+
+1.0.0 -- 2020-mm-dd
+-------------------
+* Removed support for color / background keywords (deprecated in 0.4.0).
+  Use dark and light.
+
+
 0.4.0 -- 2020-01-21
 -------------------
 * Removed deprecated functions, modules etc. See #56, #57, #59, #61, #67.
