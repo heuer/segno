@@ -15,7 +15,10 @@ contact information as MeCard.
     '3-L'
     >>> # Some params accept multiple values, like email, phone, url
     >>> qr = helpers.make_mecard(name='Doe,John', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
-    >>> qr.save('my-mecard.svg')
+    >>> qr.save('my-mecard.svg', scale=4)
+
+.. image:: _static/contact/my-mecard.svg
+    :alt: QR Code encoding a MeCard
 
 A factory function which returns the MeCard as string is available as well.
 
@@ -45,7 +48,10 @@ contact information as vCard version 3.0.
     '5-L'
     >>> # Some params accept multiple values, like email, phone, url
     >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
-    >>> qr.save('my-vcard.svg')
+    >>> qr.save('my-vcard.svg', scale=4)
+
+.. image:: _static/contact/my-vcard.svg
+    :alt: QR Code encoding a vCard
 
 A factory function which returns the vCard as string is available as well.
 
