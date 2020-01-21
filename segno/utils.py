@@ -155,31 +155,6 @@ def matrix_iter(matrix, version, scale=1, border=None):
             yield res_row
 
 
-TYPE_FINDER_PATTERN_LIGHT = consts.TYPE_FINDER_PATTERN_LIGHT
-TYPE_FINDER_PATTERN_DARK = consts.TYPE_FINDER_PATTERN_DARK
-TYPE_SEPARATOR = consts.TYPE_SEPARATOR
-TYPE_ALIGNMENT_PATTERN_LIGHT = consts.TYPE_ALIGNMENT_PATTERN_LIGHT
-TYPE_ALIGNMENT_PATTERN_DARK = consts.TYPE_ALIGNMENT_PATTERN_DARK
-TYPE_TIMING_LIGHT = consts.TYPE_TIMING_LIGHT
-TYPE_TIMING_DARK = consts.TYPE_TIMING_DARK
-TYPE_FORMAT_LIGHT = consts.TYPE_FORMAT_LIGHT
-TYPE_FORMAT_DARK = consts.TYPE_FORMAT_DARK
-TYPE_VERSION_LIGHT = consts.TYPE_VERSION_LIGHT
-TYPE_VERSION_DARK = consts.TYPE_VERSION_DARK
-TYPE_DARKMODULE = consts.TYPE_DARKMODULE
-TYPE_DATA_LIGHT = consts.TYPE_DATA_LIGHT
-TYPE_DATA_DARK = consts.TYPE_DATA_DARK
-TYPE_QUIET_ZONE = consts.TYPE_QUIET_ZONE
-
-def matrix_iter_detail(matrix, version, scale=1, border=None):  # pragma: no cover
-    """\
-    Deprecated, see py:func:`matrix_iter_verbose`
-    """
-    import warnings
-    warnings.warn('Deprecated since 0.3.3, use matrix_iter_verbose', DeprecationWarning)
-    return matrix_iter_verbose(matrix, version, scale, border)
-
-
 def matrix_iter_verbose(matrix, version, scale=1, border=None):
     """\
     EXPERIMENTAL: Returns an iterator / generator over the provided matrix which includes

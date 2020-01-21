@@ -167,7 +167,13 @@ encoding
 String (default: "utf--8").
 
 Sets the encoding of the XML document. If set to ``None``, the encoding
-parameter is omitted.
+parameter of the XML declaration is omitted but the XML default encoding "UTF-8"
+is used.
+
+    .. note::
+        It is not recommended to set the encoding to another value than "utf-8"
+        if ``xmldecl`` is set to ``False``.
+
 
 svgversion
 ~~~~~~~~~~

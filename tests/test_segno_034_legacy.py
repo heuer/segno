@@ -6,17 +6,13 @@
 # License: BSD License
 #
 """\
-Test removal of support for "colormap" (introduced in release 0.3.4) still works
+Test removal of support for "colormap" (introduced in release 0.3.4).
+Supported till 0.3.9 with DeprecationWarning, removed in 0.4.0.
 """
 from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno
-
-
-def test_deprecation_moduletypes():
-    with pytest.deprecated_call():
-        from segno import moduletypes
 
 
 def test_deprecation():
@@ -25,14 +21,8 @@ def test_deprecation():
     colormap = {mt.TYPE_FINDER_PATTERN_DARK: 'darkred', mt.TYPE_ALIGNMENT_PATTERN_DARK: 'darkred',
                 mt.TYPE_TIMING_DARK: 'darkred', mt.TYPE_DARKMODULE: 'darkred', mt.TYPE_DATA_DARK: 'darkorange',
                 mt.TYPE_DATA_LIGHT: 'yellow', mt.TYPE_FORMAT_DARK: 'darkred'}
-    out_legacy = io.BytesIO()
-    with pytest.deprecated_call():
-        qr.save(out_legacy, kind='png', scale=5, colormap=colormap)
-    out_new = io.BytesIO()
-    qr.save(out_new, kind='png', scale=5, finder_dark='darkred', alignment_dark='darkred',
-            timing_dark='darkred', dark_module='darkred', data_dark='darkorange', data_light='yellow',
-            format_dark='darkred')
-    assert out_new.getvalue() == out_legacy.getvalue()
+    with pytest.raises(TypeError):
+        qr.save(io.BytesIO(), kind='png', scale=5, colormap=colormap)
 
 
 if __name__ == '__main__':

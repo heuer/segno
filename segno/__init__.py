@@ -14,15 +14,13 @@ from __future__ import absolute_import, unicode_literals
 import sys
 from . import encoder
 import warnings
-from .encoder import QRCodeError, ErrorLevelError, ModeError, MaskError, \
-    VersionError, DataOverflowError
 from . import writers, utils
 try:  # pragma: no cover
     str_type = basestring
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.3.9'
+__version__ = '0.4.0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence')
@@ -875,36 +873,12 @@ class QRCode:
         # Segno <= 0.3.6
         try:
             kw['dark'] = kw.pop('color')
+            warnings.warn('"color" is deprecated, use "dark". Support will be removed in 1.0.0', DeprecationWarning)
         except KeyError:
             pass
         try:
             kw['light'] = kw.pop('background')
-        except KeyError:
-            pass
-        # Segno 0.3.4 and 0.3.5
-        try:
-            cm = kw.pop('colormap')
-            warnings.warn('"colormap" is deprecated, use the keywords for QRCode.save(). Support will be removed in 0.4.0', DeprecationWarning)
-            from segno import consts
-            mt2name = {
-                consts.TYPE_FINDER_PATTERN_DARK: 'finder_dark',
-                consts.TYPE_FINDER_PATTERN_LIGHT: 'finder_light',
-                consts.TYPE_DATA_DARK: 'data_dark',
-                consts.TYPE_DATA_LIGHT: 'data_light',
-                consts.TYPE_VERSION_DARK: 'version_dark',
-                consts.TYPE_VERSION_LIGHT: 'version_light',
-                consts.TYPE_ALIGNMENT_PATTERN_DARK: 'alignment_dark',
-                consts.TYPE_ALIGNMENT_PATTERN_LIGHT: 'alignment_light',
-                consts.TYPE_TIMING_DARK: 'timing_dark',
-                consts.TYPE_TIMING_LIGHT: 'timing_light',
-                consts.TYPE_FORMAT_DARK: 'format_dark',
-                consts.TYPE_FORMAT_LIGHT: 'format_light',
-                consts.TYPE_SEPARATOR: 'separator',
-                consts.TYPE_DARKMODULE: 'dark_module',
-                consts.TYPE_QUIET_ZONE: 'quiet_zone'
-            }
-            for mt, clr in cm.items():
-                kw[mt2name[mt]] = clr
+            warnings.warn('"background" is deprecated, use "light". Support will be removed in 1.0.0', DeprecationWarning)
         except KeyError:
             pass
         writers.save(self.matrix, self._version, out, kind, **kw)

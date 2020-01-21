@@ -43,43 +43,6 @@ __all__ = ('encode', 'encode_sequence')
 __metaclass__ = type
 
 
-class QRCodeError(ValueError):
-    """\
-    Generic QR Code error.
-    """
-
-
-class VersionError(QRCodeError):
-    """\
-    Indicates errors related to the QR Code version.
-    """
-
-
-class ModeError(QRCodeError):
-    """\
-    Indicates errors related to QR Code mode.
-    """
-
-
-class ErrorLevelError(QRCodeError):
-    """\
-    Indicates errors related to QR Code error correction level.
-    """
-
-
-class MaskError(QRCodeError):
-    """\
-    Indicates errors related to QR Code data mask.
-    """
-
-
-class DataOverflowError(QRCodeError):
-    """\
-    Indicates a problem that the provided data does not fit into the
-    provided QR Code version or the data is too large in general.
-    """
-
-
 Code = namedtuple('Code', 'matrix version error mask segments')
 
 
@@ -1133,7 +1096,7 @@ def make_segment(data, mode, encoding=None):
                 # a) Subtract C140HEX from Shift JIS value;
                 diff = code - 0xc140
             else:  # pragma: no cover
-                raise QRCodeError('Invalid Kanji bytes: {0}'.format(code))
+                raise ValueError('Invalid Kanji bytes: {0}'.format(code))
             # b) Multiply most significant byte of result by C0HEX;
             # c) Add least significant byte to product from b);
             # d) Convert result to a 13-bit binary string.
@@ -1392,7 +1355,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
     :type micro: bool or None
     :param bool is_sa: Indicator if Structured Append is used.
     :rtype: int
-    :raises: :py:exc:`DataOverflowError` if the content does not fit into a QR Code.
+    :raises: :py:exc:`ValueError` if the content does not fit into a QR Code.
     """
     assert not (eci and micro)
     micro_allowed = micro or micro is None
@@ -1663,7 +1626,7 @@ class _Segment(tuple):
 
 class Buffer:
     """\
-    Wraps a bytearray and provides some useful methods to add bits.
+    Wraps a :cls:`bytearray` and provides some useful methods to add bits.
     """
     __slots__ = ['_data']
 
@@ -1674,7 +1637,7 @@ class Buffer:
         self._data.extend(iterable)
 
     def append_bits(self, val, length):
-        self._data.extend([(val >> i) & 1 for i in reversed(range(length))])
+        self._data.extend((val >> i) & 1 for i in reversed(range(length)))
 
     def getbits(self):
         return self._data
