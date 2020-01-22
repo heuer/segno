@@ -592,7 +592,6 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     return data
 
 
-
 def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
                 purpose=None, encoding=None):
     """\
@@ -627,7 +626,7 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
     :rtype: segno.QRCode
     """
     # Create a QR Code, error correction level "M".
-    # It's not allowed to use another error mode
+    # It's not allowed to use another level therefore boost_error must be disabled
     qr = segno.make_qr(_make_epc_qr_data(name, iban, amount, text, reference,
                                          bic, purpose, encoding),
                        error='m', boost_error=False)
