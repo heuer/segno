@@ -106,6 +106,9 @@ The result is almost he same, but you've saved a few (abt. 130) bytes
 Options
 -------
 
+All options of the :doc:`colorful-qrcodes` are supported. Additionally, the
+following options are provided by the SVG serializer.
+
 xmldecl
 ~~~~~~~
 Boolean to enable (default) or omit the XML declaration
