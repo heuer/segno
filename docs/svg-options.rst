@@ -1,6 +1,94 @@
 SVG Options
 ===========
 
+All options of the :doc:`colorful-qrcodes` are supported. Additionally, the
+following options are provided by the SVG serializer.
+
+Options
+-------
+
+xmldecl
+~~~~~~~
+Boolean to enable (default) or omit the XML declaration
+
+svgns
+~~~~~
+Boolean to enable (default) or omit the SVG namespace declaration.
+
+svgid
+~~~~~
+String (default: ``None``).
+CSS identifier of the ``svg`` element.
+
+svgclass
+~~~~~~~~
+String (default: "segno").
+CSS class of the ``svg`` element. Use ``None`` to omit it.
+
+lineclass
+~~~~~~~~~
+String (default: "qrline").
+CSS class of all paths. Use ``None`` to omit it.
+
+omitsize
+~~~~~~~~
+Boolean to disable the ``width`` and ``height`` attributes.
+
+If set to ``True`` (default: ``False``) the attributes will be replaced by
+a ``viewBox`` attribute.
+
+nl
+~~
+Boolean (default: ``True``) to enable / disable a trailing new line character
+(``\n``). It's enabled by default.
+
+title
+~~~~~
+String (default: ``None``).
+
+Sets the title of the graphic. If empty or ``None``, the title is omitted.
+
+desc
+~~~~
+String (default: ``None``).
+
+Sets the description of the graphic. If empty or ``None``, the description is
+omitted.
+
+unit
+~~~~
+String (default: ``None``).
+
+Sets the unit of the ``width`` / ``height`` attributes. The unit is not checked,
+any non empty value is used as appendix to the numeric width / height attributes.
+Common values are "mm" or "cm".
+
+encoding
+~~~~~~~~
+String (default: "utf--8").
+
+Sets the encoding of the XML document. If set to ``None``, the encoding
+parameter of the XML declaration is omitted but the XML default encoding "UTF-8"
+is used.
+
+    .. note::
+        It is not recommended to set the encoding to another value than "utf-8"
+        if ``xmldecl`` is set to ``False``.
+
+
+svgversion
+~~~~~~~~~~
+:class:`int` or :class:`float` (default: ``None``)
+
+Sets the SVG ``version`` attribute.
+By default, the attribute is omitted. Any given value is converted into a string.
+The value may have an impact on the generated paths since this lib assumes that
+a value lesser than ``2`` does not support `CSS Color Module Level 3 <https://www.w3.org/TR/2018/REC-css-color-3-20180619/>`_.
+
+    .. note::
+        It's recommended to keep the default value.
+
+
 Optimizing SVG
 --------------
 
@@ -101,93 +189,3 @@ The result is almost he same, but you've saved a few (abt. 130) bytes
 
 .. raw:: html
     :file: _static/svg/penny-lane-optimized.svg
-
-
-Options
--------
-
-All options of the :doc:`colorful-qrcodes` are supported. Additionally, the
-following options are provided by the SVG serializer.
-
-xmldecl
-~~~~~~~
-Boolean to enable (default) or omit the XML declaration
-
-svgns
-~~~~~
-Boolean to enable (default) or omit the SVG namespace declaration.
-
-svgid
-~~~~~
-String (default: ``None``).
-CSS identifier of the ``svg`` element.
-
-svgclass
-~~~~~~~~
-String (default: "segno").
-CSS class of the ``svg`` element. Use ``None`` to omit it.
-
-lineclass
-~~~~~~~~~
-String (default: "qrline").
-CSS class of all paths. Use ``None`` to omit it.
-
-omitsize
-~~~~~~~~
-Boolean to disable the ``width`` and ``height`` attributes.
-
-If set to ``True`` (default: ``False``) the attributes will be replaced by
-a ``viewBox`` attribute.
-
-nl
-~~
-Boolean (default: ``True``) to enable / disable a trailing new line character
-(``\n``). It's enabled by default.
-
-title
-~~~~~
-String (default: ``None``).
-
-Sets the title of the graphic. If empty or ``None``, the title is omitted.
-
-desc
-~~~~
-String (default: ``None``).
-
-Sets the description of the graphic. If empty or ``None``, the description is
-omitted.
-
-unit
-~~~~
-String (default: ``None``).
-
-Sets the unit of the ``width`` / ``height`` attributes. The unit is not checked,
-any non empty value is used as appendix to the numeric width / height attributes.
-Common values are "mm" or "cm".
-
-encoding
-~~~~~~~~
-String (default: "utf--8").
-
-Sets the encoding of the XML document. If set to ``None``, the encoding
-parameter of the XML declaration is omitted but the XML default encoding "UTF-8"
-is used.
-
-    .. note::
-        It is not recommended to set the encoding to another value than "utf-8"
-        if ``xmldecl`` is set to ``False``.
-
-
-svgversion
-~~~~~~~~~~
-:class:`int` or :class:`float` (default: ``None``)
-
-Sets the SVG ``version`` attribute.
-By default, the attribute is omitted. Any given value is converted into a string.
-The value may have an impact on the generated paths since this lib assumes that
-a value lesser than ``2`` does not support `CSS Color Module Level 3 <https://www.w3.org/TR/2018/REC-css-color-3-20180619/>`_.
-
-    .. note::
-        It's recommended to keep the default value.
-
-
