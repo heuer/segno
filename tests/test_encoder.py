@@ -808,8 +808,9 @@ def test_binary_sequence_to_integers():
     # HELLO WORLD as a 1-M code
     data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000 11101100 00010001 11101100 00010001 11101100 00010001')
     expected = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17]
-    assert len(data) // 8 == len(Buffer(data).toints())
-    assert expected == Buffer(data).toints()
+    res_int = list(Buffer(data).toints())
+    assert len(data) // 8 == len(res_int)
+    assert expected == res_int
 
 
 def test_split_into_blocks():
@@ -817,15 +818,16 @@ def test_split_into_blocks():
     # HELLO WORLD as a 5-Q code
     s = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110 11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110 10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111 01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 11100000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
     data = bits(s)
-    codewords = Buffer(data).toints()
+    buff = Buffer(data)
+    codewords = list(buff.toints())
     assert 62 == len(codewords)
     ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
     assert ec_infos
     assert 2 == len(ec_infos)
-    blocks, error_blocks = encoder.make_blocks(ec_infos, codewords)
+    blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
     assert 4 == len(blocks)
     assert 15 == len(blocks[0])
-    assert codewords[:15] == blocks[0]
+    assert bytearray(codewords[:15]) == blocks[0]
     assert 15 == len(blocks[1])
     assert 16 == len(blocks[2])
     assert 16 == len(blocks[3])
@@ -834,52 +836,71 @@ def test_split_into_blocks():
 def test_make_error_block0():
     # <http://www.thonky.com/qr-code-tutorial/error-correction-coding>
     # 1-M
-    data_block = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17]
+    codeword = '00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000 11101100 00010001 11101100 00010001 11101100 00010001'
+    codeword_ints = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17]
+    buff = Buffer(bits(codeword))
+    assert codeword_ints == list(buff.toints())
     error_block = bytearray([196, 35, 39, 119, 235, 215, 231, 226, 93, 23])
     ec_infos = consts.ECC[1][consts.ERROR_LEVEL_M]
     assert 1 == len(ec_infos)
     ec_info = ec_infos[0]
     assert 1 == ec_info.num_blocks
     assert 10 == ec_info.num_total - ec_info.num_data
-    res = encoder.make_error_block(ec_info, data_block)
-    assert len(error_block) == len(res)
-    assert error_block == res
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert len(error_block) == len(error_blocks[0])
+    assert error_block == error_blocks[0]
 
 
 def test_make_error_block1():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    data_block = [67, 85, 70, 134, 87, 38, 85, 194, 119, 50, 6, 18, 6, 103, 38]
+    codeword = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110'
+    codeword_ints = [67, 85, 70, 134, 87, 38, 85, 194, 119, 50, 6, 18, 6, 103, 38]
+    buff = Buffer(bits(codeword))
+    assert codeword_ints == list(buff.toints())
     error_block = bytearray([213, 199, 11, 45, 115, 247, 241, 223, 229, 248, 154, 117, 154, 111, 86, 161, 111, 39])
-    ec_info = consts.ECC[5][consts.ERROR_LEVEL_Q][0]
-    assert error_block == encoder.make_error_block(ec_info, data_block)
+    ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert error_block == error_blocks[0]
 
 
 def test_make_error_block2():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    data_block = [246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199, 146, 6]
+    codeword = '11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110'
+    codeword_ints = [246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199, 146, 6]
+    buff = Buffer(bits(codeword))
+    assert codeword_ints == list(buff.toints())
     error_block = bytearray([87, 204, 96, 60, 202, 182, 124, 157, 200, 134, 27, 129, 209, 17, 163, 163, 120, 133])
-    ec_info = consts.ECC[5][consts.ERROR_LEVEL_Q][0]
-    assert error_block == encoder.make_error_block(ec_info, data_block)
+    ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert error_block == error_blocks[0]
 
 
 def test_make_error_block3():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    data_block = [182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134, 151, 50, 7]
+    codeword = '10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111'
+    codeword_ints = [182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134, 151, 50, 7]
+    buff = Buffer(bits(codeword))
+    assert codeword_ints == list(buff.toints())
     error_block = bytearray([148, 116, 177, 212, 76, 133, 75, 242, 238, 76, 195, 230, 189, 10, 108, 240, 192, 141])
-    ec_info = consts.ECC[5][consts.ERROR_LEVEL_Q][1]
-    assert error_block == encoder.make_error_block(ec_info, data_block)
+    ec_infos = (consts.ECC[5][consts.ERROR_LEVEL_Q][1],)
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert error_block == error_blocks[0]
 
 
 def test_make_error_block4():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    data_block = [70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17, 236, 17, 236]
+    codeword = '01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 00010000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
+    codeword_ints = [70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17, 236, 17, 236]
+    buff = Buffer(bits(codeword))
+    assert codeword_ints == list(buff.toints())
     error_block = bytearray([235, 159, 5, 173, 24, 147, 59, 33, 106, 40, 255, 172, 82, 2, 131, 32, 178, 236])
-    ec_info = consts.ECC[5][consts.ERROR_LEVEL_Q][1]
-    assert error_block == encoder.make_error_block(ec_info, data_block)
+    ec_infos = (consts.ECC[5][consts.ERROR_LEVEL_Q][1],)
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert error_block == error_blocks[0]
 
 
 def test_make_error_block_iso_i2():
@@ -887,12 +908,14 @@ def test_make_error_block_iso_i2():
     # Input: 01234567
     # Symbol: 1-M
     s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
-    data_block = Buffer(bits(s)).toints()
+    data_block = Buffer(bits(s))
     error_s = '10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
-    error_block = Buffer(bits(error_s)).toints()
-    ec_info = consts.ECC[1][consts.ERROR_LEVEL_M][0]
+    error_block = list(Buffer(bits(error_s)).toints())
+    ec_infos = consts.ECC[1][consts.ERROR_LEVEL_M]
+    ec_info = ec_infos[0]
     assert ec_info.num_total - ec_info.num_data == len(error_block)
-    assert bytearray(error_block) == encoder.make_error_block(ec_info, data_block)
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, data_block)
+    assert bytearray(error_block) == error_blocks[0]
 
 
 def test_make_error_block_iso_i3():
@@ -900,12 +923,14 @@ def test_make_error_block_iso_i3():
     # Input: 01234567
     # Symbol: M2-L
     s = '01000000 00011000 10101100 11000011 00000000'
-    data_block = Buffer(bits(s)).toints()
+    buff = Buffer(bits(s))
     error_s = '10000110 00001101 00100010 10101110 00110000'
-    error_block = Buffer(bits(error_s)).toints()
-    ec_info = consts.ECC[consts.VERSION_M2][consts.ERROR_LEVEL_L][0]
+    error_block = list(Buffer(bits(error_s)).toints())
+    ec_infos = consts.ECC[consts.VERSION_M2][consts.ERROR_LEVEL_L]
+    ec_info = ec_infos[0]
     assert ec_info.num_total - ec_info.num_data == len(error_block)
-    assert bytearray(error_block) == encoder.make_error_block(ec_info, data_block)
+    data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
+    assert bytearray(error_block) == error_blocks[0]
 
 
 def test_make_final_message_iso_i2():
@@ -913,7 +938,7 @@ def test_make_final_message_iso_i2():
     # Input: 01234567
     # Symbol: 1-M
     s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
-    codewords = Buffer(bits(s)).toints()
+    codewords = Buffer(bits(s))
     expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
     expected = bits(expected_s)
     assert expected == encoder.make_final_message(1, consts.ERROR_LEVEL_M, codewords).getbits()
@@ -924,7 +949,7 @@ def test_make_final_message_iso_i3():
     # Input: 01234567
     # Symbol: M2-L
     s = '01000000 00011000 10101100 11000011 00000000'
-    codewords = Buffer(bits(s)).toints()
+    codewords = Buffer(bits(s))
     expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 00001101 00100010 10101110 00110000'
     expected = bits(expected_s)
     assert expected == encoder.make_final_message(consts.VERSION_M2, consts.ERROR_LEVEL_L, codewords).getbits()
@@ -933,13 +958,19 @@ def test_make_final_message_iso_i3():
 def test_make_final_message_thonky():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codewords = [67,85,70,134,87,38,85,194,119,50,6,18,6,103,38,
-                 246,246,66,7,118,134,242,7,38,86,22,198,199,146,6,
-                 182,230,247,119,50,7,118,134,87,38,82,6,134,151,50,7,
-                 70,247,118,86,194,6,151,50,16,236,17,236,17,236,17,236]
+    codewords = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110' \
+                '11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110' \
+                '10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111' \
+                '01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 00010000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
+    codewords_int = [67, 85, 70, 134, 87, 38, 85, 194, 119, 50, 6, 18, 6, 103, 38,
+                     246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199, 146, 6,
+                     182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134, 151, 50, 7,
+                     70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17, 236, 17, 236]
     s = '01000011111101101011011001000110010101011111011011100110111101110100011001000010111101110111011010000110000001110111011101010110010101110111011000110010110000100010011010000110000001110000011001010101111100100111011010010111110000100000011110000110001100100111011100100110010101110001000000110010010101100010011011101100000001100001011001010010000100010001001011000110000001101110110000000110110001111000011000010001011001111001001010010111111011000010011000000110001100100001000100000111111011001101010101010111100101001110101111000111110011000111010010011111000010110110000010110001000001010010110100111100110101001010110101110011110010100100110000011000111101111011011010000101100100111111000101111100010010110011101111011111100111011111001000100001111001011100100011101110011010101111100010000110010011000010100010011010000110111100001111111111011101011000000111100110101011001001101011010001101111010101001001101111000100010000101000000010010101101010001101101100100000111010000110100011111100000010000001101111011110001100000010110010001001111000010110001101111011000000000'
     expected = bits(s)
-    res = encoder.make_final_message(5, consts.ERROR_LEVEL_Q, codewords)
+    buff = Buffer(bits(codewords))
+    assert codewords_int == list(buff.toints())
+    res = encoder.make_final_message(5, consts.ERROR_LEVEL_Q, buff)
     assert len(expected) == len(res)
     assert expected == res.getbits()
 
@@ -1009,7 +1040,7 @@ def test_codeword_placement_iso_i2():
     # ISO/IEC 18004:2015(E) - page 94
     # 01234567 as 1-M symbol
     s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
-    codewords = Buffer(bits(s)).toints()
+    codewords = Buffer(bits(s))
     version = 1
     buff = encoder.make_final_message(version, consts.ERROR_LEVEL_M, codewords)
     expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
@@ -1026,7 +1057,7 @@ def test_codeword_placement_iso_i3():
     # ISO/IEC 18004:2015(E) - page 96
     # 01234567 as M2-L symbol
     s = '01000000 00011000 10101100 11000011 00000000'
-    codewords = Buffer(bits(s)).toints()
+    codewords = Buffer(bits(s))
     version = consts.VERSION_M2
     buff = encoder.make_final_message(version, consts.ERROR_LEVEL_L, codewords)
     expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 00001101 00100010 10101110 00110000'

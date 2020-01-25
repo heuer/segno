@@ -15,6 +15,7 @@ DOES NOT belong to the public API.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
+from itertools import islice, chain
 import re
 import math
 import codecs
@@ -240,7 +241,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence (page 45)
-    buff = make_final_message(version, error, buff.toints())
+    buff = make_final_message(version, error, buff)
     # Matrix with timing pattern and reserved format / version regions
     matrix = make_matrix(version)
     # ISO/IEC 18004:2015 -- 6.3.3 Finder pattern (page 16)
@@ -502,7 +503,7 @@ def add_codewords(matrix, codewords, version):
                          'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
 
-def make_final_message(version, error, codewords):
+def make_final_message(version, error, buff):
     """\
     Constructs the final message (codewords incl. error correction).
 
@@ -510,36 +511,28 @@ def make_final_message(version, error, codewords):
 
     :param int version: (Micro) QR Code version constant.
     :param int error: Error level constant.
-    :param codewords: An iterable sequence of codewords (ints)
+    :param buff: Byte buffer.
     :return: Byte buffer representing the final message.
     """
+    def to_binary(val, length=8):
+        return ((val >> i) & 1 for i in reversed(range(length)))
+
     ec_infos = consts.ECC[version][error]
-    last_cw_is_four = version in (consts.VERSION_M1, consts.VERSION_M3)
-    data_blocks, error_blocks = make_blocks(ec_infos, codewords)
-    if last_cw_is_four:
+    data_blocks, error_blocks = make_blocks(ec_infos, buff)
+    cw_four = None
+    if version in (consts.VERSION_M1, consts.VERSION_M3):
         # All codewords are 8 bit by default, M1 and M3 symbols use 4 bits
-        # to represent the last last codeword
+        # to represent the last codeword.
         # datablocks[0] is save since Micro QR Codes use just one datablock and
         # one error block
-        data_blocks[0][-1] >>= 4
-    buff = Buffer()
-    append_bits = buff.append_bits
-    append_int = partial(append_bits, length=8)
+        cw_four = to_binary(data_blocks[0].pop(-1) >> 4, 4)
+    res = Buffer()
     # Write codewords
-    for i in range(max(info.num_data for info in ec_infos)):
-        for block in data_blocks:
-            if i >= len(block):
-                continue
-            if last_cw_is_four and i + 1 == len(block):
-                append_bits(block[i], 4)
-            else:
-                append_int(block[i])
+    res.extend(chain(*map(to_binary, (x for x in chain.from_iterable(zip_longest(*data_blocks)) if x is not None))))
+    if cw_four is not None:
+        res.extend(cw_four)
     # Write error codewords
-    for i in range(max(info.num_total - info.num_data for info in ec_infos)):
-        for block in error_blocks:
-            if i >= len(block):
-                continue
-            append_int(block[i])
+    res.extend(chain(*map(to_binary, (x for x in chain.from_iterable(zip_longest(*error_blocks)) if x is not None))))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence
     # [...] In certain QR Code versions, however, where the number of modules
     # available for data and error correction codewords is not an exact multiple
@@ -553,29 +546,29 @@ def make_final_message(version, error, codewords):
         remainder = 3
     elif version in (21, 22, 23, 24, 25, 26, 27):
         remainder = 4
-    buff.extend(b'\0' * remainder)
-    return buff
+    res.extend(b'\0' * remainder)
+    return res
 
 
-def make_blocks(ec_infos, codewords):
+def make_blocks(ec_infos, buff):
     """\
     Returns the data and error blocks.
 
     :param ec_infos: Iterable of ECC information
-    :param codewords: Iterable of (integer) code words.
+    :param buff: Byte buffer.
     """
+    codewords = buff.toints()
     data_blocks, error_blocks = [], []
     append_data_block = data_blocks.append
     append_error_block = error_blocks.append
     gen_log = consts.GALIOS_LOG
     gen_exp = consts.GALIOS_EXP
-    offset = 0
     for ec_info in ec_infos:
         num_error_words = ec_info.num_total - ec_info.num_data
         gen = consts.GEN_POLY[num_error_words]
         range_error_words = range(num_error_words)
         for i in range(ec_info.num_blocks):
-            block = codewords[offset:offset + ec_info.num_data]
+            block = bytearray(islice(codewords, ec_info.num_data))
             append_data_block(block)
             len_data = len(block)
             error_block = bytearray(block)
@@ -588,7 +581,6 @@ def make_blocks(ec_infos, codewords):
                     for n in range_error_words:
                         error_block[k + n + 1] ^= gen_exp[lcoef + gen[n]]
             append_error_block(error_block[len_data:])
-            offset += ec_info.num_data
     return data_blocks, error_blocks
 
 
@@ -1644,7 +1636,7 @@ class Buffer:
             "Collect data into fixed-length chunks or blocks"
             # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
             return zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue)
-        return [int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0)]
+        return (int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0))
 
     def __len__(self):
         return len(self._data)
