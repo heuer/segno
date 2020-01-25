@@ -482,11 +482,12 @@ def add_codewords(matrix, codewords, version):
     # alternately upwards and downwards from the right to left of the symbol.
     # [...]
     codeword_length = len(codewords)
+    range_two = range(2)
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
         for vertical in range(matrix_size):
-            for z in range(2):
+            for z in range_two:
                 j = right - z
                 upwards = ((right + inc) & 2) == 0
                 if not is_micro:
@@ -564,39 +565,31 @@ def make_blocks(ec_infos, codewords):
     :param codewords: Iterable of (integer) code words.
     """
     data_blocks, error_blocks = [], []
-    offset = 0
-    for ec_info in ec_infos:
-        for i in range(ec_info.num_blocks):
-            block = codewords[offset:offset + ec_info.num_data]
-            data_blocks.append(block)
-            error_blocks.append(make_error_block(ec_info, block))
-            offset += ec_info.num_data
-    return data_blocks, error_blocks
-
-
-def make_error_block(ec_info, data_block):
-    """\
-    Creates the error code words for the provided data block.
-
-    :param ec_info: ECC information (number of blocks, number of code words etc.)
-    :param data_block: Iterable of (integer) code words.
-    """
-    num_error_words = ec_info.num_total - ec_info.num_data
-
-    error_block = bytearray(data_block)
-    error_block.extend([0] * num_error_words)
-    gen = consts.GEN_POLY[num_error_words]
+    append_data_block = data_blocks.append
+    append_error_block = error_blocks.append
     gen_log = consts.GALIOS_LOG
     gen_exp = consts.GALIOS_EXP
-    len_data = len(data_block)
-    # Extended synthetic division, see http://research.swtch.com/field
-    for i in range(len_data):
-        coef = error_block[i]
-        if coef != 0:  # log(0) is undefined
-            lcoef = gen_log[coef]
-            for j in range(num_error_words):
-                error_block[i + j + 1] ^= gen_exp[lcoef + gen[j]]
-    return error_block[len_data:]
+    offset = 0
+    for ec_info in ec_infos:
+        num_error_words = ec_info.num_total - ec_info.num_data
+        gen = consts.GEN_POLY[num_error_words]
+        range_error_words = range(num_error_words)
+        for i in range(ec_info.num_blocks):
+            block = codewords[offset:offset + ec_info.num_data]
+            append_data_block(block)
+            len_data = len(block)
+            error_block = bytearray(block)
+            error_block.extend([0] * num_error_words)
+            # Extended synthetic division, see http://research.swtch.com/field
+            for k in range(len_data):
+                coef = error_block[k]
+                if coef != 0:  # log(0) is undefined
+                    lcoef = gen_log[coef]
+                    for n in range_error_words:
+                        error_block[k + n + 1] ^= gen_exp[lcoef + gen[n]]
+            append_error_block(error_block[len_data:])
+            offset += ec_info.num_data
+    return data_blocks, error_blocks
 
 
 def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
