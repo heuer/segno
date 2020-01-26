@@ -15,7 +15,7 @@ DOES NOT belong to the public API.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
-from itertools import islice, chain
+from itertools import islice, chain, product
 import re
 import math
 import codecs
@@ -161,7 +161,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
             raise ValueError('This function does not accept Micro QR Code versions. '
                              'Provided: "{0}"'.format(get_version_name(version)))
     elif symbol_count is None:
-        raise ValueError('Please provide a QR Code version or the symbol count')
+        raise ValueError('Please provide either a QR Code version or the symbol count')
     if symbol_count is not None and not 1 <= symbol_count <= 16:
         raise ValueError('The symbol count must be in range 1 .. 16')
     error = normalize_errorlevel(error, accept_none=True)
@@ -449,16 +449,14 @@ def add_alignment_patterns(matrix, version):
     alignment_range = range(5)
     min_pos = positions[0]
     max_pos = positions[-1]
-    for x, y in ((x, y) for x in positions for y in positions):
-        # Finder pattern?
-        if x == min_pos == y \
-           or x == min_pos and y == max_pos \
-           or x == max_pos and y == min_pos:
+    finder_positions = ((min_pos, min_pos), (min_pos, max_pos), (max_pos, min_pos))
+    for x, y in product(positions, repeat=2):
+        if (x, y) in finder_positions:
             continue
         # The x and y values represent the center of the alignment pattern
         i, j = x -2, y - 2
         for r in alignment_range:
-            matrix[i + r][j:j + 5] = pattern[r*5:r*5 + 5]
+            matrix[i + r][j:j + 5] = pattern[r * 5:r * 5 + 5]
 
 
 def add_codewords(matrix, codewords, version):
@@ -539,7 +537,7 @@ def make_final_message(version, error, buff):
     # of 8, there may be a need for 3, 4 or 7 Remainder Bits to be appended to
     # the final message bit stream in order to fill exactly the number of
     # modules in the encoding region
-    remainder = 0  # Calculation: Number of Data modules - number of bits
+    remainder = 0
     if version in (2, 3, 4, 5, 6):
         remainder = 7
     elif version in (14, 15, 16, 17, 18, 19, 20, 28, 29, 30, 31, 32, 33, 34):
@@ -1632,11 +1630,7 @@ class Buffer:
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
         """
-        def grouper(iterable, n, fillvalue=None):
-            "Collect data into fixed-length chunks or blocks"
-            # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
-            return zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue)
-        return (int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0))
+        return (int(''.join(map(str, g)), 2) for g in zip_longest(*[iter(self._data)] * 8, fillvalue=0))
 
     def __len__(self):
         return len(self._data)
