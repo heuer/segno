@@ -108,7 +108,7 @@ def test_illegal_error_level_micro():
 
 @pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
 def test_data_too_large(data, version):
-    with pytest.raises(ValueError) as ex:
+    with pytest.raises(segno.DataOverflowError) as ex:
         segno.make(data, version=version)
     assert 'does not fit' in str(ex.value)
 

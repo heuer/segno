@@ -126,7 +126,7 @@ def test_dataoverflow_error():
     seq = segno.make_sequence(data, version=40)
     assert 16 == len(seq)
     data += 'B'
-    with pytest.raises(ValueError) as ex:
+    with pytest.raises(segno.DataOverflowError) as ex:
         segno.make_sequence(data, version=40)
     assert 'does not fit' in str(ex.value)
 

@@ -13,6 +13,7 @@ QR Code and Micro QR Code implementation.
 from __future__ import absolute_import, unicode_literals
 import sys
 from . import encoder
+from .encoder import DataOverflowError
 from . import writers, utils
 try:  # pragma: no cover
     str_type = basestring
@@ -22,7 +23,7 @@ except NameError:  # pragma: no cover
 __version__ = '1.0.0.dev.0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence')
+           'QRCodeSequence', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -128,7 +129,9 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             parameter is interpreted as minimum error level. If set to ``False``,
             the resulting (Micro) QR Code uses the provided `error` level
             (or the default error correction level, if error is ``None``)
-    :raises: :py:exc:`ValueError`
+    :raises: :py:exc:`ValueError` or :py:exc:`DataOverflowError`: In case the
+             data does not fit into a (Micro) QR Code or it does not fit into
+             the provided :paramref:``version`.
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,

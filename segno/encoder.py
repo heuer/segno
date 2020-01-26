@@ -38,10 +38,14 @@ import sys
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
-__all__ = ('encode', 'encode_sequence')
+__all__ = ('encode', 'encode_sequence', 'DataOverflowError')
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
 __metaclass__ = type
+
+
+class DataOverflowError(ValueError):
+    pass
 
 
 Code = namedtuple('Code', 'matrix version error mask segments')
@@ -86,8 +90,8 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     if version is None:
         version = guessed_version
     elif guessed_version > version:
-        raise ValueError('The provided data does not fit into version "{0}". Proposal: version {1}'
-                         .format(get_version_name(version), get_version_name(guessed_version)))
+        raise DataOverflowError('The provided data does not fit into version "{0}". Proposal: version {1}'
+                                .format(get_version_name(version), get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_L
     is_micro = version < 1
@@ -175,7 +179,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
         try:
             # Try to find a version which fits without using Structured Append
             guessed_version = find_version(segments, error, eci=eci, micro=False)
-        except ValueError:
+        except DataOverflowError:
             # Data does fit into a usual QR Code but ignore the error silently,
             # guessed_version is None
             pass
@@ -196,7 +200,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
     if version is not None:
         num_symbols = number_of_symbols_by_version(content, version, error, mode)
     if num_symbols > 16:
-        raise ValueError('The data does not fit into Structured Append version {0}'.format(version))
+        raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
     chunks = divide_into_chunks(content, num_symbols)
     if symbol_count is not None:
         segments = one_item_segments(max(chunks, key=len), mode)
@@ -466,7 +470,8 @@ def add_codewords(matrix, codewords, version):
     ISO/IEC 18004:2015(E) -- 7.7.3 Symbol character placement (page 46)
 
     :param matrix: The matrix to add the codewords into.
-    :param codewords: Sequence of ints
+    :param codewords: Sequence of bits
+    :param int version: The (Micro) QR Code version constant.
     """
     matrix_size = len(matrix)
     is_micro = version < 1
@@ -1361,7 +1366,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
         help_txt = '(Micro) '
     elif micro:
         help_txt = 'Micro '
-    raise ValueError('Data too large. No {0}QR Code can handle the provided data'.format(help_txt))
+    raise DataOverflowError('Data too large. No {0}QR Code can handle the provided data'.format(help_txt))
 
 
 def calc_matrix_size(ver):

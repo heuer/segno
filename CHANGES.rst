@@ -7,6 +7,9 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Removed support for color / background keywords (deprecated in 0.4.0).
   Use dark and light.
+* Reintroduced ``segno.DataOverflowError`` (inherited from ``ValueError``) to
+  indicate that the provided data does not fit into the provided (Micro) QR Code
+  parameters.
 
 
 0.4.0 -- 2020-01-21

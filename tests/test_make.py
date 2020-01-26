@@ -115,7 +115,7 @@ def test_make_micro_overflow():
     qr = segno.make(data, micro=True)
     assert 'M4-L' == qr.designator
     data += 'A'
-    with pytest.raises(ValueError) as ex:
+    with pytest.raises(segno.DataOverflowError) as ex:
         segno.make(data, micro=True)
     assert 'too large' in str(ex.value)
 
