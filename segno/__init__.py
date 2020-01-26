@@ -131,7 +131,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             (or the default error correction level, if error is ``None``)
     :raises: :py:exc:`ValueError` or :py:exc:`DataOverflowError`: In case the
              data does not fit into a (Micro) QR Code or it does not fit into
-             the provided :paramref:``version`.
+             the provided :paramref:`version`.
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
