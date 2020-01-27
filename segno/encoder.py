@@ -45,7 +45,10 @@ __metaclass__ = type
 
 
 class DataOverflowError(ValueError):
-    pass
+    """\
+    Indicates a problem that the provided data does not fit into the
+    provided QR Code version or the data is too large in general.
+    """
 
 
 Code = namedtuple('Code', 'matrix version error mask segments')
