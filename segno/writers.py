@@ -785,6 +785,13 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
+    def pack_row(iterable):
+        """\
+        Packs eight bits into one byte.
+        """
+        return (reduce(lambda x, y: (x << 1) + y, e)
+                for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
+
     width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
     with writable(out, 'wb') as f:
@@ -795,7 +802,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
-                write(bytearray(_pack_bits_into_byte(row)))
+                write(bytearray(pack_row(row)))
         else:
             for row in row_iter:
                 write(b''.join(str(i).encode('ascii') for i in row))
@@ -1066,17 +1073,6 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
             write('  ' * cnt)
         set_color(default_color)  # reset color
         write('\n')
-
-
-def _pack_bits_into_byte(iterable):
-    """\
-    Packs eight bits into one byte.
-
-    If the length of the iterable is not a multiple of eight, ``0x0`` is used
-    to fill-up the missing values.
-    """
-    return (reduce(lambda x, y: (x << 1) + y, e)
-            for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
 def _color_to_rgb_or_rgba(color, alpha_float=True):
