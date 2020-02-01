@@ -148,11 +148,11 @@ def matrix_iter(matrix, version, scale=1, border=None):
     width, height = get_symbol_size(version, scale=1, border=0)
     border_row = [0x0] * width
     size_range = range(-border, width + border)
-    row = chain.from_iterable
     for i in size_range:
         r = matrix[i] if 0 <= i < height else border_row
+        row = tuple(chain.from_iterable(repeat(r[j] if 0 <= j < width else 0x0, scale) for j in size_range))
         for s in repeat(None, scale):
-            yield row(repeat(r[j] if 0 <= j < width else 0x0, scale) for j in size_range)
+            yield row
 
 
 def matrix_iter_verbose(matrix, version, scale=1, border=None):
@@ -224,8 +224,8 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
         else:
             return consts.TYPE_QUIET_ZONE
 
-    row = chain.from_iterable
     size_range = range(-border, width + border)
     for i in size_range:
+        row = tuple(chain.from_iterable(repeat(get_bit(i, j), scale) for j in size_range))
         for s in repeat(None, scale):
-            yield row(repeat(get_bit(i, j), scale) for j in size_range)
+            yield row

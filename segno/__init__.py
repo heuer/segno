@@ -212,6 +212,8 @@ class QRCode:
     """\
     Represents a (Micro) QR Code.
     """
+    __slots__ = ('matrix', 'mask', '_version', '_error', '_mode')
+
     def __init__(self, code):
         """\
         Initializes the QR Code object.
@@ -301,6 +303,8 @@ class QRCode:
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.matrix == other.matrix
+
+    __hash__ = None
 
     def symbol_size(self, scale=1, border=None):
         """\
@@ -900,6 +904,8 @@ class QRCodeSequence(tuple):
 
     Iff this sequence contains only one item, it behaves like :py:class:`QRCode`.
     """
+    __slots__ = ()
+
     def __new__(cls, qrcodes):
         return super(QRCodeSequence, cls).__new__(cls, qrcodes)
 

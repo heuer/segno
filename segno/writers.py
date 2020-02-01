@@ -23,7 +23,7 @@ import base64
 import gzip
 from xml.sax.saxutils import quoteattr, escape
 from struct import pack
-from itertools import chain
+from itertools import chain, repeat
 import functools
 from functools import partial
 from functools import reduce
@@ -531,7 +531,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         """\
         Returns each pixel `scale` times.
         """
-        return chain(*([b] * scale for b in row))
+        return chain(*(repeat(b, scale) for b in row))
 
     def scanline(row, filter_type=b'\0'):
         """\
@@ -613,7 +613,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     if border > 0:
         # Calculate horizontal and vertical border
         qz_value = color_index[qz_idx]
-        horizontal_border = scanline([qz_value] * width) * border * scale
+        horizontal_border = scanline(repeat(qz_value, width)) * border * scale
         vertical_border = [qz_value] * border * scale
     # <https://www.w3.org/TR/PNG/#9Filters>
     # This variable holds the "Up" filter which indicates that this scanline
@@ -621,8 +621,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     same_as_above = b''
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
-        same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        miter = (scale_row_x_axis(row) for row in miter)
+        same_as_above = scanline(repeat(0x0, width), filter_type=b'\2') * (scale - 1)
+        miter = map(scale_row_x_axis, miter)
     idat = bytearray(horizontal_border)
     for row in miter:
         # Chain precalculated left border with row and right border
