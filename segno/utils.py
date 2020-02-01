@@ -11,7 +11,7 @@ Utility functions useful for writers or QR Code objects.
 DOES NOT belong to the public API.
 """
 from __future__ import absolute_import, unicode_literals
-from itertools import chain
+from itertools import chain, repeat
 try:  # pragma: no cover
     range = xrange
 except NameError:  # pragma: no cover
@@ -147,12 +147,12 @@ def matrix_iter(matrix, version, scale=1, border=None):
     border = get_border(version, border)
     width, height = get_symbol_size(version, scale=1, border=0)
     border_row = [0x0] * width
-    for i in range(-border, height + border):
-        row = matrix[i] if 0 <= i < height else border_row
-        res_row = tuple(chain.from_iterable([0x1 if 0 <= j < width and row[j] else 0x0] * scale
-                                            for j in range(-border, width + border)))
-        for s in range(scale):
-            yield res_row
+    size_range = range(-border, width + border)
+    row = chain.from_iterable
+    for i in size_range:
+        r = matrix[i] if 0 <= i < height else border_row
+        for s in repeat(None, scale):
+            yield row(repeat(r[j] if 0 <= j < width else 0x0, scale) for j in size_range)
 
 
 def matrix_iter_verbose(matrix, version, scale=1, border=None):
@@ -225,8 +225,7 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
             return consts.TYPE_QUIET_ZONE
 
     row = chain.from_iterable
-    scale_range = range(scale)
-    width_range = range(-border, width + border)
-    for i in range(-border, height + border):
-        for s in scale_range:
-            yield row([get_bit(i, j)] * scale for j in width_range)
+    size_range = range(-border, width + border)
+    for i in size_range:
+        for s in repeat(None, scale):
+            yield row(repeat(get_bit(i, j), scale) for j in size_range)
