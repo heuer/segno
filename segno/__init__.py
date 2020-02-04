@@ -399,7 +399,7 @@ class QRCode:
                 will be used.
         :type border: int or None
         :param dark: The color of the dark modules (default: black).
-        :param light: The color of the background (default: white).
+        :param light: The color of the light modules (default: white).
         """
         import os
         import time
@@ -508,6 +508,8 @@ class QRCode:
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
+        .. _common_keywords:
+
         **Common keywords**
 
         ==========    ==============================================================
@@ -542,9 +544,53 @@ class QRCode:
         ==========    ==============================================================
 
 
+        .. _module_colors:
+
+        **Module Colors**
+
+        ===============    =======================================================
+        Name               Description
+        ===============    =======================================================
+        finder_dark        Color of the dark modules of the finder patterns
+                           Default: undefined, use value of "dark"
+        finder_light       Color of the light modules of the finder patterns
+                           Default: undefined, use value of "light"
+        data_dark          Color of the dark data modules
+                           Default: undefined, use value of "dark"
+        data_light         Color of the light data modules.
+                           Default: undefined, use value of "light".
+        version_dark       Color of the dark modules of the version information.
+                           Default: undefined, use value of "dark".
+        version_light      Color of the light modules of the version information,
+                           Default: undefined, use value of "light".
+        format_dark        Color of the dark modules of the format information.
+                           Default: undefined, use value of "dark".
+        format_light       Color of the light modules of the format information.
+                           Default: undefined, use value of "light".
+        alignment_dark     Color of the dark modules of the alignment patterns.
+                           Default: undefined, use value of "dark".
+        alignment_light    Color of the light modules of the alignment patterns.
+                           Default: undefined, use value of "light".
+        timing_dark        Color of the dark modules of the timing patterns.
+                           Default: undefined, use value of "dark".
+        timing_light       Color of the light modules of the timing patterns.
+                           Default: undefined, use value of "light".
+        separator          Color of the separator.
+                           Default: undefined, use value of "light".
+        dark_module        Color of the dark module (a single dark module which
+                           occurs in all QR Codes but not in Micro QR Codes.
+                           Default: undefined, use value of "dark".
+        quiet_zone         Color of the quiet zone / border.
+                           Default: undefined, use value of "light".
+        ===============    =======================================================
+
+
         .. _svg:
 
         **Scalable Vector Graphics (SVG)**
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
 
         ================ ==============================================================
         Name             Description
@@ -569,41 +615,10 @@ class QRCode:
                          the web color name "red".
         light            Default value ``None``. If this parameter is set to another
                          value, the resulting image will have another path which
-                         is used to define the background color.
+                         is used to define the color of the light modules.
                          If an alpha channel is used, the resulting path may
                          have a "fill-opacity" attribute (for SVG version < 2.0)
                          or the "fill" attribute has a "rgba(R, G, B, A)" value.
-        finder_dark      Color of the dark modules of the finder patterns
-                         Default: undefined, use value of "dark"
-        finder_light     Color of the light modules of the finder patterns
-                         Default: undefined, use value of "light"
-        data_dark        Color of the dark data modules
-                         Default: undefined, use value of "dark"
-        data_light       Color of the light data modules.
-                         Default: undefined, use value of "light".
-        version_dark     Color of the dark modules of the version information.
-                         Default: undefined, use value of "dark".
-        version_light    Color of the light modules of the version information,
-                         Default: undefined, use value of "light".
-        format_dark      Color of the dark modules of the format information.
-                         Default: undefined, use value of "dark".
-        format_light     Color of the light modules of the format information.
-                         Default: undefined, use value of "light".
-        alignment_dark   Color of the dark modules of the alignment patterns.
-                         Default: undefined, use value of "dark".
-        alignment_light  Color of the light modules of the alignment patterns.
-                         Default: undefined, use value of "light".
-        timing_dark      Color of the dark modules of the timing patterns.
-                         Default: undefined, use value of "dark".
-        timing_light     Color of the light modules of the timing patterns.
-                         Default: undefined, use value of "light".
-        separator        Color of the separator.
-                         Default: undefined, use value of "light".
-        dark_module      Color of the dark module (a single dark module which
-                         occurs in all QR Codes but not in Micro QR Codes.
-                         Default: undefined, use value of "dark".
-        quiet_zone       Color of the quiet zone / border.
-                         Default: undefined, use value of "light".
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
@@ -656,9 +671,12 @@ class QRCode:
 
         This writes either a grayscale (maybe with transparency) PNG (color type 0)
         or a palette-based (maybe with transparency) image (color type 3).
-        If the color / background values are ``None``, white or black, the serializer
+        If the dark / light values are ``None``, white or black, the serializer
         chooses the more compact grayscale mode, in all other cases a palette-based
         image is written.
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
 
         ===============    ==============================================================
         Name               Description
@@ -667,41 +685,10 @@ class QRCode:
         kind               "png"
         scale              integer
         dark               Default: "#000" (black)
-                           ``None`` is a valid value iff background is not ``None``.
+                           ``None`` is a valid value iff light is not ``None``.
                            If set to ``None``, the dark modules become transparent.
         light              Default value "#fff" (white)
                            See keyword "dark" for further details.
-        finder_dark        Color of the dark modules of the finder patterns
-                           Default: undefined, use value of "dark"
-        finder_light       Color of the light modules of the finder patterns
-                           Default: undefined, use value of "light"
-        data_dark          Color of the dark data modules
-                           Default: undefined, use value of "dark"
-        data_light         Color of the light data modules.
-                           Default: undefined, use value of "light".
-        version_dark       Color of the dark modules of the version information.
-                           Default: undefined, use value of "dark".
-        version_light      Color of the light modules of the version information,
-                           Default: undefined, use value of "light".
-        format_dark        Color of the dark modules of the format information.
-                           Default: undefined, use value of "dark".
-        format_light       Color of the light modules of the format information.
-                           Default: undefined, use value of "light".
-        alignment_dark     Color of the dark modules of the alignment patterns.
-                           Default: undefined, use value of "dark".
-        alignment_light    Color of the light modules of the alignment patterns.
-                           Default: undefined, use value of "light".
-        timing_dark        Color of the dark modules of the timing patterns.
-                           Default: undefined, use value of "dark".
-        timing_light       Color of the light modules of the timing patterns.
-                           Default: undefined, use value of "light".
-        separator          Color of the separator.
-                           Default: undefined, use value of "light".
-        dark_module        Color of the dark module (a single dark module which
-                           occurs in all QR Codes but not in Micro QR Codes.
-                           Default: undefined, use value of "dark".
-        quiet_zone         Color of the quiet zone / border.
-                           Default: undefined, use value of "light".
         compresslevel      Default: 9. Integer indicating the compression level
                            for the ``IDAT`` (data) chunk.
                            1 is fastest and produces the least compression, 9 is slowest
@@ -725,7 +712,7 @@ class QRCode:
         kind             "eps"
         scale            integer or float
         dark             Default: "#000" (black)
-        light            Default value: ``None`` (no background)
+        light            Default value: ``None`` (transparent light modules)
         =============    ==============================================================
 
 
@@ -740,7 +727,7 @@ class QRCode:
         kind             "pdf"
         scale            integer or float
         dark             Default: "#000" (black)
-        light            Default value: ``None`` (no background)
+        light            Default value: ``None`` (transparent light modules)
         compresslevel    Default: 9. Integer indicating the compression level.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
@@ -804,8 +791,8 @@ class QRCode:
         kind             "pam"
         scale            integer
         dark             Default: "#000" (black).
-        light            Default value "#fff" (white). Use ``None`` for a transparent
-                         background.
+        light            Default value "#fff" (white). Use ``None`` for transparent
+                         light modules.
         =============    ==============================================================
 
 
@@ -858,7 +845,7 @@ class QRCode:
         scale            integer
         dark             Default: "#000" (black).
         light            Default value "#fff" (white)
-                         ``None`` indicates a transparent background.
+                         ``None`` indicates transparent light modules.
         name             Name of the variable (default: "img")
         =============    ==============================================================
 
