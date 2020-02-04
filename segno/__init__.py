@@ -535,8 +535,8 @@ class QRCode:
                       ``#RRGGBB``). Some serializers (i.e. :ref:`SVG <svg>` and
                       :ref:`PNG <png>`) accept an alpha transparency value like
                       ``#RRGGBBAA``.
-        light         A string or tuple representing a color for the light modules
-                      or background. See `dark` for valid values.
+        light         A string or tuple representing a color for the light modules.
+                      See `dark` for valid values.
                       The default value depends on the serializer. :ref:`SVG <svg>`
                       uses no color (``None``) for light modules by default, other
                       serializers, like :ref:`PNG <png>`, use "white" as default
