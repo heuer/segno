@@ -31,7 +31,8 @@ Command Line Options
     Show a help message which lists all commands and exit
 
 
-.. rubric:: QR Code Options
+QR Code Options
+~~~~~~~~~~~~~~~
 
 .. option:: --version VERSION, -v VERSION
 
@@ -83,7 +84,8 @@ Command Line Options
     Micro QR Codes) will be used. A value of 0 omits the border
 
 
-.. rubric:: Output Options
+Output Options
+~~~~~~~~~~~~~~
 
 .. option:: --scale SCALE, -s SCALE
 
@@ -97,11 +99,13 @@ Command Line Options
     If not specified, the QR Code is printed to the terminal
 
 
-.. rubric:: Module Colors
-    Arguments to specify the module colors. Multiple colors are supported for
-    SVG and PNG. The module color support varies between the serialization
-    formats. Most serializers support at least "--dark" and "--light".
-    Unsupported arguments are ignored.
+Module Colors
+~~~~~~~~~~~~~
+
+Arguments to specify the module colors. Multiple colors are supported for
+SVG and PNG. The module color support varies between the serialization
+formats. Most serializers support at least "--dark" and "--light".
+Unsupported arguments are ignored.
 
 .. option:: --dark DARK
 
@@ -193,7 +197,8 @@ Command Line Options
     See :option:`--dark` for a description of allowed values.
 
 
-.. rubric:: SVG Options
+SVG Options
+~~~~~~~~~~~
 
 .. option:: --no-classes
 
@@ -255,7 +260,8 @@ Command Line Options
     By default all transparent paths are omitted.
 
 
-.. rubric:: PNG Options
+PNG Options
+~~~~~~~~~~~
 
 .. option:: --dpi DPI
 
