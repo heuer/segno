@@ -9,62 +9,77 @@ Options
 
 xmldecl
 ~~~~~~~
-Boolean to enable (default) or omit the XML declaration
+Boolean to enable (default) or omit (CLI: :option:`--no-xmldecl <segno --no-xmldecl>`)
+the XML declaration
+
 
 svgns
 ~~~~~
-Boolean to enable (default) or omit the SVG namespace declaration.
+Boolean to enable (default) or omit (CLI: :option:`--no-namespace <segno --no-namespace>`)
+the SVG namespace declaration.
 
-svgid
-~~~~~
+
+svgid / :option:`--svgid <segno --svgid>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: ``None``).
 CSS identifier of the ``svg`` element.
 
-svgclass
-~~~~~~~~
+
+svgclass / :option:`--svgclass <segno --svgclass>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: "segno").
-CSS class of the ``svg`` element. Use ``None`` to omit it.
+CSS class of the ``svg`` element. Use ``None`` or an empty string to omit the
+attribute.
 
-lineclass
-~~~~~~~~~
+
+lineclass / :option:`--lineclass <segno --lineclass>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: "qrline").
-CSS class of all paths. Use ``None`` to omit it.
+CSS class of all paths. Use ``None`` or an empty string to omit the attribute.
 
-omitsize
-~~~~~~~~
-Boolean to disable the ``width`` and ``height`` attributes.
+
+omitsize / :option:`--no-size <segno --no-size>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Boolean to disable the ``width`` and ``height`` attributes
+(CLI: :option:`--no-size <segno --no-size>`).
 
 If set to ``True`` (default: ``False``) the attributes will be replaced by
 a ``viewBox`` attribute.
 
+
 nl
 ~~
 Boolean (default: ``True``) to enable / disable a trailing new line character
-(``\n``). It's enabled by default.
+(``\n``) at the end of the document. It's enabled by default. Set to ``False``
+(CLI: :option:`--no-newline <segno --no-newline>`) to omit it.
 
-title
-~~~~~
+
+title / :option:`--title <segno --title>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: ``None``).
 
 Sets the title of the graphic. If empty or ``None``, the title is omitted.
 
-desc
-~~~~
+
+desc / :option:`--desc <segno --desc>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: ``None``).
 
 Sets the description of the graphic. If empty or ``None``, the description is
 omitted.
 
-unit
-~~~~
+
+unit / :option:`--unit <segno --unit>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: ``None``).
 
 Sets the unit of the ``width`` / ``height`` attributes. The unit is not checked,
 any non empty value is used as appendix to the numeric width / height attributes.
 Common values are "mm" or "cm".
 
-encoding
-~~~~~~~~
+
+encoding / :option:`--encoding <segno --encoding>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: "utf--8").
 
 Sets the encoding of the XML document. If set to ``None``, the encoding
@@ -76,8 +91,16 @@ is used.
         if ``xmldecl`` is set to ``False``.
 
 
-svgversion
-~~~~~~~~~~
+draw_transparent
+~~~~~~~~~~~~~~~~
+Boolean (default: ``False``).
+
+Set to ``True`` (CLI: :option:`--draw-transparent <segno --draw-transparent>` to
+draw transparent paths.
+
+
+svgversion / :option:`--svgversion <segno --svgversion>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 :class:`int` or :class:`float` (default: ``None``)
 
 Sets the SVG ``version`` attribute.

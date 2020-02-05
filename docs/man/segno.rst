@@ -225,11 +225,13 @@ Command Line Options
 
 .. option:: --svgclass SVGCLASS
 
-    Indicates the CSS class of the <svg/> element
+    Indicates the CSS class of the <svg/> element (default: 'segno').
+    An empty string omits the attribute.
 
 .. option:: --lineclass LINECLASS
 
-    Indicates the CSS class of the <path/> element (the dark modules)
+    Indicates the CSS class of the <path/> elements.
+    An empty string omits the attribute.
 
 .. option:: --no-size
 
@@ -246,6 +248,11 @@ Command Line Options
 .. option:: --encoding ENCODING
 
     Specifies the encoding of the document
+
+.. option:: --draw-transparent
+
+    Indicates if invisible paths should be added to the SVG document.
+    By default all transparent paths are omitted.
 
 
 .. rubric:: PNG Options
@@ -294,9 +301,9 @@ dark modules use the color "darkblue" instead of black.
 
 .. code-block:: bash
 
-    $ segno -o rain.png -s 10 --dark #003399 --micro RAIN
+    $ segno -o rain.png -s 4 --dark "#003399" --micro RAIN
 
 
 Saves the Micro QR Code (M2-M) as PNG image, using the color #003399 for dark
-modules. Each module corresponds to 10 x 10 pixels because the scaling factor
-was set to a value of 10.
+modules. Each module corresponds to 4 x 4 pixels because the scaling factor
+was set to 4.
