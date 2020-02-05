@@ -141,8 +141,8 @@ def make_parser():
     svg_group.add_argument('--title', help='Specifies the title of the SVG document')
     svg_group.add_argument('--desc', help='Specifies the description of the SVG document')
     svg_group.add_argument('--svgid', help='Indicates the ID of the <svg/> element')
-    svg_group.add_argument('--svgclass', help='Indicates the CSS class of the <svg/> element')
-    svg_group.add_argument('--lineclass', help='Indicates the CSS class of the <path/> element (the dark modules)')
+    svg_group.add_argument('--svgclass', help='Indicates the CSS class of the <svg/> element. An empty string omits the attribute.')
+    svg_group.add_argument('--lineclass', help='Indicates the CSS class of the <path/> elements. An empty string omits the attribute.')
     svg_group.add_argument('--no-size', help='Indicates that the SVG document should not have "width" and "height" attributes',
                            dest='omitsize',
                            action='store_true')
@@ -151,6 +151,8 @@ def make_parser():
                            type=float)
     svg_group.add_argument('--encoding', help='Specifies the encoding of the document',
                            default='utf-8')
+    svg_group.add_argument('--draw-transparent', help='Indicates that transparent paths should be drawn',
+                           action='store_true')
     # PNG
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
     png_group.add_argument('--dpi', help='Sets the DPI value of the PNG file',

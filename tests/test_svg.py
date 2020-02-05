@@ -550,6 +550,23 @@ def test_encoding_none():
     assert b'<?xml version="1.0"?>' in buff.getvalue()
 
 
+def test_draw_transparent():
+    qr = segno.make_qr('test')
+    out = io.BytesIO()
+    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
+            alignment_light='yellow', quiet_zone='yellow', draw_transparent=False)
+    root = _parse_xml(out)
+    paths = root.findall('.//{%s}path' % _SVG_NS)
+    assert 3 == len(paths)
+    out = io.BytesIO()
+    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
+            alignment_light='yellow', quiet_zone='yellow', draw_transparent=True)
+    root = _parse_xml(out)
+    paths = root.findall('.//{%s}path' % _SVG_NS)
+    assert 4 == len(paths)
+    assert 1 == len([p for p in paths if p.attrib.get('stroke') is None])
+
+
 def svg_as_matrix(buff, border):
     """\
     Returns the QR code path as list of [0,1] lists.
