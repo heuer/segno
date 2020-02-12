@@ -41,6 +41,10 @@ version with a maximal error correction for the provided input.
     'M3'
 
 
+.. image:: _static/rain-m3-m.png
+    :alt: "M3-M Micro QR Code encoding 'Rain'"
+
+
 The caller may enforce that a QR Code instead of a Micro QR Code should be
 generated even if the content may fit into a Micro QR Code.
 
@@ -50,6 +54,10 @@ generated even if the content may fit into a Micro QR Code.
     >>> qr = segno.make('Rain', micro=False)
     >>> qr.version
     1
+
+
+.. image:: _static/rain-1-h.png
+    :alt: "1-H QR Code encoding 'Rain'"
 
 
 Further, Segno provides two additional factory functions to enforce the creation
@@ -89,7 +97,8 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
     :alt: "1-Q QR Code encoding 'The Beatles'"
 
 
-If the provided content is too large, a :py:exc:`DataOverflowError` is thrown:
+If the provided content is too large, a :py:exc:`segno.DataOverflowError` is
+thrown:
 
 
 .. code-block:: python
