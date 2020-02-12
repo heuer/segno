@@ -62,12 +62,31 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
     >>> mqr = segno.make_micro('The Beatles')  # Micro QR Code
     >>> mqr.designator  # Get the version and error level
     'M4-M'
+
+.. image:: _static/the-beatles-m4-m.png
+    :alt: "M4-M Micro QR Code encoding 'The Beatles'"
+
+
+.. code-block:: python
+
+    >>> import segno
     >>> qr = segno.make_qr('The Beatles')  # Same content but as QR Code
     >>> qr.designator
     '1-Q'
+
+.. image:: _static/the-beatles-1-q.png
+    :alt: "1-Q QR Code encoding 'The Beatles'"
+
+
+.. code-block:: python
+
+    >>> import segno
     >>> qr = segno.make('The Beatles', micro=False)  # Disallow Micro QR Codes
     >>> qr.designator
     '1-Q'
+
+.. image:: _static/the-beatles-1-q.png
+    :alt: "1-Q QR Code encoding 'The Beatles'"
 
 
 If the provided content is too large, a :py:exc:`DataOverflowError` is thrown:
