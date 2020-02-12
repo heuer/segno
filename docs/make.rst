@@ -133,13 +133,33 @@ available for Micro QR Codes, if the user specifies the error correction level
     >>> qr = segno.make('Parisienne Walkways', error='l')  # Explicit (minimum) error correction level
     >>> qr.designator # The error correction level was changed to "Q" since there was enough available space
     '2-Q'
+
+
+.. image:: _static/parisienne_walkways-2q.png
+    :alt: "2-Q QR Code encoding 'Parisienne Walkways'"
+
+.. code-block:: python
+
+    >>> import segno
     >>> qr = segno.make('Parisienne Walkways', error='l', boost_error=False)  # Explicit error level
     >>> qr.designator
     '2-L'
+
+
+.. image:: _static/parisienne_walkways-2q.png
+    :alt: "2-L QR Code encoding 'Parisienne Walkways'"
+
+
+.. code-block:: python
+
+    >>> import segno
     >>> # Enhancing the error correction level may enforce another QR Code version
     >>> qr = segno.make('Parisienne Walkways', error='H')
     >>> qr.designator
     '3-H'
+
+.. image:: _static/parisienne_walkways-3h.png
+    :alt: "3-H QR Code encoding 'Parisienne Walkways'"
 
 
 Data Masking
