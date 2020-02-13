@@ -299,7 +299,7 @@ Saves the 2-Q QR code as SVG document with the given title.
 
 .. code-block:: bash
 
-    $ segno -o=number.svg --scale=10 --dark darkblue "A Day in the Life"
+    $ segno -o=a-day-in-the-life.svg --scale=10 --dark darkblue "A Day in the Life"
 
 Saves the 1-L QR code as SVG document, using a scaling factor of 10 and the
 dark modules use the color "darkblue" instead of black.
