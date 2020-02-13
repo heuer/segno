@@ -705,6 +705,8 @@ class QRCode:
 
         **Encapsulated PostScript (EPS)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -719,6 +721,8 @@ class QRCode:
         .. _pdf:
 
         **Portable Document Format (PDF)**
+
+        All :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -738,7 +742,7 @@ class QRCode:
 
         **Text (TXT)**
 
-        Does not support the "scale" keyword!
+        Aside of "scale", all :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -768,6 +772,8 @@ class QRCode:
 
         **Portable Bitmap (PBM)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -783,6 +789,8 @@ class QRCode:
         .. _pam:
 
         **Portable Arbitrary Map (PAM)**
+
+        All :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -804,6 +812,8 @@ class QRCode:
         ``hyperref``) package is required in the LaTeX environment. The
         serializer itself does not depend on any external packages.
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -823,6 +833,8 @@ class QRCode:
 
         **X BitMap (XBM)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -836,6 +848,8 @@ class QRCode:
         .. _xpm:
 
         **X PixMap (XPM)**
+
+        All :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
