@@ -15,6 +15,7 @@ DOES NOT belong to the public API.
 from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
+from itertools import islice, chain, product
 import re
 import math
 import codecs
@@ -37,10 +38,17 @@ import sys
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
-__all__ = ('encode', 'encode_sequence')
+__all__ = ('encode', 'encode_sequence', 'DataOverflowError')
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
 __metaclass__ = type
+
+
+class DataOverflowError(ValueError):
+    """\
+    Indicates a problem that the provided data does not fit into the
+    provided QR Code version or the data is too large in general.
+    """
 
 
 Code = namedtuple('Code', 'matrix version error mask segments')
@@ -85,8 +93,8 @@ def encode(content, error=None, version=None, mode=None, mask=None,
     if version is None:
         version = guessed_version
     elif guessed_version > version:
-        raise ValueError('The provided data does not fit into version "{0}". Proposal: version {1}'
-                         .format(get_version_name(version), get_version_name(guessed_version)))
+        raise DataOverflowError('The provided data does not fit into version "{0}". Proposal: version {1}'
+                                .format(get_version_name(version), get_version_name(guessed_version)))
     if error is None and version != consts.VERSION_M1:
         error = consts.ERROR_LEVEL_L
     is_micro = version < 1
@@ -160,7 +168,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
             raise ValueError('This function does not accept Micro QR Code versions. '
                              'Provided: "{0}"'.format(get_version_name(version)))
     elif symbol_count is None:
-        raise ValueError('Please provide a QR Code version or the symbol count')
+        raise ValueError('Please provide either a QR Code version or the symbol count')
     if symbol_count is not None and not 1 <= symbol_count <= 16:
         raise ValueError('The symbol count must be in range 1 .. 16')
     error = normalize_errorlevel(error, accept_none=True)
@@ -174,7 +182,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
         try:
             # Try to find a version which fits without using Structured Append
             guessed_version = find_version(segments, error, eci=eci, micro=False)
-        except ValueError:
+        except DataOverflowError:
             # Data does fit into a usual QR Code but ignore the error silently,
             # guessed_version is None
             pass
@@ -195,7 +203,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
     if version is not None:
         num_symbols = number_of_symbols_by_version(content, version, error, mode)
     if num_symbols > 16:
-        raise ValueError('The data does not fit into Structured Append version {0}'.format(version))
+        raise DataOverflowError('The data does not fit into Structured Append version {0}'.format(version))
     chunks = divide_into_chunks(content, num_symbols)
     if symbol_count is not None:
         segments = one_item_segments(max(chunks, key=len), mode)
@@ -240,7 +248,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence (page 45)
-    buff = make_final_message(version, error, buff.toints())
+    buff = make_final_message(version, error, buff)
     # Matrix with timing pattern and reserved format / version regions
     matrix = make_matrix(version)
     # ISO/IEC 18004:2015 -- 6.3.3 Finder pattern (page 16)
@@ -448,16 +456,14 @@ def add_alignment_patterns(matrix, version):
     alignment_range = range(5)
     min_pos = positions[0]
     max_pos = positions[-1]
-    for x, y in ((x, y) for x in positions for y in positions):
-        # Finder pattern?
-        if x == min_pos == y \
-           or x == min_pos and y == max_pos \
-           or x == max_pos and y == min_pos:
+    finder_positions = ((min_pos, min_pos), (min_pos, max_pos), (max_pos, min_pos))
+    for x, y in product(positions, repeat=2):
+        if (x, y) in finder_positions:
             continue
         # The x and y values represent the center of the alignment pattern
         i, j = x -2, y - 2
         for r in alignment_range:
-            matrix[i + r][j:j + 5] = pattern[r*5:r*5 + 5]
+            matrix[i + r][j:j + 5] = pattern[r * 5:r * 5 + 5]
 
 
 def add_codewords(matrix, codewords, version):
@@ -467,7 +473,8 @@ def add_codewords(matrix, codewords, version):
     ISO/IEC 18004:2015(E) -- 7.7.3 Symbol character placement (page 46)
 
     :param matrix: The matrix to add the codewords into.
-    :param codewords: Sequence of ints
+    :param codewords: Sequence of bits
+    :param int version: The (Micro) QR Code version constant.
     """
     matrix_size = len(matrix)
     is_micro = version < 1
@@ -482,11 +489,12 @@ def add_codewords(matrix, codewords, version):
     # alternately upwards and downwards from the right to left of the symbol.
     # [...]
     codeword_length = len(codewords)
+    range_two = range(2)
     for right in range(matrix_size - 1, 0, -2):
         if not is_micro and right <= 6:
             right -= 1
         for vertical in range(matrix_size):
-            for z in range(2):
+            for z in range_two:
                 j = right - z
                 upwards = ((right + inc) & 2) == 0
                 if not is_micro:
@@ -501,7 +509,7 @@ def add_codewords(matrix, codewords, version):
                          'Added {0} of {1} codewords'.format(idx, len(codewords)))
 
 
-def make_final_message(version, error, codewords):
+def make_final_message(version, error, buff):
     """\
     Constructs the final message (codewords incl. error correction).
 
@@ -509,94 +517,77 @@ def make_final_message(version, error, codewords):
 
     :param int version: (Micro) QR Code version constant.
     :param int error: Error level constant.
-    :param codewords: An iterable sequence of codewords (ints)
+    :param buff: Byte buffer.
     :return: Byte buffer representing the final message.
     """
+    def to_binary(val, length=8):
+        return ((val >> i) & 1 for i in reversed(range(length)))
+
     ec_infos = consts.ECC[version][error]
-    last_cw_is_four = version in (consts.VERSION_M1, consts.VERSION_M3)
-    data_blocks, error_blocks = make_blocks(ec_infos, codewords)
-    if last_cw_is_four:
+    data_blocks, error_blocks = make_blocks(ec_infos, buff)
+    cw_four = None
+    if version in (consts.VERSION_M1, consts.VERSION_M3):
         # All codewords are 8 bit by default, M1 and M3 symbols use 4 bits
-        # to represent the last last codeword
+        # to represent the last codeword.
         # datablocks[0] is save since Micro QR Codes use just one datablock and
         # one error block
-        data_blocks[0][-1] >>= 4
-    buff = Buffer()
-    append_bits = buff.append_bits
-    append_int = partial(append_bits, length=8)
+        cw_four = to_binary(data_blocks[0].pop(-1) >> 4, 4)
+    res = Buffer()
     # Write codewords
-    for i in range(max(info.num_data for info in ec_infos)):
-        for block in data_blocks:
-            if i >= len(block):
-                continue
-            if last_cw_is_four and i + 1 == len(block):
-                append_bits(block[i], 4)
-            else:
-                append_int(block[i])
+    res.extend(chain(*map(to_binary, (x for x in chain.from_iterable(zip_longest(*data_blocks)) if x is not None))))
+    if cw_four is not None:
+        res.extend(cw_four)
     # Write error codewords
-    for i in range(max(info.num_total - info.num_data for info in ec_infos)):
-        for block in error_blocks:
-            if i >= len(block):
-                continue
-            append_int(block[i])
+    res.extend(chain(*map(to_binary, (x for x in chain.from_iterable(zip_longest(*error_blocks)) if x is not None))))
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence
     # [...] In certain QR Code versions, however, where the number of modules
     # available for data and error correction codewords is not an exact multiple
     # of 8, there may be a need for 3, 4 or 7 Remainder Bits to be appended to
     # the final message bit stream in order to fill exactly the number of
     # modules in the encoding region
-    remainder = 0  # Calculation: Number of Data modules - number of bits
+    remainder = 0
     if version in (2, 3, 4, 5, 6):
         remainder = 7
     elif version in (14, 15, 16, 17, 18, 19, 20, 28, 29, 30, 31, 32, 33, 34):
         remainder = 3
     elif version in (21, 22, 23, 24, 25, 26, 27):
         remainder = 4
-    buff.extend(b'\0' * remainder)
-    return buff
+    res.extend(b'\0' * remainder)
+    return res
 
 
-def make_blocks(ec_infos, codewords):
+def make_blocks(ec_infos, buff):
     """\
     Returns the data and error blocks.
 
     :param ec_infos: Iterable of ECC information
-    :param codewords: Iterable of (integer) code words.
+    :param buff: Byte buffer.
     """
+    codewords = buff.toints()
     data_blocks, error_blocks = [], []
-    offset = 0
-    for ec_info in ec_infos:
-        for i in range(ec_info.num_blocks):
-            block = codewords[offset:offset + ec_info.num_data]
-            data_blocks.append(block)
-            error_blocks.append(make_error_block(ec_info, block))
-            offset += ec_info.num_data
-    return data_blocks, error_blocks
-
-
-def make_error_block(ec_info, data_block):
-    """\
-    Creates the error code words for the provided data block.
-
-    :param ec_info: ECC information (number of blocks, number of code words etc.)
-    :param data_block: Iterable of (integer) code words.
-    """
-    num_error_words = ec_info.num_total - ec_info.num_data
-
-    error_block = bytearray(data_block)
-    error_block.extend([0] * num_error_words)
-    gen = consts.GEN_POLY[num_error_words]
+    append_data_block = data_blocks.append
+    append_error_block = error_blocks.append
     gen_log = consts.GALIOS_LOG
     gen_exp = consts.GALIOS_EXP
-    len_data = len(data_block)
-    # Extended synthetic division, see http://research.swtch.com/field
-    for i in range(len_data):
-        coef = error_block[i]
-        if coef != 0:  # log(0) is undefined
-            lcoef = gen_log[coef]
-            for j in range(num_error_words):
-                error_block[i + j + 1] ^= gen_exp[lcoef + gen[j]]
-    return error_block[len_data:]
+    for ec_info in ec_infos:
+        num_error_words = ec_info.num_total - ec_info.num_data
+        gen = consts.GEN_POLY[num_error_words]
+        range_error_words = range(num_error_words)
+        for i in range(ec_info.num_blocks):
+            block = bytearray(islice(codewords, ec_info.num_data))
+            append_data_block(block)
+            len_data = len(block)
+            error_block = bytearray(block)
+            error_block.extend([0] * num_error_words)
+            # Extended synthetic division, see http://research.swtch.com/field
+            for k in range(len_data):
+                coef = error_block[k]
+                if coef != 0:  # log(0) is undefined
+                    lcoef = gen_log[coef]
+                    for n in range_error_words:
+                        error_block[k + n + 1] ^= gen_exp[lcoef + gen[n]]
+            append_error_block(error_block[len_data:])
+    return data_blocks, error_blocks
 
 
 def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
@@ -1378,7 +1369,7 @@ def find_version(segments, error, eci, micro, is_sa=False):
         help_txt = '(Micro) '
     elif micro:
         help_txt = 'Micro '
-    raise ValueError('Data too large. No {0}QR Code can handle the provided data'.format(help_txt))
+    raise DataOverflowError('Data too large. No {0}QR Code can handle the provided data'.format(help_txt))
 
 
 def calc_matrix_size(ver):
@@ -1647,11 +1638,7 @@ class Buffer:
         Returns an iterable of integers interpreting the content of `seq`
         as sequence of binary numbers of length 8.
         """
-        def grouper(iterable, n, fillvalue=None):
-            "Collect data into fixed-length chunks or blocks"
-            # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx
-            return zip_longest(*[iter(iterable)] * n, fillvalue=fillvalue)
-        return [int(''.join(map(str, group)), 2) for group in grouper(self._data, 8, 0)]
+        return (int(''.join(map(str, g)), 2) for g in zip_longest(*[iter(self._data)] * 8, fillvalue=0))
 
     def __len__(self):
         return len(self._data)

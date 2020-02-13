@@ -31,7 +31,8 @@ Command Line Options
     Show a help message which lists all commands and exit
 
 
-.. rubric:: QR Code Options
+QR Code Options
+~~~~~~~~~~~~~~~
 
 .. option:: --version VERSION, -v VERSION
 
@@ -83,7 +84,8 @@ Command Line Options
     Micro QR Codes) will be used. A value of 0 omits the border
 
 
-.. rubric:: Output Options
+Output Options
+~~~~~~~~~~~~~~
 
 .. option:: --scale SCALE, -s SCALE
 
@@ -97,11 +99,13 @@ Command Line Options
     If not specified, the QR Code is printed to the terminal
 
 
-.. rubric:: Module Colors
-    Arguments to specify the module colors. Multiple colors are supported for
-    SVG and PNG. The module color support varies between the serialization
-    formats. Most serializers support at least "--dark" and "--light".
-    Unsupported arguments are ignored.
+Module Colors
+~~~~~~~~~~~~~
+
+Arguments to specify the module colors. Multiple colors are supported for
+SVG and PNG. The module color support varies between the serialization
+formats. Most serializers support at least "--dark" and "--light".
+Unsupported arguments are ignored.
 
 .. option:: --dark DARK
 
@@ -193,7 +197,8 @@ Command Line Options
     See :option:`--dark` for a description of allowed values.
 
 
-.. rubric:: SVG Options
+SVG Options
+~~~~~~~~~~~
 
 .. option:: --no-classes
 
@@ -225,11 +230,13 @@ Command Line Options
 
 .. option:: --svgclass SVGCLASS
 
-    Indicates the CSS class of the <svg/> element
+    Indicates the CSS class of the <svg/> element (default: 'segno').
+    An empty string omits the attribute.
 
 .. option:: --lineclass LINECLASS
 
-    Indicates the CSS class of the <path/> element (the dark modules)
+    Indicates the CSS class of the <path/> elements.
+    An empty string omits the attribute.
 
 .. option:: --no-size
 
@@ -247,8 +254,14 @@ Command Line Options
 
     Specifies the encoding of the document
 
+.. option:: --draw-transparent
 
-.. rubric:: PNG Options
+    Indicates if invisible paths should be added to the SVG document.
+    By default all transparent paths are omitted.
+
+
+PNG Options
+~~~~~~~~~~~
 
 .. option:: --dpi DPI
 
@@ -286,7 +299,7 @@ Saves the 2-Q QR code as SVG document with the given title.
 
 .. code-block:: bash
 
-    $ segno -o=number.svg --scale=10 --dark darkblue "A Day in the Life"
+    $ segno -o=a-day-in-the-life.svg --scale=10 --dark darkblue "A Day in the Life"
 
 Saves the 1-L QR code as SVG document, using a scaling factor of 10 and the
 dark modules use the color "darkblue" instead of black.
@@ -294,9 +307,9 @@ dark modules use the color "darkblue" instead of black.
 
 .. code-block:: bash
 
-    $ segno -o rain.png -s 10 --dark #003399 --micro RAIN
+    $ segno -o rain.png -s 4 --dark "#003399" --micro RAIN
 
 
 Saves the Micro QR Code (M2-M) as PNG image, using the color #003399 for dark
-modules. Each module corresponds to 10 x 10 pixels because the scaling factor
-was set to a value of 10.
+modules. Each module corresponds to 4 x 4 pixels because the scaling factor
+was set to 4.

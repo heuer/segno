@@ -10,9 +10,11 @@ Tests against the command line script.
 """
 from __future__ import absolute_import, unicode_literals
 import os
+import io
 import tempfile
 import gzip
 import shutil
+import xml.etree.ElementTree as etree
 import pytest
 from segno import cli
 
@@ -64,6 +66,7 @@ def test_defaults():
     assert args.unit is None
     assert args.svgversion is None
     assert args.nl is True
+    assert args.draw_transparent is False
 
 
 def test_segno_version():
@@ -450,6 +453,36 @@ def test_svgclass2():
     assert cli.build_config(args)['svgclass'] == 'magnolia'
 
 
+_SVG_NS = 'http://www.w3.org/2000/svg'
+
+
+def _parse_xml(buff):
+    """\
+    Parses XML and returns the root element.
+    """
+    buff.seek(0)
+    return etree.parse(buff).getroot()
+
+
+def test_svgclass3():
+    fname = _make_tmp_svg_filename()
+    res = cli.main(['--output={0}'.format(fname), 'test'])
+    assert 0 == res
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    root = _parse_xml(data)
+    assert root is not None
+    assert root.get('class') is not None
+    res = cli.main(['--svgclass', '', '--output={0}'.format(fname), 'test'])
+    assert 0 == res
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fname)
+    root = _parse_xml(data)
+    assert root is not None
+    assert root.get('class') is None
+
+
 def test_svg_lineclass():
     args = cli.parse(['--output=x.svg', ''])
     assert args.lineclass is None
@@ -460,6 +493,28 @@ def test_svg_lineclass2():
     args = cli.parse(['--lineclass=magnolia', ''])
     assert args.lineclass == 'magnolia'
     assert cli.build_config(args)['lineclass'] == 'magnolia'
+
+
+def test_lineclass3():
+    fname = _make_tmp_svg_filename()
+    res = cli.main(['--output={0}'.format(fname), 'test'])
+    assert 0 == res
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    root = _parse_xml(data)
+    assert root is not None
+    path = root[0]
+    assert path is not None
+    assert path.get('class') is not None
+    res = cli.main(['--lineclass', '', '--output={0}'.format(fname), 'test'])
+    assert 0 == res
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fname)
+    root = _parse_xml(data)
+    path = root[0]
+    assert path is not None
+    assert path.get('class') is None
 
 
 def test_omitsize():
@@ -504,6 +559,28 @@ def test_svgversion3():
     assert cli.build_config(args)['svgversion'] == 1.1
 
 
+def test_draw_transparent():
+    fname = _make_tmp_svg_filename()
+    res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
+                    '--align-light=yellow', '--quiet-zone=yellow',
+                    '--output={0}'.format(fname), 'test'])
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    root = _parse_xml(data)
+    paths = root.findall('.//{%s}path' % _SVG_NS)
+    assert 3 == len(paths)
+    res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
+                    '--align-light=yellow', '--quiet-zone=yellow', '--draw-transparent',
+                    '--output={0}'.format(fname), 'test'])
+    with open(fname, 'rb') as f:
+        data = io.BytesIO(f.read())
+    os.unlink(fname)
+    root = _parse_xml(data)
+    paths = root.findall('.//{%s}path' % _SVG_NS)
+    assert 4 == len(paths)
+    assert 1 == len([p for p in paths if p.attrib.get('stroke') is None])
+
+
 def test_png_svg_command():
     args = cli.parse(['--svgversion=1.1', ''])
     assert args.svgversion == 1.1
@@ -522,6 +599,12 @@ def test_output_svgz():
     os.unlink(f.name)
     assert b'scale(10)' in content
     assert b'stroke="red"' in content
+
+
+def _make_tmp_svg_filename():
+    f = tempfile.NamedTemporaryFile('w', suffix='.svg', delete=False)
+    f.close()
+    return f.name
 
 
 if __name__ == '__main__':

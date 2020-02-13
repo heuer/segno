@@ -23,7 +23,7 @@ import base64
 import gzip
 from xml.sax.saxutils import quoteattr, escape
 from struct import pack
-from itertools import chain
+from itertools import chain, repeat
 import functools
 from functools import partial
 from functools import reduce
@@ -168,7 +168,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         return _color_to_webcolor(clr, allow_css3_colors=allow_css3_colors) if clr is not None else None
 
     def matrix_to_lines_verbose():
-        j = -.5  # stroke width
+        j = -.5  # stroke width / 2
         invalid_color = -1
         for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
             last_color = invalid_color
@@ -531,7 +531,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         """\
         Returns each pixel `scale` times.
         """
-        return chain(*([b] * scale for b in row))
+        return chain(*(repeat(b, scale) for b in row))
 
     def scanline(row, filter_type=b'\0'):
         """\
@@ -613,7 +613,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     if border > 0:
         # Calculate horizontal and vertical border
         qz_value = color_index[qz_idx]
-        horizontal_border = scanline([qz_value] * width) * border * scale
+        horizontal_border = scanline(repeat(qz_value, width)) * border * scale
         vertical_border = [qz_value] * border * scale
     # <https://www.w3.org/TR/PNG/#9Filters>
     # This variable holds the "Up" filter which indicates that this scanline
@@ -621,8 +621,8 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     same_as_above = b''
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
-        same_as_above = scanline([0] * width, filter_type=b'\2') * (scale - 1)
-        miter = (scale_row_x_axis(row) for row in miter)
+        same_as_above = scanline(repeat(0x0, width), filter_type=b'\2') * (scale - 1)
+        miter = map(scale_row_x_axis, miter)
     idat = bytearray(horizontal_border)
     for row in miter:
         # Chain precalculated left border with row and right border
@@ -785,6 +785,13 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
+    def pack_row(iterable):
+        """\
+        Packs eight bits into one byte.
+        """
+        return (reduce(lambda x, y: (x << 1) + y, e)
+                for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
+
     width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
     with writable(out, 'wb') as f:
@@ -795,7 +802,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
-                write(bytearray(_pack_bits_into_byte(row)))
+                write(bytearray(pack_row(row)))
         else:
             for row in row_iter:
                 write(b''.join(str(i).encode('ascii') for i in row))
@@ -1066,17 +1073,6 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
             write('  ' * cnt)
         set_color(default_color)  # reset color
         write('\n')
-
-
-def _pack_bits_into_byte(iterable):
-    """\
-    Packs eight bits into one byte.
-
-    If the length of the iterable is not a multiple of eight, ``0x0`` is used
-    to fill-up the missing values.
-    """
-    return (reduce(lambda x, y: (x << 1) + y, e)
-            for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
 
 def _color_to_rgb_or_rgba(color, alpha_float=True):

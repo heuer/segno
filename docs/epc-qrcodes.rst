@@ -1,7 +1,7 @@
 EPC QR Codes
 ============
 
-European Payments Council Quick Response Code (EPC QR Codes) are used to
+European Payments Council Quick Response Codes (EPC QR Codes) are used to
 initiate SEPA credit transfers. They encode all necessary data (IBAN, amount,
 recipient) and may be placed on invoices to eliminate the error-prone typing
 of payment Information.

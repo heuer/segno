@@ -164,7 +164,7 @@ Usually, all QR Codes are serialized in black and white. Use
 :option:`--dark <segno --dark>` to change the color of the dark modules and
 :option:`--light <segno --light>` to change the color of the light modules.
 
-Change the foreground color to darkblue::
+Change the color of the dark modules to to darkblue::
 
     $ segno --dark=darkblue --scale 4 --output=excited.png "So Excited"
 
@@ -172,7 +172,8 @@ Change the foreground color to darkblue::
     :alt: QR Code "So Excited" with foreground color "darkblue"
 
 
-Change the background color to transparent::
+
+Change the color of the light modules to transparent::
 
     $ segno --light=transparent --scale 4 --output=hotel.png "Hotel California"
 
@@ -192,8 +193,11 @@ modules to yellow::
 If the serializer does not support :option:`--color <segno --dark>` or
 :option:`--light <segno --light>`, these arguments are ignored.
 
-The PNG serializer supports more than two colors, each module type (finder pattern
-(dark / light), alignment pattern (dark / light) etc.) may have its own color::
+The SVG and PNG serializers support more than two colors, each module type
+(finder pattern (dark / light), alignment pattern (dark / light) etc.) may have
+its own color, see :doc:`colorful-qrcodes` for details.
+
+.. code-block:: bash
 
     $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o yellow-submarine.png Yellow Submarine
 

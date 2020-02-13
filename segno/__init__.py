@@ -13,17 +13,17 @@ QR Code and Micro QR Code implementation.
 from __future__ import absolute_import, unicode_literals
 import sys
 from . import encoder
-import warnings
+from .encoder import DataOverflowError
 from . import writers, utils
 try:  # pragma: no cover
     str_type = basestring
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '0.4.0'
+__version__ = '1.0.0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
-           'QRCodeSequence')
+           'QRCodeSequence', 'DataOverflowError')
 
 
 # <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
@@ -129,7 +129,9 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             parameter is interpreted as minimum error level. If set to ``False``,
             the resulting (Micro) QR Code uses the provided `error` level
             (or the default error correction level, if error is ``None``)
-    :raises: :py:exc:`ValueError`
+    :raises: :py:exc:`ValueError` or :py:exc:`DataOverflowError`: In case the
+             data does not fit into a (Micro) QR Code or it does not fit into
+             the provided :paramref:`version`.
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
@@ -210,6 +212,8 @@ class QRCode:
     """\
     Represents a (Micro) QR Code.
     """
+    __slots__ = ('matrix', 'mask', '_version', '_error', '_mode')
+
     def __init__(self, code):
         """\
         Initializes the QR Code object.
@@ -299,6 +303,8 @@ class QRCode:
 
     def __eq__(self, other):
         return self.__class__ == other.__class__ and self.matrix == other.matrix
+
+    __hash__ = None
 
     def symbol_size(self, scale=1, border=None):
         """\
@@ -393,7 +399,7 @@ class QRCode:
                 will be used.
         :type border: int or None
         :param dark: The color of the dark modules (default: black).
-        :param light: The color of the background (default: white).
+        :param light: The color of the light modules (default: white).
         """
         import os
         import time
@@ -502,6 +508,8 @@ class QRCode:
         Serializes the QR Code in one of the supported formats.
         The serialization format depends on the filename extension.
 
+        .. _common_keywords:
+
         **Common keywords**
 
         ==========    ==============================================================
@@ -527,8 +535,8 @@ class QRCode:
                       ``#RRGGBB``). Some serializers (i.e. :ref:`SVG <svg>` and
                       :ref:`PNG <png>`) accept an alpha transparency value like
                       ``#RRGGBBAA``.
-        light         A string or tuple representing a color for the light modules
-                      or background. See `dark` for valid values.
+        light         A string or tuple representing a color for the light modules.
+                      See `dark` for valid values.
                       The default value depends on the serializer. :ref:`SVG <svg>`
                       uses no color (``None``) for light modules by default, other
                       serializers, like :ref:`PNG <png>`, use "white" as default
@@ -536,9 +544,53 @@ class QRCode:
         ==========    ==============================================================
 
 
+        .. _module_colors:
+
+        **Module Colors**
+
+        ===============    =======================================================
+        Name               Description
+        ===============    =======================================================
+        finder_dark        Color of the dark modules of the finder patterns
+                           Default: undefined, use value of "dark"
+        finder_light       Color of the light modules of the finder patterns
+                           Default: undefined, use value of "light"
+        data_dark          Color of the dark data modules
+                           Default: undefined, use value of "dark"
+        data_light         Color of the light data modules.
+                           Default: undefined, use value of "light".
+        version_dark       Color of the dark modules of the version information.
+                           Default: undefined, use value of "dark".
+        version_light      Color of the light modules of the version information,
+                           Default: undefined, use value of "light".
+        format_dark        Color of the dark modules of the format information.
+                           Default: undefined, use value of "dark".
+        format_light       Color of the light modules of the format information.
+                           Default: undefined, use value of "light".
+        alignment_dark     Color of the dark modules of the alignment patterns.
+                           Default: undefined, use value of "dark".
+        alignment_light    Color of the light modules of the alignment patterns.
+                           Default: undefined, use value of "light".
+        timing_dark        Color of the dark modules of the timing patterns.
+                           Default: undefined, use value of "dark".
+        timing_light       Color of the light modules of the timing patterns.
+                           Default: undefined, use value of "light".
+        separator          Color of the separator.
+                           Default: undefined, use value of "light".
+        dark_module        Color of the dark module (a single dark module which
+                           occurs in all QR Codes but not in Micro QR Codes.
+                           Default: undefined, use value of "dark".
+        quiet_zone         Color of the quiet zone / border.
+                           Default: undefined, use value of "light".
+        ===============    =======================================================
+
+
         .. _svg:
 
         **Scalable Vector Graphics (SVG)**
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
 
         ================ ==============================================================
         Name             Description
@@ -563,41 +615,10 @@ class QRCode:
                          the web color name "red".
         light            Default value ``None``. If this parameter is set to another
                          value, the resulting image will have another path which
-                         is used to define the background color.
+                         is used to define the color of the light modules.
                          If an alpha channel is used, the resulting path may
                          have a "fill-opacity" attribute (for SVG version < 2.0)
                          or the "fill" attribute has a "rgba(R, G, B, A)" value.
-        finder_dark      Color of the dark modules of the finder patterns
-                         Default: undefined, use value of "dark"
-        finder_light     Color of the light modules of the finder patterns
-                         Default: undefined, use value of "light"
-        data_dark        Color of the dark data modules
-                         Default: undefined, use value of "dark"
-        data_light       Color of the light data modules.
-                         Default: undefined, use value of "light".
-        version_dark     Color of the dark modules of the version information.
-                         Default: undefined, use value of "dark".
-        version_light    Color of the light modules of the version information,
-                         Default: undefined, use value of "light".
-        format_dark      Color of the dark modules of the format information.
-                         Default: undefined, use value of "dark".
-        format_light     Color of the light modules of the format information.
-                         Default: undefined, use value of "light".
-        alignment_dark   Color of the dark modules of the alignment patterns.
-                         Default: undefined, use value of "dark".
-        alignment_light  Color of the light modules of the alignment patterns.
-                         Default: undefined, use value of "light".
-        timing_dark      Color of the dark modules of the timing patterns.
-                         Default: undefined, use value of "dark".
-        timing_light     Color of the light modules of the timing patterns.
-                         Default: undefined, use value of "light".
-        separator        Color of the separator.
-                         Default: undefined, use value of "light".
-        dark_module      Color of the dark module (a single dark module which
-                         occurs in all QR Codes but not in Micro QR Codes.
-                         Default: undefined, use value of "dark".
-        quiet_zone       Color of the quiet zone / border.
-                         Default: undefined, use value of "light".
         xmldecl          Boolean value (default: ``True``) indicating whether the
                          document should have an XML declaration header.
                          Set to ``False`` to omit the header.
@@ -650,9 +671,12 @@ class QRCode:
 
         This writes either a grayscale (maybe with transparency) PNG (color type 0)
         or a palette-based (maybe with transparency) image (color type 3).
-        If the color / background values are ``None``, white or black, the serializer
+        If the dark / light values are ``None``, white or black, the serializer
         chooses the more compact grayscale mode, in all other cases a palette-based
         image is written.
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
 
         ===============    ==============================================================
         Name               Description
@@ -661,41 +685,10 @@ class QRCode:
         kind               "png"
         scale              integer
         dark               Default: "#000" (black)
-                           ``None`` is a valid value iff background is not ``None``.
+                           ``None`` is a valid value iff light is not ``None``.
                            If set to ``None``, the dark modules become transparent.
         light              Default value "#fff" (white)
                            See keyword "dark" for further details.
-        finder_dark        Color of the dark modules of the finder patterns
-                           Default: undefined, use value of "dark"
-        finder_light       Color of the light modules of the finder patterns
-                           Default: undefined, use value of "light"
-        data_dark          Color of the dark data modules
-                           Default: undefined, use value of "dark"
-        data_light         Color of the light data modules.
-                           Default: undefined, use value of "light".
-        version_dark       Color of the dark modules of the version information.
-                           Default: undefined, use value of "dark".
-        version_light      Color of the light modules of the version information,
-                           Default: undefined, use value of "light".
-        format_dark        Color of the dark modules of the format information.
-                           Default: undefined, use value of "dark".
-        format_light       Color of the light modules of the format information.
-                           Default: undefined, use value of "light".
-        alignment_dark     Color of the dark modules of the alignment patterns.
-                           Default: undefined, use value of "dark".
-        alignment_light    Color of the light modules of the alignment patterns.
-                           Default: undefined, use value of "light".
-        timing_dark        Color of the dark modules of the timing patterns.
-                           Default: undefined, use value of "dark".
-        timing_light       Color of the light modules of the timing patterns.
-                           Default: undefined, use value of "light".
-        separator          Color of the separator.
-                           Default: undefined, use value of "light".
-        dark_module        Color of the dark module (a single dark module which
-                           occurs in all QR Codes but not in Micro QR Codes.
-                           Default: undefined, use value of "dark".
-        quiet_zone         Color of the quiet zone / border.
-                           Default: undefined, use value of "light".
         compresslevel      Default: 9. Integer indicating the compression level
                            for the ``IDAT`` (data) chunk.
                            1 is fastest and produces the least compression, 9 is slowest
@@ -712,6 +705,8 @@ class QRCode:
 
         **Encapsulated PostScript (EPS)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -719,13 +714,15 @@ class QRCode:
         kind             "eps"
         scale            integer or float
         dark             Default: "#000" (black)
-        light            Default value: ``None`` (no background)
+        light            Default value: ``None`` (transparent light modules)
         =============    ==============================================================
 
 
         .. _pdf:
 
         **Portable Document Format (PDF)**
+
+        All :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -734,7 +731,7 @@ class QRCode:
         kind             "pdf"
         scale            integer or float
         dark             Default: "#000" (black)
-        light            Default value: ``None`` (no background)
+        light            Default value: ``None`` (transparent light modules)
         compresslevel    Default: 9. Integer indicating the compression level.
                          1 is fastest and produces the least compression, 9 is slowest
                          and produces the most. 0 is no compression.
@@ -745,7 +742,7 @@ class QRCode:
 
         **Text (TXT)**
 
-        Does not support the "scale" keyword!
+        Aside of "scale", all :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -775,6 +772,8 @@ class QRCode:
 
         **Portable Bitmap (PBM)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -791,6 +790,8 @@ class QRCode:
 
         **Portable Arbitrary Map (PAM)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -798,8 +799,8 @@ class QRCode:
         kind             "pam"
         scale            integer
         dark             Default: "#000" (black).
-        light            Default value "#fff" (white). Use ``None`` for a transparent
-                         background.
+        light            Default value "#fff" (white). Use ``None`` for transparent
+                         light modules.
         =============    ==============================================================
 
 
@@ -811,6 +812,8 @@ class QRCode:
         ``hyperref``) package is required in the LaTeX environment. The
         serializer itself does not depend on any external packages.
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -821,7 +824,7 @@ class QRCode:
                          "at it is", please ensure that the color is a standard color
                          or it has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
-                         point to. Requires the ``hyperref`` package in your LaTeX
+                         point to. Requires the ``hyperref`` package in the LaTeX
                          environment.
         =============    ==============================================================
 
@@ -829,6 +832,8 @@ class QRCode:
         .. _xbm:
 
         **X BitMap (XBM)**
+
+        All :ref:`common keywords <common_keywords>` are supported.
 
         =============    ==============================================================
         Name             Description
@@ -844,6 +849,8 @@ class QRCode:
 
         **X PixMap (XPM)**
 
+        All :ref:`common keywords <common_keywords>` are supported.
+
         =============    ==============================================================
         Name             Description
         =============    ==============================================================
@@ -852,7 +859,7 @@ class QRCode:
         scale            integer
         dark             Default: "#000" (black).
         light            Default value "#fff" (white)
-                         ``None`` indicates a transparent background.
+                         ``None`` indicates transparent light modules.
         name             Name of the variable (default: "img")
         =============    ==============================================================
 
@@ -870,17 +877,6 @@ class QRCode:
                 insensitive.
         :param kw: Any of the supported keywords by the specific serializer.
         """
-        # Segno <= 0.3.6
-        try:
-            kw['dark'] = kw.pop('color')
-            warnings.warn('"color" is deprecated, use "dark". Support will be removed in 1.0.0', DeprecationWarning)
-        except KeyError:
-            pass
-        try:
-            kw['light'] = kw.pop('background')
-            warnings.warn('"background" is deprecated, use "light". Support will be removed in 1.0.0', DeprecationWarning)
-        except KeyError:
-            pass
         writers.save(self.matrix, self._version, out, kind, **kw)
 
     def __getattr__(self, name):
@@ -909,6 +905,8 @@ class QRCodeSequence(tuple):
 
     Iff this sequence contains only one item, it behaves like :py:class:`QRCode`.
     """
+    __slots__ = ()
+
     def __new__(cls, qrcodes):
         return super(QRCodeSequence, cls).__new__(cls, qrcodes)
 

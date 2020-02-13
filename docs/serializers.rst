@@ -10,11 +10,18 @@ QR Code in different formats:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Polly')
-    >>> qr.save('polly.svg')
-    >>> qr.save('polly.png')
-    >>> qr.save('polly.eps')
+    >>> qr = segno.make('Tomorrow Never Knows')
+    >>> qr.save('tomorrow-never-knows.svg')
+    >>> qr.save('tomorrow-never-knows.png')
+    >>> qr.save('tomorrow-never-knows.eps')
 
+
+.. image:: _static/tomorrow-never-knows-2-q.png
+    :alt: 2-Q QR Code encoding "Tomorrow Never Knows"
+
+
+Border
+------
 
 All serializers accept a ``border`` parameter which indicates the "quiet zone"
 of a (Micro) QR Code. If ``border`` is ``None``, the default border (quiet zone)
@@ -26,8 +33,23 @@ a custom border, the user may specify the border explicitly.
     >>> import segno
     >>> qr = segno.make('Vampire Blues')
     >>> qr.save('vampire-blues.svg', border=0)  # No border
+
+.. image:: _static/vampire-blues-m4-m-no-border.svg
+    :alt: M4-M QR Code encoding "Vampire Blues", quiet zone omitted
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make('Vampire Blues')
     >>> qr.save('vampire-blues.png', border=10)  # Larger border
 
+.. image:: _static/vampire-blues-m4-m-border-10.png
+    :alt: M4-M QR Code encoding "Vampire Blues", quiet zone of 10
+
+
+Scale
+-----
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
@@ -43,13 +65,55 @@ accept float values and do not "downgrade" it to an integer.
     >>> import segno
     >>> qr = segno.make_qr('The Beatles')
     >>> qr.save('the-beatles.png', scale=1.2)   # No scaling at all since int(1.2) is 1
-    >>> qr.save('the-beatles-2.png', scale=10)  # 1 module == 10 pixels
-    >>> qr.save('the-beatles.svg', scale=1.2)   # SVG accepts float values
+
+.. image:: _static/the-beatles-1-q-scale-1.png
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.png', scale=10)  # 1 module == 10 pixels
+
+.. image:: _static/the-beatles-1-q-scale-10.png
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.svg', scale=2.4)   # SVG accepts float values
+
+.. image:: _static/the-beatles-1-q-scale-2.4.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
     >>> # The SVG serializer provides the "unit" parameter to specify
     >>> # how to interpret the values
-    >>> qr.save('the-beatles-2.svg', scale=10, unit='mm')  # 1 unit = 1 mm
-    >>> qr.save('the-beatles-2.svg', unit='cm')  # 1 unit = 1 cm, result as above
+    >>> qr.save('the-beatles.svg', scale=10, unit='mm')  # 1 unit = 1 mm
 
+.. image:: _static/the-beatles-1-q-scale-10-unit-mm.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.svg', unit='cm')  # 1 unit = 1 cm, result as above
+
+.. image:: _static/the-beatles-1-q-scale-1-unit-cm.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+Color of dark and light modules
+-------------------------------
 
 Many serializers accept the parameters ``dark`` and ``light`` to specify
 the color of the dark modules and light modules. See :doc:`colorful-qrcodes`
@@ -58,18 +122,78 @@ for details.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Neil Young')
-    >>> qr.save('neil-young.svg', dark='darkblue', light='yellow')
-    >>> qr.save('neil-young.png', dark='#ccc')
-    >>> qr.save('neil-young-2.png', light=None)  # Transparent background
-    >>> # Dark modules = transparent, light modules = black
-    >>> qr.save('neil-young-3.png', dark=None, light='black')
-    >>> # Dark modules with alpha transparency
-    >>> qr.save('neil-young-4.png', dark='#0000ffcc')
-    >>> qr.save('neil-young-4.svg', dark='#00fc')  # Same as above but SVG
-    >>> # Anonther color, save as compressed SVG
-    >>> qr.save('neil-young-5.svgz', dark=(8, 90, 117))
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> qr.save('sgt-peppers.svg', dark='darkred', light='lightblue')
 
+.. image:: _static/sgt-peppers-dark_darkred-light_lightblue.svg
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> qr.save('sgt-peppers.svg', dark='#ccc')
+
+.. image:: _static/sgt-peppers-dark_685e5c.svg
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> qr.save('sgt-peppers.png', light=None)  # Transparent background
+
+.. image:: _static/sgt-peppers-light_transparent.png
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> # Dark modules = transparent, light modules = black
+    >>> qr.save('sgt-peppers.png', dark=None, light='black')
+
+.. image:: _static/sgt-peppers-dark_transparent-light_black.png
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> # Dark modules with alpha transparency
+    >>> qr.save('sgt-peppers.png', dark='#0000ffcc')
+
+.. image:: _static/sgt-peppers-dark_0000ffcc.png
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> qr.save('sgt-peppers.svg', dark='#00fc')  # Same as above but SVG
+
+.. image:: _static/sgt-peppers-dark_00fc.svg
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make("Sgt. Pepper’s Lonely Hearts Club Band")
+    >>> # Anonther color, save as compressed SVG
+    >>> qr.save('sgt-peppers.svgz', dark=(8, 90, 117))
+
+.. image:: _static/sgt-peppers-dark_890117.svg
+    :alt: 3-M QR Code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
+
+
+Saving QR Codes to streams
+--------------------------
 
 If the QR Code should be serialized to a buffer, use the
 :paramref:`kind <segno.QRCode.save.kind>`  parameter to specify the output format.
@@ -80,12 +204,15 @@ Please note that some serializers write bytes while others write strings, see
 
     >>> import segno
     >>> import io
-    >>> qr = segno.make('Neil Young')
+    >>> qr = segno.make('Paul McCartney')
     >>> buff = io.BytesIO()
     >>> qr.save(buff, kind='svg')
     >>> # All other serializer parameters are supported as well
     >>> buff = io.BytesIO()
-    >>> qr.save(buff, kind='svg', dark='#ccc', light='green')
+    >>> qr.save(buff, kind='svg', dark='darkblue', light='#eee')
+
+.. image:: _static/paul-mccartney.svg
+    :alt: M4-L QR Code encoding "Paul McCartney"
 
 
 See :py:meth:`segno.QRCode.save` for a complete reference which parameters are

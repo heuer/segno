@@ -16,7 +16,7 @@ import segno
 
 
 def test_version_too_small():
-    with pytest.raises(ValueError) as ex:
+    with pytest.raises(segno.DataOverflowError) as ex:
         segno.make('A' * 26, version=1)
     assert 'does not fit' in str(ex.value)
 

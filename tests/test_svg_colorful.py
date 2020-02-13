@@ -90,17 +90,6 @@ def test_scale():
     assert 'scale(1.5)' == group.attrib.get('transform')
 
 
-def test_draw_transparent():
-    qr = segno.make_qr('test')
-    out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow', draw_transparent=True)
-    root = _parse_xml(out)
-    paths = root.findall('.//{%s}path' % _SVG_NS)
-    assert 4 == len(paths)
-    assert 1 == len([p for p in paths if p.attrib.get('stroke') is None])
-
-
 if __name__ == '__main__':
     pytest.main([__file__])
 
