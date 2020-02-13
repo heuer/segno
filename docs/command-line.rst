@@ -195,7 +195,9 @@ If the serializer does not support :option:`--color <segno --dark>` or
 
 The SVG and PNG serializers support more than two colors, each module type
 (finder pattern (dark / light), alignment pattern (dark / light) etc.) may have
-its own color, see :doc:`colorful-qrcodes` for details::
+its own color, see :doc:`colorful-qrcodes` for details.
+
+.. code-block:: bash
 
     $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o yellow-submarine.png Yellow Submarine
 
