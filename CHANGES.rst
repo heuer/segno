@@ -10,6 +10,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 * Reintroduced ``segno.DataOverflowError`` (inherited from ``ValueError``) to
   indicate that the provided data does not fit into the provided (Micro) QR Code
   parameters.
+* Documentation improvements
 
 
 0.4.0 -- 2020-01-21

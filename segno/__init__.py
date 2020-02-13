@@ -824,7 +824,7 @@ class QRCode:
                          "at it is", please ensure that the color is a standard color
                          or it has been defined in the enclosing LaTeX document.
         url              Default: ``None``. Optional URL where the QR Code should
-                         point to. Requires the ``hyperref`` package in your LaTeX
+                         point to. Requires the ``hyperref`` package in the LaTeX
                          environment.
         =============    ==============================================================
 
