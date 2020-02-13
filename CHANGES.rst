@@ -3,14 +3,21 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
-1.0.0 -- 2020-mm-dd
+1.0.0 -- 2020-02-14
 -------------------
-* Removed support for color / background keywords (deprecated in 0.4.0).
-  Use dark and light.
+* Removed support for ``color`` / ``background`` keywords (deprecated in 0.4.0).
+  Use ``dark`` and ``light``.
 * Reintroduced ``segno.DataOverflowError`` (inherited from ``ValueError``) to
   indicate that the provided data does not fit into the provided (Micro) QR Code
   parameters.
 * Documentation improvements
+* Although this lib made backwards incompatible changes since version 0.1.0,
+  the changes should be clear since almost all changes were made
+  very conservative with background compatibility in mind.
+  Even early adopters should find a clear update path.
+  This version marks a stable API acc. to `Semantic Versioning <https://semver.org/>`_.
+* The initial stable release after nearly four years of development. Happy
+  valentine ;)
 
 
 0.4.0 -- 2020-01-21
