@@ -176,7 +176,7 @@ never a Micro QR Code.
     '2-Q'
 
 
-.. image:: _static/parisienne_walkways-2q.png
+.. image:: _static/parisienne_walkways-2-q.png
     :alt: "2-Q QR Code encoding 'Parisienne Walkways'"
 
 .. code-block:: python
@@ -187,7 +187,7 @@ never a Micro QR Code.
     '2-L'
 
 
-.. image:: _static/parisienne_walkways-2q.png
+.. image:: _static/parisienne_walkways-2-l.png
     :alt: "2-L QR Code encoding 'Parisienne Walkways'"
 
 
@@ -199,7 +199,7 @@ never a Micro QR Code.
     >>> qr.designator
     '3-H'
 
-.. image:: _static/parisienne_walkways-3h.png
+.. image:: _static/parisienne_walkways-3-h.png
     :alt: "3-H QR Code encoding 'Parisienne Walkways'"
 
 
