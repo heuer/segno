@@ -10,11 +10,18 @@ QR Code in different formats:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Polly')
-    >>> qr.save('polly.svg')
-    >>> qr.save('polly.png')
-    >>> qr.save('polly.eps')
+    >>> qr = segno.make('Tomorrow Never Knows')
+    >>> qr.save('tomorrow-never-knows.svg')
+    >>> qr.save('tomorrow-never-knows.png')
+    >>> qr.save('tomorrow-never-knows.eps')
 
+
+.. image:: _static/tomorrow-never-knows-2-q.png
+    :alt: 2-Q QR Code encoding "Tomorrow Never Knows"
+
+
+Border
+------
 
 All serializers accept a ``border`` parameter which indicates the "quiet zone"
 of a (Micro) QR Code. If ``border`` is ``None``, the default border (quiet zone)
@@ -26,8 +33,23 @@ a custom border, the user may specify the border explicitly.
     >>> import segno
     >>> qr = segno.make('Vampire Blues')
     >>> qr.save('vampire-blues.svg', border=0)  # No border
+
+.. image:: _static/vampire-blues-m4-m-no-border.svg
+    :alt: M4-M QR Code encoding "Vampire Blues", quiet zone omitted
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make('Vampire Blues')
     >>> qr.save('vampire-blues.png', border=10)  # Larger border
 
+.. image:: _static/vampire-blues-m4-m-border-10.png
+    :alt: M4-M QR Code encoding "Vampire Blues", quiet zone of 10
+
+
+Scale
+-----
 
 Most serializers accept a ``scale`` parameter which indicates the scaling
 factor of the serialization. By default, the scaling factor is ``1`` which means
