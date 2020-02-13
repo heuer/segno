@@ -65,12 +65,51 @@ accept float values and do not "downgrade" it to an integer.
     >>> import segno
     >>> qr = segno.make_qr('The Beatles')
     >>> qr.save('the-beatles.png', scale=1.2)   # No scaling at all since int(1.2) is 1
-    >>> qr.save('the-beatles-2.png', scale=10)  # 1 module == 10 pixels
-    >>> qr.save('the-beatles.svg', scale=1.2)   # SVG accepts float values
+
+.. image:: _static/the-beatles-1-q-scale-1.png
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.png', scale=10)  # 1 module == 10 pixels
+
+.. image:: _static/the-beatles-1-q-scale-10.png
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.svg', scale=2.4)   # SVG accepts float values
+
+.. image:: _static/the-beatles-1-q-scale-2.4.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
     >>> # The SVG serializer provides the "unit" parameter to specify
     >>> # how to interpret the values
-    >>> qr.save('the-beatles-2.svg', scale=10, unit='mm')  # 1 unit = 1 mm
-    >>> qr.save('the-beatles-2.svg', unit='cm')  # 1 unit = 1 cm, result as above
+    >>> qr.save('the-beatles.svg', scale=10, unit='mm')  # 1 unit = 1 mm
+
+.. image:: _static/the-beatles-1-q-scale-10-unit-mm.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
+
+
+.. code-block:: python
+
+    >>> import segno
+    >>> qr = segno.make_qr('The Beatles')
+    >>> qr.save('the-beatles.svg', unit='cm')  # 1 unit = 1 cm, result as above
+
+.. image:: _static/the-beatles-1-q-scale-1-unit-cm.svg
+    :alt: 1-Q QR Code encoding "The Beatles"
 
 
 Color of dark and light modules
