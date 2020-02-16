@@ -1,7 +1,8 @@
 Segno -- Python QR Code and Micro QR Code encoder
 =================================================
 
-Segno is a QR Code and Micro QR Code encoder which has no further dependencies.
+Segno (Italian for "sign" / "symbol") is a QR Code and Micro QR Code encoder
+which has no further dependencies.
 
 This package implements ISO/IEC 18004:2015(E) "QR Code bar code symbology
 specification" and produces Micro QR Codes and QR Codes with nearly no effort.
