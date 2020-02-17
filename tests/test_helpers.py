@@ -46,6 +46,8 @@ def test_wifi_data():
     assert 'WIFI:T:nopass;S:"ABCDE";P:"abcde";H:true;' == data
     data = helpers.make_wifi_data(ssid='"foo;bar\\baz"', password=None, security=None)
     assert 'WIFI:S:\\"foo\\;bar\\\\baz\\";;' == data
+    data = helpers.make_wifi_data(ssid='"foo;bar\\baz"', password='a:password', security='wpa2')
+    assert 'WIFI:T:WPA2;S:\\"foo\\;bar\\\\baz\\";P:a\\:password;;' == data
 
 
 def test_wifi():
@@ -73,7 +75,6 @@ def test_mecard_data():
     assert 'MECARD:N:Mustermann,Max;MEMO:this,is\\;a\\\\memo;;' == mecard
     mecard = helpers.make_mecard_data(name='Mustermann,Max', reading='this,is;a\\sound')
     assert 'MECARD:N:Mustermann,Max;SOUND:this,is\\;a\\\\sound;;' == mecard
-
 
 
 def test_mecard():
