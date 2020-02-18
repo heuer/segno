@@ -11,6 +11,7 @@ Setup script.
 """
 from __future__ import unicode_literals
 from setuptools import setup, find_packages
+from collections import OrderedDict
 import os
 import io
 import re
@@ -33,7 +34,11 @@ version = re.search(r'''^__version__ = ["']([^'"]+)['"]''',
 setup(
     name='segno',
     version=version,
-    url='https://github.com/heuer/segno/',
+    project_urls=OrderedDict((
+        ('Documentation', 'https://segno.readthedocs.io/'),
+        ('Code', 'https://github.com/heuer/segno/'),
+        ('Issue tracker', 'https://github.com/heuer/segno/issues/'),
+    )),
     description='QR Code and Micro QR Code generator for Python 2 and Python 3',
     long_description=read('README.rst', 'CHANGES.rst'),
     license='BSD',
