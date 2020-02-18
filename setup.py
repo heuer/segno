@@ -35,6 +35,7 @@ setup(
     name='segno',
     version=version,
     project_urls=OrderedDict((
+        ('Homepage', 'https://github.com/heuer/segno/'),
         ('Documentation', 'https://segno.readthedocs.io/'),
         ('Code', 'https://github.com/heuer/segno/'),
         ('Issue tracker', 'https://github.com/heuer/segno/issues/'),
