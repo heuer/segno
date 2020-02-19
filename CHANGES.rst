@@ -3,6 +3,12 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
+1.0.1 -- 2020-mm-dd
+-------------------
+* Fixed #72: Encodings for ``helpers.make_epc_qr`` may be specified by name and
+  not by a numeric constant.
+
+
 1.0.0 -- 2020-02-14
 -------------------
 * Removed support for ``color`` / ``background`` keywords (deprecated in 0.4.0).
