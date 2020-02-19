@@ -546,7 +546,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
                 encoding = encodings.index(encoding.lower()) + 1
             except ValueError:
                 raise ValueError('Invalid encoding "{0}", use one of {1}'.format(encoding, encodings))
-        elif (not isinstance(encoding, int) or not 1 <= encoding <= len(encodings)):
+        elif not isinstance(encoding, int) or not 1 <= encoding <= len(encodings):
             raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
     if not text and not reference or text and reference:
         raise ValueError('Either a text or a creditor reference (ISO 11649) must be provided')
