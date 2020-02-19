@@ -540,8 +540,14 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     reference = reference.rstrip() if reference else reference
     bic = bic.strip() if bic else bic
     name = name.strip() if name else name
-    if encoding is not None and (not isinstance(encoding, int) or not 1 <= encoding <= len(encodings)):
-        raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
+    if encoding is not None:
+        if isinstance(encoding, str_type):
+            try:
+                encoding = encodings.index(encoding.lower()) + 1
+            except ValueError:
+                raise ValueError('Invalid encoding "{0}", use one of {1}'.format(encoding, encodings))
+        elif (not isinstance(encoding, int) or not 1 <= encoding <= len(encodings)):
+            raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
     if not text and not reference or text and reference:
         raise ValueError('Either a text or a creditor reference (ISO 11649) must be provided')
     if text and not 0 < len(text) <= 140:
@@ -618,11 +624,11 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
     :param str bic: Bank Identifier Code (BIC). Optional, only required
                 for non-EEA countries.
     :param str purpose: SEPA purpose code.
-    :param int encoding: By default, this function tries to find the best, minimal
-                encoding. If another encoding should be used, the number of
-                the encoding can be provided: 1: UTF-8, 2: ISO 8859-1,
-                3: ISO 8859-2, 4: ISO 8859-4, 5: ISO 8859-5, 6: ISO 8859-7,
-                7: ISO 8859-10, 8: ISO 8859-15
+    :param str or int encoding: By default, this function tries to find the best,
+                minimal encoding. If another encoding should be used, the name
+                or number number of the encoding can be provided:
+                1: UTF-8, 2: ISO 8859-1, 3: ISO 8859-2, 4: ISO 8859-4,
+                5: ISO 8859-5, 6: ISO 8859-7, 7: ISO 8859-10, 8: ISO 8859-15
     :rtype: segno.QRCode
     """
     # Create a QR Code, error correction level "M".
