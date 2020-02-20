@@ -5,8 +5,9 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 1.0.1 -- 2020-mm-dd
 -------------------
-* Fixed #72: Encodings for ``helpers.make_epc_qr`` may be specified by name and
-  not by a numeric constant.
+* Fixed #72: Encodings for ``helpers.make_epc_qr`` may be specified by name or
+  by a numeric constant.
+* Documentation improvements (also thanks to James Addison for pr #73)
 
 
 1.0.0 -- 2020-02-14
