@@ -457,6 +457,8 @@ class QRCode:
                         use minimal percent encoding (disabled by default).
         :param bool omit_charset: Indicates if the ``;charset=...`` should be omitted
                         (disabled by default)
+        :param bool nl: Indicates if the document should have a trailing newline
+                        (default: ``False``)
         :rtype: str
         """
         return writers.as_svg_data_uri(self.matrix, self._version,
@@ -645,7 +647,7 @@ class QRCode:
                          omitted, a ``viewBox`` attribute will be added to the
                          document.
         unit             Default: ``None``
-                         Inidctaes the unit for width / height and other coordinates.
+                         Indicates the unit for width / height and other coordinates.
                          By default, the unit is unspecified and all values are
                          in the user space.
                          Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
