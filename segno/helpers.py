@@ -630,6 +630,7 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
                 ``1``: "UTF-8", ``2``: "ISO 8859-1", ``3``: "ISO 8859-2",
                 ``4``: "ISO 8859-4", ``5``: "ISO 8859-5", ``6``: "ISO 8859-7",
                 ``7``: "ISO 8859-10", ``8``: "ISO 8859-15"
+
                 The encoding is case-insensitive.
     :type encoding: str or int
     :rtype: segno.QRCode
