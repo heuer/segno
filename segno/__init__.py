@@ -457,6 +457,8 @@ class QRCode:
                         use minimal percent encoding (disabled by default).
         :param bool omit_charset: Indicates if the ``;charset=...`` should be omitted
                         (disabled by default)
+        :param bool nl: Indicates if the document should have a trailing newline
+                        (default: ``False``)
         :rtype: str
         """
         return writers.as_svg_data_uri(self.matrix, self._version,
