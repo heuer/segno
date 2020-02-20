@@ -645,7 +645,7 @@ class QRCode:
                          omitted, a ``viewBox`` attribute will be added to the
                          document.
         unit             Default: ``None``
-                         Inidctaes the unit for width / height and other coordinates.
+                         Indicates the unit for width / height and other coordinates.
                          By default, the unit is unspecified and all values are
                          in the user space.
                          Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
