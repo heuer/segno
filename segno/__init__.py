@@ -664,6 +664,8 @@ class QRCode:
                          and produces the most. 0 is no compression.
         draw_transparent Indicates if transparent SVG paths should be
                          added to the graphic (default: ``False``)
+        nl               Indicates if the document should have a trailing newline
+                         (default: ``True``)
         ================ ==============================================================
 
 
