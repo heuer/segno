@@ -8,10 +8,12 @@
 """\
 Additional factory functions for common QR Codes.
 
-The factory functions which return a QR Code with the minimum error correction
-level "L" (or better). To create a (Micro) QR Code which should use a specific
-error correction level or version etc., use the "_data" factory functions which
-return a string which can be used as input for :py:func:`segno.make()`.
+Aside from  :py:func:`make_epc_qr`, the factory functions return a QR Code
+with the minimum error correction level "L" (or better).
+
+To create a (Micro) QR Code which should use a specific error correction level
+or version etc., use the "_data" factory functions which return a string which
+can be used as input for :py:func:`segno.make()`.
 """
 from __future__ import absolute_import, unicode_literals
 import re
@@ -603,6 +605,10 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
     """\
     Creates and returns an European Payments Council Quick Response Code 
     (EPC QR Code) version 002.
+
+    The returned :py:class:`segno.QRCode` uses always the error correction level
+    "M" and utilizes max. version 13 to fulfill the constraints of the EPC QR
+    Code standard.
 
     .. note::
 
