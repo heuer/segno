@@ -7,6 +7,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Fixed #72: Encodings for ``helpers.make_epc_qr`` may be specified by name or
   by a numeric constant.
+* Added support for `Netpbm PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_ images.
 * Documentation improvements (also thanks to James Addison for pr #73)
 
 

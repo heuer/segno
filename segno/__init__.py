@@ -808,6 +808,25 @@ class QRCode:
         =============    ==============================================================
 
 
+        .. _ppm:
+
+        **Portable Pixmap (PPM)**
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        out              Filename or :py:class:`io.BytesIO`
+        kind             "ppm"
+        scale            integer
+        dark             Default: "#000" (black).
+        light            Default value "#fff" (white).
+        =============    ==============================================================
+
+
+
         .. _latex:
 
         **LaTeX / PGF/TikZ**

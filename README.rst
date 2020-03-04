@@ -11,9 +11,9 @@ QR Codes.
 
 Segno provides several serialization formats like Scalable Vector Graphics (SVG),
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
-Portable Document Format (PDF), Portable Bitmap (PBM),
-LaTeX (PGF/TikZ), X PixMap (XBM), X Bitmap (XPM) etc. None of these
-serializers require an external lib.
+Portable Document Format (PDF), Netpbm (PAM, PBM, PPM), LaTeX (PGF/TikZ),
+X PixMap (XBM), and X Bitmap (XPM) etc.
+None of these serializers require an external lib.
 Further, it provides several high level functions to create QR Codes which encode
 `contact data (vCard, MeCard) <https://segno.readthedocs.io/en/stable/contact-information.html>`_,
 `EPC QR Codes <https://segno.readthedocs.io/en/stable/epc-qrcodes.html>`_,

@@ -193,7 +193,7 @@ modules to yellow::
 If the serializer does not support :option:`--color <segno --dark>` or
 :option:`--light <segno --light>`, these arguments are ignored.
 
-The SVG and PNG serializers support more than two colors, each module type
+The SVG, PNG, and PPM serializers support more than two colors, each module type
 (finder pattern (dark / light), alignment pattern (dark / light) etc.) may have
 its own color, see :doc:`colorful-qrcodes` for details.
 
