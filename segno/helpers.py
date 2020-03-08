@@ -559,7 +559,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     if name is None or not 0 < len(name) <= 70:
         raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
     if iban is None or not 4 < len(iban) <= 34:
-        raise ValueError('Invalid IBAN, max. 34 characters are allowed, got "{}"'.format(iban))
+        raise ValueError('Invalid IBAN, min. 5 and max. 34 characters are allowed, got "{}"'.format(iban))
     if bic and len(bic) not in (8, 11):
         raise ValueError('Invalid BIC, should be 8 or 11 characters long, got "{}"'.format(bic))
     if purpose and len(purpose) != 4:
