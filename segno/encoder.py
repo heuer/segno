@@ -143,7 +143,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
             bits += num * 11 + (6 if remainder else 0)
         elif mode == consts.MODE_BYTE:
             bits += char_count * 8
-        elif mode == consts.MODE_KANJI:
+        elif mode == consts.MODE_KANJI or mode == consts.MODE_HANZI:
             bits += char_count * 13
         return overhead + bits
 
@@ -243,7 +243,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     capacity = consts.SYMBOL_CAPACITY[version][error]
     # ISO/IEC 18004:2015(E) -- 7.4.9 Terminator (page 32)
     write_terminator(buff, capacity, ver, len(buff))
-    #  ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
+    # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_padding_bits(buff, version, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
@@ -316,6 +316,9 @@ def write_segment(buff, segment, ver, ver_range, eci=False):
         append_bits(get_eci_assignment_number(segment.encoding), 8)
     if ver is None:  # QR Code
         append_bits(mode, 4)
+        if mode == consts.MODE_HANZI:
+            subset = 1  # Indicator for GB2312 subset
+            append_bits(subset, 4)
     elif ver > consts.VERSION_M1:  # Micro QR Code (M1 has no mode indicator)
         append_bits(consts.MODE_TO_MICRO_MODE_MAPPING[mode], ver + 3)
     # Character count indicator
@@ -990,6 +993,7 @@ def data_to_bytes(data, encoding):
     if isinstance(data, bytes):
         return data, len(data), encoding or consts.DEFAULT_BYTE_ENCODING
     data = str(data)
+    length = len(data)
     if encoding is not None:
         # Use the provided encoding; could raise an exception by intention
         data = data.encode(encoding)
@@ -1004,10 +1008,16 @@ def data_to_bytes(data, encoding):
                 encoding = consts.KANJI_ENCODING
                 data = data.encode(encoding)
             except UnicodeError:
-                # Use UTF-8
-                encoding = 'utf-8'
-                data = data.encode(encoding)
-    return data, len(data), encoding
+                try:
+                    # Try Hanzi / GB2312
+                    encoding = consts.HANZI_ENCODING
+                    data = data.encode(encoding)
+                except UnicodeError:
+                    # Use UTF-8
+                    encoding = 'utf-8'
+                    data = data.encode(encoding)
+                    length = len(data)  # Length changed after utf-8 encoding
+    return data, length, encoding
 
 
 def make_segment(data, mode, encoding=None):
@@ -1071,6 +1081,27 @@ def make_segment(data, mode, encoding=None):
             segment_data = (ord(b) for b in segment_data)
         for b in segment_data:
             append_bits(b, 8)
+    elif segment_mode == consts.MODE_HANZI:
+        # GBT 18284-2000 -- 6.4.5 Hanzi mode (page 18)
+        if _PY2:  # pragma: no cover
+            segment_data = [ord(b) for b in segment_data]
+        # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
+        for i in range(0, len(segment_data), 2):
+            code = (segment_data[i] << 8) | segment_data[i + 1]
+            if 0xa1a1 <= code <= 0xaafe:
+                # For characters with GB2312 values from A1A1HEX to AAFEHEX:
+                # a) Subtract A1A1HEX from GB2312 value;
+                diff = code - 0xa1a1
+            elif 0xb0a1 <= code <= 0xfafe:
+                # For characters with GB2312 values from B0A1HEX to FAFEHEX:
+                # a) Subtract A6A1HEX from GB2312 value;
+                diff = code - 0xa6a1
+            else:  # pragma: no cover
+                raise ValueError('Invalid Hanzi bytes: {0}'.format(code))
+            # b) Multiply most significant byte of result by 60HEX;
+            # c) Add least significant byte to product from b);
+            # d) Convert result to a 13-bit binary string.
+            append_bits(((diff >> 8) * 0x60) + (diff & 0xff), 13)
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
@@ -1317,6 +1348,26 @@ def is_kanji(data):
     return True
 
 
+def is_hanzi(data):
+    """\
+    Returns if the `data` can be encoded in "hanzi" mode.
+
+    :param bytes data: The data to check.
+    :rtype: bool
+    """
+    data_len = len(data)
+    if not data_len or data_len % 2:
+        return False
+    if _PY2:  # pragma: no cover
+        data = (ord(c) for c in data)
+    data_iter = iter(data)
+    for i in range(0, data_len, 2):
+        code = (next(data_iter) << 8) | next(data_iter)
+        if not (0xa1a1 <= code <= 0xaafe or 0xb0a1 <= code <= 0xfafe):
+            return False
+    return True
+
+
 def find_mode(data):
     """\
     Returns the appropriate QR Code mode (an integer constant) for the
@@ -1331,6 +1382,8 @@ def find_mode(data):
         return consts.MODE_ALPHANUMERIC
     if is_kanji(data):
         return consts.MODE_KANJI
+    if is_hanzi(data):
+        return consts.MODE_HANZI
     return consts.MODE_BYTE
 
 
