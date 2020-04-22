@@ -21,6 +21,7 @@ MODE_STRUCTURED_APPEND = 0x3
 MODE_BYTE = 0x4
 MODE_ECI = 0x7
 MODE_KANJI = 0x8
+MODE_HANZI = 0xD
 
 # Micro QR Code uses different mode indicators
 # ISO/IEC 18004:2015(E) -- Table 2 — Mode indicators for QR Code (page 23)
@@ -66,12 +67,14 @@ ERROR_LEVEL_TO_MICRO_MAPPING = {
 
 DEFAULT_BYTE_ENCODING = 'iso-8859-1'
 KANJI_ENCODING = 'shift_jis'
+HANZI_ENCODING = 'gb2312'
 
 MODE_MAPPING = {
     'numeric': MODE_NUMERIC,
     'alphanumeric': MODE_ALPHANUMERIC,
     'byte': MODE_BYTE,
     'kanji': MODE_KANJI,
+    'hanzi': MODE_HANZI,
 }
 
 ERROR_MAPPING = {
@@ -163,6 +166,7 @@ SUPPORTED_MODES = {
     MODE_BYTE: (None, VERSION_M3, VERSION_M4),
     MODE_ECI: (None,),
     MODE_KANJI: (None, VERSION_M3, VERSION_M4),
+    MODE_HANZI: (None,),
 }
 
 # ISO/IEC 18004:2015(E) -- Table 2 — Mode indicators for QR Code (page 23)
@@ -197,6 +201,10 @@ CHAR_COUNT_INDICATOR_LENGTH = {
         VERSION_RANGE_01_09:  8,
         VERSION_RANGE_10_26: 10,
         VERSION_RANGE_27_40: 12,                               VERSION_M3: 3, VERSION_M4: 4},
+    MODE_HANZI: {
+        VERSION_RANGE_01_09:  8,
+        VERSION_RANGE_10_26: 10,
+        VERSION_RANGE_27_40: 12},
 }
 
 
