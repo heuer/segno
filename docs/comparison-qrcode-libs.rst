@@ -15,11 +15,11 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.3.6                  1.5.0                     |version|
+    Library version                                                     6.1                      1.2.1                  1.3.6                  1.6.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
-    Mode Kanji                                                          No                       Yes                    Yes                    No                        Yes
+    Mode Kanji                                                          No                       Yes                    Yes                    Yes                       Yes
     Mode ECI                                                            No                       No                     No                     Yes                       Yes
     Mode FNC1                                                           No                       No                     No                     No                        No
     Mode Structured Append                                              No                       No                     No                     No                        Yes
