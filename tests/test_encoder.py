@@ -149,9 +149,12 @@ def test_prepare_data_multiple_mode_none_encoding():
     segments = encoder.prepare_data(test_data, None, None)
     assert 3 == len(segments)
     assert 32 == segments.bit_length
-    assert (1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING) == segments[0][1:]
-    assert (2, consts.MODE_BYTE, 'utf-8') == segments[1][1:]
-    assert segments[0] == segments[2]  # Encoding detection should produce the same result as 1st tuple
+    seg1, seg2, seg3 = segments
+    char_count, mode, encoding = 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING
+    assert (char_count, mode, encoding) == seg1[1:]
+    encoding = 'utf-8'
+    assert (char_count, mode, encoding) == seg2[1:]
+    assert seg1 == seg3  # Encoding detection should produce the same result as 1st tuple
 
 
 def test_prepare_data_multiple_tuple():
