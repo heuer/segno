@@ -798,7 +798,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         write = f.write
         write('{0}\n'
               '# Created by {1}\n'
-              '{2} {3}\n'\
+              '{2} {3}\n'
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
