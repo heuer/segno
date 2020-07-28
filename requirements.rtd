@@ -1,3 +1,2 @@
 # Needed for Read the Docs build
-sphinx~=3.1.2
-sphinx_paramlinks
+sphinx_paramlinks~=0.3.7
