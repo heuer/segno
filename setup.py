@@ -11,6 +11,7 @@ Setup script.
 """
 from __future__ import unicode_literals
 from setuptools import setup, find_packages
+from collections import OrderedDict
 import os
 import io
 import re
@@ -33,7 +34,12 @@ version = re.search(r'''^__version__ = ["']([^'"]+)['"]''',
 setup(
     name='segno',
     version=version,
-    url='https://github.com/heuer/segno/',
+    project_urls=OrderedDict((
+        ('Homepage', 'https://github.com/heuer/segno/'),
+        ('Documentation', 'https://segno.readthedocs.io/'),
+        ('Code', 'https://github.com/heuer/segno/'),
+        ('Issue tracker', 'https://github.com/heuer/segno/issues/'),
+    )),
     description='QR Code and Micro QR Code generator for Python 2 and Python 3',
     long_description=read('README.rst', 'CHANGES.rst'),
     license='BSD',
@@ -43,7 +49,7 @@ setup(
     packages=find_packages(exclude=['docs', 'tests', 'sandbox', 'htmlcov']),
     include_package_data=True,
     data_files=[('share/man/man1', ['man/segno.1'])],
-    entry_points = {'console_scripts': ['segno = segno.cli:main']},
+    entry_points={'console_scripts': ['segno = segno.cli:main']},
     keywords=['QR Code', 'Micro QR Code', 'ISO/IEC 18004',
               'ISO/IEC 18004:2006(E)', 'ISO/IEC 18004:2015(E)', 'qrcode', 'QR',
               'barcode', 'matrix', '2D', 'latex'],

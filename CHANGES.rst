@@ -3,6 +3,20 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
+1.0.1 -- 2020-07-26
+-------------------
+* Fixed wrong information about character count in Kanji mode
+  (discovered and fixed by `neycyanshi <https://github.com/neycyanshi>`_)
+* Fixed `#72 <https://github.com/heuer/segno/issues/72>`_:
+  Encodings for ``helpers.make_epc_qr`` may be specified by name or
+  by a numeric constant.
+* Added support for `Netpbm PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_ images.
+* Documentation improvements (also thanks to James Addison for pr
+  `#73 <https://github.com/heuer/segno/pull/73>`_)
+* Removed "version" parameter from ``encoder.prepare_data`` (does not belong to
+  the public API anyway)
+
+
 1.0.0 -- 2020-02-14
 -------------------
 * Removed support for ``color`` / ``background`` keywords (deprecated in 0.4.0).

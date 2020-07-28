@@ -10,20 +10,20 @@ transparency is supported (i.e. :ref:`PNG <png>` and :ref:`SVG <svg>`),
 hexadecimal values like ``#RRGGBBAA`` are accepted.
 
 The value ``None`` is accepted by many serialization formats and indicates
-transparency, i.e. ``light=None`` to indicate that all light modules should
+transparency, i.e. ``light=None`` indicates that all light modules should
 be transparent.
 
 In almost all cases the color values are automatically converted into a
 meaningful value of the specific output format.
 
-The keywords are optional, if not provided, all serializers use a reasonable
-default value (dark modules are rendered in black, light modules in white).
+The keywords are optional, if not provided, all serializers use reasonable
+default values (dark modules are rendered in black, light modules in white).
 
 .. note:: Providing an alpha channel to a serializer which does not accept an
     alpha channel results usually into an error.
 
-The SVG and PNG serializers support more than two colors, every module type may
-have its own color.
+The SVG, PNG, and PPM serializers support more than two colors, every module
+type may have its own color.
 
 .. code-block:: python
 
@@ -52,7 +52,7 @@ Module names
 
 The following examples show the results of all supported module types.
 The unaffected modules are rendered as grey or white modules, the red modules
-show the usage of the keyword.
+show the result of the keyword.
 
 The keywords "dark" and "light" (at the command line  :option:`--dark <segno --dark>`
 and :option:`--light <segno --light>`) are supported by almost all serialization

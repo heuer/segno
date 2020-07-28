@@ -47,8 +47,8 @@ from .utils import matrix_to_lines, get_symbol_size, get_border, \
         check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
-           'write_txt', 'write_pbm', 'write_pam', 'write_xpm', 'write_xbm',
-           'write_tex', 'write_terminal')
+           'write_txt', 'write_pbm', 'write_pam', 'write_ppm', 'write_xpm',
+           'write_xbm', 'write_tex', 'write_terminal')
 
 # Standard creator name
 CREATOR = 'Segno <https://pypi.org/project/segno/>'
@@ -798,7 +798,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         write = f.write
         write('{0}\n'
               '# Created by {1}\n'
-              '{2} {3}\n'\
+              '{2} {3}\n'
               .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
         if not plain:
             for row in row_iter:
@@ -879,6 +879,36 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
               'ENDHDR\n'.format(CREATOR, width, height, depth, maxval, tuple_type).encode('ascii'))
         for row in row_iter:
             write(row_filter(row))
+
+
+@colorful(dark='#000', light='#fff')
+def write_ppm(matrix, version, out, colormap, scale=1, border=None):
+    """\
+    Serializes the matrix as `PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_
+    image.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version
+    :param out: Filename or a file-like object supporting to write binary data.
+    :param scale: Indicates the size of a single module (default: 1 which
+            corresponds to 1 x 1 pixel per module).
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+    """
+    scale = int(scale)
+    width, height, border = _valid_width_height_and_border(version, scale, border)
+    if None in colormap.values():
+        raise ValueError('Transparency is not supported')
+    for mt, clr in colormap.items():
+        colormap[mt] = _color_to_rgb(clr)
+    row_iter = matrix_iter_verbose(matrix, version, scale, border)
+    with writable(out, 'wb') as f:
+        write = f.write
+        write('P6 # Created by {0}\n{1} {2} 255\n'
+              .format(CREATOR, width, height).encode('ascii'))
+        for row in row_iter:
+            write(b''.join(pack(b'>3B', *colormap[mt]) for mt in row))
 
 
 def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
@@ -1537,6 +1567,7 @@ _VALID_SERIALIZERS = {
     'ans': write_terminal,
     'pbm': write_pbm,
     'pam': write_pam,
+    'ppm': write_ppm,
     'tex': write_tex,
     'xbm': write_xbm,
     'xpm': write_xpm,

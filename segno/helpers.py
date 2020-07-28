@@ -8,10 +8,12 @@
 """\
 Additional factory functions for common QR Codes.
 
-The factory functions which return a QR Code with the minimum error correction
-level "L" (or better). To create a (Micro) QR Code which should use a specific
-error correction level or version etc., use the "_data" factory functions which
-return a string which can be used as input for :py:func:`segno.make()`.
+Aside from  :py:func:`make_epc_qr`, the factory functions return a QR Code
+with the minimum error correction level "L" (or better).
+
+To create a (Micro) QR Code which should use a specific error correction level
+or version etc., use the "_data" factory functions which return a string which
+can be used as input for :py:func:`segno.make()`.
 """
 from __future__ import absolute_import, unicode_literals
 import re
@@ -540,8 +542,14 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     reference = reference.rstrip() if reference else reference
     bic = bic.strip() if bic else bic
     name = name.strip() if name else name
-    if encoding is not None and (not isinstance(encoding, int) or not 1 <= encoding <= len(encodings)):
-        raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
+    if encoding is not None:
+        if isinstance(encoding, str_type):
+            try:
+                encoding = encodings.index(encoding.lower()) + 1
+            except ValueError:
+                raise ValueError('Invalid encoding "{0}", use one of {1}'.format(encoding, encodings))
+        elif not isinstance(encoding, int) or not 1 <= encoding <= len(encodings):
+            raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
     if not text and not reference or text and reference:
         raise ValueError('Either a text or a creditor reference (ISO 11649) must be provided')
     if text and not 0 < len(text) <= 140:
@@ -551,7 +559,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     if name is None or not 0 < len(name) <= 70:
         raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
     if iban is None or not 4 < len(iban) <= 34:
-        raise ValueError('Invalid IBAN, max. 34 characters are allowed, got "{}"'.format(iban))
+        raise ValueError('Invalid IBAN, min. 5 and max. 34 characters are allowed, got "{}"'.format(iban))
     if bic and len(bic) not in (8, 11):
         raise ValueError('Invalid BIC, should be 8 or 11 characters long, got "{}"'.format(bic))
     if purpose and len(purpose) != 4:
@@ -598,6 +606,10 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
     Creates and returns an European Payments Council Quick Response Code 
     (EPC QR Code) version 002.
 
+    The returned :py:class:`segno.QRCode` uses always the error correction level
+    "M" and utilizes max. version 13 to fulfill the constraints of the EPC QR
+    Code standard.
+
     .. note::
 
         Either the ``text`` or ``reference`` must be provided but not both
@@ -618,11 +630,15 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
     :param str bic: Bank Identifier Code (BIC). Optional, only required
                 for non-EEA countries.
     :param str purpose: SEPA purpose code.
-    :param int encoding: By default, this function tries to find the best, minimal
-                encoding. If another encoding should be used, the number of
-                the encoding can be provided: 1: UTF-8, 2: ISO 8859-1,
-                3: ISO 8859-2, 4: ISO 8859-4, 5: ISO 8859-5, 6: ISO 8859-7,
-                7: ISO 8859-10, 8: ISO 8859-15
+    :param encoding: By default, this function tries to find the best,
+                minimal encoding. If another encoding should be used, the encoding
+                name or the encoding constant (an integer) can be provided:
+                ``1``: "UTF-8", ``2``: "ISO 8859-1", ``3``: "ISO 8859-2",
+                ``4``: "ISO 8859-4", ``5``: "ISO 8859-5", ``6``: "ISO 8859-7",
+                ``7``: "ISO 8859-10", ``8``: "ISO 8859-15"
+
+                The encoding is case-insensitive.
+    :type encoding: str or int
     :rtype: segno.QRCode
     """
     # Create a QR Code, error correction level "M".

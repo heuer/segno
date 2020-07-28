@@ -88,7 +88,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
         raise ValueError('Error correction level "H" is not available for Micro QR Codes')
     if eci and (micro or version in consts.MICRO_VERSIONS):
         raise ValueError('The ECI mode is not available for Micro QR Codes')
-    segments = prepare_data(content, mode, encoding, version)
+    segments = prepare_data(content, mode, encoding)
     guessed_version = find_version(segments, error, eci=eci, micro=micro)
     if version is None:
         version = guessed_version
@@ -176,7 +176,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
         error = consts.ERROR_LEVEL_L
     mode = normalize_mode(mode)
     mask = normalize_mask(mask, is_micro=False)
-    segments = prepare_data(content, mode, encoding, version)
+    segments = prepare_data(content, mode, encoding)
     guessed_version = None
     if symbol_count is None:
         try:
@@ -243,7 +243,7 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     capacity = consts.SYMBOL_CAPACITY[version][error]
     # ISO/IEC 18004:2015(E) -- 7.4.9 Terminator (page 32)
     write_terminator(buff, capacity, ver, len(buff))
-    #  ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
+    # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_padding_bits(buff, version, len(buff))
     # ISO/IEC 18004:2015(E) -- 7.4.10 Bit stream to codeword conversion (page 34)
     write_pad_codewords(buff, version, capacity, len(buff))
@@ -407,7 +407,7 @@ def add_finder_patterns(matrix, is_micro):
                (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
                (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
                (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
-    corners = ((0, 0), (0, len(matrix) - 8), (-8, 0))  # Upper left, upper, right, bottom left
+    corners = ((0, 0), (0, len(matrix) - 8), (-8, 0))  # Upper left, upper right, bottom left
     if is_micro:
         corners = ((0, 0),)
     finder_range = range(8)
@@ -937,7 +937,7 @@ def add_version_info(matrix, version):
         row[-9] = bit3
 
 
-def prepare_data(content, mode, encoding, version=None):
+def prepare_data(content, mode, encoding):
     """\
     Returns an iterable of `Segment` instances.
 
@@ -951,8 +951,6 @@ def prepare_data(content, mode, encoding, version=None):
             instances may have a different mode.
     :param encoding: The global encoding. If `content` is a list or a tuple,
             the `Segment` instances may have a different encoding.
-    :param int version: Version constant or ``None``. This refers to the version
-                which was provided by the user.
     :rtype: Segments
     """
     segments = Segments()
@@ -967,7 +965,7 @@ def prepare_data(content, mode, encoding, version=None):
             if len(item) > 1:
                 seg_mode = item[1] or mode  # item[1] could be None
             if len(item) > 2:
-                seg_encoding = item[2] or encoding # item[2] may be None
+                seg_encoding = item[2] or encoding  # item[2] may be None
         add_segment(make_segment(seg_content, seg_mode, seg_encoding))
     return segments
 
@@ -980,16 +978,17 @@ def data_to_bytes(data, encoding):
     This function tries to use the provided `encoding` (if not ``None``)
     or the default encoding (ISO/IEC 8859-1). It uses UTF-8 as fallback.
 
-    Returns the (byte) data, the data length and the encoding of the data.
+    Returns the (byte) data, the character count and the encoding of the data.
 
     :param data: The data to encode
     :type data: str or bytes
     :param encoding: str or ``None``
-    :rtype: tuple: data, data length, encoding
+    :rtype: tuple: data, char count, encoding
     """
     if isinstance(data, bytes):
         return data, len(data), encoding or consts.DEFAULT_BYTE_ENCODING
     data = str(data)
+    char_count = len(data)
     if encoding is not None:
         # Use the provided encoding; could raise an exception by intention
         data = data.encode(encoding)
@@ -1007,7 +1006,9 @@ def data_to_bytes(data, encoding):
                 # Use UTF-8
                 encoding = 'utf-8'
                 data = data.encode(encoding)
-    return data, len(data), encoding
+                # Recalculate character count due to UTF-8 encoding
+                char_count = len(data)
+    return data, char_count, encoding
 
 
 def make_segment(data, mode, encoding=None):
@@ -1019,7 +1020,7 @@ def make_segment(data, mode, encoding=None):
     :param encoding: The encoding.
     :rtype: _Segment
     """
-    segment_data, segment_length, segment_encoding = data_to_bytes(data, encoding)
+    segment_data, char_count, segment_encoding = data_to_bytes(data, encoding)
     segment_mode = mode
     # If the user prefers BYTE, use BYTE and do not try to find a better mode
     # Necessary since BYTE < KANJI and find_mode may return KANJI as (more)
@@ -1045,13 +1046,13 @@ def make_segment(data, mode, encoding=None):
         # each group is converted to its 10-bit binary equivalent. If the number
         # of input digits is not an exact multiple of three, the final one or
         # two digits are converted to 4 or 7 bits respectively.
-        for i in range(0, segment_length, 3):
+        for i in range(0, char_count, 3):
             chunk = segment_data[i:i + 3]
             append_bits(int(chunk), len(chunk) * 3 + 1)
     elif segment_mode == consts.MODE_ALPHANUMERIC:
         # ISO/IEC 18004:2015(E) -- 7.4.4 Alphanumeric mode (page 26)
         to_byte = consts.ALPHANUMERIC_CHARS.find
-        for i in range(0, segment_length, 2):
+        for i in range(0, char_count, 2):
             chunk = segment_data[i:i + 2]
             # Input data characters are divided into groups of two characters
             # which are encoded as 11-bit binary codes. The character value of
@@ -1075,16 +1076,15 @@ def make_segment(data, mode, encoding=None):
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
-        # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
-        for i in range(0, len(segment_data), 2):
+        for i in range(0, char_count, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0x8140 <= code <= 0x9ffc:
-                # For characters with Shift JIS values from 8140HEX to 9FFCHEX:
-                # a) Subtract 8140HEX from Shift JIS value;
+                # 1. a) For characters with Shift JIS values from 8140HEX to 9FFCHEX:
+                # Subtract 8140HEX from Shift JIS value;
                 diff = code - 0x8140
             elif 0xe040 <= code <= 0xebbf:
-                # For characters with Shift JIS values from E040HEX to EBBFHEX:
-                # a) Subtract C140HEX from Shift JIS value;
+                # 2. a) For characters with Shift JIS values from E040HEX to EBBFHEX:
+                # Subtract C140HEX from Shift JIS value;
                 diff = code - 0xc140
             else:  # pragma: no cover
                 raise ValueError('Invalid Kanji bytes: {0}'.format(code))
@@ -1092,7 +1092,7 @@ def make_segment(data, mode, encoding=None):
             # c) Add least significant byte to product from b);
             # d) Convert result to a 13-bit binary string.
             append_bits(((diff >> 8) * 0xc0) + (diff & 0xff), 13)
-    return _Segment(buff.getbits(), segment_length, segment_mode, segment_encoding)
+    return _Segment(buff.getbits(), char_count, segment_mode, segment_encoding)
 
 
 def make_matrix(version, reserve_regions=True, add_timing=True):

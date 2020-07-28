@@ -262,6 +262,11 @@ PBM
     but the common featurs like scale and border are supported, see :ref:`PBM <pbm>`
     for details.
 
+PPM
+    Portable Pixmap (PPM). The serializer does not support transparency,
+    but the common featurs like scale and border are supported, see :ref:`PPM <ppm>`
+    for details.
+
 PDF
     Portable Document Format (PDF). The serializer provides all default features
     (scale, border, color of dark / light modules), see :ref:`PDF <pdf>` for details.

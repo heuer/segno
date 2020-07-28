@@ -20,7 +20,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
@@ -457,6 +457,8 @@ class QRCode:
                         use minimal percent encoding (disabled by default).
         :param bool omit_charset: Indicates if the ``;charset=...`` should be omitted
                         (disabled by default)
+        :param bool nl: Indicates if the document should have a trailing newline
+                        (default: ``False``)
         :rtype: str
         """
         return writers.as_svg_data_uri(self.matrix, self._version,
@@ -645,7 +647,7 @@ class QRCode:
                          omitted, a ``viewBox`` attribute will be added to the
                          document.
         unit             Default: ``None``
-                         Inidctaes the unit for width / height and other coordinates.
+                         Indicates the unit for width / height and other coordinates.
                          By default, the unit is unspecified and all values are
                          in the user space.
                          Valid values: em, ex, px, pt, pc, cm, mm, in, and percentages
@@ -662,6 +664,8 @@ class QRCode:
                          and produces the most. 0 is no compression.
         draw_transparent Indicates if transparent SVG paths should be
                          added to the graphic (default: ``False``)
+        nl               Indicates if the document should have a trailing newline
+                         (default: ``True``)
         ================ ==============================================================
 
 
@@ -802,6 +806,25 @@ class QRCode:
         light            Default value "#fff" (white). Use ``None`` for transparent
                          light modules.
         =============    ==============================================================
+
+
+        .. _ppm:
+
+        **Portable Pixmap (PPM)**
+
+        All :ref:`common keywords <common_keywords>` and :ref:`module colors <module_colors>`
+        are supported.
+
+        =============    ==============================================================
+        Name             Description
+        =============    ==============================================================
+        out              Filename or :py:class:`io.BytesIO`
+        kind             "ppm"
+        scale            integer
+        dark             Default: "#000" (black).
+        light            Default value "#fff" (white).
+        =============    ==============================================================
+
 
 
         .. _latex:

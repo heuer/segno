@@ -21,6 +21,7 @@ try:
     from .test_terminal import terminal_as_matrix
     from .test_pbm import pbm_p1_as_matrix
     from .test_pam import pam_bw_as_matrix
+    from .test_ppm import ppm_bw_as_matrix
     from .test_tex import tex_as_matrix
     from .test_xpm import xpm_as_matrix
 except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
@@ -32,6 +33,7 @@ except (ValueError, SystemError, ImportError):  # Attempted relative import in n
     from test_terminal import terminal_as_matrix
     from test_pbm import pbm_p1_as_matrix
     from test_pam import pam_bw_as_matrix
+    from test_ppm import ppm_bw_as_matrix
     from test_tex import tex_as_matrix
     from test_xpm import xpm_as_matrix
 
@@ -57,7 +59,8 @@ def _make_test_data_input():
                                                      ('tex', io.StringIO, tex_as_matrix, {}),
                                                      ('xpm', io.StringIO, xpm_as_matrix, {}),
                                                      ('pam', io.BytesIO, pam_bw_as_matrix, {}),
-                                                     ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True),)):
+                                                     ('pbm', io.BytesIO, pbm_p1_as_matrix, dict(plain=True)),
+                                                     ('ppm', io.BytesIO, ppm_bw_as_matrix, {}),):
         for data, error, border in _DATA:
             yield kind, buffer_factory, to_matrix_func, data, error, border, kw
 

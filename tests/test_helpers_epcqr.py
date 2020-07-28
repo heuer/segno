@@ -245,7 +245,7 @@ def test_text_too_long():
     assert 'text' in str(ex.value)
 
 
-def test_refernce_too_long():
+def test_reference_too_long():
     kw = _make_valid_kw()
     kw['text'] = None
     kw['reference'] = 'r' * 36

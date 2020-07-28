@@ -15,11 +15,11 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.3.6                  1.5.0                     |version|
+    Library version                                                     6.1                      1.2.1                  1.3.6                  1.6.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
-    Mode Kanji                                                          No                       Yes                    Yes                    No                        Yes
+    Mode Kanji                                                          No                       Yes                    Yes                    Yes                       Yes
     Mode ECI                                                            No                       No                     No                     Yes                       Yes
     Mode FNC1                                                           No                       No                     No                     No                        No
     Mode Structured Append                                              No                       No                     No                     No                        Yes
@@ -34,11 +34,12 @@ Features
     `SVG`_ output                                                       Yes                      Yes                    Yes                    Yes                       Yes
     `EPS`_ output                                                       Yes                      Yes                    Yes                    No                        Yes
     `PDF`_ output                                                       Yes                      No                     No                     No                        Yes
+    `PAM`_ output                                                       No                       No                     No                     No                        Yes
+    `PBM`_ output                                                       Yes                      No                     No                     No                        Yes
+    `PPM`_ output                                                       Yes                      No                     No                     No                        Yes
+    `LaTeX`_ support                                                    No                       No                     No                     No                        Yes
     `XBM`_ output                                                       Yes                      Yes                    Yes                    No                        Yes
     `XPM`_ output                                                       No                       No                     No                     No                        Yes
-    `PBM`_ output                                                       Yes                      No                     No                     No                        Yes
-    `PAM`_ output                                                       No                       No                     No                     No                        Yes
-    `LaTeX`_ support                                                    No                       No                     No                     No                        Yes
     PNG `data URI`_                                                     No                       No (no valid URI)      Yes                    No                        Yes
     SVG data URI                                                        No                       No                     No                     No                        Yes
     Text output                                                         Yes                      Yes                    Yes                    No                        Yes
@@ -164,8 +165,9 @@ Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _PDF: https://en.wikipedia.org/wiki/Portable_Document_Format
 .. _XBM: https://en.wikipedia.org/wiki/X_BitMap
 .. _XPM: https://de.wikipedia.org/wiki/X_PixMap
-.. _PBM: https://en.wikipedia.org/wiki/Netpbm_format
-.. _PAM: https://en.wikipedia.org/wiki/Netpbm#PAM_graphics_format
+.. _PAM: http://netpbm.sourceforge.net/doc/pam.html
+.. _PBM: http://netpbm.sourceforge.net/doc/pbm.html
+.. _PPM: http://netpbm.sourceforge.net/doc/ppm.html
 .. _LaTeX: https://en.wikipedia.org/wiki/LaTeX
 .. _data URI: https://en.wikipedia.org/wiki/Data_URI_scheme
 .. _ANSI: https://en.wikipedia.org/wiki/ANSI_escape_code
