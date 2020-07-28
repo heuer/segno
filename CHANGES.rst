@@ -3,7 +3,7 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
-1.0.1 -- 2020-07-26
+1.0.1 -- 2020-07-28
 -------------------
 * Fixed wrong information about character count in Kanji mode
   (discovered and fixed by `neycyanshi <https://github.com/neycyanshi>`_)
