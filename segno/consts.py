@@ -21,6 +21,7 @@ MODE_STRUCTURED_APPEND = 0x3
 MODE_BYTE = 0x4
 MODE_ECI = 0x7
 MODE_KANJI = 0x8
+# Hanzi is not part of ISO/IEC 18004 and must be enabled by the user explicitly
 MODE_HANZI = 0xD
 
 # Micro QR Code uses different mode indicators
