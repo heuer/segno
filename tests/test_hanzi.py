@@ -30,7 +30,7 @@ def test_default_hanzi_mode():
 def test_force_hanzi_mode():
     qr = segno.make('书读百遍其义自现', mode='hanzi')
     assert 'hanzi' == qr.mode
-    assert '1-H' == qr.designator
+    assert '1-M' == qr.designator
 
 
 def test_default_hanzi_mode2():
@@ -42,13 +42,13 @@ def test_default_hanzi_mode2():
 def test_force_hanzi_mode2():
     qr = segno.make('大江东去，浪淘尽，千古风流人物。故垒西边，人道是，三国周郎赤壁。乱石穿空，惊涛拍岸，卷起千堆雪。江山如画，一时多少豪杰。遥想公瑾当年，小乔初嫁了，雄姿英发。羽扇纶巾，谈笑间，樯橹灰飞烟灭。故国神游，多情应笑我，早生华发。人生如梦，一尊还酹江月。', mode='hanzi')
     assert 'hanzi' == qr.mode
-    assert '5-L' == qr.designator
+    assert '9-L' == qr.designator
 
 
 def test_force_hanzi_mode_and_encoding():
     qr = segno.make('书读百遍其义自现', mode='hanzi', encoding='gb2312')
     assert 'hanzi' == qr.mode
-    assert '1-H' == qr.designator
+    assert '1-M' == qr.designator
 
 
 def test_default_utf8_encoder():

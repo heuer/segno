@@ -1082,7 +1082,7 @@ def make_segment(data, mode, encoding=None):
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
-        for i in range(0, char_count, 2):
+        for i in range(0, len(segment_data), 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0xa1a1 <= code <= 0xaafe:
                 # For characters with GB2312 values from A1A1HEX to AAFEHEX:
@@ -1102,7 +1102,7 @@ def make_segment(data, mode, encoding=None):
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
-        for i in range(0, char_count, 2):
+        for i in range(0, len(segment_data), 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0x8140 <= code <= 0x9ffc:
                 # 1. a) For characters with Shift JIS values from 8140HEX to 9FFCHEX:
