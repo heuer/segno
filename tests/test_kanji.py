@@ -18,7 +18,7 @@ def test_detect_kanji():
     qr = segno.make('続きを読む')
     assert 'kanji' == qr.mode
     assert qr.is_micro
-    assert 'M3-M' == qr.designator
+    assert 'M3-L' == qr.designator
 
 
 def test_detect_kanji_encoder():
