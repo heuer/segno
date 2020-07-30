@@ -143,7 +143,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
             bits += num * 11 + (6 if remainder else 0)
         elif mode == consts.MODE_BYTE:
             bits += char_count * 8
-        elif mode == consts.MODE_KANJI or mode == consts.MODE_HANZI:
+        elif mode in (consts.MODE_KANJI, consts.MODE_HANZI):
             bits += char_count * 13
         return overhead + bits
 
