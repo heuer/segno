@@ -36,18 +36,21 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.4.0 -- 2020-01-21
 -------------------
-* Removed deprecated functions, modules etc. See #56, #57, #59, #61, #67.
+* Removed deprecated functions, modules etc. See `#56 <https://github.com/heuer/segno/issues/56>`_,
+  `#57 <https://github.com/heuer/segno/issues/57>`_, `#59 <https://github.com/heuer/segno/issues/59>`_,
+  `#61 <https://github.com/heuer/segno/issues/61>`_:, `#67 <https://github.com/heuer/segno/issues/67>`_:.
 * Deprecated usage of keywords "color" and "background". Replacements: "dark"
-  and "light". See #60. The deprecated keywords will be removed in 1.0.0.
+  and "light". See `#60 <https://github.com/heuer/segno/issues/60>`_:. The deprecated keywords will be removed in 1.0.0.
 * Minor performance improvements for writing SVG (at least for Py 3.7, YMMV).
 * Documentation improvements
 
 
 0.3.9 -- 2020-01-19
 -------------------
-* Fixed #71: Dark / light modules of the finder pattern may be interpreted
-  wrong if set to ``None``
-* Removed segno.encoder, segno.writers and segno.utils from public API (fixes #69)
+* Fixed `#71 <https://github.com/heuer/segno/issues/79>`_: Dark / light
+  modules of the finder pattern may be interpreted wrong if set to ``None``
+* Removed segno.encoder, segno.writers and segno.utils from public API (fixes
+  `#69 <https://github.com/heuer/segno/issues/69>`_)
 * Removed segno.colors (part of segno.writers now)
 * Documentation improvements
 
@@ -113,7 +116,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.3.5 -- 2020-01-03
 -------------------
 * Added support for colorful (more than two colors) QR Codes to the CLI script
-  (fixes #58).
+  (fixes `#58 <https://github.com/heuer/segno/issues/58>`_).
 * Fixed Read the Docs build
 * Improved documentation
 * Minor performance and code improvements.
@@ -121,7 +124,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.3.4 -- 2020-01-02
 -------------------
-* Fixed issue #54: After last change (see 0.3.3), white background with transparent
+* Fixed issue `#54 <https://github.com/heuer/segno/issues/54>`_:
+  After last change (see 0.3.3), white background with transparent
   QR Code did not work. Enhanced test suite to cover all possible inputs
   for PNG grayscale mode
 * Removed interpretation of ``addad`` from PNG serializer.
@@ -139,7 +143,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.3.3 -- 2019-12-29
 -------------------
-* Fixed issue #54: PNGs with white color and transparent background were rendered
+* Fixed issue `#54 <https://github.com/heuer/segno/issues/54>`_:
+  PNGs with white color and transparent background were rendered
   as transparent PNG with a *black* QR Code.
 * Removed test environments CPython 3.4 and 3.6 from tox
 * Improved documentation
@@ -195,7 +200,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.2.8 -- 2018-10-17
 -------------------
-* Fixed #45: CLI does not raise exceptions but indicates errors with return code 1 and
+* Fixed `#45 <https://github.com/heuer/segno/issues/45>`_:
+  CLI does not raise exceptions but indicates errors with return code 1 and
   writes the error message to ``sys.stderr``
 * Added experimental ``utils.matrix_iter_detail()`` function which returns an iterator over
   the matrix to distinguish different dark and light modules by their function (i.e. separator,
@@ -230,18 +236,24 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.2.4 -- 2017-01-31
 -------------------
-* Fixed #33: Some Micro QR Codes may be unreadable due to wrong
+* Fixed `#33 <https://github.com/heuer/segno/issues/33>`_:
+  Some Micro QR Codes may be unreadable due to wrong
   format information. Further, M1 and M3 codes may be wrong due to wrong
   encoding of final data symbol character (8 bits instead of (correct) 4 bits).
   Thanks to Nicolas Boullis for the bug report, initial fix, tests and patience.
-* Fixed #34: Change default error level from "M" to "L" to avoid surprises that
+* Fixed `#34 <https://github.com/heuer/segno/issues/34>`_:
+  Change default error level from "M" to "L" to avoid surprises that
   the content does not fit into the provided version. This change is somewhat
   backwards incompatible.
-* Fixed #35: Check of user supplied mask pattern index was wrong.
-* Fixed #36: Wrong placement of codeword in M1 and M3 symbols.
-* Fixed #37: Generation of M1 / M3 symbols fail if the data modules are
+* Fixed `#35 <https://github.com/heuer/segno/issues/35>`_:
+  Check of user supplied mask pattern index was wrong.
+* Fixed `#36 <https://github.com/heuer/segno/issues/36>`_:
+  Wrong placement of codeword in M1 and M3 symbols.
+* Fixed `#37 <https://github.com/heuer/segno/issues/37>`_:
+  Generation of M1 / M3 symbols fail if the data modules are
   completely filled.
-* Fixed #38: Optimized mask pattern choosing algorithm: If the user supplied
+* Fixed `#38 <https://github.com/heuer/segno/issues/38>`_:
+  Optimized mask pattern choosing algorithm: If the user supplied
   a preferred mask, the mask evaluation step is skipped and the preferred mask
   is chosen
 * Added more internal checks to ensure correct (Micro) QR Codes; provided
@@ -260,8 +272,10 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.2.3 -- 2016-10-17
 -------------------
-* Fixed #27: Email URI is wrong if CC or BCC is used.
-* Fixed #32: Don't add version attribute if SVG >= 2.0
+* Fixed `#27 <https://github.com/heuer/segno/issues/27>`_:
+  Email URI is wrong if CC or BCC is used.
+* Fixed `#32 <https://github.com/heuer/segno/issues/32>`_:
+  Don't add version attribute if SVG >= 2.0
 * Deprecated ``writers.get_writable``; use ``writers.writable``
   ``writers.writable`` closes file-like objects automatically (if necessary);
   replace ``writable, must_close = writers.get_writable(filename_or_buffer, mode)``
@@ -294,16 +308,18 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Added "color" parameter to the LaTeX serializer to define the color of the
   dark modules.
-* Fixed serious issue #23: Segno creates invalid QR Codes if boost_error
-  is not disabled (enabled by default)
+* Fixed serious issue `#23 <https://github.com/heuer/segno/issues/23>`_:
+  Segno creates invalid QR Codes if boost_error is not disabled
+  (enabled by default)
 
 
 0.1.8 -- 2016-09-14
 -------------------
 * Removed ``utils.matrix_with_border_iter``
-* Fixed #21 (type error while writing to terminal under Windows)
+* Fixed `#21 <https://github.com/heuer/segno/issues/21>`_
+  (type error while writing to terminal under Windows)
 * Added option to serialize QR Codes as LaTeX vector graphic
-* Added module ``segno.helpers`` which provides additional factory funcitons
+* Added module ``segno.helpers`` which provides additional factory functions
   to create common QR Codes like a WIFI configuration, a geo location or MeCard
 
 
@@ -312,7 +328,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 * Changed API: Added a feature to increase the error correction level
   if it fits. Disable this feature via ``boost_error=False`` (#16)
 * Added ``--no-error-boost`` to the command line script to disable error
-  correction level incrementation (#17)
+  correction level incrementation (`#17 <https://github.com/heuer/segno/issues/17>`_)
 * Command line script: Internal changes and better test coverage
 * Added tests for issue #18
 * Added PBM (P1 and P4) serialization.
@@ -348,7 +364,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.1.4 -- 2016-08-21
 -------------------
 * Better terminal output
-* Fixed issue #5: QRCode.terminal() uses a special output function (if it
+* Fixed issue `#5 <https://github.com/heuer/segno/issues/5>`_:
+  QRCode.terminal() uses a special output function (if it
   detects Windows) to support MS Windows which may not support ANSI escape codes.
 
 
@@ -365,11 +382,13 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.1.2 -- 2016-08-17
 -------------------
 * Updated docs
-* Backwards incompatible change: Deprecated "eps", "svg", "png", "pdf", and
+* Backward incompatible changes: Deprecated "eps", "svg", "png", "pdf", and
   "txt" methods from QRCode. Use QRCode.save.
   Methods will be removed in 0.1.3
-* Fixed issue #3 (M1 and M3 codes may have undefined areas)
-* Fixed issue #4 (wrong 'error' default value for encoder.encode(),
+* Fixed issue `#3 <https://github.com/heuer/segno/issues/3>`_
+  (M1 and M3 codes may have undefined areas)
+* Fixed issue `#4 <https://github.com/heuer/segno/issues/4>`_
+  (wrong 'error' default value for encoder.encode(),
   factory function segno.make() wasn't affected)
 
 
