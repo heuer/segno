@@ -3,6 +3,14 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
+
+1.0.2 -- 2020-mm-dd
+-------------------
+* Fixed error in Kanji encoding: Data was incomplete.
+  Again, discovered by `neycyanshi <https://github.com/neycyanshi>`_)
+* Better test coverage for Kanji encoding
+
+
 1.0.1 -- 2020-07-28
 -------------------
 * Fixed wrong information about character count in Kanji mode
