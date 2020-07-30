@@ -45,6 +45,7 @@ if ZBAR_AVAILABLE:
                          [('漢字', 'kanji'),
                           ('続きを読む', 'kanji'),
                           ('Märchenbücher', 'byte'),
+                          ('汉字', 'byte'),
                           ])
 def test_encode_decode(content, mode):
     qr = segno.make_qr(content)
