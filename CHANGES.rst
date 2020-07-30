@@ -4,7 +4,7 @@ Changes
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 
-1.0.2 -- 2020-mm-dd
+1.0.2 -- 2020-07-30
 -------------------
 * Fixed error in Kanji encoding: Data was incomplete.
   Again, discovered by `neycyanshi <https://github.com/neycyanshi>`_)
