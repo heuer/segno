@@ -1343,26 +1343,6 @@ def is_kanji(data):
     return True
 
 
-def is_hanzi(data):
-    """\
-    Returns if the `data` can be encoded in "hanzi" mode.
-
-    :param bytes data: The data to check.
-    :rtype: bool
-    """
-    data_len = len(data)
-    if not data_len or data_len % 2:
-        return False
-    if _PY2:  # pragma: no cover
-        data = (ord(c) for c in data)
-    data_iter = iter(data)
-    for i in range(0, data_len, 2):
-        code = (next(data_iter) << 8) | next(data_iter)
-        if not (0xa1a1 <= code <= 0xaafe or 0xb0a1 <= code <= 0xfafe):
-            return False
-    return True
-
-
 def find_mode(data):
     """\
     Returns the appropriate QR Code mode (an integer constant) for the
