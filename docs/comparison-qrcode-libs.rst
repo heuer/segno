@@ -23,10 +23,11 @@ Features
     Mode ECI                                                            No                       No                     No                     Yes                       Yes
     Mode FNC1                                                           No                       No                     No                     No                        No
     Mode Structured Append                                              No                       No                     No                     No                        Yes
+    Mode Hanzi [1]_                                                     No                       No                     No                     No                        Yes
     Mixing modes                                                        Yes                      No                     No                     Yes                       Yes
     QR Codes version 1 - 40                                             Yes                      Yes                    Yes                    Yes                       Yes
     Micro QR Codes version M1 - M4                                      No                       No                     No                     No                        Yes
-    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 |br| |ISO 1-M| [1]_     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
+    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 |br| |ISO 1-M| [2]_     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
     Output acc. to ISO/IEC 18004:2015(E) Fig. 2 |br| |ISO M2-L|         -                        -                      -                      -                         Yes |br| |segno M2-L|
     Find maximal error correction level                                 No                       No                     No                     Yes                       Yes
     Optimize QR Codes                                                   Yes                      No                     No                     No                        No
@@ -61,7 +62,10 @@ Features
                                                                         `colorama`_)
     ================================================================    =====================    ===================    ===================    ======================    ========
 
-.. [1] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
+.. [1] The Hanzi mode is not part of ISO/IEC 18004 and may not supported by all QR Code decoders.
+       Segno uses the Hanzi mode if the user enables it explicitly, see :ref:`hanzi-mode` for details
+
+.. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
        the generated QR Code may look different because they choose a different mask pattern.
        ISO/IEC 18004:2015(E) (cf. page 7) uses mask 5, while qrcode and qrcodegen use mask 4 and
        PyQRCode / PyQRCodeNG use mask 6. All these QR Codes can be read by common QR Code readers.
