@@ -311,6 +311,7 @@ def test_error_code():
                                                  ('ans', '\033[7m       ', 'rt'),
                                                  ('pam', b'P7', 'rb'),
                                                  ('pbm', b'P4\n', 'rb'),
+                                                 ('ppm', b'P6', 'rb'),
                                                  ('xbm', '#define ', 'rt'),
                                                  ('xpm', '/* XPM */', 'rt'),
                                                  ('tex', '% Creator: ', 'rt'),])
@@ -593,9 +594,8 @@ def test_output_svgz():
     f.close()
     res = cli.main(['--scale=10', '--dark=red', '--output={0}'.format(f.name), 'test'])
     assert 0 == res
-    f = gzip.open(f.name)
-    content = f.read()
-    f.close()
+    with gzip.open(f.name) as f:
+        content = f.read()
     os.unlink(f.name)
     assert b'scale(10)' in content
     assert b'stroke="red"' in content

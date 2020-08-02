@@ -43,9 +43,9 @@ QR Code Options
     Error correction level: "L": 7% (default), "M": 15%, "Q": 25%, "H": 30%,
     "-": no error correction (used for M1 symbols)
 
-.. option:: --mode {numeric,alphanumeric,byte,kanji}, -m {numeric,alphanumeric,byte,kanji}
+.. option:: --mode {numeric,alphanumeric,byte,kanji,hanzi}, -m {numeric,alphanumeric,byte,kanji,hanzi}
 
-    Mode. If unspecified (default), an optimal mode is choosen for the given
+    Mode. If unspecified (default), an optimal mode is chosen for the given
     input.
 
 .. option:: --pattern PATTERN, -p PATTERN

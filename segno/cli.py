@@ -59,7 +59,7 @@ def make_parser():
                         default=None,
                         type=lambda x: x.upper())
     parser.add_argument('--mode', '-m', help='Mode. If unspecified (default), an optimal mode is choosen for the given input.',
-                        choices=('numeric', 'alphanumeric', 'byte', 'kanji'),
+                        choices=('numeric', 'alphanumeric', 'byte', 'kanji', 'hanzi'),
                         default=None,
                         type=lambda x: x.lower())
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
