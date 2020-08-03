@@ -202,7 +202,7 @@ care since it is not widely supported by QR Code readers, although the
 utilize the Hanzi mode.
 
 Since this mode is not covered by the standard, Segno tries not to detect
-and encode Hanzi. The user has to enable it explicitly. Further, the Hanzi
+Hanzi. The user has to enable it explicitly. Further, the Hanzi
 mode is not available for Micro QR Codes.
 
 .. code-block:: python
@@ -214,7 +214,7 @@ mode is not available for Micro QR Codes.
     >>> qr.mode
     'byte'
 
-The QR Code uses byte encoding because no other encoding fits.
+The QR Code uses the :ref:`byte-mode` because no other mode fits.
 
 .. image:: _static/hanzi-byte.png
     :alt: 2-M QR Code encoding "书读百遍其义自现"
