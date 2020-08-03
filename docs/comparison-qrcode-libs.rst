@@ -62,7 +62,7 @@ Features
                                                                         `colorama`_)
     ================================================================    =====================    ===================    ===================    ======================    ========
 
-.. [1] The Hanzi mode is not part of ISO/IEC 18004 and may not supported by all QR Code decoders.
+.. [1] The Hanzi mode is not part of ISO/IEC 18004 and may not be supported by all QR Code decoders.
        Segno uses the Hanzi mode if the user enables it explicitly, see :ref:`hanzi-mode` for details
 
 .. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
