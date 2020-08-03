@@ -122,9 +122,6 @@ the :ref:`byte-mode`
 Kanji Mode
 ----------
 
-The fact that the code was invented by Masahiro Hara, which belongs to Denso Wave
-(a Japanese company), gives Kanji a special status.
-
 Kanji can be encoded compactly and efficiently and requires significantly less
 space than encoding the characters in UTF-8.
 
