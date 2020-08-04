@@ -7,7 +7,7 @@
 # License: BSD License
 #
 """\
-Command line script to generate QR Codes with Segno.
+Command line script to generate (Micro) QR codes with Segno.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """

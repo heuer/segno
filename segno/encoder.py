@@ -57,7 +57,7 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 def encode(content, error=None, version=None, mode=None, mask=None,
            encoding=None, eci=False, micro=None, boost_error=True):
     """\
-    Creates a (Micro) QR Code.
+    Creates a (Micro) QR code.
 
     See :py:func:`segno.make` for a detailed description of the parameters.
 
@@ -106,7 +106,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
                     mask=None, encoding=None, eci=False, boost_error=True,
                     symbol_count=None):
     """\
-    EXPERIMENTAL: Creates a sequence of QR Codes in Structured Append mode.
+    EXPERIMENTAL: Creates a sequence of QR codes in Structured Append mode.
 
     :return: Iterable of named tuples, see :py:func:`encode` for details.
     """
@@ -217,7 +217,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
 
 def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     """\
-    Creates a (Micro) QR Code.
+    Creates a (Micro) QR code.
 
     NOTE: This function does not check if the input is valid and does not belong
     to the public API.
