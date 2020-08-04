@@ -217,7 +217,7 @@ mode is not available for Micro QR Codes.
 The QR Code uses the :ref:`byte-mode` because no other mode fits.
 
 .. image:: _static/hanzi-byte.png
-    :alt: 2-M QR Code encoding "书读百遍其义自现"
+    :alt: 2-M QR Code encoding "书读百遍其义自现" in byte mode
 
 
 To enable Hanzi, provide the mode in the factory function:
@@ -233,7 +233,7 @@ To enable Hanzi, provide the mode in the factory function:
 
 
 As shown, the input is encoded much more compact and a 1-M instead of a
-2-M QR Code was created.
+2-M QR Code is generated.
 
 .. image:: _static/hanzi-hanzi.png
-    :alt: 1-M QR Code encoding "书读百遍其义自现"
+    :alt: 1-M QR Code encoding "书读百遍其义自现" in Hanzi mode

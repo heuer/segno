@@ -127,7 +127,7 @@ the XML declaration, the SVG namespace and a trailing newline.
 
 
 .. image:: _static/svg/penny-lane.svg
-    :alt: 2-H QR Code encoding 'Penny Lane'
+    :alt: 2-H QR code encoding 'Penny Lane'
 
 XML markup:
 

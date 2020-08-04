@@ -31,14 +31,14 @@ Keeping the default (boost error level on)::
     >>> qr.designator
     '2-M'
 
-Segno returns a 2-M QR Code (version 2, error correction level "M").
+Segno returns a 2-M QR code (version 2, error correction level "M").
 
 .. image:: _static/boost_example1.svg
-    :alt: 2-M QR Code encoding 'The Long and Winding Road'
+    :alt: 2-M QR code encoding 'The Long and Winding Road'
 
 
 If the user does not allow any enhancement of the error correction level, Segno
-returns a 2-L QR Code (version 2, error correction level "L") which does not
+returns a 2-L QR code (version 2, error correction level "L") which does not
 optimally exploit the possible error corrections::
 
     >>> import segno

@@ -66,9 +66,9 @@ Features
        Segno uses the Hanzi mode if the user enables it explicitly, see :ref:`hanzi-mode` for details
 
 .. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
-       the generated QR Code may look different because they choose a different mask pattern.
+       the generated QR code may look different because they choose a different mask pattern.
        ISO/IEC 18004:2015(E) (cf. page 7) uses mask 5, while qrcode and qrcodegen use mask 4 and
-       PyQRCode / PyQRCodeNG use mask 6. All these QR Codes can be read by common QR Code readers.
+       PyQRCode / PyQRCodeNG use mask 6. All these QR codes can be read by common QR Code readers.
 
 
 Performance
@@ -82,47 +82,47 @@ scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 Create a 1-M QR Code
 ~~~~~~~~~~~~~~~~~~~~
 
-1-M QR Code encoding "QR Code Symbol"
+1-M QR code encoding "QR Code Symbol"
 
 .. image:: _static/chart_create_1m.svg
-    :alt: Chart showing the results of creating a 1-M QR Code.
+    :alt: Chart showing the results of creating a 1-M QR code.
 
 
 Create a 7-Q QR Code
 ~~~~~~~~~~~~~~~~~~~~
 
-7-Q QR Code encoding "QR Code Symbol"
+7-Q QR code encoding "QR Code Symbol"
 
 .. image:: _static/chart_create_7q.svg
-    :alt: Chart showing the results of creating a 7-Q QR Code.
+    :alt: Chart showing the results of creating a 7-Q QR code.
 
 
 Create a 30-H QR Code
 ~~~~~~~~~~~~~~~~~~~~~
 
-30-H QR Code encoding "QR Code Symbol"
+30-H QR code encoding "QR Code Symbol"
 
 .. image:: _static/chart_create_30h.svg
-    :alt: Chart showing the results of creating a 30-H QR Code.
+    :alt: Chart showing the results of creating a 30-H QR code.
 
 
 Create a QR Code and serialize it as SVG
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create a QR Code 1-M "QR Code Symbol" and serialize it as SVG document.
+Create a QR code 1-M "QR Code Symbol" and serialize it as SVG document.
 
 
 .. image:: _static/chart_svg.svg
-    :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
+    :alt: Chart showing the results of creating a 1-M QR code and export it as SVG image.
 
 
 Create a QR Code and serialize it as PNG
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create a QR Code 1-M "QR Code Symbol" and serialize it as PNG image.
+Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. image:: _static/chart_png.svg
-    :alt: Chart showing the results of creating a 1-M QR Code and export it as SVG image.
+    :alt: Chart showing the results of creating a 1-M QR code and export it as SVG image.
 
 
 .. |ISO 1-M| image:: _static/iso_fig1_1m.png
