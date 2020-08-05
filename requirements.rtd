@@ -1,2 +1,4 @@
 # Needed for Read the Docs build
-sphinx_paramlinks~=0.3.7
+sphinx~=2.4
+sphinx_paramlinks~=0.4
+sphinx_rtd_theme

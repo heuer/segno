@@ -57,7 +57,7 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 def encode(content, error=None, version=None, mode=None, mask=None,
            encoding=None, eci=False, micro=None, boost_error=True):
     """\
-    Creates a (Micro) QR Code.
+    Creates a (Micro) QR code.
 
     See :py:func:`segno.make` for a detailed description of the parameters.
 
@@ -106,7 +106,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
                     mask=None, encoding=None, eci=False, boost_error=True,
                     symbol_count=None):
     """\
-    EXPERIMENTAL: Creates a sequence of QR Codes in Structured Append mode.
+    EXPERIMENTAL: Creates a sequence of QR codes in Structured Append mode.
 
     :return: Iterable of named tuples, see :py:func:`encode` for details.
     """
@@ -143,7 +143,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
             bits += num * 11 + (6 if remainder else 0)
         elif mode == consts.MODE_BYTE:
             bits += char_count * 8
-        elif mode == consts.MODE_KANJI:
+        elif mode in (consts.MODE_KANJI, consts.MODE_HANZI):
             bits += char_count * 13
         return overhead + bits
 
@@ -217,7 +217,7 @@ def encode_sequence(content, error=None, version=None, mode=None,
 
 def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     """\
-    Creates a (Micro) QR Code.
+    Creates a (Micro) QR code.
 
     NOTE: This function does not check if the input is valid and does not belong
     to the public API.
@@ -316,6 +316,9 @@ def write_segment(buff, segment, ver, ver_range, eci=False):
         append_bits(get_eci_assignment_number(segment.encoding), 8)
     if ver is None:  # QR Code
         append_bits(mode, 4)
+        if mode == consts.MODE_HANZI:
+            subset = 1  # Indicator for GB2312 subset
+            append_bits(subset, 4)
     elif ver > consts.VERSION_M1:  # Micro QR Code (M1 has no mode indicator)
         append_bits(consts.MODE_TO_MICRO_MODE_MAPPING[mode], ver + 3)
     # Character count indicator
@@ -978,17 +981,16 @@ def data_to_bytes(data, encoding):
     This function tries to use the provided `encoding` (if not ``None``)
     or the default encoding (ISO/IEC 8859-1). It uses UTF-8 as fallback.
 
-    Returns the (byte) data, the character count and the encoding of the data.
+    Returns the (byte) data, the length of the data and the encoding of the data.
 
     :param data: The data to encode
     :type data: str or bytes
     :param encoding: str or ``None``
-    :rtype: tuple: data, char count, encoding
+    :rtype: tuple: data, data length, encoding
     """
     if isinstance(data, bytes):
         return data, len(data), encoding or consts.DEFAULT_BYTE_ENCODING
     data = str(data)
-    char_count = len(data)
     if encoding is not None:
         # Use the provided encoding; could raise an exception by intention
         data = data.encode(encoding)
@@ -1006,9 +1008,7 @@ def data_to_bytes(data, encoding):
                 # Use UTF-8
                 encoding = 'utf-8'
                 data = data.encode(encoding)
-                # Recalculate character count due to UTF-8 encoding
-                char_count = len(data)
-    return data, char_count, encoding
+    return data, len(data), encoding
 
 
 def make_segment(data, mode, encoding=None):
@@ -1020,7 +1020,9 @@ def make_segment(data, mode, encoding=None):
     :param encoding: The encoding.
     :rtype: _Segment
     """
-    segment_data, char_count, segment_encoding = data_to_bytes(data, encoding)
+    if mode == consts.MODE_HANZI:
+        encoding = consts.HANZI_ENCODING
+    segment_data, segment_length, segment_encoding = data_to_bytes(data, encoding)
     segment_mode = mode
     # If the user prefers BYTE, use BYTE and do not try to find a better mode
     # Necessary since BYTE < KANJI and find_mode may return KANJI as (more)
@@ -1038,6 +1040,7 @@ def make_segment(data, mode, encoding=None):
         segment_mode = guessed_mode
     if segment_mode != consts.MODE_BYTE:
         segment_encoding = None
+    char_count = segment_length if segment_mode not in (consts.MODE_KANJI, consts.MODE_HANZI) else segment_length // 2
     buff = Buffer()
     append_bits = buff.append_bits
     if segment_mode == consts.MODE_NUMERIC:
@@ -1046,13 +1049,13 @@ def make_segment(data, mode, encoding=None):
         # each group is converted to its 10-bit binary equivalent. If the number
         # of input digits is not an exact multiple of three, the final one or
         # two digits are converted to 4 or 7 bits respectively.
-        for i in range(0, char_count, 3):
+        for i in range(0, segment_length, 3):
             chunk = segment_data[i:i + 3]
             append_bits(int(chunk), len(chunk) * 3 + 1)
     elif segment_mode == consts.MODE_ALPHANUMERIC:
         # ISO/IEC 18004:2015(E) -- 7.4.4 Alphanumeric mode (page 26)
         to_byte = consts.ALPHANUMERIC_CHARS.find
-        for i in range(0, char_count, 2):
+        for i in range(0, segment_length, 2):
             chunk = segment_data[i:i + 2]
             # Input data characters are divided into groups of two characters
             # which are encoded as 11-bit binary codes. The character value of
@@ -1072,11 +1075,32 @@ def make_segment(data, mode, encoding=None):
             segment_data = (ord(b) for b in segment_data)
         for b in segment_data:
             append_bits(b, 8)
+    elif segment_mode == consts.MODE_HANZI:
+        # GBT 18284-2000 -- 6.4.5 Hanzi mode (page 18)
+        if _PY2:  # pragma: no cover
+            segment_data = [ord(b) for b in segment_data]
+        # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
+        for i in range(0, segment_length, 2):
+            code = (segment_data[i] << 8) | segment_data[i + 1]
+            if 0xa1a1 <= code <= 0xaafe:
+                # For characters with GB2312 values from A1A1HEX to AAFEHEX:
+                # a) Subtract A1A1HEX from GB2312 value;
+                diff = code - 0xa1a1
+            elif 0xb0a1 <= code <= 0xfafe:
+                # For characters with GB2312 values from B0A1HEX to FAFEHEX:
+                # a) Subtract A6A1HEX from GB2312 value;
+                diff = code - 0xa6a1
+            else:  # pragma: no cover
+                raise ValueError('Invalid Hanzi bytes: {0}'.format(code))
+            # b) Multiply most significant byte of result by 60HEX;
+            # c) Add least significant byte to product from b);
+            # d) Convert result to a 13-bit binary string.
+            append_bits(((diff >> 8) * 0x60) + (diff & 0xff), 13)
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
-        for i in range(0, len(segment_data), 2):
+        for i in range(0, segment_length, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0x8140 <= code <= 0x9ffc:
                 # 1. a) For characters with Shift JIS values from 8140HEX to 9FFCHEX:

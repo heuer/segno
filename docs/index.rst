@@ -15,6 +15,7 @@ Contents:
 
     command-line
     make
+    qrcode-modes
     structured-append
     boost-error-correction-level
     serializers

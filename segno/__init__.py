@@ -20,7 +20,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '1.0.2'
+__version__ = '1.1.0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
@@ -38,7 +38,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     This is main entry point to create QR Codes and Micro QR Codes.
 
     Aside from `content`, all parameters are optional and an optimal (minimal)
-    (Micro) QR Code with a maximal error correction level is generated.
+    (Micro) QR code with a maximal error correction level is generated.
 
     :param content: The data to encode. Either a Unicode string, an integer or
             bytes. If bytes are provided, the `encoding` parameter should be
@@ -47,7 +47,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :param error: Error correction level. If ``None`` (default), error
             correction level ``L`` is used (note: Micro QR Code version M1 does
             not support any error correction. If an explicit error correction
-            level is used, a M1 QR Code won't be generated).
+            level is used, a M1 QR code won't be generated).
             Valid values: ``None`` (allowing generation of M1 codes or use error
             correction level "L" or better see :paramref:`boost_error <segno.make.boost_error>`),
             "L", "M", "Q", "H" (error correction level "H" isn't available for
@@ -62,7 +62,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             H (not available for Micro QR Codes)    recovers 30% of data
             =====================================   ===========================
 
-            Higher error levels may require larger QR Codes (see also
+            Higher error levels may require larger QR codes (see also
             :paramref:`version <segno.make.version>` parameter).
 
             The `error` parameter is case insensitive.
@@ -71,14 +71,14 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type error: str or None
     :param version: QR Code version. If the value is ``None`` (default), the
             minimal version which fits for the input data will be used.
-            Valid values: "M1", "M2", "M3", "M4" (for Micro QR Codes) or an
-            integer between 1 and 40 (for QR Codes).
+            Valid values: "M1", "M2", "M3", "M4" (for Micro QR codes) or an
+            integer between 1 and 40 (for QR codes).
             The `version` parameter is case insensitive.
     :type version: int, str or None
     :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
             ``None`` (default) the appropriate mode will automatically be
             determined.
-            If `version` refers a to Micro QR Code, this function may raise a
+            If `version` refers to a Micro QR code, this function may raise a
             :py:exc:`ValueError` if the provided `mode` is not supported.
 
             ============    =======================
@@ -107,7 +107,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :type encoding: str or None
     :param bool eci: Indicates if binary data which does not use the default
             encoding (ISO/IEC 8859-1) should enforce the ECI mode. Since a lot
-            of QR Code readers do not support the ECI mode, this feature is
+            of QR code readers do not support the ECI mode, this feature is
             disabled by default and the data is encoded in the provided
             `encoding` using the usual "byte" mode. Set `eci` to ``True`` if
             an ECI header should be inserted into the QR Code. Note that
@@ -116,18 +116,18 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             be found.
             The ECI mode is not supported by Micro QR Codes.
     :param micro: If :paramref:`version <segno.make.version>` is ``None`` (default)
-            this parameter can be used to allow the creation of a Micro QR Code.
-            If set to ``False``, a QR Code is generated. If set to
-            ``None`` (default) a Micro QR Code may be generated if applicable.
+            this parameter can be used to allow the creation of a Micro QR code.
+            If set to ``False``, a QR code is generated. If set to
+            ``None`` (default) a Micro QR code may be generated if applicable.
             If set to ``True`` the algorithm generates a Micro QR Code or
             raises an exception if the `mode` is not compatible or the `content`
-            is too large for Micro QR Codes.
+            is too large for Micro QR codes.
     :type micro: bool or None
     :param bool boost_error: Indicates if the error correction level may be
             increased if it does not affect the version (default: ``True``).
             If set to ``True``, the :paramref:`error <segno.make.error>`
             parameter is interpreted as minimum error level. If set to ``False``,
-            the resulting (Micro) QR Code uses the provided `error` level
+            the resulting (Micro) QR code uses the provided `error` level
             (or the default error correction level, if error is ``None``)
     :raises: :py:exc:`ValueError` or :py:exc:`DataOverflowError`: In case the
              data does not fit into a (Micro) QR Code or it does not fit into
@@ -141,7 +141,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 def make_qr(content, error=None, version=None, mode=None, mask=None,
             encoding=None, eci=False, boost_error=True):
     """\
-    Creates a QR Code (never a Micro QR Code).
+    Creates a QR code (never a Micro QR code).
 
     See :py:func:`make` for a description of the parameters.
 
@@ -154,11 +154,11 @@ def make_qr(content, error=None, version=None, mode=None, mask=None,
 def make_micro(content, error=None, version=None, mode=None, mask=None,
                encoding=None, boost_error=True):
     """\
-    Creates a Micro QR Code.
+    Creates a Micro QR code.
 
     See :py:func:`make` for a description of the parameters.
 
-    Note: Error correction level "H" isn't available for Micro QR Codes. If
+    Note: Error correction level "H" isn't available for Micro QR codes. If
     used, this function raises a :py:class:`segno.ErrorLevelError`.
 
     :rtype: QRCode
@@ -170,19 +170,19 @@ def make_micro(content, error=None, version=None, mode=None, mask=None,
 def make_sequence(content, error=None, version=None, mode=None, mask=None,
                   encoding=None, boost_error=True, symbol_count=None):
     """\
-    Creates a sequence of QR Codes using the Structured Append mode.
+    Creates a sequence of QR codes using the Structured Append mode.
 
-    If the content fits into one QR Code and neither ``version`` nor
+    If the content fits into one QR code and neither ``version`` nor
     ``symbol_count`` is provided, this function may return a sequence with
     one QR Code which does not use the Structured Append mode. Otherwise a
-    sequence of 2 .. n  (max. n = 16) QR Codes is returned which use the
+    sequence of 2 .. n  (max. n = 16) QR codes is returned which use the
     Structured Append mode.
 
     The Structured Append mode allows to split the content over a number
     (max. 16) QR Codes.
 
     The Structured Append mode isn't available for Micro QR Codes, therefor
-    the returned sequence contains QR Codes, only.
+    the returned sequence contains QR codes, only.
 
     Since this function returns an iterable object, it may be used as follows:
 
@@ -191,7 +191,7 @@ def make_sequence(content, error=None, version=None, mode=None, mask=None,
         for i, qrcode in enumerate(segno.make_sequence(data, symbol_count=2)):
              qrcode.save('seq-%d.svg' % i, scale=10, color='darkblue')
 
-    The number of QR Codes is determined by the `version` or `symbol_count`
+    The number of QR codes is determined by the `version` or `symbol_count`
     parameter.
 
     See :py:func:`make` for a description of the other parameters.
@@ -249,7 +249,7 @@ class QRCode:
     def error(self):
         """\
         Error correction level; either a string ("L", "M", "Q", "H") or ``None``
-        if the QR Code provides no error correction (Micro QR Code version M1)
+        if the QR code provides no error correction (Micro QR Code version M1)
 
         :rtype: str
         """
@@ -295,7 +295,7 @@ class QRCode:
     @property
     def is_micro(self):
         """\
-        Indicates if this QR Code is a Micro QR Code
+        Indicates if this QR code is a Micro QR code
 
         :rtype: bool
         """
@@ -331,7 +331,7 @@ class QRCode:
         Dark modules are reported as ``0x1``, light modules have the value
         ``0x0``.
 
-        The following example converts the QR Code matrix into a list of
+        The following example converts the QR code matrix into a list of
         lists which use boolean values for the modules (True = dark module,
         False = light module)::
 
@@ -380,9 +380,9 @@ class QRCode:
 
         This method is mainly intended for debugging purposes.
 
-        This method saves QR code as an image (by default with a scaling factor
-        of 10) to a temporary file and opens it with the standard PNG viewer
-        application or within the standard webbrowser.
+        This method saves the QR code as an image (by default with a scaling
+        factor of 10) to a temporary file and opens it with the standard PNG
+        viewer application or within the standard webbrowser.
         The temporary file is deleted afterwards (unless
         :paramref:`delete_after <segno.QRCode.show.delete_after>` is set to ``None``).
 
@@ -437,7 +437,7 @@ class QRCode:
     def svg_data_uri(self, xmldecl=False, encode_minimal=False,
                      omit_charset=False, nl=False, **kw):
         """\
-        Converts the QR Code into a SVG data URI.
+        Converts the QR code into a SVG data URI.
 
         The XML declaration is omitted by default (set
         :paramref:`xmldecl <segno.QRCode.svg_data_uri.xmldecl>` to ``True``
@@ -468,7 +468,7 @@ class QRCode:
 
     def png_data_uri(self, **kw):
         """\
-        Converts the QR Code into a PNG data URI.
+        Converts the QR code into a PNG data URI.
 
         Uses the same keyword parameters as the usual PNG serializer,
         see :py:func:`save` and the available `PNG parameters <#png>`_
@@ -507,7 +507,7 @@ class QRCode:
 
     def save(self, out, kind=None, **kw):
         """\
-        Serializes the QR Code in one of the supported formats.
+        Serializes the QR code in one of the supported formats.
         The serialization format depends on the filename extension.
 
         .. _common_keywords:
@@ -528,7 +528,7 @@ class QRCode:
                       converted to an integer value (note: int(1.6) == 1).
         border        Integer indicating the size of the quiet zone.
                       If set to ``None`` (default), the recommended border size
-                      will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+                      will be used (``4`` for QR codes, ``2`` for a Micro QR codes).
                       A value of ``0`` indicates that border should be omitted.
         dark          A string or tuple representing a color value for the dark
                       modules. The default value is "black".  The color can be
@@ -846,7 +846,7 @@ class QRCode:
         dark             LaTeX color name (default: "black"). The color is written
                          "at it is", please ensure that the color is a standard color
                          or it has been defined in the enclosing LaTeX document.
-        url              Default: ``None``. Optional URL where the QR Code should
+        url              Default: ``None``. Optional URL where the QR code should
                          point to. Requires the ``hyperref`` package in the LaTeX
                          environment.
         =============    ==============================================================
@@ -935,7 +935,7 @@ class QRCodeSequence(tuple):
 
     def terminal(self, out=None, border=None):
         """\
-        Serializes the sequence of QR Codes as ANSI escape code.
+        Serializes the sequence of QR codes as ANSI escape code.
 
         See :py:meth:`QRCode.terminal()` for details.
         """
@@ -944,15 +944,15 @@ class QRCodeSequence(tuple):
 
     def save(self, out, kind=None, **kw):
         """\
-        Saves the sequence of QR Code to `out`.
+        Saves the sequence of QR codes to `out`.
 
         If `out` is a filename, this method modifies the filename and adds
-        ``<Number of QR Codes>-<Current QR Code>`` to it.
-        ``structured-append.svg`` becomes (if the sequence contains two QR Codes):
+        ``<Number of QR codes>-<Current QR code>`` to it.
+        ``structured-append.svg`` becomes (if the sequence contains two QR codes):
         ``structured-append-02-01.svg`` and ``structured-append-02-02.svg``
 
         Please note that using a file or file-like object may result into an
-        invalid serialization format since all QR Codes are written to the same
+        invalid serialization format since all QR codes are written to the same
         output.
 
         See :py:meth:`QRCode.save()` for a detailed enumeration of options.

@@ -4,7 +4,7 @@ Creating a QR Code encoding contact information
 MeCard
 ------
 
-The function :py:func:`segno.helpers.make_mecard` returns a QR Code which encodes
+The function :py:func:`segno.helpers.make_mecard` returns a QR code which encodes
 contact information as MeCard.
 
 .. code-block:: python
@@ -37,7 +37,7 @@ A factory function which returns the MeCard as string is available as well.
 vCard
 -----
 
-The function :py:func:`segno.helpers.make_vcard` returns a QR Code which encodes
+The function :py:func:`segno.helpers.make_vcard` returns a QR code which encodes
 contact information as vCard version 3.0.
 
 .. code-block:: python

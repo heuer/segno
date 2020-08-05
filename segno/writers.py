@@ -128,7 +128,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
               lineclass='qrline', omitsize=False, unit=None, encoding='utf-8',
               svgversion=None, nl=True, draw_transparent=False):
     """\
-    Serializes the QR Code as SVG document.
+    Serializes the QR code as SVG document.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -378,7 +378,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
 
 def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=None):
     """\
-    Serializes the QR Code as EPS document.
+    Serializes the QR code as EPS document.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -387,7 +387,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
             corresponds to 1 point (1/72 inch) per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple (this method
             acceppts floats as R, G, B values), as web color name (like
@@ -485,7 +485,7 @@ def as_png_data_uri(matrix, version, scale=1, border=None,
 def write_png(matrix, version, out, colormap, scale=1, border=None,
               compresslevel=9, dpi=None):
     """\
-    Serializes the QR Code as PNG image.
+    Serializes the QR code as PNG image.
 
     By default, the generated PNG will be a greyscale image (black / white)
     with a bit depth of 1. If different colors are provided, an indexed-color
@@ -499,7 +499,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param int dpi: Optional DPI setting. By default (``None``), the PNG won't
             have any DPI information. Note that the DPI value is converted into
             meters since PNG does not support any DPI information.
@@ -658,7 +658,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
 def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
               light=None, compresslevel=9):
     """\
-    Serializes the QR Code as PDF document.
+    Serializes the QR code as PDF document.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
@@ -667,7 +667,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
@@ -756,7 +756,7 @@ def write_txt(matrix, version, out, border=None, dark='1', light='0'):
     :param out: Filename or a file-like object supporting to write text.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param dark: Character to use for the black modules (default: '1')
     :param light: Character to use for the white modules (default: '0')
     """
@@ -781,7 +781,7 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param bool plain: Indicates if a P1 (ASCII encoding) image should be
             created (default: False). By default a (binary) P4 image is created.
     """
@@ -821,7 +821,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
@@ -894,7 +894,7 @@ def write_ppm(matrix, version, out, colormap, scale=1, border=None):
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     """
     scale = int(scale)
     width, height, border = _valid_width_height_and_border(version, scale, border)
@@ -923,7 +923,7 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
             corresponds to 1 x 1 pixel per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param dark: Color of the modules (default: black). The
             color can be provided as ``(R, G, B)`` tuple, as web color name
             (like "red") or in hexadecimal format (``#RGB`` or ``#RRGGBB``).
@@ -961,7 +961,7 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
             corresponds to 1 x 1 in the provided unit per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param name: Prefix for the variable names. Default: "img".
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
@@ -997,12 +997,12 @@ def write_tex(matrix, version, out, scale=1, border=None, dark='black', unit='pt
             corresponds to 1 x 1 in the provided unit per module).
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     :param str dark: LaTeX color name. The color name is taken at it is, so
             ensure that it refers either to a default color name or that the
             color was defined previously.
     :param unit: Unit of the drawing (default: ``pt``)
-    :param url: Optional URL where the QR Code should point to. Requires the
+    :param url: Optional URL where the QR code should point to. Requires the
             "hyperref" package. Default: ``None``.
     """
     def point(x, y):
@@ -1038,7 +1038,7 @@ def write_terminal(matrix, version, out, border=None):
     :param out: Filename or a file-like object supporting to write text.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     """
     with writable(out, 'wt') as f:
         write = f.write
@@ -1065,13 +1065,13 @@ def write_terminal(matrix, version, out, border=None):
 
 def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     """\
-    Function to write a QR Code to a MS Windows terminal.
+    Function to write a QR code to a MS Windows terminal.
 
     :param matrix: The matrix to serialize.
     :param int version: The (Micro) QR code version
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
-            will be used (``4`` for QR Codes, ``2`` for a Micro QR Codes).
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     """
     import sys
     import struct

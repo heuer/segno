@@ -21,6 +21,8 @@ MODE_STRUCTURED_APPEND = 0x3
 MODE_BYTE = 0x4
 MODE_ECI = 0x7
 MODE_KANJI = 0x8
+# Hanzi is not part of ISO/IEC 18004 and must be enabled by the user explicitly
+MODE_HANZI = 0xD
 
 # Micro QR Code uses different mode indicators
 # ISO/IEC 18004:2015(E) -- Table 2 — Mode indicators for QR Code (page 23)
@@ -66,12 +68,14 @@ ERROR_LEVEL_TO_MICRO_MAPPING = {
 
 DEFAULT_BYTE_ENCODING = 'iso-8859-1'
 KANJI_ENCODING = 'shift_jis'
+HANZI_ENCODING = 'gb2312'
 
 MODE_MAPPING = {
     'numeric': MODE_NUMERIC,
     'alphanumeric': MODE_ALPHANUMERIC,
     'byte': MODE_BYTE,
     'kanji': MODE_KANJI,
+    'hanzi': MODE_HANZI,
 }
 
 ERROR_MAPPING = {
@@ -163,6 +167,7 @@ SUPPORTED_MODES = {
     MODE_BYTE: (None, VERSION_M3, VERSION_M4),
     MODE_ECI: (None,),
     MODE_KANJI: (None, VERSION_M3, VERSION_M4),
+    MODE_HANZI: (None,),
 }
 
 # ISO/IEC 18004:2015(E) -- Table 2 — Mode indicators for QR Code (page 23)
@@ -197,6 +202,10 @@ CHAR_COUNT_INDICATOR_LENGTH = {
         VERSION_RANGE_01_09:  8,
         VERSION_RANGE_10_26: 10,
         VERSION_RANGE_27_40: 12,                               VERSION_M3: 3, VERSION_M4: 4},
+    MODE_HANZI: {
+        VERSION_RANGE_01_09:  8,
+        VERSION_RANGE_10_26: 10,
+        VERSION_RANGE_27_40: 12},
 }
 
 
@@ -263,35 +272,35 @@ ECC = {
     VERSION_M3: {ERROR_LEVEL_L: (EC(1, 17, 11),), ERROR_LEVEL_M: (EC(1, 17, 9),)},
     VERSION_M4: {ERROR_LEVEL_L: (EC(1, 24, 16),), ERROR_LEVEL_M: (EC(1, 24, 14),),
                  ERROR_LEVEL_Q: (EC(1, 24, 10),)},
-     1: {
+    1: {
         ERROR_LEVEL_L: (EC(1, 26, 19),), ERROR_LEVEL_M: (EC(1, 26, 16),),
         ERROR_LEVEL_Q: (EC(1, 26, 13),), ERROR_LEVEL_H: (EC(1, 26, 9),), },
-     2: {
+    2: {
         ERROR_LEVEL_L: (EC(1, 44, 34),), ERROR_LEVEL_M: (EC(1, 44, 28),),
         ERROR_LEVEL_Q: (EC(1, 44, 22),), ERROR_LEVEL_H: (EC(1, 44, 16),), },
-     3: {
+    3: {
         ERROR_LEVEL_L: (EC(1, 70, 55),), ERROR_LEVEL_M: (EC(1, 70, 44),),
         ERROR_LEVEL_Q: (EC(2, 35, 17),), ERROR_LEVEL_H: (EC(2, 35, 13),), },
-     4: {
+    4: {
         ERROR_LEVEL_L: (EC(1, 100, 80),), ERROR_LEVEL_M: (EC(2, 50, 32),),
         ERROR_LEVEL_Q: (EC(2, 50, 24),),  ERROR_LEVEL_H: (EC(4, 25, 9),), },
-     5: {
+    5: {
         ERROR_LEVEL_L: (EC(1, 134, 108),), ERROR_LEVEL_M: (EC(2, 67, 43),),
         ERROR_LEVEL_Q: (EC(2, 33, 15),  EC(2, 34, 16)),
         ERROR_LEVEL_H: (EC(2, 33, 11),  EC(2, 34, 12)), },
-     6: {
+    6: {
         ERROR_LEVEL_L: (EC(2, 86, 68),), ERROR_LEVEL_M: (EC(4, 43, 27),),
         ERROR_LEVEL_Q: (EC(4, 43, 19),), ERROR_LEVEL_H: (EC(4, 43, 15),), },
-     7: {
+    7: {
         ERROR_LEVEL_L: (EC(2, 98, 78),), ERROR_LEVEL_M: (EC(4, 49, 31),),
         ERROR_LEVEL_Q: (EC(2, 32, 14),  EC(4, 33, 15)),
         ERROR_LEVEL_H: (EC(4, 39, 13),  EC(1, 40, 14)), },
-     8: {
+    8: {
         ERROR_LEVEL_L: (EC(2, 121, 97),),
         ERROR_LEVEL_M: (EC(2, 60, 38),  EC(2, 61, 39)),
         ERROR_LEVEL_Q: (EC(4, 40, 18),  EC(2, 41, 19)),
         ERROR_LEVEL_H: (EC(4, 40, 14),  EC(2, 41, 15)), },
-     9: {
+    9: {
         ERROR_LEVEL_L: (EC(2, 146, 116),),
         ERROR_LEVEL_M: (EC(3, 58, 36),  EC(2, 59, 37)),
         ERROR_LEVEL_Q: (EC(4, 36, 16),  EC(4, 37, 17)),
@@ -301,152 +310,152 @@ ECC = {
         ERROR_LEVEL_M: (EC(4, 69, 43),  EC(1, 70, 44)),
         ERROR_LEVEL_Q: (EC(6, 43, 19),  EC(2, 44, 20)),
         ERROR_LEVEL_H: (EC(6, 43, 15),  EC(2, 44, 16)), },
-    11 : {
+    11: {
         ERROR_LEVEL_L: (EC(4, 101, 81),),
         ERROR_LEVEL_M: (EC(1, 80, 50),  EC(4, 81, 51)),
         ERROR_LEVEL_Q: (EC(4, 50, 22),  EC(4, 51, 23)),
         ERROR_LEVEL_H: (EC(3, 36, 12),  EC(8, 37, 13)), },
-    12 : {
+    12: {
         ERROR_LEVEL_L: (EC(2, 116, 92),  EC(2, 117, 93)),
         ERROR_LEVEL_M: (EC(6, 58, 36),  EC(2, 59, 37)),
         ERROR_LEVEL_Q: (EC(4, 46, 20),  EC(6, 47, 21)),
         ERROR_LEVEL_H: (EC(7, 42, 14),  EC(4, 43, 15)), },
-    13 : {
+    13: {
         ERROR_LEVEL_L: (EC(4, 133, 107),),
         ERROR_LEVEL_M: (EC(8, 59, 37),  EC(1, 60, 38)),
         ERROR_LEVEL_Q: (EC(8, 44, 20),  EC(4, 45, 21)),
         ERROR_LEVEL_H: (EC(12, 33, 11),  EC(4, 34, 12)), },
-    14 : {
+    14: {
         ERROR_LEVEL_L: (EC(3, 145, 115),  EC(1, 146, 116)),
         ERROR_LEVEL_M: (EC(4, 64, 40),  EC(5, 65, 41)),
         ERROR_LEVEL_Q: (EC(11, 36, 16),  EC(5, 37, 17)),
         ERROR_LEVEL_H: (EC(11, 36, 12),  EC(5, 37, 13)), },
-    15 : {
+    15: {
         ERROR_LEVEL_L: (EC(5, 109, 87),  EC(1, 110, 88)),
         ERROR_LEVEL_M: (EC(5, 65, 41),  EC(5, 66, 42)),
         ERROR_LEVEL_Q: (EC(5, 54, 24),  EC(7, 55, 25)),
         ERROR_LEVEL_H: (EC(11, 36, 12),  EC(7, 37, 13)), },
-    16 : {
+    16: {
         ERROR_LEVEL_L: (EC(5, 122, 98),  EC(1, 123, 99)),
         ERROR_LEVEL_M: (EC(7, 73, 45),  EC(3, 74, 46)),
         ERROR_LEVEL_Q: (EC(15, 43, 19),  EC(2, 44, 20)),
         ERROR_LEVEL_H: (EC(3, 45, 15),  EC(13, 46, 16)), },
-    17 : {
+    17: {
         ERROR_LEVEL_L: (EC(1, 135, 107),  EC(5, 136, 108)),
         ERROR_LEVEL_M: (EC(10, 74, 46),  EC(1, 75, 47)),
         ERROR_LEVEL_Q: (EC(1, 50, 22),  EC(15, 51, 23)),
         ERROR_LEVEL_H: (EC(2, 42, 14),  EC(17, 43, 15)), },
-    18 : {
+    18: {
         ERROR_LEVEL_L: (EC(5, 150, 120),  EC(1, 151, 121)),
         ERROR_LEVEL_M: (EC(9, 69, 43),  EC(4, 70, 44)),
         ERROR_LEVEL_Q: (EC(17, 50, 22),  EC(1, 51, 23)),
         ERROR_LEVEL_H: (EC(2, 42, 14),  EC(19, 43, 15)), },
-    19 : {
+    19: {
         ERROR_LEVEL_L: (EC(3, 141, 113),  EC(4, 142, 114)),
         ERROR_LEVEL_M: (EC(3, 70, 44),  EC(11, 71, 45)),
         ERROR_LEVEL_Q: (EC(17, 47, 21),  EC(4, 48, 22)),
         ERROR_LEVEL_H: (EC(9, 39, 13),  EC(16, 40, 14)), },
-    20 : {
+    20: {
         ERROR_LEVEL_L: (EC(3, 135, 107),  EC(5, 136, 108)),
         ERROR_LEVEL_M: (EC(3, 67, 41),  EC(13, 68, 42)),
         ERROR_LEVEL_Q: (EC(15, 54, 24),  EC(5, 55, 25)),
         ERROR_LEVEL_H: (EC(15, 43, 15),  EC(10, 44, 16)), },
-    21 : {
+    21: {
         ERROR_LEVEL_L: (EC(4, 144, 116),  EC(4, 145, 117)),
         ERROR_LEVEL_M: (EC(17, 68, 42),),
         ERROR_LEVEL_Q: (EC(17, 50, 22),  EC(6, 51, 23)),
         ERROR_LEVEL_H: (EC(19, 46, 16),  EC(6, 47, 17)), },
-    22 : {
+    22: {
         ERROR_LEVEL_L: (EC(2, 139, 111),  EC(7, 140, 112)),
         ERROR_LEVEL_M: (EC(17, 74, 46),),
         ERROR_LEVEL_Q: (EC(7, 54, 24),  EC(16, 55, 25)),
         ERROR_LEVEL_H: (EC(34, 37, 13),), },
-    23 : {
+    23: {
         ERROR_LEVEL_L: (EC(4, 151, 121),  EC(5, 152, 122)),
         ERROR_LEVEL_M: (EC(4, 75, 47),  EC(14, 76, 48)),
         ERROR_LEVEL_Q: (EC(11, 54, 24),  EC(14, 55, 25)),
         ERROR_LEVEL_H: (EC(16, 45, 15),  EC(14, 46, 16)), },
-    24 : {
+    24: {
         ERROR_LEVEL_L: (EC(6, 147, 117),  EC(4, 148, 118)),
         ERROR_LEVEL_M: (EC(6, 73, 45),  EC(14, 74, 46)),
         ERROR_LEVEL_Q: (EC(11, 54, 24),  EC(16, 55, 25)),
         ERROR_LEVEL_H: (EC(30, 46, 16),  EC(2, 47, 17)), },
-    25 : {
+    25: {
         ERROR_LEVEL_L: (EC(8, 132, 106),  EC(4, 133, 107)),
         ERROR_LEVEL_M: (EC(8, 75, 47),  EC(13, 76, 48)),
         ERROR_LEVEL_Q: (EC(7, 54, 24),  EC(22, 55, 25)),
         ERROR_LEVEL_H: (EC(22, 45, 15),  EC(13, 46, 16)), },
-    26 : {
+    26: {
         ERROR_LEVEL_L: (EC(10, 142, 114),  EC(2, 143, 115)),
         ERROR_LEVEL_M: (EC(19, 74, 46),  EC(4, 75, 47)),
         ERROR_LEVEL_Q: (EC(28, 50, 22),  EC(6, 51, 23)),
         ERROR_LEVEL_H: (EC(33, 46, 16),  EC(4, 47, 17)), },
-    27 : {
+    27: {
         ERROR_LEVEL_L: (EC(8, 152, 122),  EC(4, 153, 123)),
         ERROR_LEVEL_M: (EC(22, 73, 45),  EC(3, 74, 46)),
         ERROR_LEVEL_Q: (EC(8, 53, 23),  EC(26, 54, 24)),
         ERROR_LEVEL_H: (EC(12, 45, 15),  EC(28, 46, 16)), },
-    28 : {
+    28: {
         ERROR_LEVEL_L: (EC(3, 147, 117),  EC(10, 148, 118)),
         ERROR_LEVEL_M: (EC(3, 73, 45),  EC(23, 74, 46)),
         ERROR_LEVEL_Q: (EC(4, 54, 24),  EC(31, 55, 25)),
         ERROR_LEVEL_H: (EC(11, 45, 15),  EC(31, 46, 16)), },
-    29 : {
+    29: {
         ERROR_LEVEL_L: (EC(7, 146, 116),  EC(7, 147, 117)),
         ERROR_LEVEL_M: (EC(21, 73, 45),  EC(7, 74, 46)),
         ERROR_LEVEL_Q: (EC(1, 53, 23),  EC(37, 54, 24)),
         ERROR_LEVEL_H: (EC(19, 45, 15),  EC(26, 46, 16)), },
-    30 : {
+    30: {
         ERROR_LEVEL_L: (EC(5, 145, 115),  EC(10, 146, 116)),
         ERROR_LEVEL_M: (EC(19, 75, 47),  EC(10, 76, 48)),
         ERROR_LEVEL_Q: (EC(15, 54, 24),  EC(25, 55, 25)),
         ERROR_LEVEL_H: (EC(23, 45, 15),  EC(25, 46, 16)), },
-    31 : {
+    31: {
         ERROR_LEVEL_L: (EC(13, 145, 115),  EC(3, 146, 116)),
         ERROR_LEVEL_M: (EC(2, 74, 46),  EC(29, 75, 47)),
         ERROR_LEVEL_Q: (EC(42, 54, 24),  EC(1, 55, 25)),
         ERROR_LEVEL_H: (EC(23, 45, 15),  EC(28, 46, 16)), },
-    32 : {
+    32: {
         ERROR_LEVEL_L: (EC(17, 145, 115),),
         ERROR_LEVEL_M: (EC(10, 74, 46),  EC(23, 75, 47)),
         ERROR_LEVEL_Q: (EC(10, 54, 24),  EC(35, 55, 25)),
         ERROR_LEVEL_H: (EC(19, 45, 15),  EC(35, 46, 16)), },
-    33 : {
+    33: {
         ERROR_LEVEL_L: (EC(17, 145, 115),  EC(1, 146, 116)),
         ERROR_LEVEL_M: (EC(14, 74, 46),  EC(21, 75, 47)),
         ERROR_LEVEL_Q: (EC(29, 54, 24),  EC(19, 55, 25)),
         ERROR_LEVEL_H: (EC(11, 45, 15),  EC(46, 46, 16)), },
-    34 : {
+    34: {
         ERROR_LEVEL_L: (EC(13, 145, 115),  EC(6, 146, 116)),
         ERROR_LEVEL_M: (EC(14, 74, 46),  EC(23, 75, 47)),
         ERROR_LEVEL_Q: (EC(44, 54, 24),  EC(7, 55, 25)),
         ERROR_LEVEL_H: (EC(59, 46, 16),  EC(1, 47, 17)), },
-    35 : {
+    35: {
         ERROR_LEVEL_L: (EC(12, 151, 121),  EC(7, 152, 122)),
         ERROR_LEVEL_M: (EC(12, 75, 47),  EC(26, 76, 48)),
         ERROR_LEVEL_Q: (EC(39, 54, 24),  EC(14, 55, 25)),
         ERROR_LEVEL_H: (EC(22, 45, 15),  EC(41, 46, 16)), },
-    36 : {
+    36: {
         ERROR_LEVEL_L: (EC(6, 151, 121),  EC(14, 152, 122)),
         ERROR_LEVEL_M: (EC(6, 75, 47),  EC(34, 76, 48)),
         ERROR_LEVEL_Q: (EC(46, 54, 24),  EC(10, 55, 25)),
         ERROR_LEVEL_H: (EC(2, 45, 15),  EC(64, 46, 16)), },
-    37 : {
+    37: {
         ERROR_LEVEL_L: (EC(17, 152, 122),  EC(4, 153, 123)),
         ERROR_LEVEL_M: (EC(29, 74, 46),  EC(14, 75, 47)),
         ERROR_LEVEL_Q: (EC(49, 54, 24),  EC(10, 55, 25)),
         ERROR_LEVEL_H: (EC(24, 45, 15),  EC(46, 46, 16)), },
-    38 : {
+    38: {
         ERROR_LEVEL_L: (EC(4, 152, 122),  EC(18, 153, 123)),
         ERROR_LEVEL_M: (EC(13, 74, 46),  EC(32, 75, 47)),
         ERROR_LEVEL_Q: (EC(48, 54, 24),  EC(14, 55, 25)),
         ERROR_LEVEL_H: (EC(42, 45, 15),  EC(32, 46, 16)), },
-    39 : {
+    39: {
         ERROR_LEVEL_L: (EC(20, 147, 117),  EC(4, 148, 118)),
         ERROR_LEVEL_M: (EC(40, 75, 47),  EC(7, 76, 48)),
         ERROR_LEVEL_Q: (EC(43, 54, 24),  EC(22, 55, 25)),
         ERROR_LEVEL_H: (EC(10, 45, 15),  EC(67, 46, 16)), },
-    40 : {
+    40: {
         ERROR_LEVEL_L: (EC(19, 148, 118),  EC(6, 149, 119)),
         ERROR_LEVEL_M: (EC(18, 75, 47),  EC(31, 76, 48)),
         ERROR_LEVEL_Q: (EC(34, 54, 24),  EC(34, 55, 25)),

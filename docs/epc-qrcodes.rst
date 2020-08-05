@@ -9,7 +9,7 @@ of payment Information.
 See the `EPC guidelines (PDF document) <https://www.europeanpaymentscouncil.eu/sites/default/files/KB/files/EPC069-12%20v2.1%20Quick%20Response%20Code%20-%20Guidelines%20to%20Enable%20the%20Data%20Capture%20for%20the%20Initiation%20of%20a%20SCT.pdf>`_
 for more information.
 
-The function :py:func:`segno.helpers.make_epc_qr` is used to create a EPC QR Code.
+The function :py:func:`segno.helpers.make_epc_qr` is used to create a EPC QR code.
 It is not possible to modify the error correction level or to change the version
 of the QR Code. The EPC guidelines specify that the error correction level is
 fixed to "M" and the QR Code version must not be higher than 13.
@@ -17,13 +17,15 @@ fixed to "M" and the QR Code version must not be higher than 13.
 .. code-block:: python
 
     >>> from segno import helpers
-    >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft', iban='DE33100205000001194700', amount=20, text='Spende fuer Wikipedia')
+    >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft',
+                                 iban='DE33100205000001194700',
+                                 amount=20, text='Spende fuer Wikipedia')
     >>> qr.save('spende-wikipedia.png', scale=3)
 
 .. image:: _static/epc/spende-wikipedia.png
-    :alt: EPC QR Code
+    :alt: EPC QR code
 
-The QR Code shown above encodes the following information::
+The QR code shown above encodes the following information::
 
     BCD
     002
@@ -47,7 +49,9 @@ the encoding with an integer referring to one of the supported encodings
 .. code-block:: python
 
     >>> from segno import helpers
-    >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft', iban='DE33100205000001194700', amount=13.05, text='Spende fuer Wikipedia', encoding=1)
+    >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft',
+                                 iban='DE33100205000001194700', amount=13.05,
+                                 text='Spende fuer Wikipedia', encoding=1)
     >>> qr.save('spende-wikipedia2.png', scale=3)
 
 .. image:: _static/epc/spende-wikipedia2.png

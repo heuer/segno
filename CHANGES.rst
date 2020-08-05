@@ -3,24 +3,34 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
+1.1.0 -- 2020-08-05
+-------------------
+* Support for `Hanzi <https://en.wikipedia.org/wiki/Chinese_characters>`_ mode,
+  implemented by `Shi Yan <https://github.com/neycyanshi>`_
+* Fixed `#81 <https://github.com/heuer/segno/issues/81>`_:
+  Wrong character count in Kanji mode if the user provided the QR code data
+  as bytes.
+* Improved documentation <https://segno.readthedocs.org/>
+* Improved API docs
+
 
 1.0.2 -- 2020-07-30
 -------------------
 * Fixed error in Kanji encoding: Data was incomplete.
-  Again, discovered by `neycyanshi <https://github.com/neycyanshi>`_)
+  Again, discovered by `Shi Yan <https://github.com/neycyanshi>`_)
 * Better test coverage for Kanji encoding
 
 
 1.0.1 -- 2020-07-28
 -------------------
 * Fixed wrong information about character count in Kanji mode
-  (discovered and fixed by `neycyanshi <https://github.com/neycyanshi>`_)
+  (discovered and fixed by `Shi Yan <https://github.com/neycyanshi>`_)
 * Fixed `#72 <https://github.com/heuer/segno/issues/72>`_:
   Encodings for ``helpers.make_epc_qr`` may be specified by name or
   by a numeric constant.
 * Added support for `Netpbm PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_ images.
-* Documentation improvements (also thanks to James Addison for pr
-  `#73 <https://github.com/heuer/segno/pull/73>`_)
+* Documentation improvements (also thanks to `James Addison <https://github.com/jayaddison>`_
+  for pr`#73 <https://github.com/heuer/segno/pull/73>`_)
 * Removed "version" parameter from ``encoder.prepare_data`` (does not belong to
   the public API anyway)
 
@@ -55,7 +65,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.3.9 -- 2020-01-19
 -------------------
-* Fixed `#71 <https://github.com/heuer/segno/issues/79>`_: Dark / light
+* Fixed `#71 <https://github.com/heuer/segno/issues/71>`_: Dark / light
   modules of the finder pattern may be interpreted wrong if set to ``None``
 * Removed segno.encoder, segno.writers and segno.utils from public API (fixes
   `#69 <https://github.com/heuer/segno/issues/69>`_)
@@ -65,7 +75,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 
 0.3.8 -- 2020-01-15
 -------------------
-* Added support for multiple (more than two) colors to SVG (fixes #64)
+* Added support for multiple (more than two) colors to SVG
+  (fixes `#64 <https://github.com/heuer/segno/issues/64>`_)
 * Fixed several test cases
 * Removed ``QRCodeError`` and all derived exceptions from public API (still
   available but not thrown and they will be removed in 0.4.0)
@@ -75,7 +86,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.3.7 -- 2020-01-09
 -------------------
 * Documentation improvements: Added several examples, fixed docs
-* Fixed #62: PNG serializer adds only those colors to the PLTE which are
+* Fixed `#62 <https://github.com/heuer/segno/issues/62>`_:
+  PNG serializer adds only those colors to the PLTE which are
   actually needed for the given (Micro) QR Code.
 * Minor performance improvements
 
@@ -173,7 +185,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.3.2 -- 2019-07-15
 -------------------
 * Performance improvements
-* Added man page for the CLI (fixes #41)
+* Added man page for the CLI (fixes `#41 <https://github.com/heuer/segno/issues/41>`_)
 * Added more documentation and examples
 * Fixed missing charts of <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html>
 * Added PyQRCodeNG <https://pypi.org/project/PyQRCodeNG/> to comparison table
@@ -299,7 +311,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 * Command line script reports Segno's version (``--ver``) and the version
   is also mentioned in the help message (``-h``) (#24)
 * Support for creating email addresses or complete messages (``segno.helpers``)
-* Internal optimizations and more correct minimal version finding (#26)
+* Internal optimizations and more correct minimal version finding
+  (`#26 <https://github.com/heuer/segno/issues/26>`_)
 
 
 0.2.1 -- 2016-09-15
@@ -334,11 +347,12 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.1.7 -- 2016-09-04
 -------------------
 * Changed API: Added a feature to increase the error correction level
-  if it fits. Disable this feature via ``boost_error=False`` (#16)
+  if it fits. Disable this feature via ``boost_error=False``
+  (`#16 <https://github.com/heuer/segno/issues/16>`_)
 * Added ``--no-error-boost`` to the command line script to disable error
   correction level incrementation (`#17 <https://github.com/heuer/segno/issues/17>`_)
 * Command line script: Internal changes and better test coverage
-* Added tests for issue #18
+* Added tests for issue `#18 <https://github.com/heuer/segno/issues/18>`_
 * Added PBM (P1 and P4) serialization.
 * Deprecated ``utils.matrix_with_border_iter``, use ``utils.matrix_iter``
 * ``utils.matrix_with_border_iter`` will be removed in the next release
@@ -360,11 +374,12 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
   generated (issue #14).
 * Better command line support:
 
-  - The command line script recognizes all SVG options (#9)
+  - The command line script recognizes all SVG options (`#9 <https://github.com/heuer/segno/issues/9>`_)
   - Added ``--mode``/``-m``, renamed ``--mask``/``-m`` to ``--pattern``/``-p``
     (issue #10)
   - The script used an empty string as default value for the data to encode.
-    The data to encode has no default value anymore (issue #11)
+    The data to encode has no default value anymore
+    (issue `#11 <https://github.com/heuer/segno/issues/11>`_)
   - Added ``--no-ad`` to omit the comment ``Software`` in PNG images
     (issue #12)
 

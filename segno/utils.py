@@ -157,7 +157,7 @@ def matrix_iter(matrix, version, scale=1, border=None):
 
 def matrix_iter_verbose(matrix, version, scale=1, border=None):
     """\
-    EXPERIMENTAL: Returns an iterator / generator over the provided matrix which includes
+    Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
 
     This iterator / generator returns different values for dark / light modules

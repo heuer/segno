@@ -6,12 +6,12 @@
 # License: BSD License
 #
 """\
-Additional factory functions for common QR Codes.
+Additional factory functions for common QR codes.
 
-Aside from  :py:func:`make_epc_qr`, the factory functions return a QR Code
+Aside from  :py:func:`make_epc_qr`, the factory functions return a QR code
 with the minimum error correction level "L" (or better).
 
-To create a (Micro) QR Code which should use a specific error correction level
+To create a (Micro) QR code which should use a specific error correction level
 or version etc., use the "_data" factory functions which return a string which
 can be used as input for :py:func:`segno.make()`.
 """
@@ -106,7 +106,7 @@ def make_wifi_data(ssid, password, security, hidden=False):
 
 def make_wifi(ssid, password, security, hidden=False):
     """\
-    Creates a WIFI configuration QR Code.
+    Creates a WIFI configuration QR code.
 
     :param str ssid: The SSID of the network.
     :param password: The password.
@@ -201,7 +201,7 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
                 roomno=None, houseno=None, city=None, prefecture=None,
                 zipcode=None, country=None):
     """\
-    Returns a QR Code which encodes a `MeCard <https://en.wikipedia.org/wiki/MeCard>`_
+    Returns a QR code which encodes a `MeCard <https://en.wikipedia.org/wiki/MeCard>`_
 
     :param str name: Name. If it contains a comma, the first part
             is treated as lastname and the second part is treated as forename.
@@ -369,7 +369,7 @@ def make_vcard(name, displayname, email=None, phone=None, fax=None,
                zipcode=None, country=None, org=None, lat=None, lng=None,
                source=None, rev=None, title=None, photo_uri=None):
     """\
-    Creates a QR Code which encodes a `vCard <https://en.wikipedia.org/wiki/VCard>`_
+    Creates a QR code which encodes a `vCard <https://en.wikipedia.org/wiki/VCard>`_
     version 3.0.
 
     Only a subset of available `vCard 3.0 properties <https://tools.ietf.org/html/rfc2426>`
@@ -451,7 +451,7 @@ def make_geo_data(lat, lng):
 
 def make_geo(lat, lng):
     """\
-    Returns a QR Code which encodes geographic location using the ``geo`` URI
+    Returns a QR code which encodes geographic location using the ``geo`` URI
     scheme.
 
     :param float lat: Latitude
