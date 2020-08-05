@@ -30,7 +30,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
   by a numeric constant.
 * Added support for `Netpbm PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_ images.
 * Documentation improvements (also thanks to `James Addison <https://github.com/jayaddison>`_
-  for pr`#73 <https://github.com/heuer/segno/pull/73>`_)
+  for pr `#73 <https://github.com/heuer/segno/pull/73>`_)
 * Removed "version" parameter from ``encoder.prepare_data`` (does not belong to
   the public API anyway)
 
@@ -56,7 +56,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Removed deprecated functions, modules etc. See `#56 <https://github.com/heuer/segno/issues/56>`_,
   `#57 <https://github.com/heuer/segno/issues/57>`_, `#59 <https://github.com/heuer/segno/issues/59>`_,
-  `#61 <https://github.com/heuer/segno/issues/61>`_:, `#67 <https://github.com/heuer/segno/issues/67>`_:.
+  `#61 <https://github.com/heuer/segno/issues/61>`_, `#67 <https://github.com/heuer/segno/issues/67>`_.
 * Deprecated usage of keywords "color" and "background". Replacements: "dark"
   and "light". See `#60 <https://github.com/heuer/segno/issues/60>`_:. The deprecated keywords will be removed in 1.0.0.
 * Minor performance improvements for writing SVG (at least for Py 3.7, YMMV).
@@ -215,7 +215,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Fixed typos
 * PDF serializer: Added support for stroke and background color,
-  initial code contributed by Serge Morel (pr #52).
+  initial code contributed by `Serge Morel <https://github.com/Vluf>`_
+  (pr `#52 <https://github.com/heuer/segno/pull/52>`_).
 
 
 0.2.8 -- 2018-10-17
@@ -228,7 +229,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
   finder pattern etc.)
 * Minor performance improvements
 * Removed Python 2.6 from test environment
-* Added support for vCard TITLE attribute, contributed by Stefano Borini
+* Added support for vCard TITLE attribute, contributed by `Stefano Borini <https://github.com/stefanoborini>`_
+  (pr `#48 <https://github.com/heuer/segno/pull/48>`_)
 * Added support for vCard PHOTO URI attribute, suggested by Arthur Reinhart
 
 
@@ -260,7 +262,8 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
   Some Micro QR Codes may be unreadable due to wrong
   format information. Further, M1 and M3 codes may be wrong due to wrong
   encoding of final data symbol character (8 bits instead of (correct) 4 bits).
-  Thanks to Nicolas Boullis for the bug report, initial fix, tests and patience.
+  Thanks to `Nicolas Boullis <https://github.com/nboullis>`_ for the bug report,
+  initial fix, tests and patience.
 * Fixed `#34 <https://github.com/heuer/segno/issues/34>`_:
   Change default error level from "M" to "L" to avoid surprises that
   the content does not fit into the provided version. This change is somewhat
@@ -309,7 +312,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 0.2.2 -- 2016-09-21
 -------------------
 * Command line script reports Segno's version (``--ver``) and the version
-  is also mentioned in the help message (``-h``) (#24)
+  is also mentioned in the help message (``-h``) (`#24 <https://github.com/heuer/segno/issues/24>`_)
 * Support for creating email addresses or complete messages (``segno.helpers``)
 * Internal optimizations and more correct minimal version finding
   (`#26 <https://github.com/heuer/segno/issues/26>`_)
@@ -371,17 +374,17 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 * Invalid (empty) SVG identifiers / class names are ignored and do not result
   into an invalid SVG document (issue #8).
 * SVG serializer: If ``unit`` was set to ``None``, an invalid SVG document was
-  generated (issue #14).
+  generated (issue `#14 <https://github.com/heuer/segno/issues/14>`_).
 * Better command line support:
 
   - The command line script recognizes all SVG options (`#9 <https://github.com/heuer/segno/issues/9>`_)
   - Added ``--mode``/``-m``, renamed ``--mask``/``-m`` to ``--pattern``/``-p``
-    (issue #10)
+    (issue `#10 <https://github.com/heuer/segno/issues/10>`_)
   - The script used an empty string as default value for the data to encode.
     The data to encode has no default value anymore
     (issue `#11 <https://github.com/heuer/segno/issues/11>`_)
   - Added ``--no-ad`` to omit the comment ``Software`` in PNG images
-    (issue #12)
+    (issue `#12 <https://github.com/heuer/segno/issues/12>`_)
 
 
 0.1.4 -- 2016-08-21
