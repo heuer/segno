@@ -58,7 +58,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
   `#57 <https://github.com/heuer/segno/issues/57>`_, `#59 <https://github.com/heuer/segno/issues/59>`_,
   `#61 <https://github.com/heuer/segno/issues/61>`_, `#67 <https://github.com/heuer/segno/issues/67>`_.
 * Deprecated usage of keywords "color" and "background". Replacements: "dark"
-  and "light". See `#60 <https://github.com/heuer/segno/issues/60>`_:. The deprecated keywords will be removed in 1.0.0.
+  and "light". See `#60 <https://github.com/heuer/segno/issues/60>`_. The deprecated keywords will be removed in 1.0.0.
 * Minor performance improvements for writing SVG (at least for Py 3.7, YMMV).
 * Documentation improvements
 
@@ -372,7 +372,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 * Added QRCode.matrix_iter(border) which returns an iterator over the matrix and
   includes the border (as light modules).
 * Invalid (empty) SVG identifiers / class names are ignored and do not result
-  into an invalid SVG document (issue #8).
+  into an invalid SVG document (issue `#8 <https://github.com/heuer/segno/issues/8>`_).
 * SVG serializer: If ``unit`` was set to ``None``, an invalid SVG document was
   generated (issue `#14 <https://github.com/heuer/segno/issues/14>`_).
 * Better command line support:
