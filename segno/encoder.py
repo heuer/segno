@@ -981,17 +981,16 @@ def data_to_bytes(data, encoding):
     This function tries to use the provided `encoding` (if not ``None``)
     or the default encoding (ISO/IEC 8859-1). It uses UTF-8 as fallback.
 
-    Returns the (byte) data, the character count and the encoding of the data.
+    Returns the (byte) data, the length of the data and the encoding of the data.
 
     :param data: The data to encode
     :type data: str or bytes
     :param encoding: str or ``None``
-    :rtype: tuple: data, char count, encoding
+    :rtype: tuple: data, data length, encoding
     """
     if isinstance(data, bytes):
         return data, len(data), encoding or consts.DEFAULT_BYTE_ENCODING
     data = str(data)
-    char_count = len(data)
     if encoding is not None:
         # Use the provided encoding; could raise an exception by intention
         data = data.encode(encoding)
@@ -1009,9 +1008,7 @@ def data_to_bytes(data, encoding):
                 # Use UTF-8
                 encoding = 'utf-8'
                 data = data.encode(encoding)
-                # Recalculate character count due to UTF-8 encoding
-                char_count = len(data)
-    return data, char_count, encoding
+    return data, len(data), encoding
 
 
 def make_segment(data, mode, encoding=None):
@@ -1025,7 +1022,7 @@ def make_segment(data, mode, encoding=None):
     """
     if mode == consts.MODE_HANZI:
         encoding = consts.HANZI_ENCODING
-    segment_data, char_count, segment_encoding = data_to_bytes(data, encoding)
+    segment_data, segment_length, segment_encoding = data_to_bytes(data, encoding)
     segment_mode = mode
     # If the user prefers BYTE, use BYTE and do not try to find a better mode
     # Necessary since BYTE < KANJI and find_mode may return KANJI as (more)
@@ -1043,6 +1040,7 @@ def make_segment(data, mode, encoding=None):
         segment_mode = guessed_mode
     if segment_mode != consts.MODE_BYTE:
         segment_encoding = None
+    char_count = segment_length if segment_mode not in (consts.MODE_KANJI, consts.MODE_HANZI) else segment_length // 2
     buff = Buffer()
     append_bits = buff.append_bits
     if segment_mode == consts.MODE_NUMERIC:
@@ -1051,13 +1049,13 @@ def make_segment(data, mode, encoding=None):
         # each group is converted to its 10-bit binary equivalent. If the number
         # of input digits is not an exact multiple of three, the final one or
         # two digits are converted to 4 or 7 bits respectively.
-        for i in range(0, char_count, 3):
+        for i in range(0, segment_length, 3):
             chunk = segment_data[i:i + 3]
             append_bits(int(chunk), len(chunk) * 3 + 1)
     elif segment_mode == consts.MODE_ALPHANUMERIC:
         # ISO/IEC 18004:2015(E) -- 7.4.4 Alphanumeric mode (page 26)
         to_byte = consts.ALPHANUMERIC_CHARS.find
-        for i in range(0, char_count, 2):
+        for i in range(0, segment_length, 2):
             chunk = segment_data[i:i + 2]
             # Input data characters are divided into groups of two characters
             # which are encoded as 11-bit binary codes. The character value of
@@ -1082,7 +1080,7 @@ def make_segment(data, mode, encoding=None):
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
-        for i in range(0, len(segment_data), 2):
+        for i in range(0, segment_length, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0xa1a1 <= code <= 0xaafe:
                 # For characters with GB2312 values from A1A1HEX to AAFEHEX:
@@ -1102,7 +1100,7 @@ def make_segment(data, mode, encoding=None):
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
-        for i in range(0, len(segment_data), 2):
+        for i in range(0, segment_length, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0x8140 <= code <= 0x9ffc:
                 # 1. a) For characters with Shift JIS values from 8140HEX to 9FFCHEX:

@@ -150,10 +150,10 @@ def test_prepare_data_multiple_mode_none_encoding():
     assert 3 == len(segments)
     assert 32 == segments.bit_length
     seg1, seg2, seg3 = segments
-    char_count, mode, encoding = 1, consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING
-    assert (char_count, mode, encoding) == seg1[1:]
+    mode, encoding = consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING
+    assert (len('Ä'.encode(consts.DEFAULT_BYTE_ENCODING)), mode, encoding) == seg1[1:]
     encoding = 'utf-8'
-    assert (char_count, mode, encoding) == seg2[1:]
+    assert (len('Ä'.encode('utf-8')), mode, encoding) == seg2[1:]
     assert seg1 == seg3  # Encoding detection should produce the same result as 1st tuple
 
 
