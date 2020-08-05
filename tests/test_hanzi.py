@@ -85,5 +85,17 @@ def test_hanzi_bytes():
     assert 8 == segment.char_count
 
 
+def test_not_hanzi():
+    qr = segno.make_qr('Ä')
+    assert 'byte' == qr.mode
+    assert '1-H' == qr.designator
+
+
+def test_not_hanzi2():
+    qr = segno.make_qr('Ä'.encode('utf-8'))
+    assert 'byte' == qr.mode
+    assert '1-H' == qr.designator
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
