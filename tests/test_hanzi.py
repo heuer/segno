@@ -77,5 +77,13 @@ def test_detect_hanzi_encoder2():
     assert 6 == segment.char_count
 
 
+def test_hanzi_bytes():
+    qr = encoder.encode('书读百遍其义自现'.encode(consts.HANZI_ENCODING), mode='hanzi')
+    assert 1 == len(qr.segments)
+    segment = qr.segments[0]
+    assert consts.MODE_HANZI == segment.mode
+    assert 8 == segment.char_count
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
