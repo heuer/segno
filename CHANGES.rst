@@ -7,6 +7,9 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 -------------------
 * Support for `Hanzi <https://en.wikipedia.org/wiki/Chinese_characters>`_ mode,
   implemented by `Shi Yan <https://github.com/neycyanshi>`_
+* Fixed `#81 <https://github.com/heuer/segno/issues/81>`_:
+  Wrong character count in Kanji mode if the user provided the QR code data
+  as bytes.
 * Improved documentation <https://segno.readthedocs.org/>
 
 
