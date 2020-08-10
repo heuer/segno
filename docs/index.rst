@@ -20,6 +20,7 @@ Contents:
     boost-error-correction-level
     serializers
     colorful-qrcodes
+    artistic-qrcodes
     svg-options
     special-qrcode-factories
     contact-information

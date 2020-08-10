@@ -237,6 +237,8 @@ The SVG, PNG and PPM serializers support more than two colors.
 See :doc:`colorful-qrcodes` for available options.
 
 
+.. _serializers:
+
 Available serializers
 ---------------------
 

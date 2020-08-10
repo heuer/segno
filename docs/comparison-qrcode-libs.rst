@@ -45,10 +45,10 @@ Features
     SVG data URI                                                        No                       No                     No                     No                        Yes
     Text output                                                         Yes                      Yes                    Yes                    No                        Yes
     `ANSI`_ escape code output                                          Yes                      Yes                    Yes                    No                        Yes
-    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        No, but via `PIL plugin`_
+    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        No, but via `plugin`_
     Black and white QR Codes                                            Yes                      Yes                    Yes                    Yes                       Yes
     Colored QR Codes                                                    Yes                      Yes                    Yes                    No                        Yes
-    Animated QR Codes (`GIF`_, `APNG`_)                                 No                       No                     No                     No                        No, but via `PIL plugin`_
+    Animated QR Codes (`GIF`_, `APNG`_, `WebP`_)                        No                       No                     No                     No                        No, but via `plugin`_
     Changing size of modules (scaling factor)                           Yes                      Yes                    Yes                    No                        Yes
     Command line script                                                 Yes                      No                     Yes                    No                        Yes
     Plugins                                                             No                       No                     No                     No                        Yes
@@ -183,7 +183,8 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _PIL: https://pypi.org/project/PIL/
 .. _Pillow: https://pypi.org/project/Pillow/
 .. _colorama: https://pypi.org/project/colorama/
-.. _PIL plugin: https://github.com/heuer/segno-pil
+.. _plugin: https://github.com/heuer/segno-pil
 .. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py
 .. _GIF: https://en.wikipedia.org/wiki/GIF#Animated_GIF
 .. _APNG: https://en.wikipedia.org/wiki/Animated_Portable_Network_Graphics
+.. _WebP: https://en.wikipedia.org/wiki/WebP
