@@ -42,8 +42,17 @@ Unique features
 * `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
   (requires the `segno-pil <https://github.com/heuer/segno-pil/>`_ plug-in)
 
-  .. image:: https://raw.githubusercontent.com/heuer/segno-pil/develop/images/beatles-animated.gif
+  With a background image
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/letitbe.jpg
+    :alt: Animated 3-H QR code encoding "The Beatles -- Let It Be"
+
+  ... or animated
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/abbey-road.webp
     :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
+
+
 
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
