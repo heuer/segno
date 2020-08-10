@@ -39,7 +39,7 @@ Unique features
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
     :alt: Colorful M4-Q Micro QR Code encoding "Rain"
-* Animated QR codes (requires a the `segno-pil <https://github.com/heuer/segno-pil/>`_
+* Animated QR codes (requires the `segno-pil <https://github.com/heuer/segno-pil/>`_
   plug-in)
 
   .. image:: https://raw.githubusercontent.com/heuer/segno-pil/develop/images/beatles-animated.gif
