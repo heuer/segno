@@ -48,7 +48,7 @@ Features
     Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        No, but via `PIL plugin`_
     Black and white QR Codes                                            Yes                      Yes                    Yes                    Yes                       Yes
     Colored QR Codes                                                    Yes                      Yes                    Yes                    No                        Yes
-    Animated QR Codes (`GIF`_, `APNG`_)                                 No                       No                     No                     No                        No
+    Animated QR Codes (`GIF`_, `APNG`_)                                 No                       No                     No                     No                        No, but via `PIL plugin`_
     Changing size of modules (scaling factor)                           Yes                      Yes                    Yes                    No                        Yes
     Command line script                                                 Yes                      No                     Yes                    No                        Yes
     Plugins                                                             No                       No                     No                     No                        Yes
