@@ -76,7 +76,7 @@ The plugin also supports static backgrounds
 
     >>> import segno
     >>> qr = segno.make('The Beatles -- Let It Be', error='h')
-    >>> qr.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg' scale=8)
+    >>> qr.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg' scale=5)
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
