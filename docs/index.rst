@@ -20,11 +20,11 @@ Contents:
     boost-error-correction-level
     serializers
     colorful-qrcodes
-    artistic-qrcodes
     svg-options
     special-qrcode-factories
     contact-information
     epc-qrcodes
+    artistic-qrcodes
     comparison-qrcode-libs
     man/index
     plugins

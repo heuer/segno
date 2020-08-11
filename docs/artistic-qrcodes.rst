@@ -5,8 +5,8 @@ Segno focuses on creating (Micro) QR codes and offers many
 :ref:`output formats <serializers>` without additional dependencies on other
 libraries.
 
-Advanced graphics options require the Segno-PIL plug-in, which in turn
-depends on the `Pillow <https://pypi.org/project/Pillow/>`_ library.
+Advanced graphics options require the `qrcode-artistic <https://pypi.org/project/qrcode-artistic/>`_
+plug-in, which in turn depends on the `Pillow <https://pypi.org/project/Pillow/>`_ library.
 
 The plugin can be used to create animated QR codes or static QR codes with a
 background image.
