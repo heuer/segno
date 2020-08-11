@@ -31,6 +31,13 @@ Unique features
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
+  ::
+
+    import segno
+    qr = segno.make('Yellow Submarine')
+    qr.save('yellow-submarine.png')
+
 * `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
@@ -43,23 +50,13 @@ Unique features
 * `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
   (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
-  With a background image
-
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/letitbe.jpg
     :alt: Animated 3-H QR code encoding "The Beatles -- Let It Be"
 
-  ... or animated
+  ... animated QR codes are supported as well
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/abbey-road.webp
     :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
-
-* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
-  ::
-
-    import segno
-    qr = segno.make('Yellow Submarine')
-    qr.save('yellow-submarine.png')
-
 
 
 Installation
