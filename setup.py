@@ -42,7 +42,7 @@ setup(
     )),
     description='QR Code and Micro QR Code generator for Python 2 and Python 3',
     long_description=read('README.rst', 'CHANGES.rst'),
-    long_description_content_type´='text/x-rst',
+    long_description_content_type='text/x-rst',
     license='BSD',
     author='Lars Heuer',
     author_email='heuer@semagia.com',
