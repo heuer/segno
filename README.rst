@@ -30,6 +30,7 @@ Unique features
 * A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
+* `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
@@ -40,7 +41,7 @@ Unique features
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
     :alt: Colorful M4-Q Micro QR Code encoding "Rain"
 * `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
-  (requires the `segno-pil <https://github.com/heuer/segno-pil/>`_ plug-in)
+  (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
   With a background image
 
@@ -52,9 +53,6 @@ Unique features
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/abbey-road.webp
     :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
 
-
-
-* `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
   ::
 

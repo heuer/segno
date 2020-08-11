@@ -183,7 +183,7 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _PIL: https://pypi.org/project/PIL/
 .. _Pillow: https://pypi.org/project/Pillow/
 .. _colorama: https://pypi.org/project/colorama/
-.. _plugin: https://github.com/heuer/segno-pil
+.. _plugin: https://github.com/heuer/qrcode-artistic
 .. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py
 .. _GIF: https://en.wikipedia.org/wiki/GIF#Animated_GIF
 .. _APNG: https://en.wikipedia.org/wiki/Animated_Portable_Network_Graphics

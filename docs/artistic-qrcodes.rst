@@ -13,7 +13,7 @@ background image.
 
 To install the plugin, use::
 
-    pip install segno-pil
+    pip install qrcode-artistic
 
 After that, every QR code created with :py:func:`segno.make` has two additional
 methods "to_pil" and "to_artistic".
