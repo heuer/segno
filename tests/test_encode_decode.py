@@ -15,30 +15,29 @@ import io
 import pytest
 import segno
 from segno.utils import matrix_iter
-ZBAR_AVAILABLE = True
 try:
     import pyzbar
     from pyzbar.pyzbar import decode as zbardecode
 except ImportError:
-    ZBAR_AVAILABLE = False
     pytestmark = pytest.mark.skip
 
-if ZBAR_AVAILABLE:
-    def qr_to_bytes(qrcode, scale):
-        assert not qrcode.is_micro
-        buff = io.BytesIO()
-        for row in matrix_iter(qrcode.matrix, version=qrcode._version, scale=scale):
-            buff.write(bytearray(0x0 if b else 0xff for b in row))
-        return buff.getvalue()
 
-    def decode(qrcode):
-        scale = 3
-        width, height = qrcode.symbol_size(scale=scale)
-        qr_bytes = qr_to_bytes(qrcode, scale)
-        decoded = zbardecode((qr_bytes, width, height))
-        assert 1 == len(decoded)
-        assert 'QRCODE' == decoded[0].type
-        return decoded[0].data.decode('utf-8')
+def qr_to_bytes(qrcode, scale):
+    assert not qrcode.is_micro
+    buff = io.BytesIO()
+    for row in matrix_iter(qrcode.matrix, version=qrcode._version, scale=scale):
+        buff.write(bytearray(0x0 if b else 0xff for b in row))
+    return buff.getvalue()
+
+
+def decode(qrcode):
+    scale = 3
+    width, height = qrcode.symbol_size(scale=scale)
+    qr_bytes = qr_to_bytes(qrcode, scale)
+    decoded = zbardecode((qr_bytes, width, height))
+    assert 1 == len(decoded)
+    assert 'QRCODE' == decoded[0].type
+    return decoded[0].data.decode('utf-8')
 
 
 @pytest.mark.parametrize('content, mode',
@@ -51,6 +50,15 @@ def test_encode_decode(content, mode):
     qr = segno.make_qr(content)
     assert mode == qr.mode
     assert content == decode(qr)
+
+
+def test_stackoverflow_issue():
+    # See <https://stackoverflow.com/questions/63303624/generating-and-reading-qr-codes-with-special-characters>
+    # and <https://github.com/NaturalHistoryMuseum/pyzbar/issues/14>
+    content = 'Thomsôn Gonçalves Ámaral,325.432.123-21'
+    qr = segno.make(content, encoding='utf-8')
+    assert 'byte' == qr.mode
+    assert content == decode(qr).encode('shift-jis').decode('utf-8')
 
 
 if __name__ == '__main__':
