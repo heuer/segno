@@ -185,7 +185,7 @@ def test_valid_encoding(encoding):
     assert qr
 
 
-@pytest.mark.parametrize('encoding', [0, 9, '1', b'8', 1.0])
+@pytest.mark.parametrize('encoding', [0, 9, '1', b'8', 1.0, 'shift-jis'])
 def test_illegal_encoding(encoding):
     kw = _make_valid_kw()
     kw['encoding'] = encoding
