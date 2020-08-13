@@ -34,7 +34,7 @@ def home():
 @app.route('/qr-svg/')
 def qrcode_svg():
     buff = io.BytesIO()
-    segno.make(request.args.get('data'), micro=False).save(buff, kind='svg', scale=4)
+    segno.make(request.args.get('data', ''), micro=False).save(buff, kind='svg', scale=4)
     buff.seek(0)
     return send_file(buff, mimetype='image/svg+xml')
 
@@ -42,7 +42,7 @@ def qrcode_svg():
 @app.route('/qr-png/')
 def qrcode_png():
     buff = io.BytesIO()
-    segno.make(request.args.get('data'), micro=False) \
+    segno.make(request.args.get('data', ''), micro=False) \
         .save(buff, kind='png', scale=4, dark='darkblue', data_dark='#474747',
               light='#efefef')
     buff.seek(0)
