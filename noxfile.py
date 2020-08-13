@@ -14,19 +14,23 @@ import shutil
 import nox
 
 
-@nox.session(python="3")
+@nox.session(python='3')
 def docs(session):
     """\
     Build the documentation.
     """
     session.install('-Ur', 'requirements.rtd')
     output_dir = os.path.abspath(os.path.join(session.create_tmp(), 'output'))
-    doctrees, html, man = map(partial(os.path.join, output_dir), ['doctrees', 'html', 'man'])
     shutil.rmtree(output_dir, ignore_errors=True)
+    doctrees, html, man = map(partial(os.path.join, output_dir), ['doctrees', 'html', 'man'])
     session.install('.')
     session.cd('docs')
     session.run('sphinx-build', '-W', '-b', 'html', '-d', doctrees, '.', html)
     session.run('sphinx-build', '-W', '-b', 'man', '-d', doctrees, '.', man)
+    import segno
+    if 'dev' not in segno.__version__:
+        shutil.copyfile(os.path.join(man, 'segno.1'),
+                        os.path.abspath(os.path.join(os.path.dirname(__file__), 'man', 'segno.1')))
 
 
 @nox.session(python='3')
@@ -42,7 +46,7 @@ def coverage(session):
     session.run('coverage', 'html', '--include=segno*')
 
 
-@nox.session(python=['2.7', '3.7', 'pypy', 'pypy3'])
+@nox.session(python=['2.7', '3.7', '3.8', '3.9', 'pypy', 'pypy3'])
 def test(session):
     """\
     Run test suite.
