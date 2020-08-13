@@ -52,7 +52,7 @@ Embed SVG QR codes into HTML
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since HTML5 supports SVG directly, it's also possible to embed the
-generated SVG directly into an template.
+generated SVG directly into a template.
 
 Create the QR code and the SVG within the Flask view and use the ``|safe`` filter
 in the Jinja template or wrap the result into a ``markupsafe.Markup`` object.
@@ -94,9 +94,9 @@ Note that anyone can call up the route and create QR codes of any content.
     @app.route('/qr-png/')
     def qrcode_png():
         buff = io.BytesIO()
-        segno.make(request.data, micro=False).save(buff, kind='png', scale=4,
-                                              dark='darkblue', data_dark='#474747',
-                                              light='#efefef')
+        segno.make(request.args.get('data'), micro=False).save(buff, kind='png', scale=4,
+                                                               dark='darkblue', data_dark='#474747',
+                                                               light='#efefef')
         buff.seek(0)
         return send_file(buff, mimetype='image/png')
 

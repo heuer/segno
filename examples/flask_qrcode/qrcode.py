@@ -20,7 +20,7 @@ def make_svg_qrcode(content):
     # See <https://segno.readthedocs.io/en/stable/svg-options.html>
     # for SVG options
     segno.make(content).save(buff, kind='svg', xmldecl=False, nl=False, svgns=False,
-                             dark='darkred', data_dark='orange', scale=4)
+                             dark='darkred', data_dark='#cb410b', scale=4)
     return buff.getvalue().decode('utf-8')
 
 
@@ -34,7 +34,7 @@ def home():
 @app.route('/qr-svg/')
 def qrcode_svg():
     buff = io.BytesIO()
-    segno.make(request.data, micro=False).save(buff, kind='svg', scale=4)
+    segno.make(request.args.get('data'), micro=False).save(buff, kind='svg', scale=4)
     buff.seek(0)
     return send_file(buff, mimetype='image/svg+xml')
 
@@ -42,9 +42,9 @@ def qrcode_svg():
 @app.route('/qr-png/')
 def qrcode_png():
     buff = io.BytesIO()
-    segno.make(request.data, micro=False).save(buff, kind='png', scale=4,
-                                          dark='darkblue', data_dark='#474747',
-                                          light='#efefef')
+    segno.make(request.args.get('data'), micro=False) \
+        .save(buff, kind='png', scale=4, dark='darkblue', data_dark='#474747',
+              light='#efefef')
     buff.seek(0)
     return send_file(buff, mimetype='image/png')
 
