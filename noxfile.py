@@ -9,6 +9,7 @@
 Nox test runner configuration.
 """
 import os
+import sys
 from functools import partial
 import shutil
 import nox
@@ -27,6 +28,7 @@ def docs(session):
     session.cd('docs')
     session.run('sphinx-build', '-W', '-b', 'html', '-d', doctrees, '.', html)
     session.run('sphinx-build', '-W', '-b', 'man', '-d', doctrees, '.', man)
+    sys.path.insert(0, os.path.abspath('..'))
     import segno
     if 'dev' not in segno.__version__:
         shutil.copyfile(os.path.join(man, 'segno.1'),
