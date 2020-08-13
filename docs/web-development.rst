@@ -87,7 +87,10 @@ Create a view
 Another possibility is to create the QR codes dynamically in a Flask view and
 then to deliver them with ``send_file``.
 
-Note that anyone can call up the route and create QR codes of any content.
+.. note::
+
+    Note that anyone can call up the route and create QR codes of any content.
+
 
 .. code-block:: python
 
