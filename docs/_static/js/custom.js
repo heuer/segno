@@ -5,11 +5,10 @@ document.addEventListener('DOMContentLoaded', function(){
         var cells = feature_table.getElementsByTagName("td");
         for (var i = 0; i < cells.length; i++) {
             var content = cells[i].innerHTML;
-            console.log(content);
-            if (content === "Yes") {
+            if (content.includes("Yes")) {
                 cells[i].classList.add('feature_yes')
             }
-            else if (content == "No") {
+            else if (content.includes("No")) {
                 cells[i].classList.add('feature_no')
             }
         }

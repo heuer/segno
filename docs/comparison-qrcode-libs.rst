@@ -45,10 +45,10 @@ Features
     SVG data URI                                                        No                       No                     No                     No                        Yes
     Text output                                                         Yes                      Yes                    Yes                    No                        Yes
     `ANSI`_ escape code output                                          Yes                      Yes                    Yes                    No                        Yes
-    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        No, but via `plugin`_
+    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        Yes via `plugin`_
     Black and white QR Codes                                            Yes                      Yes                    Yes                    Yes                       Yes
     Colored QR Codes                                                    Yes                      Yes                    Yes                    No                        Yes
-    Animated QR Codes (`GIF`_, `APNG`_, `WebP`_)                        No                       No                     No                     No                        No, but via `plugin`_
+    Animated QR Codes (`GIF`_, `APNG`_, `WebP`_)                        No                       No                     No                     No                        Yes via `plugin`_
     Changing size of modules (scaling factor)                           Yes                      Yes                    Yes                    No                        Yes
     Command line script                                                 Yes                      No                     Yes                    No                        Yes
     Plugins                                                             No                       No                     No                     No                        Yes
