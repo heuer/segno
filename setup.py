@@ -47,7 +47,7 @@ setup(
     author='Lars Heuer',
     author_email='heuer@semagia.com',
     platforms=['any'],
-    packages=find_packages(exclude=['docs', 'tests', 'sandbox', 'htmlcov']),
+    packages=find_packages(exclude=['docs', 'tests', 'sandbox', 'htmlcov', 'examples']),
     include_package_data=True,
     data_files=[('share/man/man1', ['man/segno.1'])],
     entry_points={'console_scripts': ['segno = segno.cli:main']},

@@ -25,6 +25,7 @@ Contents:
     contact-information
     epc-qrcodes
     artistic-qrcodes
+    web-development
     comparison-qrcode-libs
     man/index
     plugins
