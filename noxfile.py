@@ -17,6 +17,20 @@ import nox
 nox.options.sessions = ['test-2.7', 'test-3.7', 'test-pypy', 'test-pypy3']
 
 
+@nox.session(python=['2.7', '3.7', '3.8', 'pypy', 'pypy3'])
+def test(session):
+    """\
+    Run test suite.
+    """
+    if session.python == 'pypy':
+        # See <https://github.com/heuer/segno/issues/80>
+        session.run('pip', 'uninstall', '-y', 'pip')
+        session.run('easy_install', 'pip==20.1')
+    session.install('-Ur', 'requirements.testing.txt')
+    session.install('.')
+    session.run('py.test')
+
+
 @nox.session(python='3')
 def docs(session):
     """\
@@ -50,15 +64,10 @@ def coverage(session):
     session.run('coverage', 'html', '--include=segno*')
 
 
-@nox.session(python=['2.7', '3.7', '3.8', '3.9', 'pypy', 'pypy3'])
-def test(session):
+@nox.session(python='3')
+def lint(session):
     """\
-    Run test suite.
+    Run flake8
     """
-    if session.python == 'pypy':
-        # See <https://github.com/heuer/segno/issues/80>
-        session.run('pip', 'uninstall', '-y', 'pip')
-        session.run('easy_install', 'pip==20.1')
-    session.install('-Ur', 'requirements.testing.txt')
-    session.install('.')
-    session.run('py.test')
+    session.install('flake8')
+    session.run('flake8', '--ignore', 'E501', '--exclude', 'consts.py', 'segno')
