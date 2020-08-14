@@ -1,4 +1,4 @@
-QR Code Modes
+QR Code modes
 =============
 
 The ISO/IEC 18004 standard defines four modes in order to encode the data as
@@ -10,7 +10,7 @@ although it is recommended to let Segno decide which mode / encoding should be u
 
 .. _numeric-mode:
 
-Numeric Mode
+Numeric mode
 ------------
 
 The numeric mode is the most efficient way to encode digits.
@@ -65,7 +65,7 @@ or set the :paramref:`micro <segno.make.micro>` parameter of :py:func:`segno.mak
     :alt: 1-H QR Code encoding "64"
 
 
-Alphanumeric Mode
+Alphanumeric mode
 -----------------
 
 The alphanumeric mode extends the :ref:`numeric-mode` by various characters.
@@ -119,7 +119,7 @@ the :ref:`byte-mode`
     :alt: 1-L QR Code encoding "Revolution No. 9"
 
 
-Kanji Mode
+Kanji mode
 ----------
 
 Kanji can be encoded compactly and efficiently and requires significantly less
@@ -155,7 +155,7 @@ space than encoding the characters in UTF-8.
 
 .. _byte-mode:
 
-Byte Mode
+Byte mode
 ---------
 
 The byte mode covers all data which cannot be represented by the other
@@ -193,7 +193,7 @@ The byte mode is also supported by Micro QR Code M3 and M4:
 
 .. _hanzi-mode:
 
-Hanzi Mode
+Hanzi mode
 ----------
 
 The Hanzi mode is not covered by ISO/IEC 18004 and should be used with

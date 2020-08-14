@@ -3,6 +3,12 @@ Changes
 
 Versions follow `Semantic Versioning <https://semver.org/>`_.
 
+1.1.1 -- 2020-mm-dd
+-------------------
+* Improved documentation <https://segno.readthedocs.org/>
+* Improved code quality
+
+
 1.1.0 -- 2020-08-05
 -------------------
 * Support for `Hanzi <https://en.wikipedia.org/wiki/Chinese_characters>`_ mode,

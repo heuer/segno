@@ -248,6 +248,7 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
 
 _looks_like_datetime = re.compile(r'^\d{4}\-\d{2}\-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:(?:\-?\d{2}:\d{2})|Z)?)?$').match
 
+
 def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
                     videophone=None, memo=None, nickname=None, birthday=None,
                     url=None, pobox=None, street=None, city=None, region=None,
@@ -554,7 +555,8 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     if text and not 0 < len(text) <= 140:
         raise ValueError('Invalid text, max. 140 characters are allowed, got "{}"'.format(len(text)))
     elif reference and not 0 < len(reference) <= 35:
-        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'.format(len(reference)))
+        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'
+                         .format(len(reference)))
     if name is None or not 0 < len(name) <= 70:
         raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
     if iban is None or not 4 < len(iban) <= 34:
@@ -565,7 +567,8 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
         raise ValueError('Invalid purpose, 4 characters are allowed, got "{}"'.format(purpose))
     amount = decimal.Decimal(amount)
     if not min_amount <= amount <= max_amount:
-        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'.format(min_amount, max_amount))
+        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'
+                         .format(min_amount, max_amount))
     tmp_data = ['BCD',  # Service tag
                 '002',  # Version
                 '',  # character set (will be set later)

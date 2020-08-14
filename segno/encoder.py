@@ -1213,7 +1213,7 @@ def normalize_mode(mode):
         return mode
     try:
         return consts.MODE_MAPPING[mode.lower()]
-    except:  # KeyError or mode.lower() fails
+    except (KeyError, AttributeError):
         raise ValueError('Illegal mode "{0}". Supported values: {1}'
                          .format(mode, ', '.join(sorted(consts.MODE_MAPPING.keys()))))
 
@@ -1232,7 +1232,8 @@ def normalize_mask(mask, is_micro):
     try:
         mask = int(mask)
     except ValueError:
-        raise ValueError('Invalid data mask "{0}". Must be an integer or a string which represents an integer value.'.format(mask))
+        raise ValueError('Invalid data mask "{0}". '
+                         'Must be an integer or a string which represents an integer value.'.format(mask))
     if is_micro:
         if not 0 <= mask < 4:
             raise ValueError('Invalid data mask "{0}" for Micro QR Code. Must be in range 0 .. 3'.format(mask))
@@ -1261,7 +1262,7 @@ def normalize_errorlevel(error, accept_none=False):
         return error
     try:
         return consts.ERROR_MAPPING[error.upper()]
-    except:  # KeyError or error.upper() fails
+    except (KeyError, AttributeError):
         if error in consts.ERROR_MAPPING.values():
             return error
         raise ValueError('Illegal error correction level: "{0}". Supported levels: L, M, Q, H'
@@ -1310,6 +1311,8 @@ def get_version_name(version_const):
 
 
 _ALPHANUMERIC_PATTERN = re.compile(br'^[' + re.escape(consts.ALPHANUMERIC_CHARS) + br']+\Z')
+
+
 def is_alphanumeric(data):
     """\
     Returns if the provided `data` can be encoded in "alphanumeric" mode.
@@ -1597,7 +1600,9 @@ class Segments:
         overhead = 0
         # ECI overhead
         if eci:
-            no_eci_indicators = sum(1 for segment in self.segments if segment.mode == consts.MODE_BYTE and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
+            no_eci_indicators = sum(1 for segment in self.segments
+                                    if segment.mode == consts.MODE_BYTE
+                                    and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
             overhead += no_eci_indicators * 4  # ECI indicator
             overhead += no_eci_indicators * 8  # ECI assignment no
         if is_sa:

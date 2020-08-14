@@ -11,7 +11,7 @@ for more information.
 
 The function :py:func:`segno.helpers.make_epc_qr` is used to create a EPC QR code.
 It is not possible to modify the error correction level or to change the version
-of the QR Code. The EPC guidelines specify that the error correction level is
+of the QR code. The EPC guidelines specify that the error correction level is
 fixed to "M" and the QR Code version must not be higher than 13.
 
 .. code-block:: python

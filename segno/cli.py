@@ -51,14 +51,17 @@ def make_parser():
         return val if val != int(val) else int(val)
 
     parser = argparse.ArgumentParser(prog='segno',
-                                     description='Segno QR Code and Micro QR Code generator version {0}'.format(segno.__version__))
+                                     description='Segno QR Code and Micro QR Code generator version {0}'
+                                     .format(segno.__version__))
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
-    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, "H": 30%%, "-": no error correction (used for M1 symbols)',
+    parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, '
+                                              '"H": 30%%, "-": no error correction (used for M1 symbols)',
                         choices=('L', 'M', 'Q', 'H', '-'),
                         default=None,
                         type=lambda x: x.upper())
-    parser.add_argument('--mode', '-m', help='Mode. If unspecified (default), an optimal mode is choosen for the given input.',
+    parser.add_argument('--mode', '-m', help='Mode. If unspecified (default), an optimal mode is chosen for the given '
+                                             'input.',
                         choices=('numeric', 'alphanumeric', 'byte', 'kanji', 'hanzi'),
                         default=None,
                         type=lambda x: x.lower())
@@ -74,16 +77,19 @@ def make_parser():
                         default=None,
                         type=int)
     parser.add_argument('--no-error-boost', help='Disables the automatic error correction level incrementation. '
-                                                 'By default, the maximal error correction level is used (without changing the version).',
+                                                 'By default, the maximal error correction level is used '
+                                                 '(without changing the version).',
                         dest='boost_error', action='store_false')
-    parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). Version or symbol count must be provided',
+    parser.add_argument('--seq', help='Creates a sequence of QR Codes (Structured Append mode). '
+                                      'Version or symbol count must be provided',
                         dest='seq', action='store_true')
     parser.add_argument('--symbol-count', '-sc', help='Number of symbols to create',
                         default=None,
                         type=int)
     parser.add_argument('--border', '-b', help='Size of the border / quiet zone of the output. '
-                                               'By default, the standard border (4 modules for QR Codes, 2 modules for Micro QR Codes) '
-                                               'will be used. A value of 0 omits the border',
+                                               'By default, the standard border (4 modules for QR Codes, '
+                                               '2 modules for Micro QR Codes) will be used. '
+                                               'A value of 0 omits the border',
                         default=None,
                         type=int)
     parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used. '
@@ -96,13 +102,16 @@ def make_parser():
 
     color_group = parser.add_argument_group('Module Colors', 'Arguments to specify the module colors. '
                                                              'Multiple colors are supported for SVG and PNG. '
-                                                             'The module color support varies between the serialization formats. '
-                                                             'Most serializers support at least "--dark" and "--light". '
+                                                             'The module color support varies between the serialization '  # noqa: E501
+                                                             'formats. '
+                                                             'Most serializers support at least "--dark" and "--light". '  # noqa: E501
                                                              'Unsupported arguments are ignored.')
     color_group.add_argument('--dark', help='Color of the dark modules. '
-                                            'The color may be specified as web color name, i.e. "red" or as hexadecimal value, i.e. "#0033cc". '
-                                            'Some serializers, i.e. SVG and PNG, support alpha channels (8-digit hexadecimal value) '
-                                            'and some support "transparent" / "trans" as color value for alpha transparency. '
+                                            'The color may be specified as web color name, i.e. "red" or '
+                                            'as hexadecimal value, i.e. "#0033cc". '
+                                            'Some serializers, i.e. SVG and PNG, support alpha channels '
+                                            '(8-digit hexadecimal value) and some support "transparent" / "trans" as '
+                                            'color value for alpha transparency. '
                                             'The standard color is black.')
     color_group.add_argument('--light', help='Color of the light modules. '
                                              'See "dark" for a description of possible values. '
@@ -132,7 +141,8 @@ def make_parser():
     svg_group.add_argument('--no-xmldecl', help='Omits the XML declaration header',
                            dest='xmldecl',
                            action='store_false')
-    svg_group.add_argument('--no-namespace', help='Indicates that the SVG document should have no SVG namespace declaration',
+    svg_group.add_argument('--no-namespace', help='Indicates that the SVG document should have no SVG namespace '
+                                                  'declaration',
                            dest='svgns',
                            action='store_false')
     svg_group.add_argument('--no-newline', help='Indicates that the SVG document should have no trailing newline',
@@ -141,9 +151,12 @@ def make_parser():
     svg_group.add_argument('--title', help='Specifies the title of the SVG document')
     svg_group.add_argument('--desc', help='Specifies the description of the SVG document')
     svg_group.add_argument('--svgid', help='Indicates the ID of the <svg/> element')
-    svg_group.add_argument('--svgclass', help='Indicates the CSS class of the <svg/> element. An empty string omits the attribute.')
-    svg_group.add_argument('--lineclass', help='Indicates the CSS class of the <path/> elements. An empty string omits the attribute.')
-    svg_group.add_argument('--no-size', help='Indicates that the SVG document should not have "width" and "height" attributes',
+    svg_group.add_argument('--svgclass', help='Indicates the CSS class of the <svg/> element. '
+                                              'An empty string omits the attribute.')
+    svg_group.add_argument('--lineclass', help='Indicates the CSS class of the <path/> elements. '
+                                               'An empty string omits the attribute.')
+    svg_group.add_argument('--no-size', help='Indicates that the SVG document should not have "width" and "height" '
+                                             'attributes',
                            dest='omitsize',
                            action='store_true')
     svg_group.add_argument('--unit', help='Indicates SVG coordinate system unit')

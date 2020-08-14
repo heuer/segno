@@ -1,4 +1,4 @@
-QR Code and Micro QR Code serialization
+QR code and Micro QR code serialization
 =======================================
 
 A QR code or Micro QR code is independent of its output, it's just a matrix.
@@ -192,7 +192,7 @@ for details.
     :alt: 3-M QR code encoding "Sgt. Pepper’s Lonely Hearts Club Band"
 
 
-Saving QR Codes to streams
+Saving QR codes to streams
 --------------------------
 
 If the QR code should be serialized to a buffer, use the

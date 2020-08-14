@@ -10,7 +10,7 @@ error correction level is possible without changing the QR Code version, the
 better error correction level will be used.
 
 
-Create a QR Code for a WIFI configuration
+Create a QR code for a WIFI configuration
 -----------------------------------------
 
 .. code-block:: python
@@ -48,7 +48,7 @@ factory function, which returns a string which encodes the WIFI configuration.
 
 .. _geographic:
 
-Create a QR Code encoding geographic information
+Create a QR code encoding geographic information
 ------------------------------------------------
 
 .. code-block:: python

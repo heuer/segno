@@ -282,6 +282,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
 
+
 def as_svg_data_uri(matrix, version, scale=1, border=None,
                     xmldecl=False, svgns=True, title=None,
                     desc=None, svgid=None, svgclass='segno',
@@ -359,7 +360,8 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         write = f.write
         write('<?xml version="1.0" encoding="utf-8"?>\n')
         write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
-        write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
+        write('<style type="text/css"><![CDATA[ text { font-size: 1px; '
+              'font-family: Helvetica, Arial, sans; } ]]></style>')
         write('<g transform="scale({0})">'.format(scale))
         for i in range(matrix_size):
             y = i + border
@@ -728,7 +730,8 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         write(b'%PDF-1.4\r%\xE2\xE3\xCF\xD3\r\n')
         for obj in ('obj <</Type /Catalog /Pages 2 0 R>>\r\nendobj\r\n',
                     'obj <</Type /Pages /Kids [3 0 R] /Count 1>>\r\nendobj\r\n',
-                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'.format(width, height),
+                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'
+                    .format(width, height),
                     'obj <</Length {0} /Filter /FlateDecode>>\r\nstream\r\n'.format(len(graphic))):
             object_pos.append(f.tell())
             writestr('{0} 0 {1}'.format(len(object_pos), obj))
@@ -1299,6 +1302,7 @@ def _hex_to_rgb_or_rgba(color, alpha_float=True):
 
 
 _ALPHA_COMMONS = {255: 1.0, 128: .5, 64: .25, 32: .125, 16: .625, 0: 0.0}
+
 
 def _alpha_value(color, alpha_float):
     if alpha_float:
