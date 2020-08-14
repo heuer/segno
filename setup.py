@@ -10,8 +10,7 @@
 Setup script.
 """
 from __future__ import unicode_literals
-from setuptools import setup, find_packages
-from collections import OrderedDict
+from setuptools import setup
 import os
 import io
 import re
