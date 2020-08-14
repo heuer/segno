@@ -422,9 +422,8 @@ class QRCode:
 
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
-            self.save(f, scale=scale, dark=dark, light=light,
-                      border=border)
-        except:
+            self.save(f, scale=scale, dark=dark, light=light, border=border)
+        except:  # noqa: E722
             f.close()
             os.unlink(f.name)
             raise
@@ -957,13 +956,13 @@ class QRCodeSequence(tuple):
 
         See :py:meth:`QRCode.save()` for a detailed enumeration of options.
         """
-        filename = lambda o, n: o
+        filename = lambda o, n: o  # noqa: E731
         m = len(self)
         if m > 1 and isinstance(out, str_type):
             dot_idx = out.rfind('.')
             if dot_idx > -1:
                 out = out[:dot_idx] + '-{0:02d}-{1:02d}' + out[dot_idx:]
-                filename = lambda o, n: o.format(m, n)
+                filename = lambda o, n: o.format(m, n)  # noqa: E731
         for n, qrcode in enumerate(self, start=1):
             qrcode.save(filename(out, n), kind=kind, **kw)
 

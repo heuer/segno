@@ -24,8 +24,8 @@ try:  # pragma: no cover
     str_type = str
 except ImportError:  # pragma: no cover
     from urllib import quote
-    str = unicode
-    str_type = basestring
+    str = unicode  # noqa: F821
+    str_type = basestring  # noqa: F821
 
 
 _MECARD_ESCAPE = {

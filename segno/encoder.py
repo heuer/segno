@@ -29,12 +29,12 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     _PY2 = True
     from itertools import izip_longest as zip_longest, imap as map
-    str_type = basestring
+    str_type = basestring  # noqa: F821
     from numbers import Number
     numeric = Number
-    str = unicode
-    range = xrange
-import sys
+    str = unicode  # noqa: F821
+    range = xrange  # noqa: F821
+import sys  # noqa: E402
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 

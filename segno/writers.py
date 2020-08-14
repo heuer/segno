@@ -42,8 +42,8 @@ except ImportError:  # pragma: no cover
     _PY2 = True
     from itertools import izip_longest as zip_longest
     from urllib import quote
-    range = xrange
-    str = unicode
+    range = xrange  # noqa: F821
+    str = unicode  # noqa: F821
     from io import open
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
