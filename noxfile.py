@@ -14,6 +14,8 @@ from functools import partial
 import shutil
 import nox
 
+nox.options.sessions = ['test-2.7', 'test-3.7', 'test-pypy', 'test-pypy3']
+
 
 @nox.session(python='3')
 def docs(session):
