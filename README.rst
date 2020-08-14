@@ -7,7 +7,7 @@ which has no further dependencies.
 This package implements ISO/IEC 18004:2015(E) "QR Code bar code symbology
 specification" and produces Micro QR Codes and QR Codes with nearly no effort.
 It supports the Structured Append mode which splits a message across several
-QR Codes.
+QR codes.
 
 Segno provides several serialization formats like Scalable Vector Graphics (SVG),
 Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
@@ -39,15 +39,15 @@ Unique features
     qr = segno.make('Yellow Submarine')
     qr.save('yellow-submarine.png')
 
-* `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
+* `Colorful QR codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
-    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
+    :alt: Colorful 3-H QR code encoding "Yellow Submarine"
 
-  ... works also with Micro QR Codes
+  ... works also with Micro QR codes
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
-    :alt: Colorful M4-Q Micro QR Code encoding "Rain"
+    :alt: Colorful M4-Q Micro QR code encoding "Rain"
 * `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
   (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
@@ -74,12 +74,12 @@ Usage
 Command line
 ^^^^^^^^^^^^
 
-The command line script prints the QR Code to the terminal::
+The command line script prints a QR code to the terminal::
 
     $ segno "Comfortably Numb"
 
 
-To serialize the QR Code, use the "output" argument::
+To serialize a QR code, use the "output" argument::
 
     $ segno -o=raincoat.svg "Famous Blue Raincoat"
     $ segno --scale 10 --dark darkblue --border 0 --output=fire.svg "Who by Fire"
@@ -96,7 +96,7 @@ Library
     >>> # Let Segno choose the minimal version and an optimal (maximal) error
     >>> # level without changing the minimal version
     >>> qr = segno.make('Up Jumped the Devil')
-    >>> qr.designator  # Returns the QR Code version and the error correction level
+    >>> qr.designator  # Returns the QR code version and the error correction level
     '2-Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
@@ -106,7 +106,7 @@ Library
     >>> qr.save('up-jumped-the-devil.svg', scale=10, dark='darkblue')
 
 
-If the content to encode is small enough, a Micro QR Code is generated:
+If the content to encode is small enough, a Micro QR code is generated:
 
 .. code-block:: python
 
@@ -130,9 +130,9 @@ If this behaviour is not desired, the user may set ``micro`` to ``False``
     '1-H'
 
 
-Or use the factory functions ``segno.make_qr()`` which generates always QR Codes
-(never Micro QR Codes) or ``segno.make_micro()`` which returns always
-Micro QR Codes (or raises an error if the content is too large for a Micro QR Code).
+Or use the factory functions ``segno.make_qr()`` which generates always QR codes
+(never Micro QR codes) or ``segno.make_micro()`` which returns always
+Micro QR codes (or raises an error if the content is too large for a Micro QR code).
 
 .. code-block:: python
 
