@@ -70,4 +70,4 @@ def lint(session):
     Run flake8
     """
     session.install('flake8')
-    session.run('flake8', '--ignore', 'E501', '--exclude', 'consts.py', 'segno')
+    session.run('flake8', 'segno')
