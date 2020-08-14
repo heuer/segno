@@ -288,7 +288,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
             if version < consts.VERSION_M4:
                 levels.pop()  # Error level Q isn't supported by M2 and M3
         data_length = segments.bit_length_with_overhead(version, eci, is_sa=is_sa)
-        for error_level in levels[levels.index(error)+1:]:
+        for error_level in levels[levels.index(error) + 1:]:
             if consts.SYMBOL_CAPACITY[version][error_level] >= data_length:
                 error = error_level
             else:
@@ -464,7 +464,7 @@ def add_alignment_patterns(matrix, version):
         if (x, y) in finder_positions:
             continue
         # The x and y values represent the center of the alignment pattern
-        i, j = x -2, y - 2
+        i, j = x - 2, y - 2
         for r in alignment_range:
             matrix[i + r][j:j + 5] = pattern[r * 5:r * 5 + 5]
 
@@ -1191,7 +1191,7 @@ def normalize_version(version):
             error = True
     if error or not 0 < version < 41 and version not in consts.MICRO_VERSIONS:
         raise ValueError('Unsupported version "{0}". Supported: {1} and 1 .. 40'
-                           .format(version, ', '.join(sorted(consts.MICRO_VERSION_MAPPING.keys()))))
+                         .format(version, ', '.join(sorted(consts.MICRO_VERSION_MAPPING.keys()))))
     return version
 
 
@@ -1307,7 +1307,6 @@ def get_version_name(version_const):
         if v == version_const:
             return name
     raise ValueError('Unknown version constant "{0}"'.format(version_const))
-
 
 
 _ALPHANUMERIC_PATTERN = re.compile(br'^[' + re.escape(consts.ALPHANUMERIC_CHARS) + br']+\Z')
