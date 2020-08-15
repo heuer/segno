@@ -16,6 +16,7 @@ import shutil
 import nox
 
 nox.options.sessions = ['test-2.7', 'test-3.7', 'test-pypy', 'test-pypy3']
+default_py = '3.7'
 
 
 @nox.session(python=['2.7', '3.7', '3.8', 'pypy', 'pypy3'])
@@ -32,7 +33,7 @@ def test(session):
     session.run('py.test')
 
 
-@nox.session(python='3')
+@nox.session(python=default_py)
 def docs(session):
     """\
     Build the documentation.
@@ -54,7 +55,7 @@ def docs(session):
         session.log("'man/segno.1' has been modified, don't forget to commit")
 
 
-@nox.session(python='3')
+@nox.session(python=default_py)
 def coverage(session):
     """\
     Run coverage.
@@ -69,7 +70,7 @@ def coverage(session):
     cover('html', '-d', output_dir)
 
 
-@nox.session(python='3')
+@nox.session(python=default_py)
 def lint(session):
     """\
     Run flake8
@@ -88,7 +89,7 @@ def lint(session):
 #
 
 
-@nox.session(name='start-release')
+@nox.session(name='start-release', python=default_py)
 def start_release(session):
     """\
     Prepares a release.
@@ -105,7 +106,7 @@ def start_release(session):
     session.log('When done, call nox -e finish-release')
 
 
-@nox.session(name='finish-release')
+@nox.session(name='finish-release', python=default_py)
 def finish_release(session):
     """\
     Finishes the release.
@@ -120,10 +121,10 @@ def finish_release(session):
     session.install('setuptools', 'wheel')
     git = partial(session.run, 'git', external=True)
     git('checkout', 'master')
-    git('merge', '--no-ff', release_branch, '-m', '"Merge release branch {}"'.format(release_branch))
-    git('tag', '-a', version, '-m', '"Release {}"'.format(version))
+    git('merge', '--no-ff', release_branch, '-m', 'Merge release branch {}'.format(release_branch))
+    git('tag', '-a', version, '-m', 'Release {}'.format(version))
     git('checkout', 'develop')
-    git('merge', '--no-ff', release_branch, '-m', '"Merge release branch {}"'.format(release_branch))
+    git('merge', '--no-ff', release_branch, '-m', 'Merge release branch {}'.format(release_branch))
     git('branch', '-d', release_branch)
     version_parts = version.split('.')
     patch = str(int(version_parts[2]) + 1)
@@ -131,13 +132,13 @@ def finish_release(session):
     init_py = os.path.abspath(os.path.join(os.path.dirname(__file__), 'segno/__init__.py'))
     session.run('sed', '-i', "s/__version__ = '{0}'/__version__ = '{1}'/".format(version, next_version), init_py, external=True)
     git('add', 'segno/__init__.py')
-    git('commit', '-m', '"Incremented development version"')
+    git('commit', '-m', 'Incremented development version')
     git('checkout', 'master')
     session.run('python', 'setup.py', 'sdist', 'bdist_wheel')
     session.log('Finished. Run git push / git push origin --tags and nox -e upload-release')
 
 
-@nox.session(name='upload-release')
+@nox.session(name='upload-release', python=default_py)
 def upload_release(session):
     """\
     Uploads a release to PyPI
