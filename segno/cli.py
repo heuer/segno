@@ -102,8 +102,8 @@ def make_parser():
 
     color_group = parser.add_argument_group('Module Colors', 'Arguments to specify the module colors. '
                                                              'Multiple colors are supported for SVG and PNG. '
-                                                             'The module color support varies between the serialization '  # noqa: E501
-                                                             'formats. '
+                                                             'The module color support varies between the '
+                                                             'serialization formats. '
                                                              'Most serializers support at least "--dark" and "--light". '  # noqa: E501
                                                              'Unsupported arguments are ignored.')
     color_group.add_argument('--dark', help='Color of the dark modules. '
@@ -290,5 +290,5 @@ class _AttrDict(dict):
         self.__dict__ = self
 
 
-if __name__ == '__main__':  # pragma: no cover
+if __name__ == '__main__':
     main()
