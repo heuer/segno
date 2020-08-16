@@ -27,8 +27,12 @@ def test(session):
     """
     if session.python == 'pypy':
         # See <https://github.com/heuer/segno/issues/80>
-        session.run('pip', 'uninstall', '-y', 'pip')
-        session.run('easy_install', 'pip==20.1')
+        pip_ver = session.run('pip', '--version', silent=True)
+        m = re.search(r'pip ([0-9\.]+)', pip_ver)
+        assert m
+        if m.group(1) in ('20.2', '20.2.1', '20.2.2'):
+            session.run('pip', 'uninstall', '-y', 'pip')
+            session.run('easy_install', 'pip==20.1.1')
     session.install('-Ur', 'requirements.testing.txt')
     session.install('.')
     session.run('py.test')
