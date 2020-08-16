@@ -9,7 +9,7 @@
 Example Flask app to show different possibilities to embed Segno.
 """
 import io
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, abort
 import segno
 
 app = Flask(__name__)
@@ -33,16 +33,22 @@ def home():
 
 @app.route('/qr-svg/')
 def qrcode_svg():
+    data = request.args.get('data')
+    if data not in ('Savoy Truffle', 'Rocky Raccoon'):
+        return abort(404)
     buff = io.BytesIO()
-    segno.make(request.args.get('data', ''), micro=False).save(buff, kind='svg', scale=4)
+    segno.make(data, micro=False).save(buff, kind='svg', scale=4)
     buff.seek(0)
     return send_file(buff, mimetype='image/svg+xml')
 
 
 @app.route('/qr-png/')
 def qrcode_png():
+    data = request.args.get('data')
+    if data not in ('Savoy Truffle', 'Rocky Raccoon'):
+        return abort(404)
     buff = io.BytesIO()
-    segno.make(request.args.get('data', ''), micro=False) \
+    segno.make(data, micro=False) \
         .save(buff, kind='png', scale=4, dark='darkblue', data_dark='#474747',
               light='#efefef')
     buff.seek(0)

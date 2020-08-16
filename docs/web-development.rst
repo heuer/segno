@@ -87,17 +87,18 @@ Create a view
 Another possibility is to create the QR codes dynamically in a Flask view and
 then to deliver them with ``send_file``.
 
-.. note::
-
-    Note that anyone can call up the route and create QR codes of any content.
-
-
 .. code-block:: python
+
+    BEATLES_SONGS = {'Yellow Submarine', 'Let It Be', 'Rocky Raccoon'}
 
     @app.route('/qr-png/')
     def qrcode_png():
+        data = request.args.get('data')
+        # Check if the data is acceptable otherwise a 404 error is generated
+        if data not in BEATLES_SONGS:
+            return abort(404)
         buff = io.BytesIO()
-        segno.make(request.args.get('data', ''), micro=False) \
+        segno.make(data, micro=False) \
              .save(buff, kind='png', scale=4, dark='darkblue',
                    data_dark='#474747', light='#efefef')
         buff.seek(0)
