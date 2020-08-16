@@ -23,7 +23,8 @@ except ImportError:
 
 
 def qr_to_bytes(qrcode, scale):
-    assert not qrcode.is_micro
+    if qrcode.is_micro:
+        raise Exception('zbar cannot decode Micro QR codes')
     buff = io.BytesIO()
     for row in matrix_iter(qrcode.matrix, version=qrcode._version, scale=scale):
         buff.write(bytearray(0x0 if b else 0xff for b in row))
@@ -59,6 +60,20 @@ def test_stackoverflow_issue():
     qr = segno.make(content, encoding='utf-8')
     assert 'byte' == qr.mode
     assert content == decode(qr).encode('shift-jis').decode('utf-8')
+
+
+def test_pyqrcode_issue76():
+    # See <https://github.com/mnooner256/pyqrcode/issues/76>
+    content = 'АБВГД'
+    qr = segno.make(content, micro=False)
+    assert 'kanji' == qr.mode
+    assert content == decode(qr)
+    qr = segno.make(content, encoding='utf-8', micro=False)
+    assert 'byte' == qr.mode
+    assert content == decode(qr)
+    qr = segno.make(content.encode('utf-8'), micro=False)
+    assert 'byte' == qr.mode
+    assert content == decode(qr)
 
 
 if __name__ == '__main__':
