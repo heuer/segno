@@ -143,7 +143,6 @@ def finish_release(session):
     * Merges the branch release-VERSION_NUMBER into master
     * Creates a tag VERSION_NUMBER
     * Increments the development version
-    * Creates sdist and bdist_wheel
     """
     version = _validate_version(session)
     release_branch = 'release-{}'.format(version)
