@@ -1,12 +1,16 @@
 Changes
 =======
 
-Versions follow `Semantic Versioning <https://semver.org/>`_.
-
-1.1.1 -- 2020-mm-dd
+1.2.0 -- 2020-mm-dd
 -------------------
+* Added ``QRCode.svg_inline`` method which returns a string which
+  can be used to embed the SVG directly in HTML pages.
 * Improved documentation <https://segno.readthedocs.org/>
 * Improved code quality
+* Switched from `tox <https://pypi.org/project/tox/>`_ to
+  `nox <https://pypi.org/project/nox/>`_
+* Utilize `flake8 <https://pypi.org/project/flake8/>`_
+* Moved metadata from setup.py to setup.cfg
 
 
 1.1.0 -- 2020-08-05
@@ -23,7 +27,7 @@ Versions follow `Semantic Versioning <https://semver.org/>`_.
 1.0.2 -- 2020-07-30
 -------------------
 * Fixed error in Kanji encoding: Data was incomplete.
-  Again, discovered by `Shi Yan <https://github.com/neycyanshi>`_)
+  Again, discovered by `Shi Yan <https://github.com/neycyanshi>`_
 * Better test coverage for Kanji encoding
 
 

@@ -17,11 +17,11 @@ from . import encoder
 from .encoder import DataOverflowError
 from . import writers, utils
 try:  # pragma: no cover
-    str_type = basestring
+    str_type = basestring  # noqa: F821
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '1.1.1.dev0'
+__version__ = '1.2.0.dev'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
