@@ -1,4 +1,4 @@
-Man Pages
+Man pages
 =========
 
 Documentation of the command line interface.

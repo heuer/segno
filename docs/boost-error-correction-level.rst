@@ -1,4 +1,4 @@
-Boost Error Correction Level
+Boost error correction level
 ============================
 
 If the user does not provide any :option:`--version <segno --version>` or

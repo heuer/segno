@@ -111,8 +111,8 @@ thrown:
 
 
 
-Version
--------
+QR Code version
+---------------
 
 It's possible to specify the desired version for the provided ``content``.
 
@@ -142,8 +142,8 @@ It's possible to specify the desired version for the provided ``content``.
     :alt: "1-M QR code encoding 'Light My fire'"
 
 
-Error Correction Level
-----------------------
+QR Code error correction level
+------------------------------
 
 By default, Segno uses at minimum the error correction level "L" to encode
 a (Micro) QR code.
@@ -204,8 +204,8 @@ never a Micro QR code.
     :alt: "3-H QR Code encoding 'Parisienne Walkways'"
 
 
-Data Masking
-------------
+QR Code data masking
+--------------------
 
 Segno chooses by default an optimal mask for the provided input, but the user
 may specify the preferred mask as well. QR Codes support 8 mask patterns, while
@@ -222,7 +222,7 @@ Micro QR Codes support 4 mask patterns, only.
     3
 
 
-Micro QR Code with different data masks
+Micro QR code with different data masks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 M3-M codes encoding "Ai Du" with the four different masks:
@@ -247,7 +247,7 @@ M3-M codes encoding "Ai Du" with the four different masks:
     Micro QR Code using data mask pattern 11 (mask=3)
 
 
-QR Code with different data masks
+QR code with different data masks
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 1-H codes encoding "Ai Du" using the eight different mask patterns:
