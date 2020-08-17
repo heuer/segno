@@ -14,21 +14,10 @@ import segno
 
 app = Flask(__name__)
 
-
-def make_svg_qrcode(content):
-    buff = io.BytesIO()
-    # See <https://segno.readthedocs.io/en/stable/svg-options.html>
-    # for SVG options
-    segno.make(content).save(buff, kind='svg', xmldecl=False, nl=False, svgns=False,
-                             dark='darkred', data_dark='#cb410b', scale=4)
-    return buff.getvalue().decode('utf-8')
-
-
 @app.route('/')
 def home():
     qr = segno.make('The Continuing Story of Bungalow Bill')
-    qr_svg = make_svg_qrcode('While My Guitar Gently Weeps')
-    return render_template('example.html', qr=qr, qr_svg=qr_svg)
+    return render_template('example.html', qr=qr)
 
 
 @app.route('/qr-svg/')

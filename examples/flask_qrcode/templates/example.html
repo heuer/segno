@@ -14,7 +14,7 @@
     <code>qr.svg_data_uri(quiet_zone='#eee', scale=4)</code>
 
     <h1>SVG embedded in HTML</h1>
-    {{ qr_svg|safe }}
+    {{ qr.svg_inline(dark='darkred', scale=3) | safe }}
 
     <h1>SVG image tag</h1>
     <img src="{{ url_for('qrcode_svg', data='Savoy Truffle') }}">

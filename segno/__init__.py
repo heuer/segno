@@ -12,6 +12,7 @@ QR Code and Micro QR Code implementation.
 """
 from __future__ import absolute_import, unicode_literals
 import sys
+import io
 from . import encoder
 from .encoder import DataOverflowError
 from . import writers, utils
@@ -464,6 +465,25 @@ class QRCode:
                                        xmldecl=xmldecl, nl=nl,
                                        encode_minimal=encode_minimal,
                                        omit_charset=omit_charset, **kw)
+
+    def svg_inline(self, **kw):
+        """\
+        Returns a SVG representation which is embeddable into HTML5 contexts.
+
+        Due to the fact that HTML5 directly supports SVG, various elements of
+        a SVG document can or should be suppressed (i.e. the XML declaration and
+        the SVG namespace).
+
+        This method returns a string that can be used in an HTML context.
+
+        This method uses the same parameters as the usual SVG serializer, see
+        :py:func:`save` and the available `SVG parameters <#svg>`_
+
+        :rtype: str
+        """
+        buff = io.BytesIO()
+        self.save(buff, kind='svg', xmldecl=False, svgns=False, nl=False, **kw)
+        return buff.getvalue().decode(kw.get('encoding', 'utf-8'))
 
     def png_data_uri(self, **kw):
         """\

@@ -59,25 +59,15 @@ in the Jinja template or wrap the result into a ``markupsafe.Markup`` object.
 
 .. code-block:: python
 
-    def make_qr_svg(content):
-        buff = io.ByteIO()
-        qr = segno.make(content)
-        # Omit the XML declaration and the SVG namespace declaration
-        # and the trailing newline.
-        qr.save(buff, kind='svg', xmldecl=False, svgns=False, nl=False, scale=3)
-        # Alternative:
-        # return markupsafe.Markup(buff.getvalue().decode('utf-8'))
-        return buff.getvalue().decode('utf-8')
-
     @app.route('/')
     def home():
-        qr_svg = make_qr_svg('While My Guitar Gently Weeps')
-        return render_template('example.html', qr_svg=qr_svg)
+        qr = segno.make('While My Guitar Gently Weeps')
+        return render_template('example.html', qr=qr)
 
 .. code-block:: jinja
 
     <div>
-      {{ qr_svg | safe }}
+      {{ qr.svg_inline(scale=3) | safe }}
     </div>
 
 
