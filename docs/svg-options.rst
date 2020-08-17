@@ -1,4 +1,4 @@
-SVG Options
+SVG options
 ===========
 
 All options of the :doc:`colorful-qrcodes` are supported. Additionally, the
