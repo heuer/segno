@@ -27,11 +27,6 @@ try:
     import pyqrcode
 except ImportError:
     pyqrcode = None
-try:
-    import pyqrcodeng
-except ImportError:
-    pyqrcodeng = None
-
 
 if qrcode:
     def create_qrcode(data='QR Code Symbol'):
@@ -93,29 +88,6 @@ if pyqrcode:
     def png_pyqrcode(data='QR Code Symbol'):
         """PyQRCode PNG 1-M"""
         pyqrcode.create(data, error='m').png(os.path.join(_output_dir(), 'pyqrcode_%s.png' % data), scale=10)
-
-
-if pyqrcodeng:
-    def create_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 1-M"""
-        pyqrcodeng.create(data, error='m')
-
-    def create7q_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 7-Q"""
-        pyqrcodeng.create(data, error='q', version=7)
-
-    def create30h_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 30-H"""
-        pyqrcodeng.create(data, error='h', version=30)
-
-    def svg_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG SVG"""
-        pyqrcodeng.create(data, error='m').svg(os.path.join(_output_dir(), 'pyqrcodeng_%s.svg' % data), scale=10)
-
-    def png_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG PNG 1-M"""
-        pyqrcodeng.create(data, error='m').png(os.path.join(_output_dir(), 'pyqrcodeng_%s.png' % data), scale=10)
-
 
 if qrcodegen:
     def create_qrcodegen(data='QR Code Symbol'):

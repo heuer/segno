@@ -89,7 +89,7 @@ def benchmarks(session):
     """\
     Run the benchmarks and create the charts.
     """
-    session.install('qrcode', 'Pillow', 'pyqrcode', 'pypng', 'pyqrcodeng', 'qrcodegen', 'pygal')
+    session.install('qrcode', 'Pillow', 'pyqrcode', 'pypng', 'qrcodegen', 'pygal')
     session.install('.')
     sandbox_dir = os.path.join(os.path.dirname(__file__), 'sandbox')
     session.run('python', os.path.join(sandbox_dir, 'benchmarks.py'))
