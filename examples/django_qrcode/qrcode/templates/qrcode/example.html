@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Django QR Codes</title>
+</head>
+<body>
+<h1>Create a ticket</h1>
+<p>Only uppercase characters and numbers are accepted as name</p>
+<form action="/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>

@@ -99,3 +99,75 @@ then to deliver them with ``send_file``.
 .. code-block:: jinja
 
     <img src="{{ url_for('qrcode_png', data='Rocky Raccoon') }}">
+
+
+Django
+------
+
+The above examples should be easy to adapt to Django.
+
+The following is just an example of how you can save a QR code in an
+``ImageField``.
+
+The complete code is in the repository:
+https://github.com/heuer/segno/tree/develop/examples/django_qrcode
+
+
+Saving a QR code to an ImageField
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Assuming this simple model.
+
+.. code-block:: python
+
+    from django.db import models
+
+
+    class Ticket(models.Model):
+        name = models.CharField(max_length=150, unique=True)
+        qrcode = models.ImageField(upload_to='ticket-qrcodes/')
+
+Create a QR code with Segno and save it as PNG into a :py:class:`io.BytesIO`
+instance.
+
+.. code-block:: python
+
+    import io
+    import segno
+
+    out = io.BytesIO()
+    qr = segno.make('JULIA')
+    # Save the QR code with transparent background and use dark blue for
+    # the dark modules
+    qr.save(out, kind='png', dark='#00008b', light=None, scale=3)
+
+Now you can use the content of the buffer as input for a Django ``ContentFile``.
+
+.. code-block:: python
+
+    ticket = Ticket(name='JULIA')
+    ticket.qrcode.save('JULIA.png', ContentFile(out.getvalue())), save=False)
+    ticket.save()
+
+If for some reason the QR codes should be stored in the lossy file format JPEG,
+the ``qrcode-artistic`` plugin is required (see also :doc:`artistic-qrcodes`)::
+
+    $ pip install qrcode-artistic
+
+
+.. code-block:: python
+
+    import io
+    import segno
+
+    out = io.BytesIO()
+    qr = segno.make('JULIA')
+    # img is a Pillow Image instance
+    img = qr.to_pil(dark='#00008b', scale=3)
+    # Now use Pillow Image.save() to save the QR code
+    img.save(out, format='jpg')
+
+    # ...
+
+    ticket.qrcode.save('JULIA.jpg', ContentFile(out.getvalue())), save=False)
+
