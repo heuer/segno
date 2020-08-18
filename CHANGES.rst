@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.2.0 -- 2020-mm-dd
+1.2.0 -- 2020-08-18
 -------------------
 * Added ``QRCode.svg_inline`` method which returns a string which
   can be used to embed the SVG directly in HTML pages.
