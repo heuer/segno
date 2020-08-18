@@ -6,3 +6,6 @@ indent_size = 4
 insert_final_newline = true
 end_of_line = lf
 charset = utf-8
+
+[*.html]
+indent_size = 2
