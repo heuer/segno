@@ -411,8 +411,8 @@ class QRCode:
             from urllib.parse import urljoin
             from urllib.request import pathname2url
         except ImportError:  # Python 2
-            from urlparse import urljoin
-            from urllib import pathname2url
+            from urlparse import urljoin  # noqa
+            from urllib import pathname2url  # noqa
 
         def delete_file(name):
             time.sleep(delete_after)
