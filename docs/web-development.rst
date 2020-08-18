@@ -104,10 +104,8 @@ then to deliver them with ``send_file``.
 Django
 ------
 
-The above examples should be easy to adapt to Django.
-
-The following is just an example of how you can save a QR code in an
-``ImageField``.
+The aforementioned information for Flask should also be adaptable to Django, so
+here is just a hint on how to save QR codes in a Django ``ImageField``.
 
 The complete code is in the repository:
 https://github.com/heuer/segno/tree/develop/examples/django_qrcode
