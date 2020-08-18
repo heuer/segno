@@ -1,18 +1,17 @@
 Segno -- Python QR Code and Micro QR Code encoder
 =================================================
 
-Segno (Italian for "sign" / "symbol") is a QR Code and Micro QR Code encoder
-which has no further dependencies.
+Pure Python QR Code generator with no dependencies.
 
 This package implements ISO/IEC 18004:2015(E) "QR Code bar code symbology
 specification" and produces Micro QR Codes and QR Codes with nearly no effort.
 It supports the Structured Append mode which splits a message across several
 QR codes.
 
-Segno provides several serialization formats like Scalable Vector Graphics (SVG),
-Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
-Portable Document Format (PDF), Netpbm (PAM, PBM, PPM), LaTeX (PGF/TikZ),
-X PixMap (XBM), and X Bitmap (XPM) etc.
+Segno (Italian for "sign" / "symbol") provides several serialization formats
+like Scalable Vector Graphics (SVG), Encapsulated PostScript (EPS),
+Portable Network Graphics (PNG), Portable Document Format (PDF), Netpbm (PAM, PBM, PPM),
+LaTeX (PGF/TikZ), X PixMap (XBM), and X Bitmap (XPM) etc.
 None of these serializers require an external lib.
 Further, it provides several high level functions to create QR Codes which encode
 `contact data (vCard, MeCard) <https://segno.readthedocs.io/en/stable/contact-information.html>`_,
@@ -25,7 +24,7 @@ standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015
 
 Unique features
 ---------------
-* Pure Python (supports 2.7, 3.7+, PyPy2 and PyPy3)
+* Pure Python QR Code generator (supports 2.7, 3.7+, PyPy2 and PyPy3)
 * No dependencies
 * A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
