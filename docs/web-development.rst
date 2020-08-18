@@ -1,7 +1,7 @@
 Web development
 ===============
 
-A few proposals how to integrate Segno with popular Python web application
+A few proposals how to use Segno with popular Python web application
 frameworks.
 
 
