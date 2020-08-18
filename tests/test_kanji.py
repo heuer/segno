@@ -45,5 +45,22 @@ def test_kanji_bytes():
     assert 5 == segment.char_count
 
 
+def test_encode_kanji_byte():
+    qr = encoder.encode('漢字'.encode(consts.KANJI_ENCODING))
+    assert 1 == len(qr.segments)
+    segment = qr.segments[0]
+    assert consts.MODE_KANJI == segment.mode
+    assert 2 == segment.char_count
+
+
+def test_encode_kanji_byte2():
+    qr = encoder.encode('漢字'.encode(consts.KANJI_ENCODING),
+                        encoding=consts.KANJI_ENCODING)
+    assert 1 == len(qr.segments)
+    segment = qr.segments[0]
+    assert consts.MODE_KANJI == segment.mode
+    assert 2 == segment.char_count
+
+
 if __name__ == '__main__':
     pytest.main([__file__])

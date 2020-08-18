@@ -31,7 +31,7 @@ def create_charts():
     create_30h_data = []
     svg_data = []
     png_data = []
-    with open('out/results.csv') as f:
+    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'out', 'results.csv')) as f:
         reader = csv.reader(f)
         for row in reader:
             name, val = row
@@ -45,7 +45,7 @@ def create_charts():
                 png_data.append((name.replace(' PNG 1-M', ''), val))
             elif ' SVG' in name:
                 svg_data.append((name.replace(' SVG', ''), val))
-    output_dir = os.path.abspath('../docs/_static/')
+    output_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../docs/_static/')
     for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', os.path.join(output_dir, 'chart_create_1m.svg')),
                                   (create_7q_data, 'Create a 7-Q QR Code', os.path.join(output_dir, 'chart_create_7q.svg')),
                                   (create_30h_data, 'Create a 30-H QR Code', os.path.join(output_dir, 'chart_create_30h.svg')),

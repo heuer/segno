@@ -1,11 +1,10 @@
 *.pyc
 .coverage
-.tox
-.idea
+.[nt]ox/
+.idea/
 *.egg-info
-htmlcov/*
-dist/*
-build/*
-venv/*
+dist/
+build/
+venv/
 sandbox/out/*.svg
 sandbox/out/*.png

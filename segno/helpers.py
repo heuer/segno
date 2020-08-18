@@ -20,13 +20,12 @@ import re
 import decimal
 import segno
 try:  # pragma: no cover
-    from urllib.parse import urlsplit, quote
+    from urllib.parse import quote
     str_type = str
 except ImportError:  # pragma: no cover
-    from urlparse import urlsplit
     from urllib import quote
-    str = unicode
-    str_type = basestring
+    str = unicode  # noqa: F821
+    str_type = basestring  # noqa: F821
 
 
 _MECARD_ESCAPE = {
@@ -248,6 +247,7 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
 
 
 _looks_like_datetime = re.compile(r'^\d{4}\-\d{2}\-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:(?:\-?\d{2}:\d{2})|Z)?)?$').match
+
 
 def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
                     videophone=None, memo=None, nickname=None, birthday=None,
@@ -555,7 +555,8 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     if text and not 0 < len(text) <= 140:
         raise ValueError('Invalid text, max. 140 characters are allowed, got "{}"'.format(len(text)))
     elif reference and not 0 < len(reference) <= 35:
-        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'.format(len(reference)))
+        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'
+                         .format(len(reference)))
     if name is None or not 0 < len(name) <= 70:
         raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
     if iban is None or not 4 < len(iban) <= 34:
@@ -566,21 +567,22 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
         raise ValueError('Invalid purpose, 4 characters are allowed, got "{}"'.format(purpose))
     amount = decimal.Decimal(amount)
     if not min_amount <= amount <= max_amount:
-        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'.format(min_amount, max_amount))
-    l = ['BCD',  # Service tag
-         '002',  # Version
-         '',  # character set (will be set later)
-         'SCT',  # Identification
-         bic or '',  # BIC
-         name,  # Name of the recipient
-         iban,  # IBAN
-         'EUR{:.2f}'.format(amount).rstrip('0').rstrip('.'),  # Amount
-         purpose or '',  # Purpose
-         reference or '',  # Remittance
-    ]
+        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'
+                         .format(min_amount, max_amount))
+    tmp_data = ['BCD',  # Service tag
+                '002',  # Version
+                '',  # character set (will be set later)
+                'SCT',  # Identification
+                bic or '',  # BIC
+                name,  # Name of the recipient
+                iban,  # IBAN
+                'EUR{:.2f}'.format(amount).rstrip('0').rstrip('.'),  # Amount
+                purpose or '',  # Purpose
+                reference or '',  # Remittance
+                ]
     if text:
-        l.append(text)
-    data = '\n'.join(l)
+        tmp_data.append(text)
+    data = '\n'.join(tmp_data)
     charset = -1 if encoding is None else encoding
     if charset < 0:
         for idx, enc in enumerate(encodings[1:], start=2):
@@ -592,8 +594,8 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
                 pass
     if charset < 0:
         charset = 1  # Use UTF-8
-    l[2] = str(charset)  # Set character set
-    data = '\n'.join(l).encode(encodings[charset - 1])
+    tmp_data[2] = str(charset)  # Set character set
+    data = '\n'.join(tmp_data).encode(encodings[charset - 1])
     # Max. payload: 331 bytes
     if len(data) > 331:  # pragma: no cover
         raise ValueError('Payload is too big: Max. 331 bytes allowed, got {} bytes'.format(len(data)))
@@ -603,7 +605,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
 def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
                 purpose=None, encoding=None):
     """\
-    Creates and returns an European Payments Council Quick Response Code 
+    Creates and returns an European Payments Council Quick Response Code
     (EPC QR Code) version 002.
 
     The returned :py:class:`segno.QRCode` uses always the error correction level

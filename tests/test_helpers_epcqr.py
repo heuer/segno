@@ -158,6 +158,22 @@ def test_utf8_required():
     assert b'1' == d[2]
 
 
+def test_utf8_explicit():
+    kw = _make_valid_kw()
+    kw['encoding'] = 'utf-8'
+    kw['name'] = 'Funny 😃 name'
+    d = make_epc_qr_data(**kw).split(b'\n')
+    assert b'1' == d[2]
+
+
+def test_utf8_explicit2():
+    kw = _make_valid_kw()
+    kw['encoding'] = 1
+    kw['name'] = 'Funny 😃 name'
+    d = make_epc_qr_data(**kw).split(b'\n')
+    assert b'1' == d[2]
+
+
 @pytest.mark.parametrize('encoding', range(1, 9))
 def test_valid_encoding(encoding):
     kw = _make_valid_kw()
@@ -169,7 +185,7 @@ def test_valid_encoding(encoding):
     assert qr
 
 
-@pytest.mark.parametrize('encoding', [0, 9, '1', b'8', 1.0])
+@pytest.mark.parametrize('encoding', [0, 9, '1', b'8', 1.0, 'shift-jis'])
 def test_illegal_encoding(encoding):
     kw = _make_valid_kw()
     kw['encoding'] = encoding

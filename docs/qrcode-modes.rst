@@ -1,5 +1,5 @@
-QR Code Encodings
-=================
+QR Code modes
+=============
 
 The ISO/IEC 18004 standard defines four modes in order to encode the data as
 efficiently as possible. If no encoding or mode is provided, Segno tries to
@@ -10,7 +10,7 @@ although it is recommended to let Segno decide which mode / encoding should be u
 
 .. _numeric-mode:
 
-Numeric Mode
+Numeric mode
 ------------
 
 The numeric mode is the most efficient way to encode digits.
@@ -38,7 +38,7 @@ Segno detects the numeric mode if the data is provided as string or integer:
     True
 
 
-.. image:: _static/64-micro.png
+.. image:: _static/modes/64-micro.png
     :alt: M1 Micro QR Code encoding "64"
 
 
@@ -61,11 +61,11 @@ or set the :paramref:`micro <segno.make.micro>` parameter of :py:func:`segno.mak
     >>> qr == qr2
     True
 
-.. image:: _static/64.png
+.. image:: _static/modes/64.png
     :alt: 1-H QR Code encoding "64"
 
 
-Alphanumeric Mode
+Alphanumeric mode
 -----------------
 
 The alphanumeric mode extends the :ref:`numeric-mode` by various characters.
@@ -82,7 +82,7 @@ a space character " " and other letters ``$%*+-./:``.
     'alphanumeric'
 
 
-.. image:: _static/REVOLUTION9-micro.png
+.. image:: _static/modes/REVOLUTION9-micro.png
     :alt: M4-M Micro QR Code encoding "REVOLUTION NO. 9"
 
 
@@ -101,7 +101,7 @@ functions:
     'alphanumeric'
 
 
-.. image:: _static/REVOLUTION9.png
+.. image:: _static/modes/REVOLUTION9.png
     :alt: 1-Q QR Code encoding "REVOLUTION NO. 9"
 
 
@@ -115,11 +115,11 @@ the :ref:`byte-mode`
     >>> qr.mode
     'byte'
 
-.. image:: _static/revolution9-byte.png
+.. image:: _static/modes/revolution9-byte.png
     :alt: 1-L QR Code encoding "Revolution No. 9"
 
 
-Kanji Mode
+Kanji mode
 ----------
 
 Kanji can be encoded compactly and efficiently and requires significantly less
@@ -135,7 +135,7 @@ space than encoding the characters in UTF-8.
     'kanji'
 
 
-.. image:: _static/kanji-micro.png
+.. image:: _static/modes/kanji-micro.png
     :alt: M3-L Micro QR Code encoding "ビートルズ"
 
 
@@ -149,13 +149,13 @@ space than encoding the characters in UTF-8.
     'kanji'
 
 
-.. image:: _static/kanji-qr.png
+.. image:: _static/modes/kanji-qr.png
     :alt: 1-Q QR Code encoding "ビートルズ"
 
 
 .. _byte-mode:
 
-Byte Mode
+Byte mode
 ---------
 
 The byte mode covers all data which cannot be represented by the other
@@ -172,7 +172,7 @@ UTF-8 is used as fallback.
     >>> qr.mode
     'byte'
 
-.. image:: _static/tomorrow-never-knows.png
+.. image:: _static/modes/tomorrow-never-knows.png
     :alt: 3-L QR Code encoding "Turn off your mind relax and float down stream"
 
 
@@ -187,13 +187,13 @@ The byte mode is also supported by Micro QR Code M3 and M4:
     >>> qr.mode
     'byte'
 
-.. image:: _static/let-it-be.png
+.. image:: _static/modes/let-it-be.png
     :alt: M3-L Micro QR Code encoding "Let it be"
 
 
 .. _hanzi-mode:
 
-Hanzi Mode
+Hanzi mode
 ----------
 
 The Hanzi mode is not covered by ISO/IEC 18004 and should be used with
@@ -216,7 +216,7 @@ mode is not available for Micro QR Codes.
 
 The QR Code uses the :ref:`byte-mode` because no other mode fits.
 
-.. image:: _static/hanzi-byte.png
+.. image:: _static/modes/hanzi-byte.png
     :alt: 2-M QR Code encoding "书读百遍其义自现" in byte mode
 
 
@@ -235,5 +235,5 @@ To enable Hanzi, provide the mode in the factory function:
 As shown, the input is encoded much more compact and a 1-M instead of a
 2-M QR Code is generated.
 
-.. image:: _static/hanzi-hanzi.png
+.. image:: _static/modes/hanzi-hanzi.png
     :alt: 1-M QR Code encoding "书读百遍其义自现" in Hanzi mode

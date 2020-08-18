@@ -29,12 +29,12 @@ try:  # pragma: no cover
 except ImportError:  # pragma: no cover
     _PY2 = True
     from itertools import izip_longest as zip_longest, imap as map
-    str_type = basestring
+    str_type = basestring  # noqa: F821
     from numbers import Number
     numeric = Number
-    str = unicode
-    range = xrange
-import sys
+    str = unicode  # noqa: F821
+    range = xrange  # noqa: F821
+import sys  # noqa: E402
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
@@ -288,7 +288,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
             if version < consts.VERSION_M4:
                 levels.pop()  # Error level Q isn't supported by M2 and M3
         data_length = segments.bit_length_with_overhead(version, eci, is_sa=is_sa)
-        for error_level in levels[levels.index(error)+1:]:
+        for error_level in levels[levels.index(error) + 1:]:
             if consts.SYMBOL_CAPACITY[version][error_level] >= data_length:
                 error = error_level
             else:
@@ -464,7 +464,7 @@ def add_alignment_patterns(matrix, version):
         if (x, y) in finder_positions:
             continue
         # The x and y values represent the center of the alignment pattern
-        i, j = x -2, y - 2
+        i, j = x - 2, y - 2
         for r in alignment_range:
             matrix[i + r][j:j + 5] = pattern[r * 5:r * 5 + 5]
 
@@ -1191,7 +1191,7 @@ def normalize_version(version):
             error = True
     if error or not 0 < version < 41 and version not in consts.MICRO_VERSIONS:
         raise ValueError('Unsupported version "{0}". Supported: {1} and 1 .. 40'
-                           .format(version, ', '.join(sorted(consts.MICRO_VERSION_MAPPING.keys()))))
+                         .format(version, ', '.join(sorted(consts.MICRO_VERSION_MAPPING.keys()))))
     return version
 
 
@@ -1213,7 +1213,7 @@ def normalize_mode(mode):
         return mode
     try:
         return consts.MODE_MAPPING[mode.lower()]
-    except:  # KeyError or mode.lower() fails
+    except (KeyError, AttributeError):
         raise ValueError('Illegal mode "{0}". Supported values: {1}'
                          .format(mode, ', '.join(sorted(consts.MODE_MAPPING.keys()))))
 
@@ -1232,7 +1232,8 @@ def normalize_mask(mask, is_micro):
     try:
         mask = int(mask)
     except ValueError:
-        raise ValueError('Invalid data mask "{0}". Must be an integer or a string which represents an integer value.'.format(mask))
+        raise ValueError('Invalid data mask "{0}". '
+                         'Must be an integer or a string which represents an integer value.'.format(mask))
     if is_micro:
         if not 0 <= mask < 4:
             raise ValueError('Invalid data mask "{0}" for Micro QR Code. Must be in range 0 .. 3'.format(mask))
@@ -1261,7 +1262,7 @@ def normalize_errorlevel(error, accept_none=False):
         return error
     try:
         return consts.ERROR_MAPPING[error.upper()]
-    except:  # KeyError or error.upper() fails
+    except (KeyError, AttributeError):
         if error in consts.ERROR_MAPPING.values():
             return error
         raise ValueError('Illegal error correction level: "{0}". Supported levels: L, M, Q, H'
@@ -1309,8 +1310,9 @@ def get_version_name(version_const):
     raise ValueError('Unknown version constant "{0}"'.format(version_const))
 
 
-
 _ALPHANUMERIC_PATTERN = re.compile(br'^[' + re.escape(consts.ALPHANUMERIC_CHARS) + br']+\Z')
+
+
 def is_alphanumeric(data):
     """\
     Returns if the provided `data` can be encoded in "alphanumeric" mode.
@@ -1598,7 +1600,9 @@ class Segments:
         overhead = 0
         # ECI overhead
         if eci:
-            no_eci_indicators = sum(1 for segment in self.segments if segment.mode == consts.MODE_BYTE and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
+            no_eci_indicators = sum(1 for segment in self.segments
+                                    if segment.mode == consts.MODE_BYTE
+                                    and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
             overhead += no_eci_indicators * 4  # ECI indicator
             overhead += no_eci_indicators * 8  # ECI assignment no
         if is_sa:

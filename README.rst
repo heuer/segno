@@ -1,18 +1,17 @@
 Segno -- Python QR Code and Micro QR Code encoder
 =================================================
 
-Segno (Italian for "sign" / "symbol") is a QR Code and Micro QR Code encoder
-which has no further dependencies.
+Pure Python QR Code generator with no dependencies.
 
 This package implements ISO/IEC 18004:2015(E) "QR Code bar code symbology
 specification" and produces Micro QR Codes and QR Codes with nearly no effort.
 It supports the Structured Append mode which splits a message across several
-QR Codes.
+QR codes.
 
-Segno provides several serialization formats like Scalable Vector Graphics (SVG),
-Encapsulated PostScript (EPS), Portable Network Graphics (PNG),
-Portable Document Format (PDF), Netpbm (PAM, PBM, PPM), LaTeX (PGF/TikZ),
-X PixMap (XBM), and X Bitmap (XPM) etc.
+Segno (Italian for "sign" / "symbol") provides several serialization formats
+like Scalable Vector Graphics (SVG), Encapsulated PostScript (EPS),
+Portable Network Graphics (PNG), Portable Document Format (PDF), Netpbm (PAM, PBM, PPM),
+LaTeX (PGF/TikZ), X PixMap (XBM), and X Bitmap (XPM) etc.
 None of these serializers require an external lib.
 Further, it provides several high level functions to create QR Codes which encode
 `contact data (vCard, MeCard) <https://segno.readthedocs.io/en/stable/contact-information.html>`_,
@@ -25,27 +24,13 @@ standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015
 
 Unique features
 ---------------
-* Pure Python (supports 2.7, 3.7+, PyPy2 and PyPy3)
+* Pure Python QR Code generator (supports 2.7, 3.7+, PyPy2 and PyPy3)
 * No dependencies
 * A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_
 * Micro QR Codes
-* `Colorful QR Codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
-
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
-    :alt: Colorful 3-H QR Code encoding "Yellow Submarine"
-
-  ... works also with Micro QR Codes
-
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
-    :alt: Colorful M4-Q Micro QR Code encoding "Rain"
-* Animated QR codes (requires the `segno-pil <https://github.com/heuer/segno-pil/>`_
-  plug-in)
-
-  .. image:: https://raw.githubusercontent.com/heuer/segno-pil/develop/images/beatles-animated.gif
-    :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
-
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+* `Hanzi mode <https://segno.readthedocs.io/en/stable/qrcode-modes.html#hanzi-mode>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
   ::
 
@@ -53,6 +38,25 @@ Unique features
     qr = segno.make('Yellow Submarine')
     qr.save('yellow-submarine.png')
 
+* `Colorful QR codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
+    :alt: Colorful 3-H QR code encoding "Yellow Submarine"
+
+  ... works also with Micro QR codes
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
+    :alt: Colorful M4-Q Micro QR code encoding "Rain"
+* `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
+  (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/letitbe.jpg
+    :alt: Animated 3-H QR code encoding "The Beatles -- Let It Be"
+
+  ... animated QR codes are supported as well
+
+  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/abbey-road.webp
+    :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
 
 
 Installation
@@ -69,12 +73,12 @@ Usage
 Command line
 ^^^^^^^^^^^^
 
-The command line script prints the QR Code to the terminal::
+The command line script prints a QR code to the terminal::
 
     $ segno "Comfortably Numb"
 
 
-To serialize the QR Code, use the "output" argument::
+To serialize a QR code, use the "output" argument::
 
     $ segno -o=raincoat.svg "Famous Blue Raincoat"
     $ segno --scale 10 --dark darkblue --border 0 --output=fire.svg "Who by Fire"
@@ -91,7 +95,7 @@ Library
     >>> # Let Segno choose the minimal version and an optimal (maximal) error
     >>> # level without changing the minimal version
     >>> qr = segno.make('Up Jumped the Devil')
-    >>> qr.designator  # Returns the QR Code version and the error correction level
+    >>> qr.designator  # Returns the QR code version and the error correction level
     '2-Q'
     >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
     >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
@@ -101,7 +105,7 @@ Library
     >>> qr.save('up-jumped-the-devil.svg', scale=10, dark='darkblue')
 
 
-If the content to encode is small enough, a Micro QR Code is generated:
+If the content to encode is small enough, a Micro QR code is generated:
 
 .. code-block:: python
 
@@ -125,9 +129,9 @@ If this behaviour is not desired, the user may set ``micro`` to ``False``
     '1-H'
 
 
-Or use the factory functions ``segno.make_qr()`` which generates always QR Codes
-(never Micro QR Codes) or ``segno.make_micro()`` which returns always
-Micro QR Codes (or raises an error if the content is too large for a Micro QR Code).
+Or use the factory functions ``segno.make_qr()`` which generates always QR codes
+(never Micro QR codes) or ``segno.make_micro()`` which returns always
+Micro QR codes (or raises an error if the content is too large for a Micro QR code).
 
 .. code-block:: python
 

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Flask QR Codes</title>
+  </head>
+  <body>
+    <h1>QR Code embedded as data URI</h1>
+    <h2>PNG data URI</h2>
+    <img src="{{ qr.png_data_uri(dark='darkblue', data_dark='steelblue', alignment_dark='darkgreen', scale=3) }}"><br>
+    <code>qr.png_data_uri(dark='darkblue', data_dark='steelblue', alignment_dark='darkgreen', scale=3)</code>
+    <h2>SVG data URI</h2>
+    <img src="{{ qr.svg_data_uri(quiet_zone='#eee', scale=4) }}"><br>
+    <code>qr.svg_data_uri(quiet_zone='#eee', scale=4)</code>
+
+    <h1>SVG embedded in HTML</h1>
+    {{ qr.svg_inline(dark='darkred', scale=3) | safe }}
+
+    <h1>SVG image tag</h1>
+    <img src="{{ url_for('qrcode_svg', data='Savoy Truffle') }}">
+
+    <h1>PNG image tag</h1>
+    <img src="{{ url_for('qrcode_png', data='Rocky Raccoon') }}">
+  </body>
+</html>

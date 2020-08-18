@@ -31,6 +31,9 @@ from operator import itemgetter
 from contextlib import contextmanager
 from collections import defaultdict
 import time
+from . import consts
+from .utils import matrix_to_lines, get_symbol_size, get_border, \
+    check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 _PY2 = False
 try:  # pragma: no cover
     from itertools import zip_longest
@@ -39,12 +42,9 @@ except ImportError:  # pragma: no cover
     _PY2 = True
     from itertools import izip_longest as zip_longest
     from urllib import quote
-    range = xrange
-    str = unicode
+    range = xrange  # noqa: F821
+    str = unicode  # noqa: F821
     from io import open
-from . import consts
-from .utils import matrix_to_lines, get_symbol_size, get_border, \
-        check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
            'write_txt', 'write_pbm', 'write_pam', 'write_ppm', 'write_xpm',
@@ -282,6 +282,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
 
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
 
+
 def as_svg_data_uri(matrix, version, scale=1, border=None,
                     xmldecl=False, svgns=True, title=None,
                     desc=None, svgid=None, svgclass='segno',
@@ -313,10 +314,10 @@ def as_svg_data_uri(matrix, version, scale=1, border=None,
               lineclass=lineclass, omitsize=omitsize, encoding=encoding,
               svgid=svgid, unit=unit, svgversion=svgversion, nl=nl, **kw)
     return 'data:image/svg+xml{0},{1}' \
-                .format(';charset=' + encoding if not omit_charset else '',
-                        # Replace " quotes with ' and URL encode the result
-                        # See also https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-                        encode(_replace_quotes(buff.getvalue())))
+           .format(';charset=' + encoding if not omit_charset else '',
+                   # Replace " quotes with ' and URL encode the result
+                   # See also https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
+                   encode(_replace_quotes(buff.getvalue())))
 
 
 def write_svg_debug(matrix, version, out, scale=15, border=None,
@@ -359,7 +360,8 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         write = f.write
         write('<?xml version="1.0" encoding="utf-8"?>\n')
         write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
-        write('<style type="text/css"><![CDATA[ text { font-size: 1px; font-family: Helvetica, Arial, sans; } ]]></style>')
+        write('<style type="text/css"><![CDATA[ text { font-size: 1px; '
+              'font-family: Helvetica, Arial, sans; } ]]></style>')
         write('<g transform="scale({0})">'.format(scale))
         for i in range(matrix_size):
             y = i + border
@@ -372,7 +374,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
                 write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
         # legend may be empty if add_legend == False
         for x, y, val in legend:
-            write('<text x="{0}" y="{1}">{2}</text>'.format(x+.2, y+.9, val))
+            write('<text x="{0}" y="{1}">{2}</text>'.format(x + .2, y + .9, val))
         write('</g></svg>\n')
 
 
@@ -478,7 +480,7 @@ def as_png_data_uri(matrix, version, scale=1, border=None,
     write_png(matrix, version, buff, scale=scale, border=border,
               compresslevel=compresslevel, **kw)
     return 'data:image/png;base64,{0}' \
-                .format(base64.b64encode(buff.getvalue()).decode('ascii'))
+           .format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
 @colorful(dark='#000', light='#fff')
@@ -524,8 +526,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         chunk_head = name + data
         # See <https://docs.python.org/2/library/zlib.html#zlib.crc32>
         # why crc32() & 0xFFFFFFFF is necessary
-        return pack(b'>I', len(data)) + chunk_head \
-               + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
+        return pack(b'>I', len(data)) + chunk_head + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
 
     def scale_row_x_axis(row):
         """\
@@ -719,7 +720,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
     append_cmd('1 0 0 1 {0} {1} cm'.format(border, y))
     miter = matrix_to_lines(matrix, 0, 0, incby=-1)
     # PDF supports absolute coordinates, only
-    cmds.extend('{0} {1} m {2} {1} l'.format(x1, y1, x2, y2) for (x1, y1), (x2, y2) in miter)
+    cmds.extend('{0} {1} m {2} {1} l'.format(x1, y1, x2) for (x1, y1), (x2, y2) in miter)
     append_cmd('S')
     graphic = zlib.compress((' '.join(cmds)).encode('ascii'), compresslevel)
     with writable(out, 'wb') as f:
@@ -729,14 +730,15 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         write(b'%PDF-1.4\r%\xE2\xE3\xCF\xD3\r\n')
         for obj in ('obj <</Type /Catalog /Pages 2 0 R>>\r\nendobj\r\n',
                     'obj <</Type /Pages /Kids [3 0 R] /Count 1>>\r\nendobj\r\n',
-                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'.format(width, height),
+                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'
+                    .format(width, height),
                     'obj <</Length {0} /Filter /FlateDecode>>\r\nstream\r\n'.format(len(graphic))):
             object_pos.append(f.tell())
             writestr('{0} 0 {1}'.format(len(object_pos), obj))
         write(graphic)
         write(b'\r\nendstream\r\nendobj\r\n')
         object_pos.append(f.tell())
-        writestr('{0} 0 obj <</CreationDate(D:{1})/Producer({2})/Creator({2})\r\n>>\r\nendofbj\r\n' \
+        writestr('{0} 0 obj <</CreationDate(D:{1})/Producer({2})/Creator({2})\r\n>>\r\nendofbj\r\n'
                  .format(len(object_pos), creation_date, CREATOR))
         object_pos.append(f.tell())
         xref_location = f.tell()
@@ -865,7 +867,7 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
         maxval = max(chain(stroke_color, bg_color))
         depth = 3 if not transparency else 4
         fmt = '>{0}B'.format(depth).encode('ascii')
-        colours=(pack(fmt, *bg_color), pack(fmt, *stroke_color))
+        colours = (pack(fmt, *bg_color), pack(fmt, *stroke_color))
     row_filter = invert_row_bits if colours is None else partial(row_to_color_values, colours=colours)
     with writable(out, 'wb') as f:
         write = f.write
@@ -945,7 +947,7 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
               '"  c {3}",\n'
               '"X c {4}",\n'.format(name, width, height, bg_color, stroke_color))
         for i, row in enumerate(row_iter):
-            write(''.join(chain(['"'],  (' ' if not b else 'X' for b in row),
+            write(''.join(chain(['"'], (' ' if not b else 'X' for b in row),
                                 ['"{0}\n'.format(',' if i < height - 1 else '')])))
         write('};\n')
 
@@ -1293,13 +1295,14 @@ def _hex_to_rgb_or_rgba(color, alpha_float=True):
     color_len = len(color)
     if color_len not in (6, 8):
         raise ValueError('Input #{0} is not in #RRGGBB nor in #RRGGBBAA format'.format(color))
-    res = tuple([int(color[i:i+2], 16) for i in range(0, color_len, 2)])
+    res = tuple([int(color[i:i + 2], 16) for i in range(0, color_len, 2)])
     if alpha_float and color_len == 8:
         res = res[:3] + (_alpha_value(res[3], alpha_float),)
     return res
 
 
 _ALPHA_COMMONS = {255: 1.0, 128: .5, 64: .25, 32: .125, 16: .625, 0: 0.0}
+
 
 def _alpha_value(color, alpha_float):
     if alpha_float:

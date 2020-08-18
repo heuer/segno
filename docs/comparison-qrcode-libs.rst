@@ -11,56 +11,56 @@ Features
 .. table::
     :class: pylib-comparison
 
-    ================================================================    =====================    ===================    ===================    ======================    ========
-    Description                                                         `qrcode`_                `PyQRCode`_            `PyQRCodeNG`_          `qrcodegen`_              `Segno`_
-    ================================================================    =====================    ===================    ===================    ======================    ========
-    Library license                                                     `BSD`_                   `BSD`_                 `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.3.6                  1.6.0                     |version|
-    Mode Numeric                                                        Yes                      Yes                    Yes                    Yes                       Yes
-    Mode Alphanumeric                                                   Yes                      Yes                    Yes                    Yes                       Yes
-    Mode Byte                                                           Yes                      Yes                    Yes                    Yes                       Yes
-    Mode Kanji                                                          No                       Yes                    Yes                    Yes                       Yes
-    Mode ECI                                                            No                       No                     No                     Yes                       Yes
-    Mode FNC1                                                           No                       No                     No                     No                        No
-    Mode Structured Append                                              No                       No                     No                     No                        Yes
-    Mode Hanzi [1]_                                                     No                       No                     No                     No                        Yes
-    Mixing modes                                                        Yes                      No                     No                     Yes                       Yes
-    QR Codes version 1 - 40                                             Yes                      Yes                    Yes                    Yes                       Yes
-    Micro QR Codes version M1 - M4                                      No                       No                     No                     No                        Yes
-    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 |br| |ISO 1-M| [2]_     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
-    Output acc. to ISO/IEC 18004:2015(E) Fig. 2 |br| |ISO M2-L|         -                        -                      -                      -                         Yes |br| |segno M2-L|
-    Find maximal error correction level                                 No                       No                     No                     Yes                       Yes
-    Optimize QR Codes                                                   Yes                      No                     No                     No                        No
-    `PNG`_ output                                                       Yes                      Yes                    Yes                    No                        Yes
-    `SVG`_ output                                                       Yes                      Yes                    Yes                    Yes                       Yes
-    `EPS`_ output                                                       Yes                      Yes                    Yes                    No                        Yes
-    `PDF`_ output                                                       Yes                      No                     No                     No                        Yes
-    `PAM`_ output                                                       No                       No                     No                     No                        Yes
-    `PBM`_ output                                                       Yes                      No                     No                     No                        Yes
-    `PPM`_ output                                                       Yes                      No                     No                     No                        Yes
-    `LaTeX`_ support                                                    No                       No                     No                     No                        Yes
-    `XBM`_ output                                                       Yes                      Yes                    Yes                    No                        Yes
-    `XPM`_ output                                                       No                       No                     No                     No                        Yes
-    PNG `data URI`_                                                     No                       No (no valid URI)      Yes                    No                        Yes
-    SVG data URI                                                        No                       No                     No                     No                        Yes
-    Text output                                                         Yes                      Yes                    Yes                    No                        Yes
-    `ANSI`_ escape code output                                          Yes                      Yes                    Yes                    No                        Yes
-    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                     No                        No, but via `PIL plugin`_
-    Black and white QR Codes                                            Yes                      Yes                    Yes                    Yes                       Yes
-    Colored QR Codes                                                    Yes                      Yes                    Yes                    No                        Yes
-    Animated QR Codes (`GIF`_, `APNG`_)                                 No                       No                     No                     No                        No, but via `PIL plugin`_
-    Changing size of modules (scaling factor)                           Yes                      Yes                    Yes                    No                        Yes
-    Command line script                                                 Yes                      No                     Yes                    No                        Yes
-    Plugins                                                             No                       No                     No                     No                        Yes
-    Default encoding in Byte mode                                       ISO/IEC 8859-1           ISO/IEC 8859-1         ISO/IEC 8859-1         ISO/IEC 8859-1            ISO/IEC 8859-1
-                                                                        or UTF-8                 or UTF-8               or UTF-8               or UTF-8                  or UTF-8
-    3rd party dependencies                                              `six`_,                  `PyPNG`_               `PyPNG`_               -                         -
+    ================================================================    =====================    ===================    ======================    ========
+    Description                                                         `qrcode`_                `PyQRCode`_            `qrcodegen`_              `Segno`_
+    ================================================================    =====================    ===================    ======================    ========
+    Library license                                                     `BSD`_                   `BSD`_                 `MIT`_                    `BSD`_
+    Library version                                                     6.1                      1.2.1                  1.6.0                     |version|
+    Mode Numeric                                                        Yes                      Yes                    Yes                       Yes
+    Mode Alphanumeric                                                   Yes                      Yes                    Yes                       Yes
+    Mode Byte                                                           Yes                      Yes                    Yes                       Yes
+    Mode Kanji                                                          No                       Yes                    Yes                       Yes
+    Mode ECI                                                            No                       No                     Yes                       Yes
+    Mode FNC1                                                           No                       No                     No                        No
+    Mode Structured Append                                              No                       No                     No                        Yes
+    Mode Hanzi [1]_                                                     No                       No                     No                        Yes
+    Mixing modes                                                        Yes                      No                     Yes                       Yes
+    QR Codes version 1 - 40                                             Yes                      Yes                    Yes                       Yes
+    Micro QR Codes version M1 - M4                                      No                       No                     No                        Yes
+    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 |br| |ISO 1-M| [2]_     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
+    Output acc. to ISO/IEC 18004:2015(E) Fig. 2 |br| |ISO M2-L|         -                        -                      -                         Yes |br| |segno M2-L|
+    Find maximal error correction level                                 No                       No                     Yes                       Yes
+    Optimize QR Codes                                                   Yes                      No                     No                        No
+    `PNG`_ output                                                       Yes                      Yes                    No                        Yes
+    `SVG`_ output                                                       Yes                      Yes                    Yes                       Yes
+    `EPS`_ output                                                       Yes                      Yes                    No                        Yes
+    `PDF`_ output                                                       Yes                      No                     No                        Yes
+    `PAM`_ output                                                       No                       No                     No                        Yes
+    `PBM`_ output                                                       Yes                      No                     No                        Yes
+    `PPM`_ output                                                       Yes                      No                     No                        Yes
+    `LaTeX`_ support                                                    No                       No                     No                        Yes
+    `XBM`_ output                                                       Yes                      Yes                    No                        Yes
+    `XPM`_ output                                                       No                       No                     No                        Yes
+    PNG `data URI`_                                                     No                       No (no valid URI)      No                        Yes
+    SVG data URI                                                        No                       No                     No                        Yes
+    Text output                                                         Yes                      Yes                    No                        Yes
+    `ANSI`_ escape code output                                          Yes                      Yes                    No                        Yes
+    Other output formats (i.e. `JPEG`_)                                 Yes                      No                     No                        Yes via `plugin`_
+    Black and white QR Codes                                            Yes                      Yes                    Yes                       Yes
+    Colored QR Codes                                                    Yes                      Yes                    No                        Yes
+    Animated QR Codes (`GIF`_, `APNG`_, `WebP`_)                        No                       No                     No                        Yes via `plugin`_
+    Changing size of modules (scaling factor)                           Yes                      Yes                    No                        Yes
+    Command line script                                                 Yes                      No                     No                        Yes
+    Plugins                                                             No                       No                     No                        Yes
+    Default encoding in Byte mode                                       ISO/IEC 8859-1           ISO/IEC 8859-1         ISO/IEC 8859-1            ISO/IEC 8859-1
+                                                                        or UTF-8                 or UTF-8               or UTF-8                  or UTF-8
+    3rd party dependencies                                              `six`_,                  `PyPNG`_               -                         -
                                                                         `Pillow`_ or
                                                                         `Pymaging`_ and
                                                                         `Pymaging-PNG`_
                                                                         (Windows:
                                                                         `colorama`_)
-    ================================================================    =====================    ===================    ===================    ======================    ========
+    ================================================================    =====================    ===================    ======================    ========
 
 .. [1] The Hanzi mode is not part of ISO/IEC 18004 and may not be supported by all QR Code decoders.
        Segno uses the Hanzi mode if the user enables it explicitly, see :ref:`hanzi-mode` for details
@@ -68,7 +68,7 @@ Features
 .. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
        the generated QR code may look different because they choose a different mask pattern.
        ISO/IEC 18004:2015(E) (cf. page 7) uses mask 5, while qrcode and qrcodegen use mask 4 and
-       PyQRCode / PyQRCodeNG use mask 6. All these QR codes can be read by common QR Code readers.
+       PyQRCode uses mask 6. All these QR codes can be read by common QR Code readers.
 
 
 Performance
@@ -79,7 +79,7 @@ Intel i7-8559U / CPython 3.7. Each SVG / PNG image uses a
 scaling factor of 10 (aside from qrcodegen which does not support any scaling).
 
 
-Create a 1-M QR Code
+Create a 1-M QR code
 ~~~~~~~~~~~~~~~~~~~~
 
 1-M QR code encoding "QR Code Symbol"
@@ -88,7 +88,7 @@ Create a 1-M QR Code
     :alt: Chart showing the results of creating a 1-M QR code.
 
 
-Create a 7-Q QR Code
+Create a 7-Q QR code
 ~~~~~~~~~~~~~~~~~~~~
 
 7-Q QR code encoding "QR Code Symbol"
@@ -97,7 +97,7 @@ Create a 7-Q QR Code
     :alt: Chart showing the results of creating a 7-Q QR code.
 
 
-Create a 30-H QR Code
+Create a 30-H QR code
 ~~~~~~~~~~~~~~~~~~~~~
 
 30-H QR code encoding "QR Code Symbol"
@@ -106,7 +106,7 @@ Create a 30-H QR Code
     :alt: Chart showing the results of creating a 30-H QR code.
 
 
-Create a QR Code and serialize it as SVG
+Create a QR code and serialize it as SVG
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR code 1-M "QR Code Symbol" and serialize it as SVG document.
@@ -116,7 +116,7 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as SVG document.
     :alt: Chart showing the results of creating a 1-M QR code and export it as SVG image.
 
 
-Create a QR Code and serialize it as PNG
+Create a QR code and serialize it as PNG
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
@@ -126,32 +126,32 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 
 .. |ISO 1-M| image:: _static/iso_fig1_1m.png
-    :alt: 1-M QR Code encoding 'QR Code Symbol'
+    :alt: 1-M QR code encoding 'QR Code Symbol'
     :width: 63
     :height: 63
 
 .. |ISO M2-L| image:: _static/iso_fig2_m2l.png
-    :alt: M2-L Symbol encoding '01234567'
+    :alt: M2-L Micro QR code encoding '01234567'
     :width: 52
     :height: 52
 
 .. |qrcode 1-M| image:: _static/iso_fig1_1m_qrcode.png
-    :alt: 1-M QR Code encoding 'QR Code Symbol' using mask 4
+    :alt: 1-M QR code encoding 'QR Code Symbol' using mask 4
     :width: 63
     :height: 63
 
 .. |pyqr 1-M| image:: _static/iso_fig1_1m_pyqr.png
-    :alt: 1-M QR Code encoding 'QR Code Symbol' using mask 6
+    :alt: 1-M QR code encoding 'QR Code Symbol' using mask 6
     :width: 63
     :height: 63
 
 .. |segno 1-M| image:: _static/iso_fig1_1m_segno.png
-    :alt: 1-M QR Code encoding 'QR Code Symbol' using mask 5
+    :alt: 1-M QR code encoding 'QR Code Symbol' using mask 5
     :width: 63
     :height: 63
 
 .. |segno M2-L| image:: _static/iso_fig2_m2l_segno.png
-    :alt: M2-L Symbol encoding '01234567'
+    :alt: M2-L Micro QR code encoding '01234567'
     :width: 52
     :height: 52
 
@@ -183,7 +183,8 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 .. _PIL: https://pypi.org/project/PIL/
 .. _Pillow: https://pypi.org/project/Pillow/
 .. _colorama: https://pypi.org/project/colorama/
-.. _PIL plugin: https://github.com/heuer/segno-pil
+.. _plugin: https://github.com/heuer/qrcode-artistic
 .. _benchmarks.py: https://github.com/heuer/segno/blob/master/sandbox/benchmarks.py
 .. _GIF: https://en.wikipedia.org/wiki/GIF#Animated_GIF
 .. _APNG: https://en.wikipedia.org/wiki/Animated_Portable_Network_Graphics
+.. _WebP: https://en.wikipedia.org/wiki/WebP

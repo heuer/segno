@@ -1,4 +1,4 @@
-Python 2 Statement
+Python 2 statement
 ==================
 
 While Segno is a Python 3-first package, Python 2.7 is still supported

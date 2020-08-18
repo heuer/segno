@@ -12,15 +12,16 @@ QR Code and Micro QR Code implementation.
 """
 from __future__ import absolute_import, unicode_literals
 import sys
+import io
 from . import encoder
 from .encoder import DataOverflowError
 from . import writers, utils
 try:  # pragma: no cover
-    str_type = basestring
+    str_type = basestring  # noqa: F821
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
@@ -422,9 +423,8 @@ class QRCode:
 
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
-            self.save(f, scale=scale, dark=dark, light=light,
-                      border=border)
-        except:
+            self.save(f, scale=scale, dark=dark, light=light, border=border)
+        except:  # noqa: E722
             f.close()
             os.unlink(f.name)
             raise
@@ -465,6 +465,25 @@ class QRCode:
                                        xmldecl=xmldecl, nl=nl,
                                        encode_minimal=encode_minimal,
                                        omit_charset=omit_charset, **kw)
+
+    def svg_inline(self, **kw):
+        """\
+        Returns a SVG representation which is embeddable into HTML5 contexts.
+
+        Due to the fact that HTML5 directly supports SVG, various elements of
+        a SVG document can or should be suppressed (i.e. the XML declaration and
+        the SVG namespace).
+
+        This method returns a string that can be used in an HTML context.
+
+        This method uses the same parameters as the usual SVG serializer, see
+        :py:func:`save` and the available `SVG parameters <#svg>`_
+
+        :rtype: str
+        """
+        buff = io.BytesIO()
+        self.save(buff, kind='svg', xmldecl=False, svgns=False, nl=False, **kw)
+        return buff.getvalue().decode(kw.get('encoding', 'utf-8'))
 
     def png_data_uri(self, **kw):
         """\
@@ -957,13 +976,13 @@ class QRCodeSequence(tuple):
 
         See :py:meth:`QRCode.save()` for a detailed enumeration of options.
         """
-        filename = lambda o, n: o
+        filename = lambda o, n: o  # noqa: E731
         m = len(self)
         if m > 1 and isinstance(out, str_type):
             dot_idx = out.rfind('.')
             if dot_idx > -1:
                 out = out[:dot_idx] + '-{0:02d}-{1:02d}' + out[dot_idx:]
-                filename = lambda o, n: o.format(m, n)
+                filename = lambda o, n: o.format(m, n)  # noqa: E731
         for n, qrcode in enumerate(self, start=1):
             qrcode.save(filename(out, n), kind=kind, **kw)
 

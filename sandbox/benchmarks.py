@@ -4,6 +4,8 @@ Some benchmarks running against QR Code generators
 """
 from __future__ import print_function
 import sys
+import os
+import csv
 import timeit
 import segno
 try:
@@ -25,11 +27,6 @@ try:
     import pyqrcode
 except ImportError:
     pyqrcode = None
-try:
-    import pyqrcodeng
-except ImportError:
-    pyqrcodeng = None
-
 
 if qrcode:
     def create_qrcode(data='QR Code Symbol'):
@@ -55,20 +52,20 @@ if qrcode:
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
                     image_factory=SvgPathImage)
         qr.add_data(data, optimize=False)
-        qr.make_image().save('out/qrcode_path_%s.svg' % data)
+        qr.make_image().save(os.path.join(_output_dir(), 'qrcode_path_%s.svg' % data))
 
     def svg_qrcode_rects(data='QR Code Symbol'):
         """qrcode SVG rects"""
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10,
                     image_factory=SvgImage)
         qr.add_data(data, optimize=False)
-        qr.make_image().save('out/qrcode_rects_%s.svg' % data)
+        qr.make_image().save(os.path.join(_output_dir(), 'qrcode_rects_%s.svg' % data))
 
     def png_qrcode(data='QR Code Symbol'):
         """qrcode PNG 1-M"""
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10)
         qr.add_data(data, optimize=False)
-        qr.make_image().save('out/qrcode_%s.png' % data)
+        qr.make_image().save(os.path.join(_output_dir(), 'qrcode_%s.png' % data))
 
 
 if pyqrcode:
@@ -86,34 +83,11 @@ if pyqrcode:
 
     def svg_pyqrcode(data='QR Code Symbol'):
         """PyQRCode SVG"""
-        pyqrcode.create(data, error='m').svg('out/pyqrcode_%s.svg' % data, scale=10)
+        pyqrcode.create(data, error='m').svg(os.path.join(_output_dir(), 'pyqrcode_%s.svg' % data), scale=10)
 
     def png_pyqrcode(data='QR Code Symbol'):
         """PyQRCode PNG 1-M"""
-        pyqrcode.create(data, error='m').png('out/pyqrcode_%s.png' % data, scale=10)
-
-
-if pyqrcodeng:
-    def create_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 1-M"""
-        pyqrcodeng.create(data, error='m')
-
-    def create7q_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 7-Q"""
-        pyqrcodeng.create(data, error='q', version=7)
-
-    def create30h_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG create 30-H"""
-        pyqrcodeng.create(data, error='h', version=30)
-
-    def svg_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG SVG"""
-        pyqrcodeng.create(data, error='m').svg('out/pyqrcodeng_%s.svg' % data, scale=10)
-
-    def png_pyqrcodeng(data='QR Code Symbol'):
-        """PyQRCodeNG PNG 1-M"""
-        pyqrcodeng.create(data, error='m').png('out/pyqrcodeng_%s.png' % data, scale=10)
-
+        pyqrcode.create(data, error='m').png(os.path.join(_output_dir(), 'pyqrcode_%s.png' % data), scale=10)
 
 if qrcodegen:
     def create_qrcodegen(data='QR Code Symbol'):
@@ -140,10 +114,14 @@ if qrcodegen:
 
     def svg_qrcodegen(data='QR Code Symbol'):
         """qrcodegen SVG"""
-        with open('out/qrcodegen_%s.svg' % data, 'wt') as f:
+        with open(os.path.join(_output_dir(), 'qrcodegen_%s.svg' % data), 'wt') as f:
             f.write(QrCode.encode_segments(qrcodegen_make_segment(data),
                                            ecl=qrcodegen_error_m,
                                            boostecl=False).to_svg_str(border=4))
+
+
+def _output_dir():
+    return os.path.join(os.path.abspath(os.path.dirname(__file__)), 'out')
 
 
 def create_segno(data='QR Code Symbol'):
@@ -163,12 +141,12 @@ def create30h_segno(data='QR Code Symbol'):
 
 def svg_segno(data='QR Code Symbol'):
     """Segno SVG"""
-    segno.make_qr(data, error='m', boost_error=False).save('out/segno_%s.svg' % data, scale=10)
+    segno.make_qr(data, error='m', boost_error=False).save(os.path.join(_output_dir(), 'segno_%s.svg' % data), scale=10)
 
 
 def png_segno(data='QR Code Symbol'):
     """Segno PNG 1-M"""
-    segno.make_qr(data, error='m', boost_error=False).save('out/segno_%s.png' % data, scale=10)
+    segno.make_qr(data, error='m', boost_error=False).save(os.path.join(_output_dir(), 'segno_%s.png' % data), scale=10)
 
 
 def run_create_tests(which=None, number=200, table=None):
@@ -244,13 +222,12 @@ def _run_tests(tests, number, table=None):
 
 
 if __name__ == '__main__':
-    import csv
     table = []
     run_create_tests(table=table)
     run_create7q_tests(table=table)
     run_create30h_tests(table=table)
     run_svg_tests(table=table)
     run_png_tests(table=table)
-    with open('out/results.csv', 'w') as f:
+    with open(os.path.join(_output_dir(), 'results.csv'), 'w') as f:
         writer = csv.writer(f)
         writer.writerows(table)
