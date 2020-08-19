@@ -17,17 +17,17 @@ from datetime import date
 
 
 def test_geo_default():
-    qr = helpers.make_geo(38.8976763,-77.0365297)
+    qr = helpers.make_geo(38.8976763, -77.0365297)
     assert not qr.is_micro
 
 
 def test_geo_data():
-    data = helpers.make_geo_data(38.8976763,-77.0365297)
+    data = helpers.make_geo_data(38.8976763, -77.0365297)
     assert 'geo:38.8976763,-77.0365297' == data
 
 
 def test_geo_data2():
-    data = helpers.make_geo_data(38.89,-77.0365297)
+    data = helpers.make_geo_data(38.89, -77.0365297)
     assert 'geo:38.89,-77.0365297' == data
 
 
