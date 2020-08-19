@@ -76,9 +76,9 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             integer between 1 and 40 (for QR codes).
             The `version` parameter is case insensitive.
     :type version: int, str or None
-    :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
-            ``None`` (default) the appropriate mode will automatically be
-            determined.
+    :param mode: "numeric", "alphanumeric", "byte", "kanji" or "hanzi".
+            If the value is ``None`` (default) the appropriate mode will
+            automatically be determined.
             If `version` refers to a Micro QR code, this function may raise a
             :py:exc:`ValueError` if the provided `mode` is not supported.
 
@@ -89,7 +89,17 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             alphanumeric    1 - 40,     M2, M3, M4
             byte            1 - 40,         M3, M4
             kanji           1 - 40,         M3, M4
+            hanzi           1 - 40
             ============    =======================
+
+            .. note::
+                The Hanzi mode may not be supported by all QR code readers since
+                it is not part of ISO/IEC 18004:2015(E).
+                For this reason, this mode must be specified explicitly by the
+                user::
+
+                    import segno
+                    qr = segno.make('书读百遍其义自现', mode='hanzi')
 
             The `mode` parameter is case insensitive.
 
