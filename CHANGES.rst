@@ -1,6 +1,11 @@
 Changes
 =======
 
+1.2.1 -- 2020-mm-dd
+-------------------
+* Improved API docs
+
+
 1.2.0 -- 2020-08-18
 -------------------
 * Added ``QRCode.svg_inline`` method which returns a string which
