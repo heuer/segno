@@ -82,6 +82,8 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             If `version` refers to a Micro QR code, this function may raise a
             :py:exc:`ValueError` if the provided `mode` is not supported.
 
+            The `mode` parameter is case insensitive.
+
             ============    =======================
             Mode            (Micro) QR Code Version
             ============    =======================
@@ -100,8 +102,6 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
 
                     import segno
                     qr = segno.make('书读百遍其义自现', mode='hanzi')
-
-            The `mode` parameter is case insensitive.
 
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
@@ -460,6 +460,11 @@ class QRCode:
         and :paramref:`omit_charset <segno.QRCode.svg_data_uri.omit_charset>`,
         this method uses the same parameters as the usual SVG serializer, see
         :py:func:`save` and the available `SVG parameters <#svg>`_
+
+        .. note::
+            In order to embed a SVG image in HTML without generating a file, the
+            :py:func:`svg_inline` method could serve better results, as it
+            usually produces a smaller output.
 
         :param bool xmldecl: Indicates if the XML declaration should be
                         serialized (default: ``False``)
