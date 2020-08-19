@@ -33,7 +33,7 @@ def test(session):
         if m.group(1) in ('20.2', '20.2.1', '20.2.2'):
             session.run('pip', 'uninstall', '-y', 'pip')
             session.run('easy_install', 'pip==20.1.1')
-    session.install('-Ur', 'requirements.testing.txt')
+    session.install('-Ur', 'requirements-testing.txt')
     session.install('.')
     session.run('py.test')
 
@@ -43,7 +43,7 @@ def docs(session):
     """\
     Build the documentation.
     """
-    session.install('-Ur', 'requirements.rtd')
+    session.install('-Ur', 'requirements-rtd.txt')
     output_dir = os.path.abspath(os.path.join(session.create_tmp(), 'output'))
     shutil.rmtree(output_dir, ignore_errors=True)
     doctrees, html, man = map(partial(os.path.join, output_dir), ['doctrees', 'html', 'man'])
@@ -65,7 +65,7 @@ def coverage(session):
     """\
     Run coverage.
     """
-    session.install('coverage', '-Ur', 'requirements.testing.txt')
+    session.install('coverage', '-Ur', 'requirements-testing.txt')
     session.install('.')
     output_dir = os.path.abspath(os.path.join(session.create_tmp(), 'html'))
     cover = partial(session.run, 'coverage')

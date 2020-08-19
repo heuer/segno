@@ -55,7 +55,7 @@ Changes
 * Documentation improvements
 * Although this lib made backwards incompatible changes since version 0.1.0,
   the changes should be clear since almost all changes were made
-  very conservative with background compatibility in mind.
+  very conservative with backwards compatibility in mind.
   Even early adopters should find a clear update path.
   This version marks a stable API acc. to `Semantic Versioning <https://semver.org/>`_.
 * The initial stable release after nearly four years of development. Happy
