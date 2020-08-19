@@ -201,9 +201,10 @@ care since it is not widely supported by QR Code readers, although the
 `ZXing <https://zxing.org/>`_ project supports decoding QR Codes which
 utilize the Hanzi mode.
 
-Since this mode is not covered by the standard, Segno tries not to detect
-Hanzi. The user has to enable it explicitly. Further, the Hanzi
-mode is not available for Micro QR Codes.
+.. note::
+    Since this mode is not covered by the ISO standard, Segno tries not to
+    detect Hanzi. The user has to enable it explicitly. Further, the Hanzi
+    mode is not available for Micro QR Codes.
 
 .. code-block:: python
 
