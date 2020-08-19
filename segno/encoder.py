@@ -1601,8 +1601,8 @@ class Segments:
         # ECI overhead
         if eci:
             no_eci_indicators = sum(1 for segment in self.segments
-                                    if segment.mode == consts.MODE_BYTE
-                                    and segment.encoding != consts.DEFAULT_BYTE_ENCODING)
+                                    if segment.mode == consts.MODE_BYTE and
+                                    segment.encoding != consts.DEFAULT_BYTE_ENCODING)
             overhead += no_eci_indicators * 4  # ECI indicator
             overhead += no_eci_indicators * 8  # ECI assignment no
         if is_sa:
