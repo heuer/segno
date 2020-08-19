@@ -31,7 +31,7 @@ Unique features
 * Micro QR Codes
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Hanzi mode <https://segno.readthedocs.io/en/stable/qrcode-modes.html#hanzi-mode>`_
-* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
+* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/make.html>`_
   ::
 
     import segno
