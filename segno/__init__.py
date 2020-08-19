@@ -479,6 +479,11 @@ class QRCode:
         This method uses the same parameters as the usual SVG serializer, see
         :py:func:`save` and the available `SVG parameters <#svg>`_
 
+        The returned string can be used directly in Jinja / Django templates,
+        provided the ``safe`` filter is used::
+
+            <div>{{ qr.svg_inline(dark='#228b22', scale=3) | safe }}</div>
+
         :rtype: str
         """
         buff = io.BytesIO()
