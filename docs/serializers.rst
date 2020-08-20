@@ -222,7 +222,8 @@ accepted by the specific serializer.
 More colorful QR Codes
 ----------------------
 
-The SVG, PNG and PPM serializers support more than two colors.
+The :ref:`SVG <svg>`, :ref:`PNG <png>` and :ref:`PPM <ppm>` serializers support
+more than two colors.
 
 .. code-block:: python
 

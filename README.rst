@@ -31,7 +31,7 @@ Unique features
 * Micro QR Codes
 * `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
 * `Hanzi mode <https://segno.readthedocs.io/en/stable/qrcode-modes.html#hanzi-mode>`_
-* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/api.html>`_
+* `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/make.html>`_
   ::
 
     import segno
@@ -47,7 +47,7 @@ Unique features
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
     :alt: Colorful M4-Q Micro QR code encoding "Rain"
-* `Artistic QR Codes <https://segno.readthedocs.io/en/latest/artistic-qrcodes.html>`_
+* `Artistic QR Codes <https://segno.readthedocs.io/en/stable/artistic-qrcodes.html>`_
   (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
   .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/letitbe.jpg

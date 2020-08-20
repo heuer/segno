@@ -144,7 +144,7 @@ Now you can use the content of the buffer as input for a Django ``ContentFile``.
 .. code-block:: python
 
     ticket = Ticket(name='JULIA')
-    ticket.qrcode.save('JULIA.png', ContentFile(out.getvalue())), save=False)
+    ticket.qrcode.save('JULIA.png', ContentFile(out.getvalue()), save=False)
     ticket.save()
 
 If for some reason the QR codes should be stored in the lossy file format JPEG,
@@ -167,5 +167,5 @@ the ``qrcode-artistic`` plugin is required (see also :doc:`artistic-qrcodes`)::
 
     # ...
 
-    ticket.qrcode.save('JULIA.jpg', ContentFile(out.getvalue())), save=False)
+    ticket.qrcode.save('JULIA.jpg', ContentFile(out.getvalue()), save=False)
 

@@ -1,3 +1,4 @@
+# Requirements to run the tests
 pytest~=4.6
 pypng~=0.0.20
 pyzbar~=0.1.8

@@ -5,7 +5,8 @@ The ISO/IEC 18004 standard defines four modes in order to encode the data as
 efficiently as possible. If no encoding or mode is provided, Segno tries to
 find the most efficient encoding / mode.
 
-The mode may be specified by the ``mode`` (CLI: ``--mode`` or ``-m``) parameter
+The mode may be specified by the :paramref:`mode <segno.make.mode>`
+(CLI: :option:`--mode <segno --mode>` or :option:`-m <segno -m>`) parameter
 although it is recommended to let Segno decide which mode / encoding should be used.
 
 .. _numeric-mode:
@@ -201,9 +202,10 @@ care since it is not widely supported by QR Code readers, although the
 `ZXing <https://zxing.org/>`_ project supports decoding QR Codes which
 utilize the Hanzi mode.
 
-Since this mode is not covered by the standard, Segno tries not to detect
-Hanzi. The user has to enable it explicitly. Further, the Hanzi
-mode is not available for Micro QR Codes.
+.. note::
+    Since this mode is not covered by the ISO standard, Segno tries not to
+    detect Hanzi. The user has to enable it explicitly. Further, the Hanzi
+    mode is not available for Micro QR Codes.
 
 .. code-block:: python
 

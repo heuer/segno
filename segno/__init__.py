@@ -21,7 +21,7 @@ try:  # pragma: no cover
 except NameError:  # pragma: no cover
     str_type = str
 
-__version__ = '1.2.0'
+__version__ = '1.2.1.dev'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
@@ -76,11 +76,13 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             integer between 1 and 40 (for QR codes).
             The `version` parameter is case insensitive.
     :type version: int, str or None
-    :param mode: "numeric", "alphanumeric", "byte", or "kanji". If the value is
-            ``None`` (default) the appropriate mode will automatically be
-            determined.
+    :param mode: "numeric", "alphanumeric", "byte", "kanji" or "hanzi".
+            If the value is ``None`` (default) the appropriate mode will
+            automatically be determined.
             If `version` refers to a Micro QR code, this function may raise a
             :py:exc:`ValueError` if the provided `mode` is not supported.
+
+            The `mode` parameter is case insensitive.
 
             ============    =======================
             Mode            (Micro) QR Code Version
@@ -89,9 +91,17 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
             alphanumeric    1 - 40,     M2, M3, M4
             byte            1 - 40,         M3, M4
             kanji           1 - 40,         M3, M4
+            hanzi           1 - 40
             ============    =======================
 
-            The `mode` parameter is case insensitive.
+            .. note::
+                The Hanzi mode may not be supported by all QR code readers since
+                it is not part of ISO/IEC 18004:2015(E).
+                For this reason, this mode must be specified explicitly by the
+                user::
+
+                    import segno
+                    qr = segno.make('书读百遍其义自现', mode='hanzi')
 
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
@@ -411,8 +421,8 @@ class QRCode:
             from urllib.parse import urljoin
             from urllib.request import pathname2url
         except ImportError:  # Python 2
-            from urlparse import urljoin
-            from urllib import pathname2url
+            from urlparse import urljoin  # noqa
+            from urllib import pathname2url  # noqa
 
         def delete_file(name):
             time.sleep(delete_after)
@@ -451,6 +461,11 @@ class QRCode:
         this method uses the same parameters as the usual SVG serializer, see
         :py:func:`save` and the available `SVG parameters <#svg>`_
 
+        .. note::
+            In order to embed a SVG image in HTML without generating a file, the
+            :py:func:`svg_inline` method could serve better results, as it
+            usually produces a smaller output.
+
         :param bool xmldecl: Indicates if the XML declaration should be
                         serialized (default: ``False``)
         :param bool encode_minimal: Indicates if the resulting data URI should
@@ -478,6 +493,11 @@ class QRCode:
 
         This method uses the same parameters as the usual SVG serializer, see
         :py:func:`save` and the available `SVG parameters <#svg>`_
+
+        The returned string can be used directly in Jinja / Django templates,
+        provided the ``safe`` filter is used::
+
+            <div>{{ qr.svg_inline(dark='#228b22', scale=3) | safe }}</div>
 
         :rtype: str
         """

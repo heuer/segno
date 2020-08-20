@@ -11,12 +11,11 @@ Contents:
 .. toctree::
     :maxdepth: 4
 
-    command-line
     make
+    serializers
+    boost-error-correction-level
     qrcode-modes
     structured-append
-    boost-error-correction-level
-    serializers
     colorful-qrcodes
     svg-options
     special-qrcode-factories
@@ -24,6 +23,7 @@ Contents:
     epc-qrcodes
     artistic-qrcodes
     web-development
+    command-line
     comparison-qrcode-libs
     man/index
     plugins

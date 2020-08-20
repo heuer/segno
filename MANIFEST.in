@@ -1,3 +1,2 @@
 include LICENSE *.txt *.rst
-exclude *.rtd
-exclude requirements.testing.txt
+exclude requirements*

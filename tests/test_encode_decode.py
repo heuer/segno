@@ -14,7 +14,6 @@ from __future__ import absolute_import, unicode_literals
 import io
 import pytest
 import segno
-from segno.utils import matrix_iter
 try:
     import pyzbar
     from pyzbar.pyzbar import decode as zbardecode
@@ -26,7 +25,7 @@ def qr_to_bytes(qrcode, scale):
     if qrcode.is_micro:
         raise Exception('zbar cannot decode Micro QR codes')
     buff = io.BytesIO()
-    for row in matrix_iter(qrcode.matrix, version=qrcode._version, scale=scale):
+    for row in qrcode.matrix_iter(scale=scale):
         buff.write(bytearray(0x0 if b else 0xff for b in row))
     return buff.getvalue()
 

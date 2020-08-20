@@ -17,8 +17,8 @@ import segno
 
 
 @pytest.mark.parametrize('dark, light, transparent', [('white', None, (0,)),
-                                                            ('white', 'black', None),
-                                                            (None, 'black', (1,))])
+                                                      ('white', 'black', None),
+                                                      (None, 'black', (1,))])
 def test_issue_54_inverted(dark, light, transparent):
     qr = segno.make('The Beatles')
     assert 'M4-M' == qr.designator
@@ -44,8 +44,8 @@ def test_issue_54_inverted(dark, light, transparent):
 
 
 @pytest.mark.parametrize('dark, light, transparent', [('black', None, (1,)),
-                                                            ('black', 'white', None),
-                                                            (None, 'white', (0,))])
+                                                      ('black', 'white', None),
+                                                      (None, 'white', (0,))])
 def test_issue_54_notinverted(dark, light, transparent):
     qr = segno.make('The Beatles')
     assert 'M4-M' == qr.designator
