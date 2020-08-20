@@ -11,7 +11,6 @@ Contents:
 .. toctree::
     :maxdepth: 4
 
-    command-line
     make
     qrcode-modes
     structured-append
@@ -24,6 +23,7 @@ Contents:
     epc-qrcodes
     artistic-qrcodes
     web-development
+    command-line
     comparison-qrcode-libs
     man/index
     plugins

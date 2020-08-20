@@ -31,8 +31,8 @@ Same content, but as Micro QR code (M4)::
     :alt: Micro QR code for "Little wing".
 
 
-Version
--------
+QR Code version
+---------------
 
 If the :option:`--version <segno --version>` / :option:`-v <segno -v>`
 parameter is not provided, Segno chooses the minimal version for the QR code
@@ -59,8 +59,8 @@ Micro QR Code::
     :alt: Micro QR code version M4 for "Layla".
 
 
-Error correction level
-----------------------
+QR Code error correction level
+------------------------------
 
 The default error correction level is "L" (or any better if
 :option:`--no-error-boost <segno --no-error-boost>` was not set, c.f.
@@ -71,7 +71,7 @@ The default error correction level is "L" (or any better if
     $ segno -e=h "Heart of Gold"
 
 
-QR Code serialization
+QR code serialization
 ---------------------
 
 Printing the QR code to the terminal is nice but the
@@ -107,7 +107,7 @@ the supported file formats::
     :literal:
 
 
-Scaling QR Codes
+Scaling QR codes
 ----------------
 
 If the resulting QR code is too small, :option:`--scale <segno --scale>` or
