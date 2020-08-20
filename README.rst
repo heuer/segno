@@ -40,22 +40,22 @@ Unique features
 
 * `Colorful QR codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/yellow-submarine.png
+  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/yellow-submarine.png
     :alt: Colorful 3-H QR code encoding "Yellow Submarine"
 
   ... works also with Micro QR codes
 
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/colorful/rain.png
+  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/colorful/rain.png
     :alt: Colorful M4-Q Micro QR code encoding "Rain"
 * `Artistic QR Codes <https://segno.readthedocs.io/en/stable/artistic-qrcodes.html>`_
   (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/letitbe.jpg
+  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/artistic/letitbe.jpg
     :alt: Animated 3-H QR code encoding "The Beatles -- Let It Be"
 
   ... animated QR codes are supported as well
 
-  .. image:: https://github.com/heuer/segno/raw/develop/docs/_static/artistic/abbey-road.webp
+  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/artistic/abbey-road.webp
     :alt: Animated 4-H QR code encoding "The Beatles -- Abbey Road"
 
 
