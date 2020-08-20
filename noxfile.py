@@ -117,7 +117,7 @@ def start_release(session):
     """
     session.install('packaging')
     git = partial(session.run, 'git', external=True)
-    git('checkout', 'develop')
+    git('checkout', 'master')
     prev_version = _get_current_version(session)
     version = _validate_version(session)
     valid_version = bool(int(session.run('python', '-c', 'from packaging.version import parse;'
@@ -150,8 +150,6 @@ def finish_release(session):
     git('checkout', 'master')
     git('merge', '--no-ff', release_branch, '-m', 'Merge release branch {}'.format(release_branch))
     git('tag', '-a', version, '-m', 'Release {}'.format(version))
-    git('checkout', 'develop')
-    git('merge', '--no-ff', release_branch, '-m', 'Merge release branch {}'.format(release_branch))
     git('branch', '-d', release_branch)
     version_parts = version.split('.')
     patch = str(int(version_parts[2]) + 1)
@@ -167,10 +165,15 @@ def build_release(session):
     """\
     Builds a release: Creates sdist and wheel
     """
+    version = _validate_version(session)
+    git = partial(session.run, 'git', external=True)
+    git('fetch')
+    git('fetch', '--tags')
+    git('checkout', version)
     session.install('setuptools', 'wheel')
     shutil.rmtree('dist', ignore_errors=True)
-    session.run('git', 'checkout', 'master', external=True)
     session.run('python', 'setup.py', 'sdist', 'bdist_wheel')
+    git('checkout', 'master')
 
 
 @nox.session(name='upload-release', python=default_py)
