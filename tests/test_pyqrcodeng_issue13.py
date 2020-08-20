@@ -23,19 +23,12 @@ def test_autodetect():
     assert qr.mode == 'byte'
 
 
-def test_byte():
-    data = b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\x01\x00\x00\x00\x01\x08\x00\x00\x00\x00:~\x9bU\x00\x00\x00\nIDAT\x08[c\xf8\x0f\x00\x01\x01\x01\x00\x9b\xd7\x1d\r\x00\x00\x00\x00IEND\xaeB`\x82'
-    qr = segno.make(data)
-    assert qr.mode == 'byte'
-
-
 def test_encoding():
     encoding = 'iso-8859-15'
-    data = 'Émetteur'.encode(encoding)
-    qr = segno.make(data)
+    data = 'Émetteur'
+    qr = segno.make(data.encode(encoding))
     assert qr.mode == 'byte'
-    data2 = 'Émetteur'
-    qr2 = segno.make(data2, encoding=encoding)
+    qr2 = segno.make(data, encoding=encoding)
     assert qr2 == qr
 
 
