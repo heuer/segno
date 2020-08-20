@@ -1,4 +1,4 @@
-Creating QR Codes or Micro QR Codes
+Creating QR codes or Micro QR codes
 ===================================
 
 Segno's (Micro) QR codes are independent of a concrete output format; it's

@@ -12,10 +12,10 @@ Contents:
     :maxdepth: 4
 
     make
+    serializers
+    boost-error-correction-level
     qrcode-modes
     structured-append
-    boost-error-correction-level
-    serializers
     colorful-qrcodes
     svg-options
     special-qrcode-factories
