@@ -5,7 +5,8 @@ The ISO/IEC 18004 standard defines four modes in order to encode the data as
 efficiently as possible. If no encoding or mode is provided, Segno tries to
 find the most efficient encoding / mode.
 
-The mode may be specified by the ``mode`` (CLI: ``--mode`` or ``-m``) parameter
+The mode may be specified by the :paramref:`mode <segno.make.mode>`
+(CLI: :option:`--mode <segno --mode>` or :option:`-m <segno -m>`) parameter
 although it is recommended to let Segno decide which mode / encoding should be used.
 
 .. _numeric-mode:
