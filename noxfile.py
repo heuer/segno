@@ -102,7 +102,7 @@ def benchmarks(session):
 # 2. run tests, update docs, update changes
 # 3. nox -e finish-release -- version-number
 # 4. git push / git push origin --tags
-# 5. nox -e build-release
+# 5. nox -e build-release -- version-number
 # 6. nox -e upload-release
 #
 
@@ -157,7 +157,8 @@ def finish_release(session):
     _change_version(session, version, next_version)
     git('add', 'segno/__init__.py')
     git('commit', '-m', 'Incremented development version')
-    session.log('Finished. Run git push / git push origin --tags and nox -e build-release / nox -e upload-release')
+    session.log('Finished. Run git push / git push origin --tags and '
+                'nox -e build-release -- {} / nox -e upload-release'.format(version))
 
 
 @nox.session(name='build-release', python=default_py)
@@ -218,10 +219,13 @@ def _change_version(session, previous_version, next_version):
     fn = os.path.abspath(os.path.join(os.path.dirname(__file__), 'segno/__init__.py'))
     with open(fn, 'r', encoding='utf-8') as f:
         content = f.read()
-    new_content = re.sub(r'^(__version__ = ["\'])({0})(["\'])$'.format(re.escape(previous_version)),
-                         r'\g<1>{}\g<3>'.format(next_version), content, flags=re.MULTILINE)
+    new_content = re.sub(r'^(__version__ = ["\'])({0})(["\'])$'
+                         .format(re.escape(previous_version)),
+                         r'\g<1>{}\g<3>'.format(next_version), content,
+                         flags=re.MULTILINE)
     if content != new_content:
         with open(fn, 'w', encoding='utf-8') as f:
             f.write(new_content)
         return
-    session.error('Cannot modify version. Provided: "{}" (previous) "{}" (next)'.format(previous_version, next_version))
+    session.error('Cannot modify version. Provided: "{}" (previous) "{}" (next)'
+                  .format(previous_version, next_version))
