@@ -48,6 +48,11 @@ class DataOverflowError(ValueError):
     """\
     Indicates a problem that the provided data does not fit into the
     provided QR Code version or the data is too large in general.
+
+    This exception is inherited from :py:exc:`ValueError` and is only raised
+    if the data does not fit into the provided (Micro) QR Code version.
+
+    Basically it is sufficient to catch a :py:exc:`ValueError`.
     """
 
 
