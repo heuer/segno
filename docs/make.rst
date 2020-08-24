@@ -151,7 +151,7 @@ a (Micro) QR code.
 Segno tries by default to enhance the provided error correction level if
 :paramref:`boost_error <segno.make.boost_error>` is not set to ``False``;
 it takes  the ``error`` level as minimum error level without changing the
-(Micro) QR Code version.
+(Micro) QR Code version, c.f. :doc:`boost-error-correction-level` for details.
 
 If this behaviour is not desired, :paramref:`boost_error <segno.make.boost_error>`
 must be set to ``False`` (default: ``True``).
