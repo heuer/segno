@@ -644,8 +644,7 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
 
     best_matrix = None
     for mask_number, mask_pattern in enumerate(mask_patterns):
-        # A lot(!!!) faster than m = copy.deepcopy(matrix)
-        m = [bytearray(ba) for ba in matrix]
+        m = [ba[:] for ba in matrix]
         apply_mask(m, mask_pattern, matrix_size, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
@@ -1162,7 +1161,7 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
 
 def normalize_version(version):
     """\
-    Canonicalizes the provided `version`.
+    Canonicalization of the provided `version`.
 
     If the `version` is ``None``, this function returns ``None``. Otherwise
     this function checks if `version` is an integer or a Micro QR Code version.
@@ -1170,10 +1169,10 @@ def normalize_version(version):
     string identifier is returned.
 
     If the `version` does not represent a valid version identifier (aside of
-    ``None``, a VersionError is raised.
+    ``None``) a :py:exc:`ValueError` is raised.
 
     :param version: An integer, a string or ``None``.
-    :raises: VersionError: In case the version is not ``None`` and does not
+    :raises: :py:exc:`ValueError`: In case the version is not ``None`` and does not
                 represent a valid (Micro) QR Code version.
     :rtype: int, str or ``None``
     """
@@ -1202,10 +1201,10 @@ def normalize_mode(mode):
 
     In case the provided `mode` is ``None``, this function returns ``None``.
     Otherwise a mode constant is returned unless the provided parameter cannot
-    be mapped to a valid mode. In the latter case, a ModeError is raised.
+    be mapped to a valid mode. In the latter case, a :py:exc:`ValueError` is raised.
 
     :param mode: An integer or string or ``None``.
-    :raises: ModeError: In case the provided `mode` does not represent a valid
+    :raises: :py:exc:`ValueError` In case the provided `mode` does not represent a valid
              QR Code mode.
     :rtype: int or None
     """
@@ -1226,6 +1225,8 @@ def normalize_mask(mask, is_micro):
     :type mask: int or None
     :param bool is_micro: Indicates if the mask is meant to be used for a
             Micro QR Code.
+    :raises: :py:exc:`ValueError` in case of an invalid mask.
+    :rtype: int
     """
     if mask is None:
         return None
@@ -1250,10 +1251,11 @@ def normalize_errorlevel(error, accept_none=False):
     This function returns ``None`` if the provided parameter is ``None`` and
     `accept_none` is set to ``True`` (default: ``False``). If `error` is ``None``
     and `accept_none` is ``False`` or if the provided parameter cannot be
-    mapped to a valid QR Code error level, a ErrorLevelError is raised.
+    mapped to a valid QR Code error level, a :py:exc:`ValueError` is raised.
 
     :param error: String or ``None``.
     :param bool accept_none: Indicates if ``None`` is accepted as error level.
+    :raises: :py:exc:`ValueError` in case of an invalid mode.
     :rtype: int
     """
     if error is None:
@@ -1274,6 +1276,8 @@ def get_mode_name(mode_const):
     Returns the mode name for the provided mode constant.
 
     :param int mode_const: The mode constant (see :py:module:`segno.consts`)
+    :raises: :py:exc:`ValueError` in case of an unknown mode constant.
+    :rtype: str
     """
     for name, val in consts.MODE_MAPPING.items():
         if val == mode_const:
@@ -1286,6 +1290,8 @@ def get_error_name(error_const):
     Returns the error name for the provided error constant.
 
     :param int error_const: The error constant (see :py:module:`segno.consts`)
+    :raises: :py:exc:`ValueError` in case of an unknown error correction level.
+    :rtype: str
     """
     for name, val in consts.ERROR_MAPPING.items():
         if val == error_const:
@@ -1301,6 +1307,7 @@ def get_version_name(version_const):
     it returns a string like ``M1`` etc.
 
     :raises: :py:exc:`VersionError`: In case the `version_constant` is unknown.
+    :rtype: str or int
     """
     if 0 < version_const < 41:
         return version_const
@@ -1371,8 +1378,8 @@ def find_version(segments, error, eci, micro, is_sa=False):
     :param micro: Boolean value if a Micro QR Code should be created or ``None``
     :type micro: bool or None
     :param bool is_sa: Indicator if Structured Append is used.
-    :rtype: int
     :raises: :py:exc:`ValueError` if the content does not fit into a QR Code.
+    :rtype: int
     """
     assert not (eci and micro)
     micro_allowed = micro or micro is None
