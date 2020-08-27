@@ -130,7 +130,7 @@ def start_release(session):
     if not valid_version:
         session.error('Invalid version')
     release_branch = 'release-{}'.format(version)
-    git('checkout', '-b', release_branch, 'develop')
+    git('checkout', '-b', release_branch, 'master')
     _change_version(session, prev_version, version)
     git('add', 'segno/__init__.py')
     session.log('Now on branch "{}". Run the tests, run nox -e docs. Update CHANGES'.format(release_branch))
