@@ -1,9 +1,10 @@
 Changes
 =======
 
-1.2.1 -- 2020-mm-dd
+1.2.1 -- 2020-08-27
 -------------------
 * Improved API docs
+* Added support for type hints for the public API (stub files)
 
 
 1.2.0 -- 2020-08-18
