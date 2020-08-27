@@ -14,7 +14,7 @@ import io
 import pytest
 import segno
 try:
-    range = xrange
+    range = xrange  # noqa
 except NameError:
     pass
 
@@ -58,6 +58,7 @@ def test_rgba():
 
 _size = re.compile(br'^WIDTH\s+([0-9]+)$').match
 
+
 def _image_data(buff):
     """\
     Returns the image data and the size of the matrix.
@@ -66,12 +67,12 @@ def _image_data(buff):
     size = 0
     code = buff.getvalue().splitlines()
     code_iter = iter(code)
-    for l in code_iter:
-        if l.startswith(b'ENDHDR'):
+    for line in code_iter:
+        if line.startswith(b'ENDHDR'):
             break
         if seen_size:
             continue
-        m = _size(l)
+        m = _size(line)
         if m:
             size = int(m.group(1))
             seen_size = True
@@ -83,6 +84,7 @@ def pam_bw_as_matrix(buff, border):
     Returns the QR code as list of [0, 1] lists.
 
     :param io.BytesIO buff: Buffer to read the matrix from.
+    :param int border: The QR code border
     """
     res = []
     data, size = _image_data(buff)

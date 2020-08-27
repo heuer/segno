@@ -39,7 +39,6 @@ _DATA_AUTODETECT = (
 )
 
 
-
 @pytest.mark.parametrize('data, expected_mode', _DATA_AUTODETECT)
 def test_valid_mode_autodetection(data, expected_mode):
     qr = segno.make_qr(data)
@@ -148,4 +147,3 @@ def test_micro_invalid_error():
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

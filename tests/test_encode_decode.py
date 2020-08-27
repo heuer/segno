@@ -15,7 +15,6 @@ import io
 import pytest
 import segno
 try:
-    import pyzbar
     from pyzbar.pyzbar import decode as zbardecode
 except ImportError:
     pytestmark = pytest.mark.skip

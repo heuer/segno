@@ -582,10 +582,10 @@ def svg_as_matrix(buff, border):
     res = []
     res_row = None
     absolute_x = -border
-    for op, x, y, l in re.findall(r'([Mm])(-?[0-9]+(?:\.[0-9]+)?) (-?[0-9]+(?:\.[0-9]+)?)h([0-9]+)', d):
+    for op, x, y, length in re.findall(r'([Mm])(-?[0-9]+(?:\.[0-9]+)?) (-?[0-9]+(?:\.[0-9]+)?)h([0-9]+)', d):
         x = int(x)
         y = float(y)
-        l = int(l)
+        length = int(length)
         if y != 0.0:  # New row
             if res_row is not None:
                 res_row.extend([0] * (size - len(res_row)))
@@ -597,16 +597,15 @@ def svg_as_matrix(buff, border):
                 res_row.extend([0] * absolute_x)
             else:
                 res_row.extend([0] * x)
-            absolute_x += l
+            absolute_x += length
         elif op == 'M':
-            absolute_x = l
+            absolute_x = length
             if x != border:
                 raise ValueError('Unexpected border width. Expected "{}", got "{}"'.format(border, x))
-        res_row.extend([1] * l)
+        res_row.extend([1] * length)
     res_row.extend([0] * (size - len(res_row)))
     return res
 
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

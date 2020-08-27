@@ -42,7 +42,7 @@ def test_get_symbol_size():
     assert (matrix_size, matrix_size) == (width, height)
     border = 4
     width, height = utils.get_symbol_size(1)
-    assert (matrix_size + 2 * border, matrix_size + 2 * border) ==  (width, height)
+    assert (matrix_size + 2 * border, matrix_size + 2 * border) == (width, height)
 
 
 def test_get_symbol_size_micro():

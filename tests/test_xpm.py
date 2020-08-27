@@ -23,7 +23,8 @@ def test_write_xpm_indicator():
     assert expected == val[:len(expected)]
 
 
-_DATA_PATTERN = re.compile(r'\{([^\}]+)\};')
+_DATA_PATTERN = re.compile(r'{([^}]+)};')
+
 
 def _img_data(s):
     m = _DATA_PATTERN.search(s)
@@ -65,4 +66,3 @@ def xpm_as_matrix(buff, border):
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
-

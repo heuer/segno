@@ -185,7 +185,7 @@ def test_symbol_size_scale_float2():
     qr = segno.make_qr('test')
     border = 2
     dim = (21 + 2 * border) * 1.5
-    assert (dim, dim) ==  qr.symbol_size(scale=1.5, border=border)
+    assert (dim, dim) == qr.symbol_size(scale=1.5, border=border)
 
 
 def test_designator():
@@ -250,7 +250,6 @@ def test_matrix_iter_border_default():
     qr = segno.make('A', version=1)
     res = [bytearray(row) for row in qr.matrix_iter(border=None)]
     top_border = [bytearray([0x0] * 29)] * 4
-                   # border              finder
     seq = bytearray([0x0, 0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
     assert top_border == res[:4]
     assert seq == res[4][:len(seq)]
@@ -260,7 +259,6 @@ def test_matrix_iter_border_3():
     qr = segno.make('A', version=1)
     res = [bytearray(row) for row in qr.matrix_iter(border=3)]
     top_border = [bytearray([0x0] * 27)] * 3
-                   # border         finder
     seq = bytearray([0x0, 0x0, 0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0])
     assert top_border == res[:3]
     assert seq == res[3][:len(seq)]

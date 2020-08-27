@@ -91,4 +91,3 @@ def test_data(kind, buffer_factory, to_matrix_func, data, error, border, kw):
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

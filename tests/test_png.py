@@ -47,8 +47,10 @@ def test_dark_eq_light():
     qr.save(out, kind='png', dark='#000', light='#000')
     assert out.getvalue()
 
+
 _has_palette = re.compile(br'PLTE').search
 _has_transparency = re.compile(br'tRNS').search
+
 
 def test_greyscale():
     qr = segno.make_qr('test')

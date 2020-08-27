@@ -33,7 +33,7 @@ def test_boost_error_disabled_arg_error():
     assert '1-L' == qr.designator
 
 
-def test_boost_error_M1():
+def test_boost_error_m1():
     qr = segno.make('01234')
     assert qr.is_micro
     assert 'M1' == qr.version
@@ -54,28 +54,28 @@ def test_boost_error_micro_boost_disabled():
     assert 'L' == qr.error
 
 
-def test_boost_error_M3():
+def test_boost_error_m3():
     qr = segno.make('A', error='l', version='M3')
     assert qr.is_micro
     assert 'M3' == qr.version
     assert 'M' == qr.error
 
 
-def test_boost_error_M3_boost_disabled():
+def test_boost_error_m3_boost_disabled():
     qr = segno.make('A', error='l', version='M3', boost_error=False)
     assert qr.is_micro
     assert 'M3' == qr.version
     assert 'L' == qr.error
 
 
-def test_boost_error_M4():
+def test_boost_error_m4():
     qr = segno.make('A', error='l', version='M4')
     assert qr.is_micro
     assert 'M4' == qr.version
     assert 'Q' == qr.error
 
 
-def test_boost_error_M4_boost_disabled():
+def test_boost_error_m4_boost_disabled():
     qr = segno.make('A', error='l', version='M4', boost_error=False)
     assert qr.is_micro
     assert 'M4' == qr.version

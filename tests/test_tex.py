@@ -59,7 +59,8 @@ def test_write_tex_color2():
     assert r'\color{green}' in out.getvalue()
 
 
-_COMMAND_PATTERN = re.compile(r'pgfpath(move|line)to\{\\pgfqpoint\{(\-?[0-9]+)pt\}\{(\-?[0-9]+)pt\}')
+_COMMAND_PATTERN = re.compile(r'pgfpath(move|line)to{\\pgfqpoint{(-?[0-9]+)pt}{(-?[0-9]+)pt}')
+
 
 def tex_as_matrix(buff, border):
     """\

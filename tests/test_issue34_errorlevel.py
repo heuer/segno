@@ -12,8 +12,6 @@ Tests against issue 34
 from __future__ import absolute_import, unicode_literals
 import pytest
 import segno
-from segno import consts
-from segno import encoder
 try:
     from .tutils import read_matrix
 except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package

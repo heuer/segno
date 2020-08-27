@@ -212,6 +212,7 @@ def test_no_text_no_reference(text, reference):
         make_epc_qr(**kw)
     assert 'reference' in str(ex.value)
 
+
 @pytest.mark.parametrize('iban', ['DE1' + '1' * 34,
                                   '',
                                   None])

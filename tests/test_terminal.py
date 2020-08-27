@@ -38,7 +38,7 @@ def terminal_as_matrix(buff, border):
         row = []
         for m in color_pattern.finditer(line):
             bit = colors.index(m.group(1))
-            bit_count = len(m.group(2)) // 2 # 2 chars for 1 module!
+            bit_count = len(m.group(2)) // 2  # 2 chars for 1 module!
             if m.start() == 0 or m.end() == len(line):
                 bit_count -= border
             row.extend([bit] * bit_count)

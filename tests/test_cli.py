@@ -263,7 +263,8 @@ def test_sequence_symbol_count_shortcut():
 def test_sequence_output():
     directory = tempfile.mkdtemp()
     assert 0 == len(os.listdir(directory))
-    cli.main(['--seq', '-v=1', '-e=m', '-o=' + os.path.join(directory, 'test.svg'), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'])
+    cli.main(['--seq', '-v=1', '-e=m', '-o=' + os.path.join(directory, 'test.svg'),
+              'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'])
     number_of_files = len(os.listdir(directory))
     shutil.rmtree(directory)
     assert 4 == number_of_files
@@ -314,7 +315,8 @@ def test_error_code():
                                                  ('ppm', b'P6', 'rb'),
                                                  ('xbm', '#define ', 'rt'),
                                                  ('xpm', '/* XPM */', 'rt'),
-                                                 ('tex', '% Creator: ', 'rt'),])
+                                                 ('tex', '% Creator: ', 'rt'),
+                                                 ])
 def test_output(arg, ext, expected, mode):
     f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
     f.close()
@@ -565,6 +567,7 @@ def test_draw_transparent():
     res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
                     '--align-light=yellow', '--quiet-zone=yellow',
                     '--output={0}'.format(fname), 'test'])
+    assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
     root = _parse_xml(data)
@@ -573,6 +576,7 @@ def test_draw_transparent():
     res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
                     '--align-light=yellow', '--quiet-zone=yellow', '--draw-transparent',
                     '--output={0}'.format(fname), 'test'])
+    assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
     os.unlink(fname)

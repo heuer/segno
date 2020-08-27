@@ -28,4 +28,3 @@ def test_issue_45_no_error():
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

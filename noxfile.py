@@ -83,6 +83,7 @@ def lint(session):
     session.install('flake8', 'mypy')
     session.run('mypy', 'segno')
     session.run('flake8', 'segno')
+    session.run('flake8', 'tests/')
 
 
 @nox.session(python=default_py)

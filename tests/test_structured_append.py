@@ -223,7 +223,8 @@ def test_toomany_symbols():
 @pytest.mark.parametrize('symbol_count', [0, -1, 17])
 def test_illegal_symbolcount(symbol_count):
     with pytest.raises(ValueError):
-        segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', symbol_count=symbol_count)
+        segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade',
+                            symbol_count=symbol_count)
 
 
 if __name__ == '__main__':

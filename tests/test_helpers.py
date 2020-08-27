@@ -86,31 +86,77 @@ def test_vcard_data():
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann')
     assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nEND:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', org='ABC, Inc.')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nORG:ABC\\, Inc.\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Mustermann;Max\r\n' \
+           'FN:Max Mustermann\r\n' \
+           'ORG:ABC\\, Inc.\r\n' \
+           'END:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.', 'John Stevenson')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.\r\nFN:John Stevenson\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.\r\n' \
+           'FN:John Stevenson\r\n' \
+           'END:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='Street', city='City', zipcode='123456')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;Street;City;;123456;\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'ADR:;;Street;City;;123456;\r\n' \
+           'END:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', street='123 Main Street', city='Any Town',
                                     region='CA', zipcode='91921-1234', country='Nummerland')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nADR:;;123 Main Street;Any Town;CA;91921-1234;Nummerland\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'ADR:;;123 Main Street;Any Town;CA;91921-1234;Nummerland\r\n' \
+           'END:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', title='Python wrangler')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\nFN:John Doe\r\n' \
+           'TITLE:Python wrangler\r\n' \
+           'END:VCARD\r\n' == vcard
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
                                     title=['Python wrangler', 'Snake charmer'])
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Python wrangler\r\nTITLE:Snake charmer\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'TITLE:Python wrangler\r\n' \
+           'TITLE:Snake charmer\r\n' \
+           'END:VCARD\r\n' == vcard
     photo_uri = 'https://www.example.org/image.jpg'
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uri)
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nEND:VCARD\r\n'.format(photo_uri) == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'PHOTO;VALUE=uri:{0}\r\n' \
+           'END:VCARD\r\n'.format(photo_uri) == vcard
     photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'PHOTO;VALUE=uri:{0}\r\n' \
+           'PHOTO;VALUE=uri:{1}\r\n' \
+           'END:VCARD\r\n'.format(*photo_uris) == vcard
 
 
 def test_photo_uri():
     photo_uris = ('https://www.example.org/image.jpg', 'https://www.example.com/image_another.gif')
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe', photo_uri=photo_uris)
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nPHOTO;VALUE=uri:{0}\r\nPHOTO;VALUE=uri:{1}\r\nEND:VCARD\r\n'.format(*photo_uris) == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'PHOTO;VALUE=uri:{0}\r\n' \
+           'PHOTO;VALUE=uri:{1}\r\n' \
+           'END:VCARD\r\n'.format(*photo_uris) == vcard
     qr_from_data = segno.make_qr(vcard)
     assert qr_from_data
     assert qr_from_data.error == 'L'
@@ -123,15 +169,26 @@ def test_photo_uri():
 def test_vcard_title_escape():
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
                                     title='Director, Research and Development')
-    assert 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nTITLE:Director\\, Research and Development\r\nEND:VCARD\r\n' == vcard
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'TITLE:Director\\, Research and Development\r\n' \
+           'END:VCARD\r\n' == vcard
 
 
 def test_vcard_data_valid_bday():
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nBDAY:1976-09-19\r\nEND:VCARD\r\n'
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'BDAY:1976-09-19\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday='1976-09-19')
     assert expected_vcard_data == vcard
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', birthday=date(year=1976, month=9, day=19))
     assert expected_vcard_data == vcard
+
 
 def test_vcard_data_invalid_bday():
     with pytest.raises(ValueError):
@@ -142,26 +199,47 @@ def test_vcard_data_invalid_bday():
 
 def test_vcard_data_source_url():
     source_url = 'https://example.org/this-is-the-SOURCE-url'
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nSOURCE:{}\r\nEND:VCARD\r\n'.format(source_url)
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'SOURCE:{}\r\n' \
+                          'END:VCARD\r\n'.format(source_url)
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', source=source_url)
     assert expected_vcard_data == vcard
 
 
 def test_vcard_data_nickname():
     nickname = 'Mäxchen'
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nNICKNAME:{}\r\nEND:VCARD\r\n'.format(nickname)
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'NICKNAME:{}\r\n' \
+                          'END:VCARD\r\n'.format(nickname)
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', nickname=nickname)
     assert expected_vcard_data == vcard
 
 
 def test_vcard_data_note():
     note = 'test cases,; we need more test cases'
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nNOTE:test cases\\,\\; we need more test cases\r\nEND:VCARD\r\n'
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'NOTE:test cases\\,\\; we need more test cases\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', memo=note)
     assert expected_vcard_data == vcard
 
+
 def test_vcard_data_rev():
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nREV:1976-09-19\r\nEND:VCARD\r\n'
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'REV:1976-09-19\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev='1976-09-19')
     assert expected_vcard_data == vcard
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', rev=date(year=1976, month=9, day=19))
@@ -186,7 +264,12 @@ def test_vcard_data_invalid_geo():
 
 
 def test_vcard_data_valid_geo():
-    expected_vcard_data = 'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Mustermann;Max\r\nFN:Max Mustermann\r\nGEO:46.235197;8.015445\r\nEND:VCARD\r\n'
+    expected_vcard_data = 'BEGIN:VCARD\r\n' \
+                          'VERSION:3.0\r\n' \
+                          'N:Mustermann;Max\r\n' \
+                          'FN:Max Mustermann\r\n' \
+                          'GEO:46.235197;8.015445\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann', lat=46.235197, lng=8.015445)
     assert expected_vcard_data == vcard
 
@@ -209,9 +292,11 @@ def test_email_data():
     assert 'mailto:me@example.org?cc=me@example.org,you@example.org' == data
     data = helpers.make_make_email_data('me@example.org', bcc=('me@example.org', 'you@example.org'))
     assert 'mailto:me@example.org?bcc=me@example.org,you@example.org' == data
-    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Test')
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'),
+                                        subject='Test')
     assert 'mailto:me@example.org?cc=me@example.org,you@example.org&subject=Test' == data
-    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'), subject='Subject', body='Body')
+    data = helpers.make_make_email_data('me@example.org', cc=('me@example.org', 'you@example.org'),
+                                        subject='Subject', body='Body')
     assert 'mailto:me@example.org?cc=me@example.org,you@example.org&subject=Subject&body=Body' == data
     data = helpers.make_make_email_data('me@example.org', subject='A subject', body='Hellöö')
     assert 'mailto:me@example.org?subject=A%20subject&body=Hell%C3%B6%C3%B6' == data

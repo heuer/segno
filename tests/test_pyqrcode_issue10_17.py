@@ -23,4 +23,3 @@ def test_issue_10_17():
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
-

@@ -15,7 +15,7 @@ from struct import unpack
 import pytest
 import segno
 try:
-    range = xrange
+    range = xrange  # noqa
 except NameError:
     pass
 
@@ -35,6 +35,7 @@ def test_not_plain():
 
 
 _size = re.compile(br'^P6\s+(?:#[^\n]+\s*)([0-9]+)\s+(?:[0-9]+\s+[0-9]+\n)').match
+
 
 def _image_data(buff):
     """\

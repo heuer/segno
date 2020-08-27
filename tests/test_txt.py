@@ -33,12 +33,11 @@ def txt_as_matrix(buff, border):
     res = []
     code = buff.getvalue().splitlines()
     len_without_border = len(code) - border
-    for l in islice(code, border, len_without_border):
-        res.append([int(clr) for clr in islice(l, border, len_without_border)])
+    for line in islice(code, border, len_without_border):
+        res.append([int(clr) for clr in islice(line, border, len_without_border)])
     return res
 
 
 if __name__ == '__main__':
     import pytest
     pytest.main([__file__])
-

@@ -128,11 +128,11 @@ def eps_as_matrix(buff, border):
         raise ValueError('Expected equal height/width, got height="{}" width="{}"'.format(h, w))
     size = int(w) - 2 * border
     path = re.search(r'^newpath[\s+](.+?)(^stroke)', eps,
-                     flags=re.DOTALL|re.MULTILINE).group(1).strip()
+                     flags=re.DOTALL | re.MULTILINE).group(1).strip()
     res = []
     res_row = None
     absolute_x = -border
-    for x, y, op in re.findall(r'(\-?[0-9]+(?:\.[0-9]+)?)\s+(\-?[0-9]+(?:\.[0-9]+)?)\s+([a-z]+)', path):
+    for x, y, op in re.findall(r'(-?[0-9]+(?:\.[0-9]+)?)\s+(-?[0-9]+(?:\.[0-9]+)?)\s+([a-z]+)', path):
         x = int(x)
         y = float(y)
         if y != 0.0:  # New row
@@ -155,4 +155,3 @@ def eps_as_matrix(buff, border):
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

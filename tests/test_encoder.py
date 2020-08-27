@@ -86,6 +86,7 @@ def _make_test_prepare_data_byte_data():
                 expected = ((encoded_data, len(encoded_data), consts.MODE_BYTE, encoding),)
                 yield expected, data, mode, param_encoding
 
+
 @pytest.mark.parametrize('expected, data, mode, param_encoding', _make_test_prepare_data_byte_data())
 def test_prepare_data_byte(expected, data, mode, param_encoding):
     check_prepare_data(expected, data, mode, param_encoding)
@@ -169,7 +170,7 @@ def test_prepare_data_multiple_tuple():
 def test_write_segment_eci_standard_value():
     # See ISO/IEC 18004:2006(E) -- 6.4.2.1 ECI Designator - EXAMPLE (page 24)
     encoding = 'ISO-8859-7'
-    #TODO: ?
+    # TODO: ?
     # NOTE: ISO/IEC 18004:2006(E) uses "ΑΒΓΔΕ" but text says:
     # (character values A1HEX, A2HEX, A3HEX, A4HEX, A5HEX) and result seems
     # to use the A...HEX values as well
@@ -248,19 +249,19 @@ def test_write_segment_bytes_thonky(eci):
     v, vrange = None, consts.VERSION_RANGE_01_09
     encoder.write_segment(buff, seg, v, vrange, eci=eci)
     assert bits('010000001101'
-             '01001000'
-             '01100101'
-             '01101100'
-             '01101100'
-             '01101111'
-             '00101100'
-             '00100000'
-             '01110111'
-             '01101111'
-             '01110010'
-             '01101100'
-             '01100100'
-             '00100001') == buff.getbits()
+                '01001000'
+                '01100101'
+                '01101100'
+                '01101100'
+                '01101111'
+                '00101100'
+                '00100000'
+                '01110111'
+                '01101111'
+                '01110010'
+                '01101100'
+                '01100100'
+                '00100001') == buff.getbits()
 
 
 def test_write_terminator_thonky():
@@ -315,11 +316,13 @@ def test_write_padding_bits_iso_i3():
 
 def test_write_padding_bits_thonky():
     # <http://www.thonky.com/qr-code-tutorial/data-encoding>
-    data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 010000')
+    data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 '
+                '01001101 01000011 010000')
     buff = Buffer(data)
     version = 1
     encoder.write_padding_bits(buff, version, len(buff))
-    assert bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000') == buff.getbits()
+    assert bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 '
+                '01001101 01000011 01000000') == buff.getbits()
 
 
 def test_write_pad_codewords_standard_value_i2():
@@ -330,7 +333,8 @@ def test_write_pad_codewords_standard_value_i2():
     error = consts.ERROR_LEVEL_M
     capacity = consts.SYMBOL_CAPACITY[version][error]
     encoder.write_pad_codewords(buff, version, capacity, len(buff))
-    assert data + bits('11101100000100011110110000010001111011000001000111101100000100011110110000010001') == buff.getbits()
+    assert data + bits('1110110000010001111011000001000111101100000100011110110'
+                       '0000100011110110000010001') == buff.getbits()
 
 
 def test_write_pad_codewords_standard_value_i3():
@@ -387,6 +391,7 @@ _test_find_mode_test_data = (
         ('外来語'.encode('utf-8'), consts.MODE_BYTE),
     )
 
+
 @pytest.mark.parametrize('data, expected', _test_find_mode_test_data)
 def test_find_mode(data, expected):
     assert expected == encoder.find_mode(data)
@@ -430,6 +435,7 @@ _test_is_mode_supported_micro_data = (
     (consts.MODE_KANJI, 'M4', True),
 )
 
+
 @pytest.mark.parametrize('mode, version, expected', _test_is_mode_supported_micro_data)
 def test_is_mode_supported_micro(mode, version, expected):
     v = consts.MICRO_VERSION_MAPPING[version]
@@ -439,7 +445,7 @@ def test_is_mode_supported_micro(mode, version, expected):
 @pytest.mark.parametrize('version', tuple(range(1, 41)))
 @pytest.mark.parametrize('mode', (consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC,
                                   consts.MODE_BYTE, consts.MODE_ECI, consts.MODE_KANJI))
-def test_is_mode_supported_micro(version, mode):
+def test_is_mode_supported_micro2(version, mode):
     assert encoder.is_mode_supported(mode, version)
 
 
@@ -503,7 +509,7 @@ def test_version_range_illegal():
 def test_normalize_errorlevel():
     assert consts.ERROR_LEVEL_H == encoder.normalize_errorlevel('h')
     assert consts.ERROR_LEVEL_Q == encoder.normalize_errorlevel('Q')
-    assert None == encoder.normalize_errorlevel(None, accept_none=True)
+    assert encoder.normalize_errorlevel(None, accept_none=True) is None
     assert consts.ERROR_LEVEL_M == encoder.normalize_errorlevel(consts.ERROR_LEVEL_M)
 
 
@@ -747,13 +753,13 @@ def test_score_n2_iso():
     # modules for an example. Considering that up to four 2 x 2 dark modules can
     # be included in this block, the penalty applied to this block shall be
     # calculated as 4 (blocks) x 3 (points) = 12 points.
-    matrix = (bytearray([1,1,1]), bytearray([1,1,1]), bytearray([1,1,1]))
+    matrix = (bytearray([1, 1, 1]), bytearray([1, 1, 1]), bytearray([1, 1, 1]))
     matrix_size = len(matrix)
     scores = encoder.mask_scores(matrix, matrix_size)
     score = scores[1]
     assert 12 == score
 
-    matrix = (bytearray([0,0,0]), bytearray([0,0,0]), bytearray([0,0,0]))
+    matrix = (bytearray([0, 0, 0]), bytearray([0, 0, 0]), bytearray([0, 0, 0]))
     matrix_size = len(matrix)
     scores = encoder.mask_scores(matrix, matrix_size)
     score = scores[1]
@@ -791,7 +797,7 @@ def test_score_n4_iso(score, percent):
         for i in range(len(matrix)):
             for j in range(len(matrix)):
                 matrix[i][j] = 0x1
-                cnt+=1
+                cnt += 1
                 finished = cnt == percent
                 if finished:
                     break
@@ -809,7 +815,9 @@ def test_score_n4_iso(score, percent):
 def test_binary_sequence_to_integers():
     # <http://www.thonky.com/qr-code-tutorial/error-correction-coding>
     # HELLO WORLD as a 1-M code
-    data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000 11101100 00010001 11101100 00010001 11101100 00010001')
+    data = bits('00100000 01011011 00001011 01111000 11010001 01110010 11011100 '
+                '01001101 01000011 01000000 11101100 00010001 11101100 00010001 '
+                '11101100 00010001')
     expected = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17]
     res_int = list(Buffer(data).toints())
     assert len(data) // 8 == len(res_int)
@@ -819,7 +827,15 @@ def test_binary_sequence_to_integers():
 def test_split_into_blocks():
     # <http://www.thonky.com/qr-code-tutorial/error-correction-coding>
     # HELLO WORLD as a 5-Q code
-    s = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110 11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110 10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111 01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 11100000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
+    s = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 ' \
+        '11000010 01110111 00110010 00000110 00010010 00000110 01100111 ' \
+        '00100110 11110110 11110110 01000010 00000111 01110110 10000110 ' \
+        '11110010 00000111 00100110 01010110 00010110 11000110 11000111 ' \
+        '10010010 00000110 10110110 11100110 11110111 01110111 00110010 ' \
+        '00000111 01110110 10000110 01010111 00100110 01010010 00000110 ' \
+        '10000110 10010111 00110010 00000111 01000110 11110111 01110110 ' \
+        '01010110 11000010 00000110 10010111 00110010 11100000 11101100 ' \
+        '00010001 11101100 00010001 11101100 00010001 11101100'
     data = bits(s)
     buff = Buffer(data)
     codewords = list(buff.toints())
@@ -839,7 +855,9 @@ def test_split_into_blocks():
 def test_make_error_block0():
     # <http://www.thonky.com/qr-code-tutorial/error-correction-coding>
     # 1-M
-    codeword = '00100000 01011011 00001011 01111000 11010001 01110010 11011100 01001101 01000011 01000000 11101100 00010001 11101100 00010001 11101100 00010001'
+    codeword = '00100000 01011011 00001011 01111000 11010001 01110010 11011100 ' \
+               '01001101 01000011 01000000 11101100 00010001 11101100 00010001 ' \
+               '11101100 00010001'
     codeword_ints = [32, 91, 11, 120, 209, 114, 220, 77, 67, 64, 236, 17, 236, 17, 236, 17]
     buff = Buffer(bits(codeword))
     assert codeword_ints == list(buff.toints())
@@ -857,7 +875,9 @@ def test_make_error_block0():
 def test_make_error_block1():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codeword = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110'
+    codeword = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 ' \
+               '11000010 01110111 00110010 00000110 00010010 00000110 01100111 ' \
+               '00100110'
     codeword_ints = [67, 85, 70, 134, 87, 38, 85, 194, 119, 50, 6, 18, 6, 103, 38]
     buff = Buffer(bits(codeword))
     assert codeword_ints == list(buff.toints())
@@ -870,11 +890,15 @@ def test_make_error_block1():
 def test_make_error_block2():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codeword = '11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110'
-    codeword_ints = [246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199, 146, 6]
+    codeword = '11110110 11110110 01000010 00000111 01110110 10000110 11110010 ' \
+               '00000111 00100110 01010110 00010110 11000110 11000111 10010010 ' \
+               '00000110'
+    codeword_ints = [246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199,
+                     146, 6]
     buff = Buffer(bits(codeword))
     assert codeword_ints == list(buff.toints())
-    error_block = bytearray([87, 204, 96, 60, 202, 182, 124, 157, 200, 134, 27, 129, 209, 17, 163, 163, 120, 133])
+    error_block = bytearray([87, 204, 96, 60, 202, 182, 124, 157, 200, 134, 27,
+                             129, 209, 17, 163, 163, 120, 133])
     ec_infos = consts.ECC[5][consts.ERROR_LEVEL_Q]
     data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
     assert error_block == error_blocks[0]
@@ -883,11 +907,15 @@ def test_make_error_block2():
 def test_make_error_block3():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codeword = '10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111'
-    codeword_ints = [182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134, 151, 50, 7]
+    codeword = '10110110 11100110 11110111 01110111 00110010 00000111 01110110 ' \
+               '10000110 01010111 00100110 01010010 00000110 10000110 10010111 ' \
+               '00110010 00000111'
+    codeword_ints = [182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134,
+                     151, 50, 7]
     buff = Buffer(bits(codeword))
     assert codeword_ints == list(buff.toints())
-    error_block = bytearray([148, 116, 177, 212, 76, 133, 75, 242, 238, 76, 195, 230, 189, 10, 108, 240, 192, 141])
+    error_block = bytearray([148, 116, 177, 212, 76, 133, 75, 242, 238, 76,
+                             195, 230, 189, 10, 108, 240, 192, 141])
     ec_infos = (consts.ECC[5][consts.ERROR_LEVEL_Q][1],)
     data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
     assert error_block == error_blocks[0]
@@ -896,11 +924,15 @@ def test_make_error_block3():
 def test_make_error_block4():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codeword = '01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 00010000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
-    codeword_ints = [70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17, 236, 17, 236]
+    codeword = '01000110 11110111 01110110 01010110 11000010 00000110 10010111 ' \
+               '00110010 00010000 11101100 00010001 11101100 00010001 11101100 ' \
+               '00010001 11101100'
+    codeword_ints = [70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17,
+                     236, 17, 236]
     buff = Buffer(bits(codeword))
     assert codeword_ints == list(buff.toints())
-    error_block = bytearray([235, 159, 5, 173, 24, 147, 59, 33, 106, 40, 255, 172, 82, 2, 131, 32, 178, 236])
+    error_block = bytearray([235, 159, 5, 173, 24, 147, 59, 33, 106, 40, 255,
+                             172, 82, 2, 131, 32, 178, 236])
     ec_infos = (consts.ECC[5][consts.ERROR_LEVEL_Q][1],)
     data_blocks, error_blocks = encoder.make_blocks(ec_infos, buff)
     assert error_block == error_blocks[0]
@@ -910,9 +942,12 @@ def test_make_error_block_iso_i2():
     # ISO/IEC 18004:2006(E) - I.2 Encoding a QR Code symbol -- page 94
     # Input: 01234567
     # Symbol: 1-M
-    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
+    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 ' \
+        '00010001 11101100 00010001 11101100 00010001 11101100 00010001 ' \
+        '11101100 00010001'
     data_block = Buffer(bits(s))
-    error_s = '10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
+    error_s = '10100101 00100100 11010100 11000001 11101101 00110110 11000111 ' \
+              '10000111 00101100 01010101'
     error_block = list(Buffer(bits(error_s)).toints())
     ec_infos = consts.ECC[1][consts.ERROR_LEVEL_M]
     ec_info = ec_infos[0]
@@ -940,11 +975,18 @@ def test_make_final_message_iso_i2():
     # ISO/IEC 18004:2015(E) - I.2 Encoding a QR Code symbol  -- page 94
     # Input: 01234567
     # Symbol: 1-M
-    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
+    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 ' \
+        '00010001 11101100 00010001 11101100 00010001 11101100 00010001 ' \
+        '11101100 00010001'
     codewords = Buffer(bits(s))
-    expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
+    expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 ' \
+                 '11101100 00010001 11101100 00010001 11101100 00010001 ' \
+                 '11101100 00010001 11101100 00010001 10100101 00100100 ' \
+                 '11010100 11000001 11101101 00110110 11000111 10000111 ' \
+                 '00101100 01010101'
     expected = bits(expected_s)
-    assert expected == encoder.make_final_message(1, consts.ERROR_LEVEL_M, codewords).getbits()
+    assert expected == encoder.make_final_message(1, consts.ERROR_LEVEL_M,
+                                                  codewords).getbits()
 
 
 def test_make_final_message_iso_i3():
@@ -953,23 +995,46 @@ def test_make_final_message_iso_i3():
     # Symbol: M2-L
     s = '01000000 00011000 10101100 11000011 00000000'
     codewords = Buffer(bits(s))
-    expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 00001101 00100010 10101110 00110000'
+    expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 ' \
+                 '00001101 00100010 10101110 00110000'
     expected = bits(expected_s)
-    assert expected == encoder.make_final_message(consts.VERSION_M2, consts.ERROR_LEVEL_L, codewords).getbits()
+    assert expected == encoder.make_final_message(consts.VERSION_M2,
+                                                  consts.ERROR_LEVEL_L,
+                                                  codewords).getbits()
 
 
 def test_make_final_message_thonky():
     # <http://www.thonky.com/qr-code-tutorial/structure-final-message>
     # 5-Q
-    codewords = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 11000010 01110111 00110010 00000110 00010010 00000110 01100111 00100110' \
-                '11110110 11110110 01000010 00000111 01110110 10000110 11110010 00000111 00100110 01010110 00010110 11000110 11000111 10010010 00000110' \
-                '10110110 11100110 11110111 01110111 00110010 00000111 01110110 10000110 01010111 00100110 01010010 00000110 10000110 10010111 00110010 00000111' \
-                '01000110 11110111 01110110 01010110 11000010 00000110 10010111 00110010 00010000 11101100 00010001 11101100 00010001 11101100 00010001 11101100'
+    codewords = '01000011 01010101 01000110 10000110 01010111 00100110 01010101 ' \
+                '11000010 01110111 00110010 00000110 00010010 00000110 01100111 ' \
+                '00100110 11110110 11110110 01000010 00000111 01110110 10000110 ' \
+                '11110010 00000111 00100110 01010110 00010110 11000110 11000111 ' \
+                '10010010 00000110 10110110 11100110 11110111 01110111 00110010 ' \
+                '00000111 01110110 10000110 01010111 00100110 01010010 00000110 ' \
+                '10000110 10010111 00110010 00000111 01000110 11110111 01110110 ' \
+                '01010110 11000010 00000110 10010111 00110010 00010000 11101100 ' \
+                '00010001 11101100 00010001 11101100 00010001 11101100'
     codewords_int = [67, 85, 70, 134, 87, 38, 85, 194, 119, 50, 6, 18, 6, 103, 38,
                      246, 246, 66, 7, 118, 134, 242, 7, 38, 86, 22, 198, 199, 146, 6,
                      182, 230, 247, 119, 50, 7, 118, 134, 87, 38, 82, 6, 134, 151, 50, 7,
                      70, 247, 118, 86, 194, 6, 151, 50, 16, 236, 17, 236, 17, 236, 17, 236]
-    s = '01000011111101101011011001000110010101011111011011100110111101110100011001000010111101110111011010000110000001110111011101010110010101110111011000110010110000100010011010000110000001110000011001010101111100100111011010010111110000100000011110000110001100100111011100100110010101110001000000110010010101100010011011101100000001100001011001010010000100010001001011000110000001101110110000000110110001111000011000010001011001111001001010010111111011000010011000000110001100100001000100000111111011001101010101010111100101001110101111000111110011000111010010011111000010110110000010110001000001010010110100111100110101001010110101110011110010100100110000011000111101111011011010000101100100111111000101111100010010110011101111011111100111011111001000100001111001011100100011101110011010101111100010000110010011000010100010011010000110111100001111111111011101011000000111100110101011001001101011010001101111010101001001101111000100010000101000000010010101101010001101101100100000111010000110100011111100000010000001101111011110001100000010110010001001111000010110001101111011000000000'
+    s = '0100001111110110101101100100011001010101111101101110011011110111010001' \
+        '1001000010111101110111011010000110000001110111011101010110010101110111' \
+        '0110001100101100001000100110100001100000011100000110010101011111001001' \
+        '1101101001011111000010000001111000011000110010011101110010011001010111' \
+        '0001000000110010010101100010011011101100000001100001011001010010000100' \
+        '0100010010110001100000011011101100000001101100011110000110000100010110' \
+        '0111100100101001011111101100001001100000011000110010000100010000011111' \
+        '1011001101010101010111100101001110101111000111110011000111010010011111' \
+        '0000101101100000101100010000010100101101001111001101010010101101011100' \
+        '1111001010010011000001100011110111101101101000010110010011111100010111' \
+        '1100010010110011101111011111100111011111001000100001111001011100100011' \
+        '1011100110101011111000100001100100110000101000100110100001101111000011' \
+        '1111111101110101100000011110011010101100100110101101000110111101010100' \
+        '1001101111000100010000101000000010010101101010001101101100100000111010' \
+        '0001101000111111000000100000011011110111100011000000101100100010011110' \
+        '00010110001101111011000000000'
     expected = bits(s)
     buff = Buffer(bits(codewords))
     assert codewords_int == list(buff.toints())
@@ -993,7 +1058,7 @@ def test_encode_iso_fig1():
 def test_encode_iso_i2():
     # ISO/IEC 18004:2015(E) - page 94
     # 01234567 as 1-M symbol
-    #TODO: Without the mask param Segno chooses mask 3 which seems to be correct
+    # TODO: Without the mask param Segno chooses mask 3 which seems to be correct
     # Mask 2 is IMO an error in the standard
     qr = encoder.encode('01234567', error='m', version=1, mask=2, micro=False,
                         boost_error=False)
@@ -1030,9 +1095,9 @@ def test_encode_iso_fig29():
     # ISO/IEC 18004:2015(E) - page 60
     # ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
-    #TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
+    # TODO: If mask is None, Segno chooses mask 3, but the figure uses mask 4...
     qr = encoder.encode('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                            error='m', mask=4, boost_error=False)
+                        error='m', mask=4, boost_error=False)
     assert 4 == qr.mask
     assert 4 == qr.version
     ref_matrix = read_matrix('iso-fig-29')
@@ -1042,11 +1107,15 @@ def test_encode_iso_fig29():
 def test_codeword_placement_iso_i2():
     # ISO/IEC 18004:2015(E) - page 94
     # 01234567 as 1-M symbol
-    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
+    s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 ' \
+        '11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001'
     codewords = Buffer(bits(s))
     version = 1
     buff = encoder.make_final_message(version, consts.ERROR_LEVEL_M, codewords)
-    expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 11101100 00010001 10100101 00100100 11010100 11000001 11101101 00110110 11000111 10000111 00101100 01010101'
+    expected_s = '00010000 00100000 00001100 01010110 01100001 10000000 11101100 ' \
+                 '00010001 11101100 00010001 11101100 00010001 11101100 00010001 ' \
+                 '11101100 00010001 10100101 00100100 11010100 11000001 11101101 ' \
+                 '00110110 11000111 10000111 00101100 01010101'
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
@@ -1063,7 +1132,8 @@ def test_codeword_placement_iso_i3():
     codewords = Buffer(bits(s))
     version = consts.VERSION_M2
     buff = encoder.make_final_message(version, consts.ERROR_LEVEL_L, codewords)
-    expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 00001101 00100010 10101110 00110000'
+    expected_s = '01000000 00011000 10101100 11000011 00000000 10000110 00001101 ' \
+                 '00100010 10101110 00110000'
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(version)
@@ -1078,7 +1148,7 @@ def _make_figure22_matrix():
     matrix = encoder.make_matrix(version)
     for row in matrix:
         for i in range(len(row)):
-           if row[i] == 0x2:
+            if row[i] == 0x2:
                 row[i] = 0x0
     encoder.add_finder_patterns(matrix, True)
     return matrix
@@ -1089,7 +1159,8 @@ def test_figure22_mask0():
     # Figure 22 - Mask 0
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=0)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True,
+                                                    proposed_mask=0)
     assert 0 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1105,7 +1176,8 @@ def test_figure22_mask1():
     # Figure 22 - Mask 1
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=1)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True,
+                                                    proposed_mask=1)
     assert 1 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1121,7 +1193,8 @@ def test_figure22_mask2():
     # Figure 22 - Mask 2
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=2)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True,
+                                                    proposed_mask=2)
     assert 2 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1137,7 +1210,8 @@ def test_figure22_mask3():
     # Figure 22 - Mask 3
     version = consts.VERSION_M4
     matrix = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True, proposed_mask=3)
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, version, True,
+                                                    proposed_mask=3)
     assert 3 == mask
     # Format info = dark modules
     for i in range(9):
@@ -1165,7 +1239,8 @@ def test_format_info_figure26():
     matrix = tuple([bytearray([0x0] * 11) for i in range(11)])
     encoder.add_timing_pattern(matrix, is_micro=True)
     encoder.add_finder_patterns(matrix, is_micro=True)
-    encoder.add_format_info(matrix, version=version, error=None, mask_pattern=mask)
+    encoder.add_format_info(matrix, version=version, error=None,
+                            mask_pattern=mask)
     ref_matrix = read_matrix('fig-26')
     assert len(ref_matrix) == len(matrix)
     assert ref_matrix == matrix
