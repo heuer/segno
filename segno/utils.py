@@ -5,6 +5,7 @@
 #
 # License: BSD License
 #
+# type: ignore
 """\
 Utility functions useful for writers or QR Code objects.
 

@@ -24,16 +24,16 @@ from . import consts
 _PY2 = False
 try:  # pragma: no cover
     from itertools import zip_longest
-    str_type = str
+    str_type = str  # type: ignore
     numeric = int
 except ImportError:  # pragma: no cover
     _PY2 = True
-    from itertools import izip_longest as zip_longest, imap as map
-    str_type = basestring  # noqa: F821
+    from itertools import izip_longest as zip_longest, imap as map  # type: ignore
+    str_type = basestring  # type: ignore  # noqa: F821
     from numbers import Number
-    numeric = Number
-    str = unicode  # noqa: F821
-    range = xrange  # noqa: F821
+    numeric = Number  # type: ignore
+    str = unicode  # type: ignore  # noqa: F821
+    range = xrange  # type: ignore  # noqa: F821
 import sys  # noqa: E402
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys

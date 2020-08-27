@@ -6,6 +6,7 @@
 #
 # License: BSD License
 #
+# type: ignore
 """\
 Command line script to generate (Micro) QR codes with Segno.
 

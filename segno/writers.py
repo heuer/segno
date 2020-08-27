@@ -5,6 +5,7 @@
 #
 # License: BSD License
 #
+# type: ignore
 """\
 Standard serializers and utility functions for serializers.
 

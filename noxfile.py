@@ -28,7 +28,7 @@ def test(session):
     if session.python == 'pypy':
         # See <https://github.com/heuer/segno/issues/80>
         pip_ver = session.run('pip', '--version', silent=True)
-        m = re.search(r'pip ([0-9\.]+)', pip_ver)
+        m = re.search(r'pip ([0-9.]+)', pip_ver)
         assert m
         if m.group(1) in ('20.2', '20.2.1', '20.2.2'):
             session.run('pip', 'uninstall', '-y', 'pip')
@@ -80,7 +80,8 @@ def lint(session):
     """\
     Run flake8
     """
-    session.install('flake8')
+    session.install('flake8', 'mypy')
+    session.run('mypy', 'segno')
     session.run('flake8', 'segno')
 
 
