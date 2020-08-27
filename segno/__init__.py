@@ -271,7 +271,8 @@ class QRCode:
     @property
     def mode(self):
         """\
-        String indicating the mode ("numeric", "alphanumeric", "byte", "kanji").
+        String indicating the mode ("numeric", "alphanumeric", "byte", "kanji",
+        or "hanzi").
         May be ``None`` if multiple modes are used.
 
         :rtype: str or None
