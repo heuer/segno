@@ -246,7 +246,7 @@ def make_mecard(name, reading=None, email=None, phone=None, videophone=None,
                                           country=country))
 
 
-_looks_like_datetime = re.compile(r'^\d{4}\-\d{2}\-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:(?:\-?\d{2}:\d{2})|Z)?)?$').match
+_looks_like_datetime = re.compile(r'^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:(?:-?\d{2}:\d{2})|Z)?)?$').match
 
 
 def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
