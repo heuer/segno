@@ -6,7 +6,17 @@ Pure Python QR Code generator with no dependencies.
 Segno (Italian for "sign" / "symbol") generates QR Codes and Micro QR Codes
 according to ``ISO/IEC 18004:2015(E)``.
 
-Contents:
+
+Links
+-----
+
+* `PyPI homepage <https://pypi.org/project/segno/>`_
+* `GitHub homepage <https://github.com/heuer/segno>`_
+* `Issue tracker <https://github.com/heuer/segno/issues>`_
+
+
+Contents
+--------
 
 .. toctree::
     :maxdepth: 4
