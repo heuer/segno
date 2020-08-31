@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.3.0 -- 2020-08-31
+-------------------
+* Fixed `#84 <https://github.com/heuer/segno/issues/84>`_:
+  CLI ``--encoding`` was used for the encoding of SVG documents and not
+  for the encoding of the QR code.
+  Added ``--svgencoding`` to specify the encoding of SVG documents.
+
+
 1.2.1 -- 2020-08-27
 -------------------
 * Improved API docs
