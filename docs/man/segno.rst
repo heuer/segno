@@ -54,6 +54,12 @@ QR Code Options
     Valid values for QR Codes: 0 \.\. 7
     Valid values for Micro QR Codes: 0 \.\. 3
 
+.. option:: --encoding ENCODING
+
+    Specifies the encoding of the provided content.
+    If not specified (default) either ISO 8859-1 is used or if it does
+    not fit, UTF-8 or Shift_JIS (for Kanji content) is used.
+
 .. option:: --micro
 
     Allow the creation of Micro QR Codes
@@ -250,7 +256,7 @@ SVG Options
 
     Indicates the SVG version
 
-.. option:: --encoding ENCODING
+.. option:: --svgencoding ENCODING
 
     Specifies the encoding of the document
 

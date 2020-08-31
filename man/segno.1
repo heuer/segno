@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "SEGNO" "1" "Aug 27, 2020" "1.2.1" "Segno"
+.TH "SEGNO" "1" "Aug 31, 2020" "1.2.2.dev" "Segno"
 .SH NAME
 segno \- Segno QR Code encoder
 .
@@ -74,6 +74,13 @@ input.
 Mask pattern to use. If unspecified (default), an optimal mask pattern is used.
 Valid values for QR Codes: 0 .. 7
 Valid values for Micro QR Codes: 0 .. 3
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-encoding ENCODING
+Specifies the encoding of the provided content.
+If not specified (default) either ISO 8859\-1 is used or if it does
+not fit, UTF\-8 or Shift_JIS (for Kanji content) is used.
 .UNINDENT
 .INDENT 0.0
 .TP
@@ -301,7 +308,7 @@ Indicates the SVG version
 .UNINDENT
 .INDENT 0.0
 .TP
-.B \-\-encoding ENCODING
+.B \-\-svgencoding ENCODING
 Specifies the encoding of the document
 .UNINDENT
 .INDENT 0.0

@@ -66,6 +66,9 @@ def make_parser():
                         choices=('numeric', 'alphanumeric', 'byte', 'kanji', 'hanzi'),
                         default=None,
                         type=lambda x: x.lower())
+    parser.add_argument('--encoding', help='Sets the encoding of the input. '
+                                           'If not set (default), a minimal encoding is chosen.',
+                        default=None)
     parser.add_argument('--micro', help='Allow the creation of Micro QR Codes',
                         dest='micro', action='store_true')
     parser.add_argument('--no-micro', help='Disallow creation of Micro QR Codes (default)',
@@ -163,7 +166,7 @@ def make_parser():
     svg_group.add_argument('--unit', help='Indicates SVG coordinate system unit')
     svg_group.add_argument('--svgversion', help='Indicates the SVG version',
                            type=float)
-    svg_group.add_argument('--encoding', help='Specifies the encoding of the document',
+    svg_group.add_argument('--svgencoding', help='Specifies the encoding of the document',
                            default='utf-8')
     svg_group.add_argument('--draw-transparent', help='Indicates that transparent paths should be drawn',
                            action='store_true')
@@ -234,6 +237,8 @@ def build_config(config, filename=None):
     if config.pop('no_classes', False):
         config['svgclass'] = None
         config['lineclass'] = None
+    # encoding is used to provide the encoding to *create* a QR code
+    config['encoding'] = config.pop('svgencoding', 'utf-8')
     if filename is not None:
         ext = filename[filename.rfind('.') + 1:].lower()
         if ext == 'svgz':  # There is no svgz serializer, use same config as svg
@@ -258,6 +263,7 @@ def make_code(config):
     make = segno.make
     kw = dict(mode=config.pop('mode'), error=config.pop('error'),
               version=config.pop('version'), mask=config.pop('pattern'),
+              encoding=config.pop('encoding'),
               boost_error=config.pop('boost_error'))
     if config.pop('seq'):
         make = segno.make_sequence
