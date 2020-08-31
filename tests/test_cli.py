@@ -27,6 +27,7 @@ def test_defaults():
     assert args.pattern is None
     assert args.version is None
     assert args.scale == 1
+    assert args.encoding is None
     assert not args.micro
     assert args.output is None
     assert args.border is None
@@ -55,7 +56,7 @@ def test_defaults():
     # SVG
     assert args.xmldecl
     assert not args.no_classes
-    assert args.encoding == 'utf-8'
+    assert args.svgencoding == 'utf-8'
     assert args.title is None
     assert args.desc is None
     assert args.svgns is True
@@ -374,14 +375,21 @@ def test_omit_classes():
 
 def test_encoding():
     args = cli.parse(['--output=x.svg', ''])
-    assert args.encoding == 'utf-8'
+    assert args.svgencoding == 'utf-8'
     assert cli.build_config(args)['encoding'] == 'utf-8'
 
 
 def test_encoding2():
-    args = cli.parse(['--encoding=ascii', '--output=x.svg', ''])
-    assert args.encoding == 'ascii'
+    args = cli.parse(['--svgencoding=ascii', '--output=x.svg', ''])
+    assert args.svgencoding == 'ascii'
     assert cli.build_config(args)['encoding'] == 'ascii'
+
+
+def test_encoding3():
+    # Ignore --encoding since it is used to *create* a QR code
+    args = cli.parse(['--encoding=latin1', '--output=x.svg', ''])
+    assert args.svgencoding == 'utf-8'
+    assert cli.build_config(args)['encoding'] == 'utf-8'
 
 
 def test_title():
