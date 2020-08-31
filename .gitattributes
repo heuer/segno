@@ -2,3 +2,4 @@
 *.rst text eol=lf
 *.ttf binary
 LICEN[CS]E text eol=lf
+py.typed text eol=lf
