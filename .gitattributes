@@ -1,4 +1,5 @@
 *.py text eol=lf
+*.pyi text eol=lf
 *.rst text eol=lf
 *.ttf binary
 LICEN[CS]E text eol=lf

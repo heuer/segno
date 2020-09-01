@@ -2,14 +2,16 @@ QR Code creation from the command line
 ======================================
 
 The command line script :program:`segno` can be used to print QR codes to the
-terminal or to save them in supported formats like SVG, PNG, EPS, … .
+terminal or to save them in supported formats like SVG, PNG, EPS, …, see
+:doc:`CLI man page <man/segno>` for details
 
 By default, the script does not create Micro QR codes, use
 :option:`--micro <segno --micro>` to allow the creation of Micro QR codes or
 specify the version (like :option:`--version=M3 <segno --version>`) to create
 a Micro QR Code.
 
-See the :doc:`CLI man page <man/segno>` for a detailed reference of all command line options.
+See the :doc:`CLI man page <man/segno>` for a detailed reference of all command
+line options.
 
 
 Usage
@@ -36,7 +38,8 @@ QR Code version
 
 If the :option:`--version <segno --version>` / :option:`-v <segno -v>`
 parameter is not provided, Segno chooses the minimal version for the QR code
-automatically. The version may be specified as an integer or as Micro QR Code identifier.
+automatically. The version may be specified as an integer or as Micro QR Code
+identifier.
 
 The content 'Layla' would fit into a 1-H QR code, but the following commands
 enforce version 5::
