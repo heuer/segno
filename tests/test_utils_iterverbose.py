@@ -52,7 +52,8 @@ def test_finder_pattern_dark_and_light_qr():
     qr = encoder.encode('A', micro=False)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK, consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK,
+                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
     expected = read_matrix('v1-finder-dark-and-light')
     assert expected == res
 
@@ -79,7 +80,8 @@ def test_finder_pattern_dark_and_light_mqr():
     qr = encoder.encode('A', micro=True)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK, consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK,
+                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
     expected = read_matrix('m2-finder-dark-and-light')
     assert expected == res
 
@@ -160,7 +162,8 @@ def test_timing_dark_and_light_mqr():
     qr = encoder.encode('A', micro=True)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_TIMING_DARK, consts.TYPE_TIMING_LIGHT)] for v in row]))
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_TIMING_DARK,
+                                               consts.TYPE_TIMING_LIGHT)] for v in row]))
     expected = read_matrix('m2-timing-dark-and-light')
     assert expected == res
 
@@ -187,7 +190,8 @@ def test_alignment_dark_and_light():
     qr = encoder.encode('A', version=12)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_ALIGNMENT_PATTERN_LIGHT, consts.TYPE_ALIGNMENT_PATTERN_DARK)] for v in row]))  # noqa: E501
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_ALIGNMENT_PATTERN_LIGHT,
+                                               consts.TYPE_ALIGNMENT_PATTERN_DARK)] for v in row]))  # noqa: E501
     expected = read_matrix('v12-alignment-dark-and-light')
     assert expected == res
 
@@ -214,7 +218,8 @@ def test_version_dark_and_light():
     qr = encoder.encode('A', version=7)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_VERSION_LIGHT, consts.TYPE_VERSION_DARK)] for v in row]))  # noqa: E501
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_VERSION_LIGHT,
+                                               consts.TYPE_VERSION_DARK)] for v in row]))  # noqa: E501
     expected = read_matrix('v7-version-dark-and-light')
     assert expected == res
 
@@ -250,7 +255,8 @@ def test_format_dark_and_light_qr():
     qr = encoder.encode('A', micro=False)
     res = []
     for row in utils.matrix_iter_verbose(qr.matrix, qr.version, border=0):
-        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FORMAT_DARK, consts.TYPE_FORMAT_LIGHT)] for v in row]))
+        res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FORMAT_DARK,
+                                               consts.TYPE_FORMAT_LIGHT)] for v in row]))
     expected = read_matrix('v1-format-dark-and-light')
     assert expected == res
 

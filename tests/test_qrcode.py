@@ -42,7 +42,9 @@ def test_eq2():
     assert qr == qr2
 
 
-@pytest.mark.parametrize('version, mode', [('M1', 'alphanumeric'), ('M1', 'byte'), ('M2', 'byte')])
+@pytest.mark.parametrize('version, mode', [('M1', 'alphanumeric'),
+                                           ('M1', 'byte'),
+                                           ('M2', 'byte')])
 def test_illegal_mode_micro(version, mode):
     with pytest.raises(ValueError) as ex:
         segno.make(1, version=version, mode=mode)
@@ -106,7 +108,8 @@ def test_illegal_error_level_micro():
     assert 'is not available' in str(ex.value)
 
 
-@pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1), (123456, 'M1')])
+@pytest.mark.parametrize('data,version', [('abcdefghijklmnopqr', 1),
+                                          (123456, 'M1')])
 def test_data_too_large(data, version):
     with pytest.raises(segno.DataOverflowError) as ex:
         segno.make(data, version=version)
@@ -135,13 +138,18 @@ def test_symbol_size():
     border = 0
     assert (width, height) == qr.symbol_size(border=border)
     border = 1
-    assert (_calc_size(width, border) == _calc_size(width, border)), qr.symbol_size(border=border)
+    assert (_calc_size(width, border) == _calc_size(width, border)), \
+        qr.symbol_size(border=border)
     border = 4  # (default border)
-    assert (_calc_size(width, border) == _calc_size(width, border)), qr.symbol_size()
-    assert (_calc_size(width, border) == _calc_size(width, border)), qr.symbol_size(scale=1)
-    assert (_calc_size(width, border, 4), _calc_size(width, border, 4)) == qr.symbol_size(scale=4)
+    assert (_calc_size(width, border) == _calc_size(width, border)), \
+        qr.symbol_size()
+    assert (_calc_size(width, border) == _calc_size(width, border)), \
+        qr.symbol_size(scale=1)
+    assert (_calc_size(width, border, 4), _calc_size(width, border, 4)) == \
+           qr.symbol_size(scale=4)
     border = 0
-    assert (_calc_size(width, border, 4), _calc_size(width, border, 4)) == qr.symbol_size(border=border, scale=4)
+    assert (_calc_size(width, border, 4), _calc_size(width, border, 4)) == \
+           qr.symbol_size(border=border, scale=4)
 
 
 def test_symbol_size_micro():
@@ -274,7 +282,9 @@ def test_matrix_iter_verbose_invalid_border(border):
 
 def test_matrix_iter_verbose_border_zero():
     qr = segno.make('No border')
-    res = [bytearray([bool(v >> 8) for v in row]) for row in qr.matrix_iter(border=0, verbose=True)]
+    res = [bytearray([bool(v >> 8) for v in row]) for row in qr.matrix_iter(
+        border=0,
+        verbose=True)]
     assert qr.matrix == tuple(res)
 
 

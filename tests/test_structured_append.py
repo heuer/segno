@@ -19,7 +19,8 @@ import segno
 from segno import encoder
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
+# Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):
     from tutils import read_matrix
 
 
@@ -199,7 +200,8 @@ def test_boosterror_noop():
 
 
 def test_boosterror():
-    seq = segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', version=2)
+    seq = segno.make_sequence('I read the news today oh boy / About a lucky man '
+                              'who made the grade', version=2)
     assert 3 == len(seq)
     assert 'M' == seq[0].error
     assert 'M' == seq[1].error
@@ -207,7 +209,8 @@ def test_boosterror():
 
 
 def test_boosterror2():
-    seq = segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade', symbol_count=4)
+    seq = segno.make_sequence('I read the news today oh boy / About a lucky man '
+                              'who made the grade', symbol_count=4)
     assert 4 == len(seq)
     assert '2-Q' == seq[0].designator
     assert '2-Q' == seq[1].designator
@@ -223,7 +226,8 @@ def test_toomany_symbols():
 @pytest.mark.parametrize('symbol_count', [0, -1, 17])
 def test_illegal_symbolcount(symbol_count):
     with pytest.raises(ValueError):
-        segno.make_sequence('I read the news today oh boy / About a lucky man who made the grade',
+        segno.make_sequence('I read the news today oh boy / About a lucky man '
+                            'who made the grade',
                             symbol_count=symbol_count)
 
 

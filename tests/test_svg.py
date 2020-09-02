@@ -553,14 +553,16 @@ def test_encoding_none():
 def test_draw_transparent():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow', draw_transparent=False)
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
+            dark_module='blue', alignment_light='yellow', quiet_zone='yellow',
+            draw_transparent=False)
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 3 == len(paths)
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow', draw_transparent=True)
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
+            dark_module='blue', alignment_light='yellow', quiet_zone='yellow',
+            draw_transparent=True)
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 4 == len(paths)

@@ -37,7 +37,8 @@ def _parse_xml(buff):
 def test_merge_colors():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='green')
+    qr.save(out, kind='svg', dark='green', finder_dark='green', 
+            dark_module='green')
     green = colors._color_to_webcolor('green')
     assert green in out.getvalue().decode('utf-8')
     root = _parse_xml(out)
@@ -48,8 +49,9 @@ def test_merge_colors():
 def test_merge_colors2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow')
+    qr.save(out, kind='svg', dark='green', finder_dark='green', 
+            dark_module='blue', alignment_light='yellow', 
+            quiet_zone='yellow')
     green = colors._color_to_webcolor('green')
     yellow = colors._color_to_webcolor('yellow')
     blue = colors._color_to_webcolor('blue')
@@ -66,8 +68,9 @@ def test_merge_colors2():
 def test_nogroup():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow', scale=1.0)
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
+            dark_module='blue', alignment_light='yellow', quiet_zone='yellow',
+            scale=1.0)
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 3 == len(paths)
@@ -79,8 +82,9 @@ def test_nogroup():
 def test_scale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', dark_module='blue',
-            alignment_light='yellow', quiet_zone='yellow', scale=1.5)
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
+            dark_module='blue', alignment_light='yellow', quiet_zone='yellow',
+            scale=1.5)
     root = _parse_xml(out)
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 3 == len(paths)
