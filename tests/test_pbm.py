@@ -67,7 +67,8 @@ def pbm_p1_as_matrix(buff, border):
     res = []
     code_iter, len_without_border = _move_to_raster(buff, border)
     for line in islice(code_iter, border, len_without_border):
-        row = [int(i) for i in islice(line.decode('ascii'), border, len_without_border)]
+        row = [int(i) for i in islice(line.decode('ascii'), border,
+                                      len_without_border)]
         res.append(row)
     return res
 

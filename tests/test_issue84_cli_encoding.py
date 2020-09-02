@@ -17,7 +17,8 @@ import pytest
 
 
 def test_issue_84_default_encoding():
-    with open(os.path.join(os.path.dirname(__file__), 'issue-84', 'issue-84-iso-8859-1.txt'), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'issue-84',
+                           'issue-84-iso-8859-1.txt'), 'r') as f:
         expected = f.read()
     f = tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False)
     f.close()
@@ -41,7 +42,8 @@ def test_issue_84_default_encoding():
 
 
 def test_issue_84_utf8():
-    with open(os.path.join(os.path.dirname(__file__), 'issue-84', 'issue-84-utf-8.txt'), 'r') as f:
+    with open(os.path.join(os.path.dirname(__file__), 'issue-84',
+                           'issue-84-utf-8.txt'), 'r') as f:
         expected = f.read()
     f = tempfile.NamedTemporaryFile('w', suffix='.txt', delete=False)
     f.close()

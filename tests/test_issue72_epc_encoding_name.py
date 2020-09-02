@@ -34,7 +34,8 @@ def test_valid_encoding(encoding, number):
     assert qr
 
 
-@pytest.mark.parametrize('encoding', ('utf-16', 'iso-8859-6', 'ascii', 'something'))
+@pytest.mark.parametrize('encoding', ('utf-16', 'iso-8859-6', 'ascii',
+                                      'something'))
 def test_illegal_encoding(encoding):
     kw = _make_valid_kw()
     kw['encoding'] = encoding
