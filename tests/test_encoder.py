@@ -15,7 +15,8 @@ from segno import encoder
 from segno.encoder import Buffer
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
+# Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):
     from tutils import read_matrix
 
 
@@ -28,7 +29,8 @@ def check_prepare_data(expected, data, mode, encoding):
 
 
 def test_version_as_str():
-    qr = encoder.encode('test', version='1', error=None, mode=None, mask=None, eci=None, micro=None, encoding=None)
+    qr = encoder.encode('test', version='1', error=None, mode=None, mask=None,
+                        eci=None, micro=None, encoding=None)
     assert 1 == qr.version
 
 
@@ -40,7 +42,8 @@ def test_prepare_data_numeric(data, mode):
 
 
 @pytest.mark.parametrize('data', ['1234567', '666'])
-@pytest.mark.parametrize('mode', [None, consts.MODE_NUMERIC, consts.MODE_ALPHANUMERIC, consts.MODE_BYTE])
+@pytest.mark.parametrize('mode', [None, consts.MODE_NUMERIC,
+                                  consts.MODE_ALPHANUMERIC, consts.MODE_BYTE])
 def test_prepare_data_override_numeric(data, mode):
     encoding = None if mode != consts.MODE_BYTE else consts.DEFAULT_BYTE_ENCODING
     expected = ((data.encode('ascii'), len(data), mode or consts.MODE_NUMERIC, encoding),)
@@ -87,7 +90,8 @@ def _make_test_prepare_data_byte_data():
                 yield expected, data, mode, param_encoding
 
 
-@pytest.mark.parametrize('expected, data, mode, param_encoding', _make_test_prepare_data_byte_data())
+@pytest.mark.parametrize('expected, data, mode, param_encoding',
+                         _make_test_prepare_data_byte_data())
 def test_prepare_data_byte(expected, data, mode, param_encoding):
     check_prepare_data(expected, data, mode, param_encoding)
 

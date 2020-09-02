@@ -264,7 +264,8 @@ def test_sequence_symbol_count_shortcut():
 def test_sequence_output():
     directory = tempfile.mkdtemp()
     assert 0 == len(os.listdir(directory))
-    cli.main(['--seq', '-v=1', '-e=m', '-o=' + os.path.join(directory, 'test.svg'),
+    cli.main(['--seq', '-v=1', '-e=m', '-o=' + os.path.join(directory,
+                                                            'test.svg'),
               'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'])
     number_of_files = len(os.listdir(directory))
     shutil.rmtree(directory)
@@ -319,7 +320,8 @@ def test_error_code():
                                                  ('tex', '% Creator: ', 'rt'),
                                                  ])
 def test_output(arg, ext, expected, mode):
-    f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext), delete=False)
+    f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext),
+                                    delete=False)
     f.close()
     try:
         cli.main(['test', arg, f.name])
@@ -582,8 +584,8 @@ def test_draw_transparent():
     paths = root.findall('.//{%s}path' % _SVG_NS)
     assert 3 == len(paths)
     res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
-                    '--align-light=yellow', '--quiet-zone=yellow', '--draw-transparent',
-                    '--output={0}'.format(fname), 'test'])
+                    '--align-light=yellow', '--quiet-zone=yellow',
+                    '--draw-transparent', '--output={0}'.format(fname), 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -604,7 +606,8 @@ def test_png_svg_command():
 def test_output_svgz():
     f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
     f.close()
-    res = cli.main(['--scale=10', '--dark=red', '--output={0}'.format(f.name), 'test'])
+    res = cli.main(['--scale=10', '--dark=red', '--output={0}'.format(f.name),
+                    'test'])
     assert 0 == res
     with gzip.open(f.name) as f:
         content = f.read()

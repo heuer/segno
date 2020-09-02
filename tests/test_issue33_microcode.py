@@ -17,7 +17,8 @@ from segno import consts
 from segno import encoder
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
+# Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):
     from tutils import read_matrix
 
 

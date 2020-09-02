@@ -23,7 +23,8 @@ def test_issue_45_error(capsys):
 
 
 def test_issue_45_no_error():
-    assert 0 == cli.main(['--version=1', '--seq', '"This is a test, test test test test"'])
+    assert 0 == cli.main(['--version=1', '--seq',
+                          '"This is a test, test test test test"'])
 
 
 if __name__ == '__main__':

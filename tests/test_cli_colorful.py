@@ -37,7 +37,8 @@ def test_greyscale():
 
 def test_not_greyscale():
     fn = _make_tmp_png_filename()
-    res = cli.main(['--quiet-zone=transparent', '--output={0}'.format(fn), 'test'])
+    res = cli.main(['--quiet-zone=transparent', '--output={0}'.format(fn),
+                    'test'])
     with open(fn, 'rb') as f:
         data = io.BytesIO(f.read())
     os.unlink(fn)
@@ -54,8 +55,8 @@ def test_not_greyscale():
 
 def test_plte_colors():
     fn = _make_tmp_png_filename()
-    res = cli.main(['--quiet-zone=green', '--finder-dark=purple', '--finder-light=yellow',
-                    '--output={0}'.format(fn), 'test'])
+    res = cli.main(['--quiet-zone=green', '--finder-dark=purple',
+                    '--finder-light=yellow', '--output={0}'.format(fn), 'test'])
     with open(fn, 'rb') as f:
         data = io.BytesIO(f.read())
     os.unlink(fn)

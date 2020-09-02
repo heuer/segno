@@ -20,10 +20,12 @@ from segno import cli
 
 def test_output():
     out = io.BytesIO()
-    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10, dark='red')
+    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10,
+                                                dark='red')
     f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
     f.close()
-    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name), 'Good Times'])
+    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name),
+              'Good Times'])
     f = open(f.name, 'rb')
     content = f.read()
     f.close()
@@ -33,10 +35,12 @@ def test_output():
 
 def test_output2():
     out = io.BytesIO()
-    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10, dark='red')
+    segno.make_qr('Good Times', error='M').save(out, kind='png', scale=10,
+                                                dark='red')
     f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
     f.close()
-    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name), 'Good', 'Times'])
+    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name),
+              'Good', 'Times'])
     f = open(f.name, 'rb')
     content = f.read()
     f.close()

@@ -14,7 +14,8 @@ import pytest
 import segno
 try:
     from .tutils import read_matrix
-except (ValueError, SystemError, ImportError):  # Attempted relative import in non-package
+# Attempted relative import in non-package
+except (ValueError, SystemError, ImportError):
     from tutils import read_matrix
 
 

@@ -28,7 +28,8 @@ def test_text_002(amount):
     text = 'Client:Marie Louise La Lune'
     kw = dict(name=name, iban=iban, text=text, amount=amount)
     data = make_epc_qr_data(**kw)
-    assert len(data) == 103  # See. EPC069-12 Version 2.1 dtd. 9 February 2012 example 2
+    # See. EPC069-12 Version 2.1 dtd. 9 February 2012 example 2
+    assert len(data) == 103
     encoding = 'iso-8859-1'
     d = [x.decode(encoding) for x in data.split(b'\n')]
     assert 11 == len(d)
