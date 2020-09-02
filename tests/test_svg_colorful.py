@@ -37,7 +37,7 @@ def _parse_xml(buff):
 def test_merge_colors():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', 
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
             dark_module='green')
     green = colors._color_to_webcolor('green')
     assert green in out.getvalue().decode('utf-8')
@@ -49,8 +49,8 @@ def test_merge_colors():
 def test_merge_colors2():
     qr = segno.make_qr('test')
     out = io.BytesIO()
-    qr.save(out, kind='svg', dark='green', finder_dark='green', 
-            dark_module='blue', alignment_light='yellow', 
+    qr.save(out, kind='svg', dark='green', finder_dark='green',
+            dark_module='blue', alignment_light='yellow',
             quiet_zone='yellow')
     green = colors._color_to_webcolor('green')
     yellow = colors._color_to_webcolor('yellow')
