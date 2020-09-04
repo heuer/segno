@@ -1,6 +1,10 @@
 *.py text eol=lf
 *.pyi text eol=lf
 *.rst text eol=lf
-*.ttf binary
 LICEN[CS]E text eol=lf
 py.typed text eol=lf
+*.ttf binary
+*.png binary
+*.webp binary
+*.gif binary
+*.jpg binary
