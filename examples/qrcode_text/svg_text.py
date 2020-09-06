@@ -16,8 +16,8 @@ from segno.writers import _color_to_webcolor as webcolor
 
 
 def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
-                 line_spacing: int = None, scale: int = 1, border: int = None,
-                 dark='#000', light='#fff', finder_dark=False,
+                 font_color = False, line_spacing: int = None, scale: int = 1,
+                 border: int = None, dark='#000', light='#fff', finder_dark=False,
                  finder_light=False, data_dark=False, data_light=False,
                  version_dark=False, version_light=False, format_dark=False,
                  format_light=False, alignment_dark=False, alignment_light=False,
@@ -33,6 +33,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
     :param segno.QRCode qrcode: The QR code.
     :param str text: The text to add to the QR code.
     :param int font_size: Font size.
+    :param font_color: See dark for valid values.
     :param int line_spacing: Spacing between the lines. If not provided, it
             is the half of the font size.
     :param scale: The scale.
@@ -88,8 +89,9 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
     write_str = lambda s: write(s.encode(encoding))
     border = border if border is not None else qrcode.default_border_size
     border_offset = scale * border
+    font_color = webcolor(font_color if font_color else dark)
     write_str('<text y="{}" font-size="{}" font-family="mono" fill="{}">'
-              .format(qr_height, font_size, webcolor(dark)))
+              .format(qr_height, font_size, font_color))
     line_spacing = line_spacing or font_size // 2
     for line in text.splitlines():
         write_str('<tspan x="{}" dy="{}">'.format(border_offset, font_size + line_spacing))
@@ -136,6 +138,6 @@ if __name__ == '__main__':
     svg = qr_with_text(qr, text=content, border=0, scale=3).getvalue()
     with open('rain-5.svg', 'wb') as f:
         f.write(svg)
-    svg = qr_with_text(qr, title='Rain', scale=3).getvalue()
+    svg = qr_with_text(qr, title='Rain', scale=3, font_color='darkred').getvalue()
     with open('rain-6.svg', 'wb') as f:
         f.write(svg)

@@ -18,7 +18,7 @@ import segno
 
 
 def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
-                 font_path: str = None, font_size: int = 12,
+                 font_path: str = None, font_size: int = 12, font_color = False,
                  line_spacing: int = None, scale: int = 1, border: int = None,
                  dark='#000', light='#fff', finder_dark=False, finder_light=False,
                  data_dark=False, data_light=False, version_dark=False,
@@ -37,6 +37,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     :param str text: The text to add to the QR code.
     :param str font_path: Path to the font
     :param int font_size: Font size.
+    :param font_color: See dark for valid values.
     :param int line_spacing: Spacing between the lines. If not provided, it
             is the half of the font size.
     :param scale: The scale.
@@ -101,7 +102,8 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     res_img = Image.new(img.mode, (width, height), color=quiet_zone or light)
     res_img.paste(img)
     draw = ImageDraw.Draw(res_img)
-    draw_text = partial(draw.text, font=font, fill=ImageColor.getcolor(dark, img.mode))
+    font_color = font_color or dark
+    draw_text = partial(draw.text, font=font, fill=ImageColor.getcolor(font_color, img.mode))
     for line in lines:
         draw_text((x, y), line)
         y += font_size + line_spacing
@@ -119,7 +121,9 @@ if __name__ == '__main__':
     qr = segno.make(content)
     qr_with_text(qr, text=content, scale=6, dark='darkblue', light='#ffffb2',
                  quiet_zone='#eee').save('a-day-in-the-life-1.png')
-    qr_with_text(qr, text=content, scale=6).save('a-day-in-the-life-2.png')
-    qr_with_text(qr, text=content, scale=6, font_size=32).save('a-day-in-the-life-3.png')
-    qr_with_text(qr, text=content).save('a-day-in-the-life-4.png')
-    qr_with_text(qr, text=content, border=0, scale=3).save('a-day-in-the-life-5.png')
+    qr_with_text(qr, text=content, scale=6, dark='darkblue', quiet_zone='#eee',
+                 font_color='darkgreen').save('a-day-in-the-life-2.png')
+    qr_with_text(qr, text=content, scale=6).save('a-day-in-the-life-3.png')
+    qr_with_text(qr, text=content, scale=6, font_size=32).save('a-day-in-the-life-4.png')
+    qr_with_text(qr, text=content).save('a-day-in-the-life-5.png')
+    qr_with_text(qr, text=content, border=0, scale=3).save('a-day-in-the-life-6.png')
