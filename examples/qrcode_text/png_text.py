@@ -18,7 +18,7 @@ import segno
 
 
 def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
-                 font_path: str = None, font_size: int = 12, font_color = False,
+                 font_path: str = None, font_size: int = 12, font_color=False,
                  line_spacing: int = None, scale: int = 1, border: int = None,
                  dark='#000', light='#fff', finder_dark=False, finder_light=False,
                  data_dark=False, data_light=False, version_dark=False,
