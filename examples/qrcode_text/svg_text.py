@@ -85,7 +85,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
     text_buff = io.BytesIO()
     write = text_buff.write
     write_str = lambda s: write(s.encode(encoding))
-    border = border if border is not None else (4 if not qrcode.is_micro else 2)
+    border = border if border is not None else qrcode.default_border_size
     border_offset = scale * border
     write_str('<text y="{}" font-size="{}" font-family="mono">'.format(qr_height, font_size))
     line_spacing = line_spacing or font_size // 2

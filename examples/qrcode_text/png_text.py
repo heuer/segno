@@ -82,7 +82,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     font_path = font_path or os.path.join(os.path.dirname(__file__), 'font', 'DejaVuSansMono.ttf')
     font = ImageFont.truetype(font_path, font_size)
     width, height = img.size
-    x, y = scale * (border if border is not None else (4 if not qrcode.is_micro else 2)), height
+    x, y = scale * (border if border is not None else qrcode.default_border_size), height
     line_spacing = line_spacing or font_size // 2
     lines = text.splitlines()
     # Calculate the additional space required for the text
