@@ -82,7 +82,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     font_path = font_path or os.path.join(os.path.dirname(__file__), 'font', 'DejaVuSansMono.ttf')
     font = ImageFont.truetype(font_path, font_size)
     width, height = img.size
-    x, y = scale * (border if border else (4 if not qrcode.is_micro else 2)), height
+    x, y = scale * (border if border is not None else (4 if not qrcode.is_micro else 2)), height
     line_spacing = line_spacing or font_size // 2
     lines = text.splitlines()
     # Calculate the additional space required for the text
@@ -122,3 +122,4 @@ if __name__ == '__main__':
     qr_with_text(qr, text=content, scale=6).save('a-day-in-the-life-2.png')
     qr_with_text(qr, text=content, scale=6, font_size=32).save('a-day-in-the-life-3.png')
     qr_with_text(qr, text=content).save('a-day-in-the-life-4.png')
+    qr_with_text(qr, text=content, border=0, scale=3).save('a-day-in-the-life-5.png')
