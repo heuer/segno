@@ -31,7 +31,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
 
     See `segno.QRCode.save <https://segno.readthedocs.io/en/latest/api.html#segno.QRCode.save>`_
     and `PNG <https://segno.readthedocs.io/en/latest/api.html#png>`_ for a detailed
-    description of the paramters.
+    description of the parameters.
 
     :param segno.QRCode qrcode: The QR code.
     :param str text: The text to add to the QR code.
@@ -89,7 +89,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     for line in lines:
         fw, fh = font.getsize(line)
         if fw > width:
-            width += fw
+            width = fw + font_size
         height += fh + line_spacing
     has_palette = img.mode == 'P'
     if has_palette:
