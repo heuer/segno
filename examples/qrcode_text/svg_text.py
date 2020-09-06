@@ -12,6 +12,7 @@ import io
 import re
 from xml.sax.saxutils import escape
 import segno
+from segno.writers import _color_to_webcolor as webcolor
 
 
 def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
@@ -87,7 +88,8 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
     write_str = lambda s: write(s.encode(encoding))
     border = border if border is not None else qrcode.default_border_size
     border_offset = scale * border
-    write_str('<text y="{}" font-size="{}" font-family="mono">'.format(qr_height, font_size))
+    write_str('<text y="{}" font-size="{}" font-family="mono" fill="{}">'
+              .format(qr_height, font_size, webcolor(dark)))
     line_spacing = line_spacing or font_size // 2
     for line in text.splitlines():
         write_str('<tspan x="{}" dy="{}">'.format(border_offset, font_size + line_spacing))
