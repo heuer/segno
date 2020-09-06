@@ -34,7 +34,7 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None, font_size: int = 12,
     :param int font_size: Font size.
     :param int line_spacing: Spacing between the lines. If not provided, it
             is the half of the font size.
-    :param scale: The scale. A minimum scale of 3 (default) is recommended.
+    :param scale: The scale.
     :param int border: Number indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
