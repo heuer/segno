@@ -8,3 +8,5 @@ build/
 venv/
 sandbox/out/*.svg
 sandbox/out/*.png
+examples/qrcode_text/*.svg
+examples/qrcode_text/*.png
