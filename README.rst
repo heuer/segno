@@ -1,5 +1,5 @@
-Segno -- Python QR Code and Micro QR Code encoder
-=================================================
+QR Code encoder and Micro QR Code encoder
+=========================================
 
 Pure Python QR Code generator with no dependencies.
 
