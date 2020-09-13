@@ -76,7 +76,7 @@ Create a view
 ~~~~~~~~~~~~~
 
 Another possibility is to create the QR codes dynamically in a Flask view and
-then to deliver them with ``send_file``.
+deliver them with ``send_file``.
 
 .. code-block:: python
 
