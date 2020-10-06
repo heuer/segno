@@ -20,7 +20,7 @@ nox.options.sessions = ['test-2.7', 'test-3.7', 'test-pypy', 'test-pypy3']
 default_py = '3.7'
 
 
-@nox.session(python=['2.7', '3.7', '3.8', 'pypy', 'pypy3'])
+@nox.session(python=['2.7', '3.7', '3.8', '3.9', 'pypy', 'pypy3'])
 def test(session):
     """\
     Run test suite.
