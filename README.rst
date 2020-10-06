@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.com/heuer/segno.svg?branch=master
+    :target: https://travis-ci.com/heuer/segno
+
 QR Code encoder and Micro QR Code encoder
 =========================================
 
