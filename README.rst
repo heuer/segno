@@ -7,9 +7,9 @@ QR Code encoder and Micro QR Code encoder
 Pure Python QR Code generator with no dependencies.
 
 This package implements ISO/IEC 18004:2015(E) "QR Code bar code symbology
-specification" and produces Micro QR Codes and QR Codes with nearly no effort.
-It supports the Structured Append mode which splits a message across several
-QR codes.
+specification" and produces QR Codes and Micro QR Codes with nearly no effort.
+It supports the `Structured Append mode <https://segno.readthedocs.io/en/stable/structured-append.html>`_
+which splits a message across several QR codes.
 
 Segno (Italian for "sign" / "symbol") provides several serialization formats
 like Scalable Vector Graphics (SVG), Encapsulated PostScript (EPS),
@@ -19,7 +19,7 @@ None of these serializers require an external lib.
 Further, it provides several high level functions to create QR Codes which encode
 `contact data (vCard, MeCard) <https://segno.readthedocs.io/en/stable/contact-information.html>`_,
 `EPC QR Codes <https://segno.readthedocs.io/en/stable/epc-qrcodes.html>`_,
-or `WIFI configurations <https://segno.readthedocs.io/en/stable/special-qrcode-factories.html#create-a-qr-code-for-a-wifi-configuration>`_.
+or `WIFI QR Codes <https://segno.readthedocs.io/en/stable/special-qrcode-factories.html#create-a-qr-code-for-a-wifi-configuration>`_.
 
 The project provides more than 1500 test cases (coverage >= 98%) to verify a
 standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015(E).
