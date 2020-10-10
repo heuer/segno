@@ -253,7 +253,7 @@ EPS
 
 LaTeX
     LaTeX / PGF/TikZ. The serializer provides no support to change the color
-    color of the light modules, but all other default features
+    of the light modules, but all other default features
     (scale, border, color) are supported, see :ref:`LaTeX <latex>` for details.
 
 PAM
@@ -267,8 +267,8 @@ PBM
 
 PPM
     Portable Pixmap (PPM). The serializer does not support transparency,
-    but the common featurs like scale and border are supported, see :ref:`PPM <ppm>`
-    for details.
+    but the common features like scale, border and (multiple) colors are
+    supported, see :ref:`PPM <ppm>` for details.
 
 PDF
     Portable Document Format (PDF). The serializer provides all default features
@@ -287,7 +287,7 @@ SVG
 
 TXT
     Text output. The serializer does not support any scale or color, but the
-    character for the dark and white modules may be specified,
+    character for the dark and light modules may be specified,
     see :ref:`TXT <txt>` for details.
 
 XBM
