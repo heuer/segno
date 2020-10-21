@@ -36,7 +36,8 @@ Unique features
 * `Hanzi mode <https://segno.readthedocs.io/en/stable/qrcode-modes.html#hanzi-mode>`_
 * `Command line interface <https://segno.readthedocs.io/en/stable/command-line.html>`_
 * `Simple, user-friendly API <https://segno.readthedocs.io/en/stable/make.html>`_
-  ::
+
+.. code-block:: python
 
     import segno
     qr = segno.make('Yellow Submarine')
