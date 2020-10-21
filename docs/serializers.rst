@@ -244,7 +244,7 @@ Available serializers
 ---------------------
 
 ANSI
-    ANSI escape code. The serializer supports the border keyword, only.
+    ANSI escape code. The serializer supports the `border` keyword, only.
     See :ref:`ANSI <ansi>` for details.
 
 EPS
@@ -287,7 +287,7 @@ SVG
 
 TXT
     Text output. The serializer does not support any scale or color, but the
-    character for the dark and light modules may be specified,
+    characters for the dark and light modules may be specified,
     see :ref:`TXT <txt>` for details.
 
 XBM
