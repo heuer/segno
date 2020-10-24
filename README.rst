@@ -72,6 +72,22 @@ Use ``pip`` to install segno from PyPI::
     $ pip install segno
 
 
+MacPorts
+^^^^^^^^
+
+Segno is also available at `MacPorts <https://www.macports.org/>`_::
+
+    $ sudo port install py-segno
+
+
+conda-forge
+^^^^^^^^^^^
+
+The library is also available at `conda-forge <https://conda-forge.org/>`_::
+
+    $ conda install -c conda-forge segno
+
+
 Usage
 -----
 
