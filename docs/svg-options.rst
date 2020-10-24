@@ -78,8 +78,8 @@ any non empty value is used as appendix to the numeric width / height attributes
 Common values are "mm" or "cm".
 
 
-encoding / :option:`--encoding <segno --encoding>`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+encoding / :option:`--svgencoding <segno --svgencoding>`
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 String (default: "utf--8").
 
 Sets the encoding of the XML document. If set to ``None``, the encoding
