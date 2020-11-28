@@ -95,7 +95,7 @@ Debian 10 / Buster (backports)
 
 ::
 
-    $ apt-get -t buster-backports install "package"
+    $ apt-get -t buster-backports install python3-segno
 
 Debian 11 / Bullseye (testing)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
