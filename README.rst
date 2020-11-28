@@ -90,6 +90,13 @@ The library is also available at `conda-forge <https://conda-forge.org/>`_
     $ conda install -c conda-forge segno
 
 
+Debian 10 / Buster (backports)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    $ apt-get -t buster-backports install "package"
+
 Debian 11 / Bullseye (testing)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
