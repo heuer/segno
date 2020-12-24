@@ -1084,22 +1084,30 @@ def make_segment(data, mode, encoding=None):
         if _PY2:  # pragma: no cover
             segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
-        for i in range(0, segment_length, 2):
-            code = (segment_data[i] << 8) | segment_data[i + 1]
-            if 0xa1a1 <= code <= 0xaafe:
-                # For characters with GB2312 values from A1A1HEX to AAFEHEX:
-                # a) Subtract A1A1HEX from GB2312 value;
-                diff = code - 0xa1a1
-            elif 0xb0a1 <= code <= 0xfafe:
-                # For characters with GB2312 values from B0A1HEX to FAFEHEX:
-                # a) Subtract A6A1HEX from GB2312 value;
-                diff = code - 0xa6a1
-            else:  # pragma: no cover
-                raise ValueError('Invalid Hanzi bytes: {0}'.format(code))
-            # b) Multiply most significant byte of result by 60HEX;
-            # c) Add least significant byte to product from b);
-            # d) Convert result to a 13-bit binary string.
-            append_bits(((diff >> 8) * 0x60) + (diff & 0xff), 13)
+        i = 0
+        while i < segment_length:
+            first_byte = segment_data[i]
+            if 0 <= first_byte < 128:
+                # For ASCII characters
+                append_bits(first_byte, 8)
+                i += 1
+            else:
+                code = (segment_data[i] << 8) | segment_data[i + 1]
+                if 0xa1a1 <= code <= 0xaafe:
+                    # For characters with GB2312 values from A1A1HEX to AAFEHEX:
+                    # a) Subtract A1A1HEX from GB2312 value;
+                    diff = code - 0xa1a1
+                elif 0xb0a1 <= code <= 0xfafe:
+                    # For characters with GB2312 values from B0A1HEX to FAFEHEX:
+                    # a) Subtract A6A1HEX from GB2312 value;
+                    diff = code - 0xa6a1
+                else:  # pragma: no cover
+                    raise ValueError('Invalid Hanzi bytes: {0} at {1}'.format(code, i))
+                # b) Multiply most significant byte of result by 60HEX;
+                # c) Add least significant byte to product from b);
+                # d) Convert result to a 13-bit binary string.
+                append_bits(((diff >> 8) * 0x60) + (diff & 0xff), 13)
+                i += 2
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
         if _PY2:  # pragma: no cover
