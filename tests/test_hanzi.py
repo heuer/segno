@@ -25,7 +25,9 @@ def test_default_hanzi_mode():
     qr = segno.make('书读百遍其义自现')
     assert 'byte' == qr.mode
     assert '2-M' == qr.designator
-
+    
+def test_hanzi_mode_with_ascii():
+    qr = segno.make('书读百遍1234567890aAbBzZ ?其义自[],现')
 
 def test_force_hanzi_mode():
     qr = segno.make('书读百遍其义自现', mode='hanzi')
