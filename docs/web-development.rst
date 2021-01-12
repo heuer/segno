@@ -10,7 +10,7 @@ Flask
 
 There are various ways to output QR codes in Jinja templates in conjunction
 with Flask. See also the Flask example in the repository:
-https://github.com/heuer/segno/tree/develop/examples/flask_qrcode
+https://github.com/heuer/segno/tree/master/examples/flask_qrcode
 
 
 Data URIs
