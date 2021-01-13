@@ -112,7 +112,7 @@ adaptable to Django, so here is just a hint on how to save QR codes in a
 Django ``ImageField``.
 
 The complete code is in the repository:
-https://github.com/heuer/segno/tree/develop/examples/django_qrcode
+https://github.com/heuer/segno/tree/master/examples/django_qrcode
 
 
 Saving a QR code to an ImageField
