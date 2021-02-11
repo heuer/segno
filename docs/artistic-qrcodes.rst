@@ -15,8 +15,8 @@ To install the plugin, use::
 
     pip install qrcode-artistic
 
-After that, every QR code created with :py:func:`segno.make` has two additional
-methods "to_pil" and "to_artistic".
+After that, every QR code created with :py:func:`segno.make`, :py:func:`segno.make_qr`
+and :py:func:`segno.make_micro` provide two additional methods "to_pil" and "to_artistic".
 
 The former returns a Pillow `Image <https://pillow.readthedocs.io/en/stable/reference/Image.html>`_
 instance, which can be used for further manipulations (e.g. rotating the QR code).
