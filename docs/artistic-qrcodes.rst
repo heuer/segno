@@ -81,3 +81,33 @@ The plugin also supports static backgrounds
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
 
+
+It's also possible to write the result into a :py:class:`io.BytesIO` stream if
+the ``kind`` parameter is provided:
+
+.. code-block:: python
+
+    >>> import io
+    >>> import segno
+    >>> qr = segno.make('The Beatles -- Let It Be', error='h')
+    >>> out = io.BytesIO()
+    >>> qr.to_artistic(background='src/letitbe.jpg', target=out scale=5, kind='jpg')
+
+.. image:: _static/artistic/letitbe.jpg
+    :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
+
+
+If the background should be specified by a URL use a file-like object:
+
+.. code-block:: python
+
+    >>> from urllib.request import urlopen
+    >>> import segno
+    >>> qr = segno.make('Ringo Starr', error='h')
+    >>> url = 'https://media.giphy.com/media/HNo1tVKdFaoco/giphy.gif'
+    >>> bg_file = urlopen(url)
+    >>> qr.to_artistic(background=bg_file, target='ringo.gif', scale=10)
+
+
+.. image:: _static/artistic/ringo.gif
+    :alt: 2-H QR code encoding "Ringo Starr" with a background image
