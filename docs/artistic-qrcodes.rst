@@ -111,3 +111,23 @@ If the background should be specified by a URL use a file-like object:
 
 .. image:: _static/artistic/ringo.gif
     :alt: 2-H QR code encoding "Ringo Starr" with a background image
+
+
+It is possible to combine both techniques so that nothing is written to the
+hard drive:
+
+
+.. code-block:: python
+
+    >>> import io
+    >>> from urllib.request import urlopen
+    >>> import segno
+    >>> qr = segno.make('The Beatles', error='h')
+    >>> url = 'https://media.giphy.com/media/mUPQmck5YEisg/giphy.gif'
+    >>> bg_file = urlopen(url)
+    >>> out = io.BytesIO()
+    >>> qr.to_artistic(background=bg_file, target=out, scale=5, kind='gif')
+
+
+.. image:: _static/artistic/the-beatles-animated.gif
+    :alt: 2-H QR code encoding "The Beatles" with a background image
