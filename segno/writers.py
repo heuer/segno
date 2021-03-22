@@ -1120,6 +1120,11 @@ def write_terminal_compact(matrix, version, out, border=None):
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     """
+    colours = {(1, 1): ' ',
+               (0, 1): '\u2580',  # Upper half block
+               (1, 0): '\u2584',  # Lower half block
+               (0, 0): '\u2588',  # Full block
+               }
     with writable(out, 'wt') as f:
         write = f.write
         it = matrix_iter(matrix, version, scale=1, border=border)
@@ -1131,16 +1136,9 @@ def write_terminal_compact(matrix, version, out, border=None):
             try:
                 bottom_row = next(it)
             except StopIteration:
-                bottom_row = [ 1 for _ in top_row ]
-
-            for (top_bit, bottom_bit) in zip(top_row, bottom_row):
-                c = {
-                    (1, 1): ' ',
-                    (0, 1): '\u2580',  # Upper half block
-                    (1, 0): '\u2584',  # Lower half block
-                    (0, 0): '\u2588',  # Full block
-                }[(top_bit, bottom_bit)]
-                write(c)
+                bottom_row = repeat(1)
+            for bits in zip(top_row, bottom_row):
+                write(colours[bits])
             write('\n')
 
 

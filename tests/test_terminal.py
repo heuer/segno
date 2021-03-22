@@ -44,7 +44,7 @@ def test_terminal_compact():
  █   █ █ ▀   ▀▀▀▄ ▀▄█
  █▄▄▄█ █▄█▄▄ █▄ ██ ██
        ▀▀ ▀▀  ▀ ▀▀  ▀
-"""
+"""  # noqa: W291
     assert expected == val
 
 
