@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2020 -- Lars Heuer
+# Copyright (c) 2016 - 2021 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -31,29 +31,21 @@ def test_geo_data2():
     assert 'geo:38.89,-77.0365297' == data
 
 
-def test_wifi_data():
-    data = helpers.make_wifi_data(ssid='SSID', password=None, security=None)
-    assert 'WIFI:S:SSID;;' == data
-    data = helpers.make_wifi_data(ssid='SSID', password='secret', security=None)
-    assert 'WIFI:S:SSID;P:secret;;' == data
-    data = helpers.make_wifi_data(ssid='SSID', password='secret',
-                                  security='wpa')
-    assert 'WIFI:T:WPA;S:SSID;P:secret;;' == data
-    data = helpers.make_wifi_data(ssid='SSID', password='secret',
-                                  security='nopass')
-    assert 'WIFI:T:nopass;S:SSID;P:secret;;' == data
-    data = helpers.make_wifi_data(ssid='SSID', password='secret',
-                                  security='nopass', hidden=True)
-    assert 'WIFI:T:nopass;S:SSID;P:secret;H:true;' == data
-    data = helpers.make_wifi_data(ssid='ABCDE', password='abcde',
-                                  security='nopass', hidden=True)
-    assert 'WIFI:T:nopass;S:"ABCDE";P:"abcde";H:true;' == data
-    data = helpers.make_wifi_data(ssid='"foo;bar\\baz"', password=None,
-                                  security=None)
-    assert 'WIFI:S:\\"foo\\;bar\\\\baz\\";;' == data
-    data = helpers.make_wifi_data(ssid='"foo;bar\\baz"', password='a:password',
-                                  security='wpa2')
-    assert 'WIFI:T:WPA2;S:\\"foo\\;bar\\\\baz\\";P:a\\:password;;' == data
+@pytest.mark.parametrize('expected, ssid, password, security, hidden',
+                         (('WIFI:S:SSID;;', 'SSID', None, None, False),
+                          ('WIFI:T:SECURITY;S:SSID;;', 'SSID', None, 'security', False),
+                          ('WIFI:T:SECURITY;S:SSID;P:secret;;', 'SSID', 'secret', 'security', False),
+                          ('WIFI:T:WPA;S:SSID;P:secret;;', 'SSID', 'secret', 'wpa', False),
+                          ('WIFI:T:nopass;S:SSID;P:secret;;', 'SSID', 'secret', 'nopass', False),
+                          ('WIFI:T:nopass;S:SSID;P:secret;H:true;', 'SSID', 'secret', 'nopass', True),
+                          ('WIFI:T:nopass;S:ABCDE;P:abcde;H:true;', 'ABCDE', 'abcde', 'nopass', True),
+                          ('WIFI:S:\\"foo\\;bar\\\\baz\\";;', '"foo;bar\\baz"', None, None, False),
+                          ('WIFI:T:WPA2;S:\\"foo\\;bar\\\\baz\\";P:a\\:password;;',
+                           '"foo;bar\\baz"', 'a:password', 'wpa2', False),
+                          ))
+def test_wifi_data(expected, ssid, password, security, hidden):
+    data = helpers.make_wifi_data(ssid=ssid, password=password, security=security, hidden=hidden)
+    assert expected == data
 
 
 def test_wifi():
