@@ -11,7 +11,8 @@ Test against issue #95.
 
 See <https://github.com/zxing/zxing/wiki/Barcode-Contents#wi-fi-network-config-android-ios-11>
 
-This module borrows a lot of code from <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L59>
+This module borrows a lot of code from
+<https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L59>  # noqa: E501
 copyrighted by ZXing authors:
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -67,8 +68,8 @@ def test_issue_95():
         assert decode(data) == expected
 
 
-# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L38>
-# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L59>
+# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L38>  # noqa: E501
+# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L59>  # noqa: E501
 @pytest.mark.parametrize('expected, ssid, password', (('WIFI:T:WEP;S:TenChars;P:0123456789;;',
                                                        'TenChars', '0123456789'),
                                                       ('WIFI:T:WEP;S:TenChars;P:abcde56789;;',
@@ -102,7 +103,7 @@ def test_wep(expected, ssid, password):
         assert decode(data) == expected
 
 
-# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L56>
+# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L56> # noqa: E501
 @pytest.mark.parametrize('expected, ssid, password', (('WIFI:T:WPA;S:TenChars;P:wow;;',
                                                        'TenChars', 'wow'),
                                                       ('WIFI:T:WPA;S:TenChars;P:space is silent;;',
@@ -116,7 +117,7 @@ def test_wpa(expected, ssid, password):
         assert decode(data) == expected
 
 
-# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L68>
+# See <https://github.com/zxing/zxing/blob/master/core/src/test/java/com/google/zxing/client/result/WifiParsedResultTestCase.java#L68> # noqa: E501
 @pytest.mark.parametrize('expected, ssid, password, security', (('WIFI:T:WPA;S:test;P:my_password\\\\;;',
                                                                  'test', 'my_password\\', 'WPA'),
                                                                 ('WIFI:T:WPA;S:My_WiFi_SSID;P:abc123/;;',
