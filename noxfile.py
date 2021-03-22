@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2020 -- Lars Heuer
+# Copyright (c) 2016 - 2021 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -28,9 +28,9 @@ def test(session):
     if session.python == 'pypy':
         # See <https://github.com/heuer/segno/issues/80>
         pip_ver = session.run('pip', '--version', silent=True)
-        m = re.search(r'pip ([0-9.]+)', pip_ver)
+        m = re.search(r'pip ([0-9.]{4})', pip_ver)
         assert m
-        if m.group(1).startswith('20.2'):
+        if m.group(1) in ('20.2', '20.3'):
             session.run('pip', 'uninstall', '-y', 'pip')
             session.run('easy_install', 'pip==20.1.1')
     session.install('-Ur', 'requirements-testing.txt')
