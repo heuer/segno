@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2020 -- Lars Heuer
+# Copyright (c) 2016 - 2021 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -29,9 +29,9 @@ except ImportError:  # pragma: no cover
 
 
 _MECARD_ESCAPE = {
-    ord('\\'): '\\\\',
-    ord(';'): '\\;',
-    ord(':'): '\\:',
+    ord('\\'): "\\\\",
+    ord(';'): "\\;",
+    ord(':'): "\\:",
     ord('"'): '\\"',
 }
 
@@ -62,7 +62,7 @@ def _escape_vcard(s):
     return str(s).translate(_VCARD_ESCAPE)
 
 
-def make_wifi_data(ssid, password, security, hidden=False):
+def make_wifi_data(ssid, password=None, security=None, hidden=False):
     """\
     Creates WIFI configuration string.
 
@@ -77,33 +77,18 @@ def make_wifi_data(ssid, password, security, hidden=False):
     :param bool hidden: Indicates if the network is hidden (default: ``False``)
     :rtype: str
     """
-    def quotation_mark(x):
-        """\
-        Returns '"' if x could be interpreted as hexadecimal value, otherwise
-        an empty string.
-
-        See: <https://github.com/zxing/zxing/wiki/Barcode-Contents>
-        [...] Enclose in double quotes if it is an ASCII name, but could be
-        interpreted as hex (i.e. "ABCD") [...]
-        """
-        try:
-            int(x, 16)
-        except ValueError:
-            return ''
-        return '"'
-
     escape = _escape_mecard
     data = 'WIFI:'
     if security:
         data += 'T:{0};'.format(security.upper() if security != 'nopass' else security)
-    data += 'S:{1}{0}{1};'.format(escape(ssid), quotation_mark(ssid))
-    if password:
-        data += 'P:{1}{0}{1};'.format(escape(password), quotation_mark(password))
+    data += 'S:{0};'.format(escape(ssid))
+    if password is not None:
+        data += 'P:{0};'.format(escape(password))
     data += 'H:true;' if hidden else ';'
     return data
 
 
-def make_wifi(ssid, password, security, hidden=False):
+def make_wifi(ssid, password=None, security=None, hidden=False):
     """\
     Creates a WIFI configuration QR code.
 

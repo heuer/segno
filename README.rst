@@ -52,6 +52,7 @@ Unique features
 
   .. image:: https://github.com/heuer/segno/raw/master/docs/_static/colorful/rain.png
     :alt: Colorful M4-Q Micro QR code encoding "Rain"
+
 * `Artistic QR Codes <https://segno.readthedocs.io/en/stable/artistic-qrcodes.html>`_
   (requires the `qrcode-artistic <https://github.com/heuer/qrcode-artistic>`_ plug-in)
 
@@ -76,7 +77,7 @@ MacPorts
 ^^^^^^^^
 
 Segno is also available at `MacPorts <https://www.macports.org/>`_
-(`project page <https://ports.macports.org/port/py-segno/>`_)::
+(`MacPorts project page <https://ports.macports.org/port/py-segno/>`_)::
 
     $ sudo port install py-segno
 
@@ -85,7 +86,7 @@ conda-forge
 ^^^^^^^^^^^
 
 The library is also available at `conda-forge <https://conda-forge.org/>`_
-(`project page <https://anaconda.org/conda-forge/segno>`_)::
+(`conda-forge project page <https://anaconda.org/conda-forge/segno>`_)::
 
     $ conda install -c conda-forge segno
 
