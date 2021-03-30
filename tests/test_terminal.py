@@ -26,6 +26,28 @@ def test_terminal():
     assert expected == val[:len(expected)]
 
 
+def test_terminal_compact():
+    # Test compact half-block terminal QR.
+    qr = segno.make_qr('test')
+    out = io.StringIO()
+    qr.terminal(out, border=0, compact=True)
+    val = out.getvalue()
+    expected = """\
+ ▄▄▄▄▄ █ ▀ ▀▀█ ▄▄▄▄▄ 
+ █   █ █▄██  █ █   █ 
+ █▄▄▄█ █▀ ▀███ █▄▄▄█ 
+▄▄▄▄▄▄▄█ ▀ █ █▄▄▄▄▄▄▄
+▀▀▄  ▀▄▀ ▀█▄▄ ▄▄█▀ ▄ 
+█ ▄▄ █▄ ▀▀ ▀▄█ ▄█  ▄█
+▄▄██▄█▄█▀▀ ▄██▀ █▄▀ ▀
+ ▄▄▄▄▄ ██ ▀▄ █▀▀  ▀▄█
+ █   █ █ ▀   ▀▀▀▄ ▀▄█
+ █▄▄▄█ █▄█▄▄ █▄ ██ ██
+       ▀▀ ▀▀  ▀ ▀▀  ▀
+"""
+    assert expected == val
+
+
 def terminal_as_matrix(buff, border):
     """\
     Returns the text QR code as list of [0,1] lists.

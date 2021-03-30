@@ -1108,6 +1108,42 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
         write('\n')
 
 
+def write_terminal_compact(matrix, version, out, border=None):
+    """\
+    Function to write a QR code to a terminal using unicode half-block characters.
+    Custom colors are not used.
+
+    :param matrix: The matrix to serialize.
+    :param int version: The (Micro) QR code version.
+    :param out: Filename or a file-like object supporting to write text.
+    :param int border: Integer indicating the size of the quiet zone.
+            If set to ``None`` (default), the recommended border size
+            will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
+    """
+    with writable(out, 'wt') as f:
+        write = f.write
+        it = matrix_iter(matrix, version, scale=1, border=border)
+        while True:
+            try:
+                top_row = next(it)
+            except StopIteration:
+                break
+            try:
+                bottom_row = next(it)
+            except StopIteration:
+                bottom_row = [ 1 for _ in top_row ]
+
+            for (top_bit, bottom_bit) in zip(top_row, bottom_row):
+                c = {
+                    (1, 1): ' ',
+                    (0, 1): '\u2580',  # Upper half block
+                    (1, 0): '\u2584',  # Lower half block
+                    (0, 0): '\u2588',  # Full block
+                }[(top_bit, bottom_bit)]
+                write(c)
+            write('\n')
+
+
 def _color_to_rgb_or_rgba(color, alpha_float=True):
     """\
     Returns the provided color as ``(R, G, B)`` or ``(R, G, B, A)`` tuple.

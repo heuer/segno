@@ -517,7 +517,7 @@ class QRCode:
         """
         return writers.as_png_data_uri(self.matrix, self._version, **kw)
 
-    def terminal(self, out=None, border=None):
+    def terminal(self, out=None, border=None, compact=False):
         """\
         Serializes the matrix as ANSI escape code.
 
@@ -541,6 +541,11 @@ class QRCode:
                 # Use the standard output even if it may print garbage
                 writers.write_terminal(self.matrix, self._version, sys.stdout,
                                        border)
+
+        elif compact:
+            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout,
+                                           border)
+
         else:
             writers.write_terminal(self.matrix, self._version, out or sys.stdout,
                                    border)
