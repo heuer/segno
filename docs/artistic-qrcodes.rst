@@ -51,7 +51,7 @@ The "to_artistic" method can create animated or static QR codes.
 
     >>> import segno
     >>> qr = segno.make('The Beatles -- Albums', error='h')
-    >>> qr.to_artistic(background='src/albums.gif'), target='albums.gif' scale=8)
+    >>> qr.to_artistic(background='src/albums.gif', target='albums.gif', scale=8)
 
 .. image:: _static/artistic/albums.gif
     :alt: 3-H QR code encoding "The Beatles -- Albums" (animated)
