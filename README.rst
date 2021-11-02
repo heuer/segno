@@ -40,8 +40,8 @@ Unique features
 .. code-block:: python
 
     import segno
-    qr = segno.make('Yellow Submarine')
-    qr.save('yellow-submarine.png')
+    qrcode = segno.make('Yellow Submarine')
+    qrcode.save('yellow-submarine.png')
 
 * `Colorful QR codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
@@ -134,15 +134,15 @@ Library
     >>> import segno
     >>> # Let Segno choose the minimal version and an optimal (maximal) error
     >>> # level without changing the minimal version
-    >>> qr = segno.make('Up Jumped the Devil')
-    >>> qr.designator  # Returns the QR code version and the error correction level
+    >>> qrcode = segno.make('Up Jumped the Devil')
+    >>> qrcode.designator  # Returns the QR code version and the error correction level
     '2-Q'
-    >>> qr.save('up-jumped-the-devil.png')  # Save as PNG
-    >>> qr.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
-    >>> qr.save('up-jumped-the-devil-3.png', light=None)  # Transparent light modules
-    >>> qr.save('up-jumped-the-devil.pdf', scale=10)  # Save as PDF
+    >>> qrcode.save('up-jumped-the-devil.png')  # Save as PNG
+    >>> qrcode.save('up-jumped-the-devil-2.png', scale=10)  # Scaling factor 10
+    >>> qrcode.save('up-jumped-the-devil-3.png', light=None)  # Transparent light modules
+    >>> qrcode.save('up-jumped-the-devil.pdf', scale=10)  # Save as PDF
     >>> # SVG drawing the dark modules in "dark blue"
-    >>> qr.save('up-jumped-the-devil.svg', scale=10, dark='darkblue')
+    >>> qrcode.save('up-jumped-the-devil.svg', scale=10, dark='darkblue')
 
 
 If the content to encode is small enough, a Micro QR code is generated:
@@ -150,10 +150,10 @@ If the content to encode is small enough, a Micro QR code is generated:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('RAIN')
-    >>> qr.is_micro
+    >>> qrcode = segno.make('RAIN')
+    >>> qrcode.is_micro
     True
-    >>> qr.designator
+    >>> qrcode.designator
     'M2-M'
 
 
@@ -162,10 +162,10 @@ If this behaviour is not desired, the user may set ``micro`` to ``False``
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('RAIN', micro=False)
-    >>> qr.is_micro
+    >>> qrcode = segno.make('RAIN', micro=False)
+    >>> qrcode.is_micro
     False
-    >>> qr.designator
+    >>> qrcode.designator
     '1-H'
 
 
@@ -176,14 +176,14 @@ Micro QR codes (or raises an error if the content is too large for a Micro QR co
 .. code-block:: python
 
     >>> import segno
-    >>> mqr = segno.make_micro('THE BEATLES')
-    >>> mqr.designator
+    >>> micro_qrcode = segno.make_micro('THE BEATLES')
+    >>> micro_qrcode.designator
     'M3-M'
-    >>> qr = segno.make_qr('THE BEATLES')  # Same content but enforce a QR Code
-    >>> qr.designator
+    >>> qrcode = segno.make_qr('THE BEATLES')  # Same content but enforce a QR Code
+    >>> qrcode.designator
     '1-Q'
     >>> # This won't work since the data does not fit into a Micro QR Code M1 - M4
-    >>> mqr = segno.make_micro('Nick Cave and the Bad Seeds')
+    >>> micro_qrcode = segno.make_micro('Nick Cave and the Bad Seeds')
     Traceback (most recent call last):
         ...
     DataOverflowError: Data too large. No Micro QR Code can handle the provided data
