@@ -112,13 +112,6 @@ if qrcodegen:
                                maxversion=30,
                                boostecl=False)
 
-    def svg_qrcodegen(data='QR Code Symbol'):
-        """qrcodegen SVG"""
-        with open(os.path.join(_output_dir(), 'qrcodegen_%s.svg' % data), 'wt') as f:
-            f.write(QrCode.encode_segments(qrcodegen_make_segment(data),
-                                           ecl=qrcodegen_error_m,
-                                           boostecl=False).to_svg_str(border=4))
-
 
 def _output_dir():
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), 'out')
@@ -185,7 +178,6 @@ def run_create30h_tests(which=None, number=200, table=None):
 def run_svg_tests(which=None, number=200, table=None):
     tests = ('svg_pyqrcode',
              'svg_pyqrcodeng',
-             'svg_qrcodegen',
              'svg_qrcode_path', 'svg_qrcode_rects',
              'svg_segno',)
 
