@@ -176,8 +176,8 @@ Micro QR codes (or raises an error if the content is too large for a Micro QR co
 .. code-block:: python
 
     >>> import segno
-    >>> micro_qrcode = segno.make_micro('THE BEATLES')
-    >>> micro_qrcode.designator
+    >>> qrcode_micro = segno.make_micro('THE BEATLES')
+    >>> qrcode_micro.designator
     'M3-M'
     >>> qrcode = segno.make_qr('THE BEATLES')  # Same content but enforce a QR Code
     >>> qrcode.designator
