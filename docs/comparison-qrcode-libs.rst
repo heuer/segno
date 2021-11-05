@@ -15,7 +15,7 @@ Features
     Description                                                         `qrcode`_                `PyQRCode`_            `qrcodegen`_              `Segno`_
     ================================================================    =====================    ===================    ======================    ========
     Library license                                                     `BSD`_                   `BSD`_                 `MIT`_                    `BSD`_
-    Library version                                                     6.1                      1.2.1                  1.6.0                     |version|
+    Library version                                                     7.3.1                    1.2.1                  1.7.0                     |version|
     Mode Numeric                                                        Yes                      Yes                    Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                    Yes                       Yes
     Mode Byte                                                           Yes                      Yes                    Yes                       Yes
@@ -32,7 +32,7 @@ Features
     Find maximal error correction level                                 No                       No                     Yes                       Yes
     Optimize QR Codes                                                   Yes                      No                     No                        No
     `PNG`_ output                                                       Yes                      Yes                    No                        Yes
-    `SVG`_ output                                                       Yes                      Yes                    Yes                       Yes
+    `SVG`_ output                                                       Yes                      Yes                    No                        Yes
     `EPS`_ output                                                       Yes                      Yes                    No                        Yes
     `PDF`_ output                                                       Yes                      No                     No                        Yes
     `PAM`_ output                                                       No                       No                     No                        Yes

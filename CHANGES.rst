@@ -1,6 +1,21 @@
 Changes
 =======
 
+1.3.3 -- 2021-03-23
+-------------------
+* Fixed `#95 <https://github.com/heuer/segno/issues/95>`_:
+  ``helpers.make_wifi`` and ``helpers.make_wifi_data`` may return
+  invalid data if any input contains characters which can be
+  interpreted as an integer.
+* Updated ``helpers.make_wifi`` and ``helpers.make_wifi_data``
+  signature and doc strings to match the stub / type hints.
+
+
+1.3.2 -- 2021-03-22
+-------------------
+* Not released due to twine issues (markup errors in README.rst)
+
+
 1.3.1 -- 2020-09-01
 -------------------
 * Fixed: Stub files (type hints) were missing from the source distribution.
