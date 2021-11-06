@@ -27,7 +27,7 @@ def test_covid_cert():
                "QNC2BFUF$SU%BO*N5PIBPIAOI-+R2YBV44PZB6H0CJ0QCK0YQK*R3T3+7A.N88J4R$F/MAITH6QS03L0QIRR97I2HOAXL92L0. KOK" \
                "GTM8$M8SNCT64RR7+V4YC5/HQRPOHCR6W9.DPEA7IB65C94JB+ONS.CUIA7LE9JAF+B**O3-SY$NRUEG1AK/4C6DM.SY$NWYMG3GUB" \
                "RCEIFRMLNKNM8POCJPG8/0NOLZGIZCUOY55*LTUJS1D7.J9$7$.IWQOMJV$6M53AA:6Z2S./BXPHRKGJUHB1WN5LH/M0:3P+E$$BWW" \
-               "NB8V5ZRF9JMKAX AAOL3H02YF*OF"
+               "NB8V5ZRF9JMKAX AAOL3H02YF*OF"  # noqa: E501
     # Don't use another error correction mode than "M", not sure if this is a requirement, though
     qr = segno.make(cert_raw, error='m', boost_error=False)
     assert 'M' == qr.error

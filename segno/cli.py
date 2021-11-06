@@ -176,7 +176,7 @@ def make_parser():
                            type=int)
     # Terminal
     terminal_group = parser.add_argument_group('Terminal', 'Terminal specific options')
-    terminal_group.add_argument('--compact', help='Indicates that the QR code should be printed in a more compact manner',
+    terminal_group.add_argument('--compact', help='Indicates that the QR code should be printed in a more compact manner',   # noqa: E501
                                 action='store_true')
     # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
