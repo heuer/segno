@@ -68,6 +68,8 @@ def test_defaults():
     assert args.svgversion is None
     assert args.nl is True
     assert args.draw_transparent is False
+    # Terminal
+    assert args.compact is False
 
 
 def test_segno_version():
@@ -338,6 +340,15 @@ def test_terminal(capsys):
     out, err = capsys.readouterr()
     assert out
     assert '' == err
+    assert '\033[0m' in out
+
+
+def test_terminal_compact(capsys):
+    cli.main(['--compact', 'test'])
+    out, err = capsys.readouterr()
+    assert out
+    assert '' == err
+    assert '\u2580' in out
 
 
 # -- PNG

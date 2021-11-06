@@ -174,6 +174,10 @@ def make_parser():
     png_group = parser.add_argument_group('PNG', 'PNG specific options')
     png_group.add_argument('--dpi', help='Sets the DPI value of the PNG file',
                            type=int)
+    # Terminal
+    terminal_group = parser.add_argument_group('Terminal', 'Terminal specific options')
+    terminal_group.add_argument('--compact', help='Indicates that a more compact version should be written',
+                                action='store_true')
     # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
                                                        action='version',
@@ -282,7 +286,7 @@ def main(args=sys.argv[1:]):
         return sys.exit(1)
     output = config.pop('output')
     if output is None:
-        qr.terminal(border=config['border'])
+        qr.terminal(border=config['border'], compact=config.get('compact', False))
     else:
         qr.save(output, **build_config(config, filename=output))
     return 0
