@@ -34,9 +34,13 @@ import segno
 from segno import helpers
 _qr_decoder_available = False
 try:
+    FileNotFoundError
+except NameError:  # Py2
+    FileNotFoundError = OSError
+try:
     from pyzbar.pyzbar import decode as zbardecode
     _qr_decoder_available = True
-except ImportError:
+except (ImportError, FileNotFoundError):  # The latter may occur under Windows
     pass
 
 
