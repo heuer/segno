@@ -1,6 +1,6 @@
 .\" Man page generated from reStructuredText.
 .
-.TH "SEGNO" "1" "Mar 23, 2021" "1.3.3" "Segno"
+.TH "SEGNO" "1" "Nov 06, 2021" "1.4.0" "Segno"
 .SH NAME
 segno \- Segno QR Code encoder
 .
@@ -130,6 +130,12 @@ images. Some output formats, i.e. SVG, accept a decimal value.
 .B \-\-output OUTPUT, \-o OUTPUT
 Output file.
 If not specified, the QR Code is printed to the terminal
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-\-compact
+Indicates that the QR code should be printed to the terminal in a more
+compact manner.
 .UNINDENT
 .SS Module Colors
 .sp
@@ -339,6 +345,18 @@ $ segno "Up jumped the devil"
 .UNINDENT
 .sp
 Prints a 2\-Q QR code to the terminal
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+$ segno \-\-compact "I am the walrus"
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+Prints a 1\-L QR code to the terminal in a more compact manner
 .INDENT 0.0
 .INDENT 3.5
 .sp
