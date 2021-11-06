@@ -104,6 +104,11 @@ Output Options
     Output file.
     If not specified, the QR Code is printed to the terminal
 
+.. option:: --compact
+
+    Indicates that the QR code should be printed to the terminal in a more
+    compact manner.
+
 
 Module Colors
 ~~~~~~~~~~~~~
@@ -287,6 +292,13 @@ Examples
     $ segno "Up jumped the devil"
 
 Prints a 2-Q QR code to the terminal
+
+
+.. code-block:: bash
+
+    $ segno --compact "I am the walrus"
+
+Prints a 1-L QR code to the terminal in a more compact manner
 
 
 .. code-block:: bash
