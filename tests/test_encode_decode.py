@@ -15,6 +15,10 @@ import io
 import pytest
 import segno
 try:
+    FileNotFoundError
+except NameError:  # Py2
+    FileNotFoundError = OSError
+try:
     from pyzbar.pyzbar import decode as zbardecode
 except (ImportError, FileNotFoundError):  # The latter may occur under Windows
     pytestmark = pytest.mark.skip
