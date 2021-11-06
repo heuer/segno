@@ -33,6 +33,14 @@ Same content, but as Micro QR code (M4)::
     :alt: Micro QR code for "Little wing".
 
 
+Using a more compact representation of the code::
+
+    $ segno --compact "Little wing"
+
+.. image:: _static/cli/qr-little-wing-terminal-compact.png
+    :alt: QR code for "Little wing" in a more compact manner.
+
+
 QR Code version
 ---------------
 
