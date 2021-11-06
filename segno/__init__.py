@@ -530,6 +530,8 @@ class QRCode:
         :param int border: Integer indicating the size of the quiet zone.
                 If set to ``None`` (default), the recommended border size
                 will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
+        :param bool compact: Indicates if a more compact QR code should be shown
+                (default: ``False``).
         """
         if out is None and sys.platform == 'win32':  # pragma: no cover
             # Windows < 10 does not support ANSI escape sequences, try to
@@ -539,16 +541,11 @@ class QRCode:
                 writers.write_terminal_win(self.matrix, self._version, border)
             except OSError:
                 # Use the standard output even if it may print garbage
-                writers.write_terminal(self.matrix, self._version, sys.stdout,
-                                       border)
-
+                writers.write_terminal(self.matrix, self._version, sys.stdout, border)
         elif compact:
-            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout,
-                                           border)
-
+            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout, border)
         else:
-            writers.write_terminal(self.matrix, self._version, out or sys.stdout,
-                                   border)
+            writers.write_terminal(self.matrix, self._version, out or sys.stdout, border)
 
     def save(self, out, kind=None, **kw):
         """\
@@ -978,14 +975,14 @@ class QRCodeSequence(tuple):
     def __new__(cls, qrcodes):
         return super(QRCodeSequence, cls).__new__(cls, qrcodes)
 
-    def terminal(self, out=None, border=None):
+    def terminal(self, out=None, border=None, compact=False):
         """\
         Serializes the sequence of QR codes as ANSI escape code.
 
         See :py:meth:`QRCode.terminal()` for details.
         """
         for qrcode in self:
-            qrcode.terminal(out=out, border=border)
+            qrcode.terminal(out=out, border=border, compact=compact)
 
     def save(self, out, kind=None, **kw):
         """\
