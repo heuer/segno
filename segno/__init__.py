@@ -519,11 +519,12 @@ class QRCode:
 
     def terminal(self, out=None, border=None, compact=False):
         """\
-        Serializes the matrix as ANSI escape code.
+        Serializes the matrix as ANSI escape code or Unicode Block Elements
+        (if ``compact`` is ``True``).
 
         Under Windows, no ANSI escape sequence is generated but the Windows
         API is used *unless* :paramref:`out <segno.QRCode.terminal.out>`
-        is a writable object or using WinAPI fails.
+        is a writable object or using WinAPI fails or if ``compact`` is ``True``.
 
         :param out: Filename or a file-like object supporting to write text.
                 If ``None`` (default), the matrix is written to :py:class:`sys.stdout`.
@@ -533,7 +534,9 @@ class QRCode:
         :param bool compact: Indicates if a more compact QR code should be shown
                 (default: ``False``).
         """
-        if out is None and sys.platform == 'win32':  # pragma: no cover
+        if compact:
+            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout, border)
+        elif out is None and sys.platform == 'win32':  # pragma: no cover
             # Windows < 10 does not support ANSI escape sequences, try to
             # call the a Windows specific terminal output which uses the
             # Windows API.
@@ -542,8 +545,6 @@ class QRCode:
             except OSError:
                 # Use the standard output even if it may print garbage
                 writers.write_terminal(self.matrix, self._version, sys.stdout, border)
-        elif compact:
-            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout, border)
         else:
             writers.write_terminal(self.matrix, self._version, out or sys.stdout, border)
 
