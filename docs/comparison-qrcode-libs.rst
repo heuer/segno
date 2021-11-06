@@ -54,8 +54,7 @@ Features
     Plugins                                                             No                       No                     No                        Yes
     Default encoding in Byte mode                                       ISO/IEC 8859-1           ISO/IEC 8859-1         ISO/IEC 8859-1            ISO/IEC 8859-1
                                                                         or UTF-8                 or UTF-8               or UTF-8                  or UTF-8
-    3rd party dependencies                                              `six`_,                  `PyPNG`_               -                         -
-                                                                        `Pillow`_ or
+    3rd party dependencies                                              `Pillow`_ or             `PyPNG`_               -                         -
                                                                         `Pymaging`_ and
                                                                         `Pymaging-PNG`_
                                                                         (Windows:
