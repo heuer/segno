@@ -3,5 +3,5 @@ pytest~=4.6; python_version == '2.7'
 pytest~=6.0; python_version > '2.7'
 pypng~=0.0.20
 pyzbar~=0.1.8
-mypy
+mypy; python_version >= '3.5'
 flake8
