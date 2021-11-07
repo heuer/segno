@@ -17,5 +17,5 @@ install:
 script:
   - flake8 segno
   - flake8 tests/
-  - mypy segno
+  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 ]]; then mypy segno; fi
   - pytest
