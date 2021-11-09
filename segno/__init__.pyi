@@ -70,7 +70,7 @@ class QRCode:
                     border: Optional[int] = None,
                     verbose: bool = False) -> Iterator[Iterable[int]]: ...
 
-    def show(self, delete_after: int = 20, scale: Union[int, float] = 10,
+    def show(self, delete_after: Union[int, float] = 20, scale: Union[int, float] = 10,
              border: Optional[int] = None, dark: Union[tuple, str] = '#000',
              light: Union[tuple, str] = '#fff') -> None: ...
 
@@ -82,7 +82,7 @@ class QRCode:
 
     def png_data_uri(self, **kw: Any) -> str: ...
 
-    def terminal(self, out: Optional[TextIO] = None,
+    def terminal(self, out: Optional[Union[TextIO, str]] = None,
                 border: Optional[int] = None, compact: bool = False) -> None: ...
 
     def save(self, out: Union[IO[AnyStr], str], kind: Optional[str] = None,
@@ -96,7 +96,7 @@ class QRCode:
 
 
 class QRCodeSequence(tuple):
-    def terminal(self, out: Optional[TextIO] = None,
+    def terminal(self, out: Optional[Union[TextIO, str]] = None,
                  border: Optional[int] = None, compact: bool = False) -> None: ...
 
     def save(self, out: Union[IO[AnyStr], str], kind: Optional[str] = None,
