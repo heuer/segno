@@ -105,7 +105,9 @@ Django
 ------
 
 The project `django-segno-qr <https://pypi.org/project/django-segno-qr/>`_
-provides a template tag for creating SVG QR codes in Django templates.
+provides a template tag for creating SVG QR codes in Django templates while
+`django-qr-code <https://pypi.org/project/django-qr-code/>`_ provides more
+template tags and utility functions.
 
 Apart from that, the aforementioned information for Flask should also be
 adaptable to Django, so here is just a hint on how to save QR codes in a
