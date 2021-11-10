@@ -18,6 +18,8 @@ import pytest
 import segno
 
 _SVG_NS = 'http://www.w3.org/2000/svg'
+_CSS_CLASS = 'segno'
+_PATH_CLASS = 'qrline'
 
 
 def _get_svg_el(root, name):
@@ -63,11 +65,11 @@ def test_write_svg():
     assert 'width' in root.attrib
     css_class = root.attrib.get('class')
     assert css_class
-    assert 'segno' == css_class
+    assert _CSS_CLASS == css_class
     path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
-    assert 'qrline' == path_class
+    assert _PATH_CLASS == path_class
     stroke = path_el.get('stroke')
     assert stroke == '#000'
     title_el = _get_title(root)
@@ -91,11 +93,11 @@ def test_write_svg_black(dark):
     assert 'width' in root.attrib
     css_class = root.attrib.get('class')
     assert css_class
-    assert 'segno' == css_class
+    assert _CSS_CLASS == css_class
     path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
-    assert 'qrline' == path_class
+    assert _PATH_CLASS == path_class
     stroke = path_el.get('stroke')
     assert stroke == '#000'
     title_el = _get_title(root)
@@ -164,11 +166,11 @@ def test_write_svg_color_rgb():
     assert 'width' in root.attrib
     css_class = root.attrib.get('class')
     assert css_class
-    assert 'segno' == css_class
+    assert _CSS_CLASS == css_class
     path_el = _get_first_path(root)
     assert path_el is not None
     path_class = path_el.get('class')
-    assert 'qrline' == path_class
+    assert _PATH_CLASS == path_class
     stroke = path_el.get('stroke')
     assert stroke == '#4c83cd'
     title_el = _get_title(root)
