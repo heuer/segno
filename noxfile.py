@@ -171,13 +171,13 @@ def build_release(session):
     Builds a release: Creates sdist and wheel
     """
     version = _validate_version(session)
+    session.install('build', 'wheel')
     git = partial(session.run, 'git', external=True)
     git('fetch')
     git('fetch', '--tags')
     git('checkout', version)
-    session.install('setuptools', 'wheel')
     shutil.rmtree('dist', ignore_errors=True)
-    session.run('python', 'setup.py', 'sdist', 'bdist_wheel')
+    session.run('python', '-m', 'build', '--no-isolation')
     git('checkout', 'master')
 
 
