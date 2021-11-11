@@ -42,7 +42,7 @@ def make_sequence(content: Union[int, str, bytes],
                   symbol_count: Optional[int] = None) -> QRCodeSequence: ...
 
 class QRCode:
-    matrix: Tuple[bytearray]
+    matrix: Tuple[bytearray, ...]
     mask: int
 
     @property
