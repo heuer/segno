@@ -1125,19 +1125,11 @@ def write_terminal_compact(matrix, version, out, border=None):
               (1, 0): '\u2584',  # Lower half block
               (0, 0): '\u2588',  # Full block
               }
+    it = [matrix_iter(matrix, version, scale=1, border=border)] * 2
     with writable(out, 'wt') as f:
         write = f.write
-        it = matrix_iter(matrix, version, scale=1, border=border)
-        while True:
-            try:
-                top_row = next(it)
-            except StopIteration:
-                break
-            try:
-                bottom_row = next(it)
-            except StopIteration:
-                bottom_row = repeat(1)
-            write(''.join(blocks[bits] for bits in zip(top_row, bottom_row)))
+        for top_row, bottom_row in zip_longest(*it, fillvalue=repeat(1)):
+            write(''.join(blocks[pair] for pair in zip(top_row, bottom_row)))
             write('\n')
 
 
