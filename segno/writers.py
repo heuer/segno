@@ -938,7 +938,7 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
     """
     width, height, border = _valid_width_height_and_border(version, scale, border)
     row_iter = matrix_iter(matrix, version, scale, border)
-    stroke_color = color_to_rgb_hex(dark)
+    stroke_color = color_to_rgb_hex(dark) if dark is not None else 'None'
     bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
         write = f.write

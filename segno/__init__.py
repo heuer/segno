@@ -924,6 +924,7 @@ class QRCode:
         kind             "xpm"
         scale            integer
         dark             Default: "#000" (black).
+                         ``None`` indicates transparent dark modules.
         light            Default value "#fff" (white)
                          ``None`` indicates transparent light modules.
         name             Name of the variable (default: "img")

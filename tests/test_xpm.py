@@ -23,6 +23,26 @@ def test_write_xpm_indicator():
     assert expected == val[:len(expected)]
 
 
+def test_dark_transparent():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    qr.save(out, kind='xpm', dark=None, light='white')
+    expected = '/* XPM */\n'
+    val = out.getvalue()
+    assert expected == val[:len(expected)]
+    assert re.search(r'^"X c None"', val, flags=re.MULTILINE)
+
+
+def test_light_transparent():
+    qr = segno.make_qr('test', error='m', boost_error=False)
+    out = io.StringIO()
+    qr.save(out, kind='xpm', light=None)
+    expected = '/* XPM */\n'
+    val = out.getvalue()
+    assert expected == val[:len(expected)]
+    assert re.search(r'^"  c None"', val, flags=re.MULTILINE)
+
+
 _DATA_PATTERN = re.compile(r'{([^}]+)};')
 
 
@@ -45,7 +65,7 @@ def test_write_xpm_width_height():
 
 def xpm_as_matrix(buff, border):
     """\
-    Returns the XPM QR code as list of [0,1] lists.
+    Returns the XPM QR code as list of [0, 1] lists.
 
     :param io.StringIO buff: Buffer to read the matrix from.
     """
