@@ -38,7 +38,7 @@ The "to_pil" method provides all options of :doc:`colorful-qrcodes`.
     >>> import segno
     >>> qr = segno.make('Yellow Submarine', error='h')
     >>> img = qr.to_pil(scale=4, dark='darkred', data_dark='darkorange',
-                        data_light='yellow')
+    ...                 data_light='yellow')
     >>> img.save('yellow-submarine.png')
 
 .. image:: _static/artistic/yellow-submarine.png
@@ -64,7 +64,8 @@ save animated WebP images as well.
 
     >>> import segno
     >>> qr = segno.make('The Beatles -- Abbey Road', error='h')
-    >>> qr.to_artistic(background='src/abbey-road-walking.gif', target='abbey-road.webp' scale=4)
+    >>> qr.to_artistic(background='src/abbey-road-walking.gif',
+    ...                target='abbey-road.webp' scale=4)
 
 .. image:: _static/artistic/abbey-road.webp
     :alt: 4-H QR code encoding "The Beatles -- Abbey Road" (animated)

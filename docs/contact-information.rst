@@ -14,7 +14,8 @@ contact information as MeCard.
     >>> qr.designator
     '3-L'
     >>> # Some params accept multiple values, like email, phone, url
-    >>> qr = helpers.make_mecard(name='Doe,John', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
+    >>> qr = helpers.make_mecard(name='Doe,John', email=('me@example.org', 'another@example.org'),
+    ...                          url=['http://www.example.org', 'https://example.org/~joe'])
     >>> qr.save('my-mecard.svg', scale=4)
 
 .. image:: _static/contact/my-mecard.svg
@@ -43,11 +44,14 @@ contact information as vCard version 3.0.
 .. code-block:: python
 
     >>> from segno import helpers
-    >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email='me@example.org', phone='+1234567')
+    >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe',
+    ...                         email='me@example.org', phone='+1234567')
     >>> qr.designator
     '5-L'
     >>> # Some params accept multiple values, like email, phone, url
-    >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe', email=('me@example.org', 'another@example.org'), url=['http://www.example.org', 'https://example.org/~joe'])
+    >>> qr = helpers.make_vcard(name='Doe;John', displayname='John Doe',
+    ...                         email=('me@example.org', 'another@example.org'),
+    ...                         url=['http://www.example.org', 'https://example.org/~joe'])
     >>> qr.save('my-vcard.svg', scale=4)
 
 .. image:: _static/contact/my-vcard.svg
@@ -59,7 +63,8 @@ A factory function which returns the vCard as string is available as well.
 
     >>> import segno
     >>> from segno import helpers
-    >>> vcard = helpers.make_vcard_data(name='Doe;John', displayname='John Doe', email='me@example.org', phone='+1234567')
+    >>> vcard = helpers.make_vcard_data(name='Doe;John', displayname='John Doe',
+    ...                                 email='me@example.org', phone='+1234567')
     >>> vcard
     'BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John\r\nFN:John Doe\r\nEMAIL:me@example.org\r\nTEL:+1234567\r\nEND:VCARD\r\n'
     >>> qr = segno.make(vcard, error='H')

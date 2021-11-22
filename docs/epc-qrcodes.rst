@@ -18,8 +18,8 @@ fixed to "M" and the QR Code version must not be higher than 13.
 
     >>> from segno import helpers
     >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft',
-                                 iban='DE33100205000001194700',
-                                 amount=20, text='Spende fuer Wikipedia')
+    ...                          iban='DE33100205000001194700',
+    ...                          amount=20, text='Spende fuer Wikipedia')
     >>> qr.save('spende-wikipedia.png', scale=3)
 
 .. image:: _static/epc/spende-wikipedia.png
@@ -51,8 +51,8 @@ of the encoding like 'utf-8' or 'ISO-8859-1'.
 
     >>> from segno import helpers
     >>> qr = helpers.make_epc_qr(name='Wikimedia Foerdergesellschaft',
-                                 iban='DE33100205000001194700', amount=13.05,
-                                 text='Spende fuer Wikipedia', encoding='utf-8')
+    ...                          iban='DE33100205000001194700', amount=13.05,
+    ...                          text='Spende fuer Wikipedia', encoding='utf-8')
     >>> qr.save('spende-wikipedia2.png', scale=3)
 
 .. image:: _static/epc/spende-wikipedia2.png

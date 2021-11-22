@@ -230,7 +230,7 @@ more than two colors.
     >>> import segno
     >>> qr = segno.make('Yellow Submarine', error='h')
     >>> qr.save('yellow-submarine.png', scale=5, dark='darkred', data_dark='darkorange',
-                data_light='yellow')
+    ...         data_light='yellow')
 
 .. image:: _static/yellow-submarine.png
     :alt: Colorful 3-H QR code encoding "Yellow Submarine"

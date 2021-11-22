@@ -31,7 +31,7 @@ more than two colors, every module type may have its own color.
     >>> # Force version 7 since smaller versions don't carry any version information (see below)
     >>> qr = segno.make('Yellow Submarine', version=7, error='h')
     >>> qr.save('yellow-submarine.png', scale=4, dark='darkred', data_dark='darkorange',
-                data_light='yellow')
+    ...         data_light='yellow')
 
 .. image:: _static/colorful/yellow-submarine.png
     :alt: Colorful 7-H QR code encoding "Yellow Submarine"

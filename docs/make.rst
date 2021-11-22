@@ -172,7 +172,7 @@ never a Micro QR code.
 
     >>> import segno
     >>> qr = segno.make('Parisienne Walkways',
-                        error='l')  # Explicit (minimum) error correction level
+    ...                 error='l')  # Explicit (minimum) error correction level
     >>> qr.designator # The error correction level was changed to "Q" since there was enough available space
     '2-Q'
 
