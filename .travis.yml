@@ -16,11 +16,17 @@ before_install:
 
 install:
   - pip install -r requirements-testing.txt
-  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then pip install flake8; fi
-  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then pip install mypy; fi
+  - |
+    if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then
+      pip install flake8;
+      pip install mypy;
+    fi
 
 script:
-  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then flake8 segno; fi
-  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then flake8 tests/; fi
-  - if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then mypy segno; fi
+  - |
+    if [[ ! $TRAVIS_PYTHON_VERSION =~ ^2 && ! $TRAVIS_PYTHON_VERSION =~ ^pypy ]]; then
+      flake8 segno;
+      flake8 tests/;
+      mypy segno;
+    fi
   - pytest
