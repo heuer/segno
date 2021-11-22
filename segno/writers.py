@@ -1137,8 +1137,7 @@ def write_terminal_compact(matrix, version, out, border=None):
                 bottom_row = next(it)
             except StopIteration:
                 bottom_row = repeat(1)
-            for bits in zip(top_row, bottom_row):
-                write(blocks[bits])
+            write(''.join(blocks[bits] for bits in zip(top_row, bottom_row)))
             write('\n')
 
 
