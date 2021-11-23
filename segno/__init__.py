@@ -101,7 +101,7 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
                 user::
 
                     import segno
-                    qr = segno.make('书读百遍其义自现', mode='hanzi')
+                    qrcode = segno.make('书读百遍其义自现', mode='hanzi')
 
     :type mode: str or None
     :param mask: Data mask. If the value is ``None`` (default), the
@@ -348,11 +348,11 @@ class QRCode:
         False = light module)::
 
             >>> import segno
-            >>> qr = segno.make('The Beatles')
-            >>> width, height = qr.symbol_size(scale=2)
+            >>> qrcode = segno.make('The Beatles')
+            >>> width, height = qrcode.symbol_size(scale=2)
             >>> res = []
             >>> # Scaling factor 2, default border
-            >>> for row in qr.matrix_iter(scale=2):
+            >>> for row in qrcode.matrix_iter(scale=2):
             >>>     res.append([col == 0x1 for col in row])
             >>> width == len(res[0])
             True
@@ -493,10 +493,15 @@ class QRCode:
         This method returns a string that can be used in an HTML context.
 
         This method uses the same parameters as the usual SVG serializer, see
-        :py:func:`save` and the available `SVG parameters <#svg>`_
+        :py:func:`save` and the available `SVG parameters <#svg>`_ (the ``out``
+        and ``kind`` parameters are not supported).
 
-        The returned string can be used directly in Jinja / Django templates,
-        provided the ``safe`` filter is used::
+        The returned string can be used directly in
+        `Jinja <https://jinja.palletsprojects.com/>`_ and
+        `Django <https://www.djangoproject.com/>`_ templates, provided the
+        ``safe`` filter is used which marks a string as not requiring further
+        HTML escaping prior to output.
+        ::
 
             <div>{{ qr.svg_inline(dark='#228b22', scale=3) | safe }}</div>
 
