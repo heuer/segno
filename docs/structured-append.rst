@@ -34,7 +34,7 @@ number of symbols is automatically determined by the QR Code version.
 
     >>> import segno
     >>> qrcode_seq = segno.make_sequence('I read the news today oh boy', version=1)
-    >>> len(seq)
+    >>> len(qrcode_seq)
     2
     >>> # Creates "a-day-in-the-life-02-01.svg" and "a-day-in-the-life-02-02.svg"
     >>> qrcode_seq.save('a-day-in-the-life.svg', scale=10)
@@ -47,7 +47,7 @@ If the provided content fits into one QR code, the sequence behaves like a
 
     >>> import segno
     >>> qrcode_seq = segno.make_sequence('I read', version=1)
-    >>> len(seq)
+    >>> len(qrcode_seq)
     1
     >>> qrcode_seq.designator
     '1-H'
