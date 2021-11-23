@@ -29,21 +29,21 @@ more than two colors, every module type may have its own color.
 
     >>> import segno
     >>> # Force version 7 since smaller versions don't carry any version information (see below)
-    >>> qr = segno.make('Yellow Submarine', version=7, error='h')
-    >>> qr.save('yellow-submarine.png', scale=4, dark='darkred', data_dark='darkorange',
-    ...         data_light='yellow')
+    >>> qrcode = segno.make('Yellow Submarine', version=7, error='h')
+    >>> qr.save('qrcode_yellow-submarine.png', scale=4, dark='darkred',
+    ...         data_dark='darkorange', data_light='yellow')
 
-.. image:: _static/colorful/yellow-submarine.png
+.. image:: _static/colorful/qrcode_yellow-submarine.png
     :alt: Colorful 7-H QR code encoding "Yellow Submarine"
 
 
 .. code-block:: python
 
     >>> import segno
-    >>> mqr = segno.make('Rain', error='q')
-    >>> mqr.save('rain.png', scale=4, dark='darkblue', data_dark='steelblue')
+    >>> micro_qrcode = segno.make('Rain', error='q')
+    >>> micro_qrcode.save('micro_qrode_rain.png', scale=4, dark='darkblue', data_dark='steelblue')
 
-.. image:: _static/colorful/rain.png
+.. image:: _static/colorful/micro_qrcode_rain.png
     :alt: Colorful M4-Q QR code encoding "RAIN"
 
 

@@ -232,7 +232,7 @@ more than two colors.
     >>> qrcode.save('yellow-submarine.png', scale=5, dark='darkred',
     ...             data_dark='darkorange', data_light='yellow')
 
-.. image:: _static/yellow-submarine.png
+.. image:: _static/colorful/yellow-submarine.png
     :alt: Colorful 3-H QR code encoding "Yellow Submarine"
 
 See :doc:`colorful-qrcodes` for available options.

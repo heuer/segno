@@ -212,9 +212,9 @@ alignment pattern (dark / light) etc.) may have its own color, see
 
 .. code-block:: bash
 
-    $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o yellow-submarine.png Yellow Submarine
+    $ segno --dark darkred --data-dark darkorange --data-light yellow --scale 5 -o qrcode_yellow-submarine.png Yellow Submarine
 
-.. image:: _static/yellow-submarine.png
+.. image:: _static/colorful/qrcode_yellow-submarine.png
     :alt: QR code "Yellow Submarine" colorful
 
 
