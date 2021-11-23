@@ -56,8 +56,8 @@ Once installed, it's possible to call this plugin via:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Chelsea Hotel No. 2')
-    >>> qr.to_simple()
+    >>> qrcode = segno.make('Chelsea Hotel No. 2')
+    >>> qrcode.to_simple()
     XXXXXXX_XXXX_XX_X_XXXXXXX
     X_____X___________X_____X
     X_XXX_X_XX__XXX___X_XXX_X

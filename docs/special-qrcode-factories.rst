@@ -17,8 +17,8 @@ Create a QR code for a WIFI configuration
 
     >>> from segno import helpers
     >>> # Create a WIFI config with min. error level "L" or better
-    >>> qr = helpers.make_wifi(ssid='My network', password='secret', security='WPA')
-    >>> qr.designator
+    >>> qrcode = helpers.make_wifi(ssid='My network', password='secret', security='WPA')
+    >>> qrcode.designator
     '3-M'
 
 
@@ -38,8 +38,8 @@ factory function, which returns a string which encodes the WIFI configuration.
     >>> config
     'WIFI:T:WPA;S:My network;P:secret;;'
     >>> # Create a QR Code with error correction level "H"
-    >>> qr = segno.make(config, error='h')
-    >>> qr.designator
+    >>> qrcode = segno.make(config, error='h')
+    >>> qrcode.designator
     '4-H'
 
 
@@ -55,8 +55,8 @@ Create a QR code encoding geographic information
 
     >>> from segno import helpers
     >>> latitude, longitude = 38.8976763,-77.0365297
-    >>> qr = helpers.make_geo(latitude, longitude)
-    >>> qr.designator
+    >>> qrcode = helpers.make_geo(latitude, longitude)
+    >>> qrcode.designator
     '2-M'
 
 .. image:: _static/geo/geo_default.png
@@ -75,8 +75,8 @@ available.
     >>> geo_uri
     'geo:38.8976763,-77.0365297'
     >>> # Use error correction level "H"
-    >>> qr = segno.make(geo_uri, error='H')
-    >>> qr.designator
+    >>> qrcode = segno.make(geo_uri, error='H')
+    >>> qrcode.designator
     '4-H'
 
 .. image:: _static/geo/geo_data.png

@@ -27,8 +27,8 @@ Examples
 Keeping the default (boost error level on)::
 
     >>> import segno
-    >>> qr = segno.make('The Long and Winding Road')
-    >>> qr.designator
+    >>> qrcode = segno.make('The Long and Winding Road')
+    >>> qrcode.designator
     '2-M'
 
 Segno returns a 2-M QR code (version 2, error correction level "M").
@@ -42,8 +42,8 @@ returns a 2-L QR code (version 2, error correction level "L") which does not
 optimally exploit the possible error corrections::
 
     >>> import segno
-    >>> qr = segno.make('The Long and Winding Road', boost_error=False)
-    >>> qr.designator
+    >>> qrcode = segno.make('The Long and Winding Road', boost_error=False)
+    >>> qrcode.designator
     '2-L'
 
 .. image:: _static/boost_example2.svg

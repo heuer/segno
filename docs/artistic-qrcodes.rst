@@ -24,8 +24,8 @@ instance, which can be used for further manipulations (e.g. rotating the QR code
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Yellow Submarine', error='h')
-    >>> img = qr.to_pil(scale=3).rotate(45, expand=True)
+    >>> qrcode = segno.make('Yellow Submarine', error='h')
+    >>> img = qrcode.to_pil(scale=3).rotate(45, expand=True)
     >>> img.save('yellow-submarine-rotated.png')
 
 .. image:: _static/artistic/yellow-submarine-rotated.png
@@ -36,9 +36,9 @@ The "to_pil" method provides all options of :doc:`colorful-qrcodes`.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Yellow Submarine', error='h')
-    >>> img = qr.to_pil(scale=4, dark='darkred', data_dark='darkorange',
-    ...                 data_light='yellow')
+    >>> qrcode = segno.make('Yellow Submarine', error='h')
+    >>> img = qrcode.to_pil(scale=4, dark='darkred', data_dark='darkorange',
+    ...                    data_light='yellow')
     >>> img.save('yellow-submarine.png')
 
 .. image:: _static/artistic/yellow-submarine.png
@@ -50,8 +50,9 @@ The "to_artistic" method can create animated or static QR codes.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('The Beatles -- Albums', error='h')
-    >>> qr.to_artistic(background='src/albums.gif', target='albums.gif', scale=8)
+    >>> qrcode = segno.make('The Beatles -- Albums', error='h')
+    >>> qrcode.to_artistic(background='src/albums.gif', target='albums.gif',
+    ...                    scale=8)
 
 .. image:: _static/artistic/albums.gif
     :alt: 3-H QR code encoding "The Beatles -- Albums" (animated)
@@ -63,9 +64,9 @@ save animated WebP images as well.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('The Beatles -- Abbey Road', error='h')
-    >>> qr.to_artistic(background='src/abbey-road-walking.gif',
-    ...                target='abbey-road.webp' scale=4)
+    >>> qrcode = segno.make('The Beatles -- Abbey Road', error='h')
+    >>> qrcode.to_artistic(background='src/abbey-road-walking.gif',
+    ...                    target='abbey-road.webp' scale=4)
 
 .. image:: _static/artistic/abbey-road.webp
     :alt: 4-H QR code encoding "The Beatles -- Abbey Road" (animated)
@@ -76,8 +77,9 @@ The plugin also supports static backgrounds
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('The Beatles -- Let It Be', error='h')
-    >>> qr.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg' scale=5)
+    >>> qrcode = segno.make('The Beatles -- Let It Be', error='h')
+    >>> qrcode.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg',
+    ...                    scale=5)
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
@@ -90,9 +92,10 @@ the ``kind`` parameter is provided:
 
     >>> import io
     >>> import segno
-    >>> qr = segno.make('The Beatles -- Let It Be', error='h')
+    >>> qrcode = segno.make('The Beatles -- Let It Be', error='h')
     >>> out = io.BytesIO()
-    >>> qr.to_artistic(background='src/letitbe.jpg', target=out scale=5, kind='jpg')
+    >>> qrcode.to_artistic(background='src/letitbe.jpg', target=out scale=5,
+    ...                    kind='jpg')
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
@@ -104,10 +107,10 @@ If the background should be specified by a URL use a file-like object:
 
     >>> from urllib.request import urlopen
     >>> import segno
-    >>> qr = segno.make('Ringo Starr', error='h')
+    >>> qrcode = segno.make('Ringo Starr', error='h')
     >>> url = 'https://media.giphy.com/media/HNo1tVKdFaoco/giphy.gif'
     >>> bg_file = urlopen(url)
-    >>> qr.to_artistic(background=bg_file, target='ringo.gif', scale=10)
+    >>> qrcode.to_artistic(background=bg_file, target='ringo.gif', scale=10)
 
 
 .. image:: _static/artistic/ringo.gif
@@ -123,11 +126,11 @@ hard drive:
     >>> import io
     >>> from urllib.request import urlopen
     >>> import segno
-    >>> qr = segno.make('The Beatles', error='h')
+    >>> qrcode = segno.make('The Beatles', error='h')
     >>> url = 'https://media.giphy.com/media/mUPQmck5YEisg/giphy.gif'
     >>> bg_file = urlopen(url)
     >>> out = io.BytesIO()
-    >>> qr.to_artistic(background=bg_file, target=out, scale=5, kind='gif')
+    >>> qrcode.to_artistic(background=bg_file, target=out, scale=5, kind='gif')
 
 
 .. image:: _static/artistic/the-beatles-animated.gif

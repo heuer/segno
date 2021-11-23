@@ -33,11 +33,11 @@ number of symbols is automatically determined by the QR Code version.
 .. code-block:: python
 
     >>> import segno
-    >>> seq = segno.make_sequence('I read the news today oh boy', version=1)
+    >>> qrcode_seq = segno.make_sequence('I read the news today oh boy', version=1)
     >>> len(seq)
     2
     >>> # Creates "a-day-in-the-life-02-01.svg" and "a-day-in-the-life-02-02.svg"
-    >>> seq.save('a-day-in-the-life.svg', scale=10)
+    >>> qrcode_seq.save('a-day-in-the-life.svg', scale=10)
 
 
 If the provided content fits into one QR code, the sequence behaves like a
@@ -46,13 +46,13 @@ If the provided content fits into one QR code, the sequence behaves like a
 .. code-block:: python
 
     >>> import segno
-    >>> seq = segno.make_sequence('I read', version=1)
+    >>> qrcode_seq = segno.make_sequence('I read', version=1)
     >>> len(seq)
     1
-    >>> seq.designator
+    >>> qrcode_seq.designator
     '1-H'
     >>> # Creates "a-day-in-the-life.svg"
-    >>> seq.save('a-day-in-the-life.svg', scale=10)
+    >>> qrcode_seq.save('a-day-in-the-life.svg', scale=10)
 
 
 
@@ -65,14 +65,14 @@ QR Code version is automatically determined by the number of symbols.
 .. code-block:: python
 
     >>> import segno
-    >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=4)
-    >>> [qr.designator for qr in seq]
+    >>> qrcode_seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=4)
+    >>> [qrcode.designator for qr in seq]
     ['1-Q', '1-Q', '1-Q', '1-Q']
-    >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=2)
-    >>> [qr.designator for qr in seq]
+    >>> qrcode_seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=2)
+    >>> [qrcode.designator for qr in seq]
     ['2-Q', '2-Q']
-    >>> seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=6)
-    >>> [qr.designator for qr in seq]
+    >>> qrcode_seq = segno.make_sequence('Day after day, alone on the hill', symbol_count=6)
+    >>> [qrcode.designator for qr in seq]
     ['1-Q', '1-Q', '1-H', '1-H', '1-H', '1-H']
 
 

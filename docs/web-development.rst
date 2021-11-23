@@ -28,8 +28,8 @@ or :py:func:`segno.QRCode.png_data_uri()` methods in the template.
 
     @app.route('/)
     def home():
-        qr = segno.make('The Continuing Story of Bungalow Bill')
-        return render_template('example.html', qr=qr)
+        qrcode = segno.make('The Continuing Story of Bungalow Bill')
+        return render_template('example.html', qrcode=qrcode)
 
 
 
@@ -42,8 +42,8 @@ or :py:func:`segno.QRCode.png_data_uri()` methods in the template.
         <title>QR Codes</title>
       </head>
       <body>
-        <img src="{{ qr.png_data_uri(dark='darkblue', data_dark='steelblue', alignment_dark='darkgreen', scale=3) }}"><br>
-        <img src="{{ qr.svg_data_uri(dark='darkblue', scale=4) }}">
+        <img src="{{ qrcode.png_data_uri(dark='darkblue', data_dark='steelblue', alignment_dark='darkgreen', scale=3) }}"><br>
+        <img src="{{ qrcode.svg_data_uri(dark='darkblue', scale=4) }}">
       </body>
     </html>
 
@@ -62,13 +62,13 @@ Create the QR code within the Flask view and use the
 
     @app.route('/')
     def home():
-        qr = segno.make('While My Guitar Gently Weeps')
-        return render_template('example.html', qr=qr)
+        qrcode = segno.make('While My Guitar Gently Weeps')
+        return render_template('example.html', qrcode=qrcode)
 
 .. code-block:: jinja
 
     <div>
-      {{ qr.svg_inline(scale=3) | safe }}
+      {{ qrcode.svg_inline(scale=3) | safe }}
     </div>
 
 
@@ -139,11 +139,11 @@ instance.
     import io
     import segno
 
-    out = io.BytesIO()
-    qr = segno.make('JULIA')
+    qrcode = segno.make('JULIA')
     # Save the QR code with transparent background and use dark blue for
     # the dark modules
-    qr.save(out, kind='png', dark='#00008b', light=None, scale=3)
+    out = io.BytesIO()
+    qrcode.save(out, kind='png', dark='#00008b', light=None, scale=3)
 
 Now you can use the content of the buffer as input for a Django ``ContentFile``.
 
@@ -164,11 +164,11 @@ the ``qrcode-artistic`` plugin is required (see also :doc:`artistic-qrcodes`)::
     import io
     import segno
 
-    out = io.BytesIO()
-    qr = segno.make('JULIA')
+    qrcode = segno.make('JULIA')
     # img is a Pillow Image instance
-    img = qr.to_pil(dark='#00008b', scale=3)
+    img = qrcode.to_pil(dark='#00008b', scale=3)
     # Now use Pillow Image.save() to save the QR code
+    out = io.BytesIO()
     img.save(out, format='jpg')
 
     # ...

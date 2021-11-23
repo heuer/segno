@@ -25,17 +25,17 @@ Segno detects the numeric mode if the data is provided as string or integer:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('64')
-    >>> qr2 = segno.make(64)
-    >>> qr.designator
+    >>> qrcode = segno.make('64')
+    >>> qrcode2 = segno.make(64)
+    >>> qrcode.designator
     'M1'
-    >>> qr2.designator
+    >>> qrcode2.designator
     'M1'
-    >>> qr.mode
+    >>> qrcode.mode
     'numeric'
-    >>> qr2.mode
+    >>> qrcode2.mode
     'numeric'
-    >>> qr == qr2
+    >>> qrcode == qrcode2
     True
 
 
@@ -53,13 +53,13 @@ or set the :paramref:`micro <segno.make.micro>` parameter of :py:func:`segno.mak
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make_qr('64')
-    >>> qr2 = segno.make(64, micro=False)
-    >>> qr.designator
+    >>> qrcode = segno.make_qr('64')
+    >>> qrcode2 = segno.make(64, micro=False)
+    >>> qrcode.designator
     '1-H'
-    >>> qr.mode
+    >>> qrcode.mode
     'numeric'
-    >>> qr == qr2
+    >>> qrcode == qrcode2
     True
 
 .. image:: _static/modes/64.png
@@ -76,10 +76,10 @@ a space character " " and other letters ``$%*+-./:``.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('REVOLUTION NO. 9')
-    >>> qr.designator
+    >>> qrcode = segno.make('REVOLUTION NO. 9')
+    >>> qrcode.designator
     'M4-M'
-    >>> qr.mode
+    >>> qrcode.mode
     'alphanumeric'
 
 
@@ -94,11 +94,15 @@ functions:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make_qr('REVOLUTION NO. 9')
-    >>> qr2 = segno.make('REVOLUTION NO. 9', micro=False)
-    >>> qr.designator
+    >>> qrcode = segno.make_qr('REVOLUTION NO. 9')
+    >>> qrcode.designator
     '1-Q'
-    >>> qr.mode
+    >>> qrcode.mode
+    'alphanumeric'
+    >>> qrcode2 = segno.make('REVOLUTION NO. 9', micro=False)
+    >>> qrcode2.designator
+    '1-Q'
+    >>> qrcode2.mode
     'alphanumeric'
 
 
@@ -112,8 +116,8 @@ the :ref:`byte-mode`
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Revolution No. 9')
-    >>> qr.mode
+    >>> qrcode = segno.make('Revolution No. 9')
+    >>> qrcode.mode
     'byte'
 
 .. image:: _static/modes/revolution9-byte.png
@@ -129,10 +133,10 @@ space than encoding the characters in UTF-8.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('ビートルズ')
-    >>> qr.designator
+    >>> qrcode = segno.make('ビートルズ')
+    >>> qrcode.designator
     'M3-L'
-    >>> qr.mode
+    >>> qrcode.mode
     'kanji'
 
 
@@ -143,14 +147,14 @@ space than encoding the characters in UTF-8.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make_qr('ビートルズ')
-    >>> qr.designator
+    >>> qrcode = segno.make_qr('ビートルズ')
+    >>> qrcode.designator
     '1-Q'
-    >>> qr.mode
+    >>> qrcode.mode
     'kanji'
 
 
-.. image:: _static/modes/kanji-qr.png
+.. image:: _static/modes/kanji-qrcode.png
     :alt: 1-Q QR Code encoding "ビートルズ"
 
 
@@ -167,10 +171,10 @@ UTF-8 is used as fallback.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Turn off your mind relax and float down stream')
-    >>> qr.designator
+    >>> qrcode = segno.make('Turn off your mind relax and float down stream')
+    >>> qrcode.designator
     '3-L'
-    >>> qr.mode
+    >>> qrcode.mode
     'byte'
 
 .. image:: _static/modes/tomorrow-never-knows.png
@@ -182,10 +186,10 @@ The byte mode is also supported by Micro QR Code M3 and M4:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Let it be')
-    >>> qr.designator
+    >>> qrcode = segno.make('Let it be')
+    >>> qrcode.designator
     'M3-L'
-    >>> qr.mode
+    >>> qrcode.mode
     'byte'
 
 .. image:: _static/modes/let-it-be.png
@@ -210,10 +214,10 @@ utilize the Hanzi mode.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('书读百遍其义自现')
-    >>> qr.designator
+    >>> qrcode = segno.make('书读百遍其义自现')
+    >>> qrcode.designator
     '2-M'
-    >>> qr.mode
+    >>> qrcode.mode
     'byte'
 
 The QR Code uses the :ref:`byte-mode` because no other mode fits.
@@ -227,10 +231,10 @@ To enable Hanzi, provide the mode in the factory function:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('书读百遍其义自现', mode='hanzi')
-    >>> qr.mode
+    >>> qrcode = segno.make('书读百遍其义自现', mode='hanzi')
+    >>> qrcode.mode
     'hanzi'
-    >>> qr.designator
+    >>> qrcode.designator
     '1-M'
 
 

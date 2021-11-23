@@ -8,11 +8,11 @@ or Micro QR code:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Henry Lee')
-    >>> qr.save('henry-lee.svg')  # SVG document
-    >>> qr.save('henry-lee.png')  # PNG image
-    >>> qr.save('henry-lee.eps')  # EPS document
-    >>> qr.save('henry-lee.txt')  # Text output
+    >>> qrcode = segno.make('Henry Lee')
+    >>> qrcode.save('henry-lee.svg')  # SVG document
+    >>> qrcode.save('henry-lee.png')  # PNG image
+    >>> qrcode.save('henry-lee.eps')  # EPS document
+    >>> qrcode.save('henry-lee.txt')  # Text output
 
 
 By default, the serialized (Micro) QR codes are black and white (or transparent)
@@ -24,10 +24,12 @@ code, the color of the dark modules, and the border, see
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('You Know My Name (Look Up The Number)')
-    >>> qr.save('you-know-my-name-no-border.svg', border=0)  # no border / quiet zone
-    >>> qr.save('you-know-my-name-color-green.svg', dark='green')  # default border, dark modules are green
-    >>> qr.save('you-know-my-name-background-grey.svg', light='#eee')  # default border, background grey
+    >>> qrcode = segno.make('You Know My Name (Look Up The Number)')
+    >>> qrcode.save('you-know-my-name-no-border.svg', border=0)  # no border / quiet zone
+    >>> qrcode.save('you-know-my-name-color-green.svg',
+    ...             dark='green')  # default border, dark modules are green
+    >>> qrcode.save('you-know-my-name-background-grey.svg',
+    ...             light='#eee')  # default border, background grey
 
 
 The factory function :py:func:`segno.make` chooses the minimal possible (Micro) QR Code
@@ -36,8 +38,8 @@ version with a maximal error correction for the provided input.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Rain')
-    >>> qr.version
+    >>> qrcode = segno.make('Rain')
+    >>> qrcode.version
     'M3'
 
 
@@ -51,8 +53,8 @@ generated even if the content may fit into a Micro QR Code.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Rain', micro=False)
-    >>> qr.version
+    >>> qrcode = segno.make('Rain', micro=False)
+    >>> qrcode.version
     1
 
 
@@ -67,8 +69,8 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
 .. code-block:: python
 
     >>> import segno
-    >>> mqr = segno.make_micro('The Beatles')  # Micro QR Code
-    >>> mqr.designator  # Get the version and error level
+    >>> micro_qrcode = segno.make_micro('The Beatles')  # Micro QR Code
+    >>> micro_qrcode.designator  # Get the version and error level
     'M4-M'
 
 .. image:: _static/the-beatles-m4-m.png
@@ -78,8 +80,8 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make_qr('The Beatles')  # Same content but as QR Code
-    >>> qr.designator
+    >>> qrcode = segno.make_qr('The Beatles')  # Same content but as QR Code
+    >>> qrcode.designator
     '1-Q'
 
 .. image:: _static/the-beatles-1-q.png
@@ -89,8 +91,8 @@ of QR Codes or Micro QR Codes: :py:func:`segno.make_qr` for QR Codes and
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('The Beatles', micro=False)  # Disallow Micro QR Codes
-    >>> qr.designator
+    >>> qrcode = segno.make('The Beatles', micro=False)  # Disallow Micro QR Codes
+    >>> qrcode.designator
     '1-Q'
 
 .. image:: _static/the-beatles-1-q.png
@@ -104,7 +106,7 @@ thrown:
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make_micro('The Curse of Millhaven')
+    >>> qrcode = segno.make_micro('The Curse of Millhaven')
     Traceback (most recent call last):
         ...
     DataOverflowError: Data too large. No Micro QR Code can handle the provided data
@@ -119,10 +121,10 @@ It's possible to specify the desired version for the provided ``content``.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Light My Fire')
-    >>> qr.version
+    >>> qrcode = segno.make('Light My Fire')
+    >>> qrcode.version
     'M4'
-    >>> qr.designator
+    >>> qrcode.designator
     'M4-M'
 
 .. image:: _static/light-my-fire-m4-m.png
@@ -132,10 +134,10 @@ It's possible to specify the desired version for the provided ``content``.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Light My Fire', version=1)
-    >>> qr.version
+    >>> qrcode = segno.make('Light My Fire', version=1)
+    >>> qrcode.version
     1
-    >>> qr.designator
+    >>> qrcode.designator
     '1-M'
 
 .. image:: _static/light-my-fire-1-m.png
@@ -171,9 +173,9 @@ never a Micro QR code.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Parisienne Walkways',
-    ...                 error='l')  # Explicit (minimum) error correction level
-    >>> qr.designator # The error correction level was changed to "Q" since there was enough available space
+    >>> qrcode = segno.make('Parisienne Walkways',
+    ...                     error='l')  # Explicit (minimum) error correction level
+    >>> qrcode.designator # The error correction level was changed to "Q" since there was enough available space
     '2-Q'
 
 
@@ -183,8 +185,9 @@ never a Micro QR code.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Parisienne Walkways', error='l', boost_error=False)  # Explicit error level
-    >>> qr.designator
+    >>> qrcode = segno.make('Parisienne Walkways', error='l',
+    ...                     boost_error=False)  # Explicit error level
+    >>> qrcode.designator
     '2-L'
 
 
@@ -196,8 +199,8 @@ never a Micro QR code.
 
     >>> import segno
     >>> # Enhancing the error correction level may enforce another QR Code version
-    >>> qr = segno.make('Parisienne Walkways', error='H')
-    >>> qr.designator
+    >>> qrcode = segno.make('Parisienne Walkways', error='H')
+    >>> qrcode.designator
     '3-H'
 
 .. image:: _static/parisienne_walkways-3-h.png
@@ -214,11 +217,11 @@ Micro QR Codes support 4 mask patterns, only.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Ai Du')
-    >>> qr.mask
+    >>> qrcode = segno.make('Ai Du')
+    >>> qrcode.mask
     0
-    >>> qr = segno.make('Ai Du', mask=3)
-    >>> qr.mask
+    >>> qrcode = segno.make('Ai Du', mask=3)
+    >>> qrcode.mask
     3
 
 
