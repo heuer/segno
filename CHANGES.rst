@@ -1,6 +1,13 @@
 Changes
 =======
 
+1.4.1 -- 2021-11-dd
+-------------------
+* Fixed Python type hints
+* XPM serializer accepts ``None`` (transparent) for dark modules
+* Better docs
+
+
 1.4.0 -- 2021-11-06
 -------------------
 * Added option to print QR codes in a more compact manner to the terminal.
