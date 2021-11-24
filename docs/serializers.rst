@@ -228,7 +228,7 @@ more than two colors.
 .. code-block:: python
 
     >>> import segno
-    >>> qrcode = segno.make('Yellow Submarine', error='h')
+    >>> qrcode = segno.make('Yellow Submarine', version=7, error='h')
     >>> qrcode.save('yellow-submarine.png', scale=5, dark='darkred',
     ...             data_dark='darkorange', data_light='yellow')
 
