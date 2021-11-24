@@ -27,7 +27,7 @@ Features
     Mixing modes                                                        Yes                      No                     Yes                       Yes
     QR Codes version 1 - 40                                             Yes                      Yes                    Yes                       Yes
     Micro QR Codes version M1 - M4                                      No                       No                     No                        Yes
-    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 |br| |ISO 1-M| [2]_     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
+    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 [2]_ |br| |ISO 1-M|     No |br| |qrcode 1-M|     No |br| |pyqr 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
     Output acc. to ISO/IEC 18004:2015(E) Fig. 2 |br| |ISO M2-L|         -                        -                      -                         Yes |br| |segno M2-L|
     Find maximal error correction level                                 No                       No                     Yes                       Yes
     Optimize QR Codes                                                   Yes                      No                     No                        No
