@@ -28,7 +28,6 @@ more than two colors, every module type may have its own color.
 .. code-block:: python
 
     >>> import segno
-    >>> # Force version 7 since smaller versions don't carry any version information (see below)
     >>> qrcode = segno.make('Yellow Submarine', version=7, error='h')
     >>> qr.save('qrcode_yellow-submarine.png', scale=4, dark='darkred',
     ...         data_dark='darkorange', data_light='yellow')
