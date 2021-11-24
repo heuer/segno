@@ -45,8 +45,8 @@ Unique features
 
 * `Colorful QR codes <https://segno.readthedocs.io/en/stable/colorful-qrcodes.html>`_
 
-  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/qrcode_yellow-submarine.png
-    :alt: Colorful 3-H QR code encoding "Yellow Submarine"
+  .. image:: https://github.com/heuer/segno/raw/master/docs/_static/colorful/qrcode_yellow-submarine.png
+    :alt: Colorful 7-H QR code encoding "Yellow Submarine"
 
   ... works also with Micro QR codes
 
