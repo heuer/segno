@@ -11,7 +11,8 @@ Changes
 1.4.0 -- 2021-11-06
 -------------------
 * Added option to print QR codes in a more compact manner to the terminal.
-  Implemented by `Christian Oudard <https://github.com/christian-oudard>`_.
+  `PR #97 <https://github.com/heuer/segno/pull/97>`_ implemented by
+  `Christian Oudard <https://github.com/christian-oudard>`_.
 * Minor doc changes
 * Added more test cases
 * Updated benchmark results
