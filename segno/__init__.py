@@ -568,7 +568,7 @@ class QRCode:
         scale         Integer or float indicating the size of a single module.
                       Default: 1. The interpretation of the scaling factor depends
                       on the serializer. For pixel-based output (like :ref:`PNG <png>`)
-                      the scaling factor is interepreted as pixel-size (1 = 1 pixel).
+                      the scaling factor is interpreted as pixel-size (1 = 1 pixel).
                       :ref:`EPS <eps>` interprets ``1`` as 1 point (1/72 inch) per
                       module.
                       Some serializers (like :ref:`SVG <svg>`) accept float values.
