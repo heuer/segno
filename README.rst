@@ -107,6 +107,15 @@ Debian 10 / Buster (backports)
     $ apt-get -t buster-backports install python3-segno
 
 
+Arch Linux
+^^^^^^^^^^
+
+::
+
+    $ pacman -S python-segno
+
+
+
 Usage
 -----
 
