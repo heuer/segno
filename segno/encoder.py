@@ -1136,7 +1136,7 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
     """
     size = calc_matrix_size(version)
     row = [0x2] * size
-    matrix = tuple([bytearray(row) for i in range(size)])
+    matrix = tuple(bytearray(row) for i in range(size))
     if reserve_regions:
         if version > 6:
             # Reserve version pattern areas
