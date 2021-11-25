@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.4.1 -- 2021-11-dd
+1.4.1 -- 2021-11-25
 -------------------
 * Fixed Python type hints
 * XPM serializer accepts ``None`` (transparent) for dark modules
