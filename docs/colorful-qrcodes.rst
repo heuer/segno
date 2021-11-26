@@ -29,8 +29,8 @@ more than two colors, every module type may have its own color.
 
     >>> import segno
     >>> qrcode = segno.make('Yellow Submarine', version=7, error='h')
-    >>> qr.save('qrcode_yellow-submarine.png', scale=4, dark='darkred',
-    ...         data_dark='darkorange', data_light='yellow')
+    >>> qrcode.save('qrcode_yellow-submarine.png', scale=4, dark='darkred',
+    ...             data_dark='darkorange', data_light='yellow')
 
 .. image:: _static/colorful/qrcode_yellow-submarine.png
     :alt: Colorful 7-H QR code encoding "Yellow Submarine"

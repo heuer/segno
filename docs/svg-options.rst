@@ -122,8 +122,8 @@ the XML declaration, the SVG namespace and a trailing newline.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Penny Lane', error='h')
-    >>> qr.save('penny-lane.svg', scale=4)
+    >>> qrcode = segno.make('Penny Lane', error='h')
+    >>> qrcode.save('penny-lane.svg', scale=4)
 
 
 .. image:: _static/svg/penny-lane.svg
@@ -142,8 +142,8 @@ To suppress the XML declaration, use ``xmldecl=False``.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Penny Lane', error='h')
-    >>> qr.save('penny-lane.svg', scale=4, xmldecl=False)
+    >>> qrcode = segno.make('Penny Lane', error='h')
+    >>> qrcode.save('penny-lane.svg', scale=4, xmldecl=False)
 
 
 XML markup:
@@ -159,8 +159,8 @@ declaration is superfluous, omit it via ``svgns=False``.
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Penny Lane', error='h')
-    >>> qr.save('penny-lane.svg', scale=4, xmldecl=False, svgns=False)
+    >>> qrcode = segno.make('Penny Lane', error='h')
+    >>> qrcode.save('penny-lane.svg', scale=4, xmldecl=False, svgns=False)
 
 XML markup:
 
@@ -189,8 +189,8 @@ Since the graphic should take all available space, the ``scale`` may be omitted,
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Penny Lane', error='h')
-    >>> qr.save('penny-lane.svg', xmldecl=False, svgns=False, svgclass=None, lineclass=None, omitsize=True)
+    >>> qrcode = segno.make('Penny Lane', error='h')
+    >>> qrcode.save('penny-lane.svg', xmldecl=False, svgns=False, svgclass=None, lineclass=None, omitsize=True)
 
 
 XML markup.
@@ -204,8 +204,8 @@ Too squeeze the file size futher, omit the trailing newline character via ``nl=F
 .. code-block:: python
 
     >>> import segno
-    >>> qr = segno.make('Penny Lane', error='h')
-    >>> qr.save('penny-lane.svg', xmldecl=False, svgns=False, svgclass=None, lineclass=None, omitsize=True, nl=False)
+    >>> qrcode = segno.make('Penny Lane', error='h')
+    >>> qrcode.save('penny-lane.svg', xmldecl=False, svgns=False, svgclass=None, lineclass=None, omitsize=True, nl=False)
 
 
 The result is almost he same, but you've saved a few (abt. 130) bytes

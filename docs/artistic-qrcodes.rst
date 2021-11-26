@@ -51,8 +51,7 @@ The "to_artistic" method can create animated or static QR codes.
 
     >>> import segno
     >>> qrcode = segno.make('The Beatles -- Albums', error='h')
-    >>> qrcode.to_artistic(background='src/albums.gif', target='albums.gif',
-    ...                    scale=8)
+    >>> qrcode.to_artistic(background='src/albums.gif', target='albums.gif', scale=8)
 
 .. image:: _static/artistic/albums.gif
     :alt: 3-H QR code encoding "The Beatles -- Albums" (animated)
@@ -78,8 +77,7 @@ The plugin also supports static backgrounds
 
     >>> import segno
     >>> qrcode = segno.make('The Beatles -- Let It Be', error='h')
-    >>> qrcode.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg',
-    ...                    scale=5)
+    >>> qrcode.to_artistic(background='src/letitbe.jpg', target='letitbe.jpg', scale=5)
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
@@ -94,8 +92,7 @@ the ``kind`` parameter is provided:
     >>> import segno
     >>> qrcode = segno.make('The Beatles -- Let It Be', error='h')
     >>> out = io.BytesIO()
-    >>> qrcode.to_artistic(background='src/letitbe.jpg', target=out scale=5,
-    ...                    kind='jpg')
+    >>> qrcode.to_artistic(background='src/letitbe.jpg', target=out scale=5, kind='jpg')
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
