@@ -448,7 +448,7 @@ class QRCode:
     def svg_data_uri(self, xmldecl=False, encode_minimal=False,
                      omit_charset=False, nl=False, **kw):
         """\
-        Converts the QR code into a SVG data URI.
+        Converts the QR code into an SVG data URI.
 
         The XML declaration is omitted by default (set
         :paramref:`xmldecl <segno.QRCode.svg_data_uri.xmldecl>` to ``True``
@@ -484,10 +484,10 @@ class QRCode:
 
     def svg_inline(self, **kw):
         """\
-        Returns a SVG representation which is embeddable into HTML5 contexts.
+        Returns an SVG representation which is embeddable into HTML5 contexts.
 
         Due to the fact that HTML5 directly supports SVG, various elements of
-        a SVG document can or should be suppressed (i.e. the XML declaration and
+        an SVG document can or should be suppressed (i.e. the XML declaration and
         the SVG namespace).
 
         This method returns a string that can be used in an HTML context.
