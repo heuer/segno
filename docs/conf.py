@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Segno'
-copyright = '2016 - 2021 Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.'
+copyright = '2016 - 2022 Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.'
 author = 'Lars Heuer'
 
 # The version info for the project you're documenting, acts as replacement for

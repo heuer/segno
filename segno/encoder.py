@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2021 -- Lars Heuer
+# Copyright (c) 2016 - 2022 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
