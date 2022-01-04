@@ -23,10 +23,6 @@ try:
     qrcodegen_error_h = QrCode.Ecc.HIGH
 except ImportError:
     qrcodegen = None
-try:
-    import pyqrcode
-except ImportError:
-    pyqrcode = None
 
 if qrcode:
     def create_qrcode(data='QR Code Symbol'):
@@ -66,28 +62,6 @@ if qrcode:
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10)
         qr.add_data(data, optimize=False)
         qr.make_image().save(os.path.join(_output_dir(), 'qrcode_%s.png' % data))
-
-
-if pyqrcode:
-    def create_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode create 1-M"""
-        pyqrcode.create(data, error='m')
-
-    def create7q_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode create 7-Q"""
-        pyqrcode.create(data, error='q', version=7)
-
-    def create30h_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode create 30-H"""
-        pyqrcode.create(data, error='h', version=30)
-
-    def svg_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode SVG"""
-        pyqrcode.create(data, error='m').svg(os.path.join(_output_dir(), 'pyqrcode_%s.svg' % data), scale=10)
-
-    def png_pyqrcode(data='QR Code Symbol'):
-        """PyQRCode PNG 1-M"""
-        pyqrcode.create(data, error='m').png(os.path.join(_output_dir(), 'pyqrcode_%s.png' % data), scale=10)
 
 if qrcodegen:
     def create_qrcodegen(data='QR Code Symbol'):
@@ -143,9 +117,7 @@ def png_segno(data='QR Code Symbol'):
 
 
 def run_create_tests(which=None, number=200, table=None):
-    tests = ('create_pyqrcode',
-             'create_pyqrcodeng',
-             'create_qrcodegen',
+    tests = ('create_qrcodegen',
              'create_qrcode',
              'create_segno',)
     if which:
@@ -154,9 +126,7 @@ def run_create_tests(which=None, number=200, table=None):
 
 
 def run_create7q_tests(which=None, number=200, table=None):
-    tests = ('create7q_pyqrcode',
-             'create7q_pyqrcodeng',
-             'create7q_qrcodegen',
+    tests = ('create7q_qrcodegen',
              'create7q_qrcode',
              'create7q_segno',)
     if which:
@@ -165,9 +135,7 @@ def run_create7q_tests(which=None, number=200, table=None):
 
 
 def run_create30h_tests(which=None, number=200, table=None):
-    tests = ('create30h_pyqrcode',
-             'create30h_pyqrcodeng',
-             'create30h_qrcodegen',
+    tests = ('create30h_qrcodegen',
              'create30h_qrcode',
              'create30h_segno',)
     if which:
@@ -176,9 +144,7 @@ def run_create30h_tests(which=None, number=200, table=None):
 
 
 def run_svg_tests(which=None, number=200, table=None):
-    tests = ('svg_pyqrcode',
-             'svg_pyqrcodeng',
-             'svg_qrcode_path', 'svg_qrcode_rects',
+    tests = ('svg_qrcode_path', 'svg_qrcode_rects',
              'svg_segno',)
 
     if which:
@@ -187,9 +153,7 @@ def run_svg_tests(which=None, number=200, table=None):
 
 
 def run_png_tests(which=None, number=200, table=None):
-    tests = ('png_pyqrcode',
-             'png_pyqrcodeng',
-             'png_qrcode',
+    tests = ('png_qrcode',
              'png_segno',)
     if which:
         tests = filter(lambda n: n[len('png_'):] in which, tests)
