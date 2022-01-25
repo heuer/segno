@@ -54,7 +54,7 @@ def test_epc_slash(text):
     qr_code = make_epc_qr(**kw)
     assert qr_code
     decoded = decode(qr_code)
-    assert '/' in decoded
+    assert text in decoded
 
 
 if __name__ == '__main__':
