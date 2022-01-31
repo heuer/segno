@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.x.y -- 2022-mm-dd
+-------------------
+* Added support for `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_
+* Removed PyQRCode from comparison / benchmarks since it adds no value anymore
+
+
 1.4.1 -- 2021-11-25
 -------------------
 * Fixed Python type hints
