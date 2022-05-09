@@ -69,7 +69,10 @@ def make_vcard_data(name: str, displayname: str,
                     source: Optional[str] = None,
                     rev: Optional[Union[str, datetime.date]] = None,
                     title: Optional[Union[str, Iterable[str]]] = None,
-                    photo_uri: Optional[Union[str, Iterable[str]]] = None) -> str: ...
+                    photo_uri: Optional[Union[str, Iterable[str]]] = None,
+                    cellphone: Optional[Union[str, Iterable[str]]] = None,
+                    homephone: Optional[Union[str, Iterable[str]]] = None,
+                    workphone: Optional[Union[str, Iterable[str]]] = None) -> str: ...
 
 
 def make_vcard(name: str, displayname: str,
@@ -93,7 +96,10 @@ def make_vcard(name: str, displayname: str,
                source: Optional[str] = None,
                rev: Optional[Union[str, datetime.date]] = None,
                title: Optional[Union[str, Iterable[str]]] = None,
-               photo_uri: Optional[Union[str, Iterable[str]]] = None) -> QRCode: ...
+               photo_uri: Optional[Union[str, Iterable[str]]] = None,
+               cellphone: Optional[Union[str, Iterable[str]]] = None,
+               homephone: Optional[Union[str, Iterable[str]]] = None,
+               workphone: Optional[Union[str, Iterable[str]]] = None) -> QRCode: ...
 
 
 def make_geo_data(lat: float, lng: float) -> str: ...
