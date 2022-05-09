@@ -17,7 +17,7 @@ import shutil
 import nox
 
 _PY_VERSIONS = ('2.7', '3.7', '3.8', '3.9', '3.10', 'pypy', 'pypy3')
-_PY_DEFAULT_VERSION = '3.9'
+_PY_DEFAULT_VERSION = '3.10'
 
 nox.options.sessions = ['test-2.7', 'test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy', 'test-pypy3']
 
