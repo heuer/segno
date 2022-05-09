@@ -159,6 +159,22 @@ def test_vcard_data():
            'PHOTO;VALUE=uri:{0}\r\n' \
            'PHOTO;VALUE=uri:{1}\r\n' \
            'END:VCARD\r\n'.format(*photo_uris) == vcard
+    vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
+                                    phone='+1', fax='+12', videophone='+123',
+                                    cellphone='+1234', homephone='+12345',
+                                    workphone='+123456')
+    assert 'BEGIN:VCARD\r\n' \
+           'VERSION:3.0\r\n' \
+           'N:Doe;John\r\n' \
+           'FN:John Doe\r\n' \
+           'TEL:+1\r\n' \
+           'TEL;TYPE=FAX:+12\r\n' \
+           'TEL;TYPE=VIDEO:+123\r\n' \
+           'TEL;TYPE=CELL:+1234\r\n' \
+           'TEL;TYPE=HOME:+12345\r\n' \
+           'TEL;TYPE=WORK:+123456\r\n' \
+           'END:VCARD\r\n' == vcard
+
 
 
 def test_photo_uri():
