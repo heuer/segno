@@ -1,10 +1,22 @@
 Changes
 =======
 
-1.x.y -- 2022-mm-dd
+1.5.0 -- 2022-mm-dd
 -------------------
 * Added support for `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_
 * Removed PyQRCode from comparison / benchmarks since it adds no value anymore
+* Added more properties for vCard
+  see `PR #106 <https://github.com/heuer/segno/pull/106>`_ contributed by
+  `Tobias Udtke <https://github.com/DerBiasto>`_:
+
+  - cellphone (TEL;TYPE=CELL)
+  - homephone (TEL;TYPE=HOME)
+  - workphone (TEL;TYPE=WORK)
+
+  Signatures of `segno.helpers.make_vcard <https://segno.readthedocs.io/en/latest/api.html#segno.helpers.make_vcard>`_
+  and `segno.helpers.make_vcard_data <https://segno.readthedocs.io/en/latest/api.html#segno.helpers.make_vcard_data>`_
+  changed, but in a backwards compatible way.
+* Changed default Python test version to 3.10 (2.7 and above are still supported)
 
 
 1.4.1 -- 2021-11-25
