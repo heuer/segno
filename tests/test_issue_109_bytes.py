@@ -41,7 +41,7 @@ def decode(qrcode):
     decoded = zbardecode((qr_bytes, width, height))
     assert 1 == len(decoded)
     assert 'QRCODE' == decoded[0].type
-    return decoded[0].data.decode('utf-8').encode('shift-jis')
+    return decoded[0].data.decode('utf-8').encode('cp932')
 
 
 def test_issue_109_bytes():
