@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5.0 -- 2022-mm-dd
+1.5.0 -- 2022-05-24
 -------------------
 * Added support for `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_
 * Removed PyQRCode from comparison / benchmarks since it adds no value anymore
