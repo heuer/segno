@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5.0 -- 2022-05-24
+1.5.2 -- 2022-05-25
 -------------------
 * Added support for `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_
 * Removed PyQRCode from comparison / benchmarks since it adds no value anymore
@@ -18,6 +18,14 @@ Changes
   changed, but in a backwards compatible way.
 * Changed default Python test version to 3.10 (2.7 and above are still supported)
 
+
+1.5.1 -- 2022-05-05-24
+----------------------
+* Unreleased
+
+1.5.0 -- 2022-05-05-24
+----------------------
+* Unreleased
 
 1.4.1 -- 2021-11-25
 -------------------
