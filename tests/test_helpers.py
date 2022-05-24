@@ -176,7 +176,6 @@ def test_vcard_data():
            'END:VCARD\r\n' == vcard
 
 
-
 def test_photo_uri():
     photo_uris = ('https://www.example.org/image.jpg',
                   'https://www.example.com/image_another.gif')
