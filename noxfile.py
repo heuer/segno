@@ -135,7 +135,8 @@ def start_release(session):
     git('checkout', '-b', release_branch, 'master')
     _change_version(session, prev_version, version)
     git('add', 'segno/__init__.py')
-    session.log('Now on branch "{}". Run the tests, run nox -e docs. Update CHANGES'.format(release_branch))
+    session.log('Now on branch "{}". Run the tests, run nox -e docs. Update and add CHANGES'.format(release_branch))
+    session.log('Commit any changes.')
     session.log('When done, call nox -e finish-release -- {}'.format(version))
 
 
