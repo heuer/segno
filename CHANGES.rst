@@ -19,12 +19,12 @@ Changes
 * Changed default Python test version to 3.10 (2.7 and above are still supported)
 
 
-1.5.1 -- 2022-05-05-24
+1.5.1 -- 2022-05-24
 ----------------------
 * Unreleased due to packaging failures.
 
 
-1.5.0 -- 2022-05-05-24
+1.5.0 -- 2022-05-24
 ----------------------
 * Unreleased due to packaging failures.
 
