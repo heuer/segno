@@ -21,12 +21,12 @@ Changes
 
 1.5.1 -- 2022-05-05-24
 ----------------------
-* Unreleased
+* Unreleased due to packaging failures.
 
 
 1.5.0 -- 2022-05-05-24
 ----------------------
-* Unreleased
+* Unreleased due to packaging failures.
 
 
 1.4.1 -- 2021-11-25
