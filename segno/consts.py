@@ -33,6 +33,15 @@ MODE_TO_MICRO_MODE_MAPPING = {
     MODE_KANJI: 0x3,
 }
 
+# Rectangular Micro QR Code mode indicators
+# ISO/IEC 23941:2022(E) -- Table 2 - Mode and Mode indicators for rMQR (page 17)
+MODE_TO_RECT_MICRO_MODE_MAPPING = {
+    MODE_NUMERIC: 0x1,
+    MODE_ALPHANUMERIC: 0x2,
+    MODE_BYTE: 0x3,
+    MODE_KANJI: 0x64
+}
+
 # Note: These versions must be comparable: Version 1 > M4 > M3 > M2 > M1
 VERSION_M4 = 0
 VERSION_M3 = -1
@@ -263,7 +272,47 @@ SYMBOL_CAPACITY = {
 }
 
 
+# ISO/IEC 23941:2022(E) - 7.4.10 Bit stream to codeword conversion (page 25)
+# Table 6 — Number of symbol characters and input data capacity for rMQR
+RSYMBOL_CAPACITY = {
+    'R7x43': {ERROR_LEVEL_M: 48, ERROR_LEVEL_H: 24},
+    'R7x59': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R7x77': {ERROR_LEVEL_M: 160, ERROR_LEVEL_H: 80},
+    'R7x99': {ERROR_LEVEL_M: 224, ERROR_LEVEL_H: 112},
+    'R7x139': {ERROR_LEVEL_M: 352, ERROR_LEVEL_H: 192},
+    'R9x43': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R9x59': {ERROR_LEVEL_M: 168, ERROR_LEVEL_H: 88},
+    'R9x77': {ERROR_LEVEL_M: 248, ERROR_LEVEL_H: 136},
+    'R9x99': {ERROR_LEVEL_M: 336, ERROR_LEVEL_H: 176},
+    'R9x139': {ERROR_LEVEL_M: 504, ERROR_LEVEL_H: 264},
+    'R11x27': {ERROR_LEVEL_M: 56, ERROR_LEVEL_H: 40},
+    'R11x43': {ERROR_LEVEL_M: 152, ERROR_LEVEL_H: 88},
+    'R11x59': {ERROR_LEVEL_M: 248, ERROR_LEVEL_H: 120},
+    'R11x77': {ERROR_LEVEL_M: 344, ERROR_LEVEL_H: 184},
+    'R11x99': {ERROR_LEVEL_M: 456, ERROR_LEVEL_H: 232},
+    'R11x139': {ERROR_LEVEL_M: 672, ERROR_LEVEL_H: 336},
+    'R13x27': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R13x43': {ERROR_LEVEL_M: 216, ERROR_LEVEL_H: 104},
+    'R13x59': {ERROR_LEVEL_M: 304, ERROR_LEVEL_H: 160},
+    'R13x77': {ERROR_LEVEL_M: 424, ERROR_LEVEL_H: 232},
+    'R13x99': {ERROR_LEVEL_M: 584, ERROR_LEVEL_H: 280},
+    'R13x139': {ERROR_LEVEL_M: 848, ERROR_LEVEL_H: 432},
+    'R15x43': {ERROR_LEVEL_M: 264, ERROR_LEVEL_H: 120},
+    'R15x59': {ERROR_LEVEL_M: 384, ERROR_LEVEL_H: 208},
+    'R15x77': {ERROR_LEVEL_M: 536, ERROR_LEVEL_H: 248},
+    'R15x99': {ERROR_LEVEL_M: 704, ERROR_LEVEL_H: 384},
+    'R15x139': {ERROR_LEVEL_M: 1016, ERROR_LEVEL_H: 552},
+    'R17x43': {ERROR_LEVEL_M: 312, ERROR_LEVEL_H: 168},
+    'R17x59': {ERROR_LEVEL_M: 448, ERROR_LEVEL_H: 224},
+    'R17x77': {ERROR_LEVEL_M: 624, ERROR_LEVEL_H: 304},
+    'R17x99': {ERROR_LEVEL_M: 800, ERROR_LEVEL_H: 448},
+    'R17x139': {ERROR_LEVEL_M: 1216, ERROR_LEVEL_H: 608},
+}
+
+
+
 # ISO/IEC 18004:2015(E) -- Table 9 — Error correction characteristics for QR Code (page 38)
+# ISO/IEC 23941:2022(E) -- Table 8 — Error correction characteristics for rMQR (page 29)
 EC = namedtuple('EC', 'num_blocks num_total num_data')
 
 ECC = {
@@ -460,6 +509,38 @@ ECC = {
         ERROR_LEVEL_M: (EC(18, 75, 47), EC(31, 76, 48)),
         ERROR_LEVEL_Q: (EC(34, 54, 24), EC(34, 55, 25)),
         ERROR_LEVEL_H: (EC(20, 45, 15), EC(61, 46, 16))},
+    'R7x43': {ERROR_LEVEL_M: 48, ERROR_LEVEL_H: 24},
+    'R7x59': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R7x77': {ERROR_LEVEL_M: 160, ERROR_LEVEL_H: 80},
+    'R7x99': {ERROR_LEVEL_M: 224, ERROR_LEVEL_H: 112},
+    'R7x139': {ERROR_LEVEL_M: 352, ERROR_LEVEL_H: 192},
+    'R9x43': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R9x59': {ERROR_LEVEL_M: 168, ERROR_LEVEL_H: 88},
+    'R9x77': {ERROR_LEVEL_M: 248, ERROR_LEVEL_H: 136},
+    'R9x99': {ERROR_LEVEL_M: 336, ERROR_LEVEL_H: 176},
+    'R9x139': {ERROR_LEVEL_M: 504, ERROR_LEVEL_H: 264},
+    'R11x27': {ERROR_LEVEL_M: 56, ERROR_LEVEL_H: 40},
+    'R11x43': {ERROR_LEVEL_M: 152, ERROR_LEVEL_H: 88},
+    'R11x59': {ERROR_LEVEL_M: 248, ERROR_LEVEL_H: 120},
+    'R11x77': {ERROR_LEVEL_M: 344, ERROR_LEVEL_H: 184},
+    'R11x99': {ERROR_LEVEL_M: 456, ERROR_LEVEL_H: 232},
+    'R11x139': {ERROR_LEVEL_M: 672, ERROR_LEVEL_H: 336},
+    'R13x27': {ERROR_LEVEL_M: 96, ERROR_LEVEL_H: 56},
+    'R13x43': {ERROR_LEVEL_M: 216, ERROR_LEVEL_H: 104},
+    'R13x59': {ERROR_LEVEL_M: 304, ERROR_LEVEL_H: 160},
+    'R13x77': {ERROR_LEVEL_M: 424, ERROR_LEVEL_H: 232},
+    'R13x99': {ERROR_LEVEL_M: 584, ERROR_LEVEL_H: 280},
+    'R13x139': {ERROR_LEVEL_M: 848, ERROR_LEVEL_H: 432},
+    'R15x43': {ERROR_LEVEL_M: 264, ERROR_LEVEL_H: 120},
+    'R15x59': {ERROR_LEVEL_M: 384, ERROR_LEVEL_H: 208},
+    'R15x77': {ERROR_LEVEL_M: 536, ERROR_LEVEL_H: 248},
+    'R15x99': {ERROR_LEVEL_M: 704, ERROR_LEVEL_H: 384},
+    'R15x139': {ERROR_LEVEL_M: 1016, ERROR_LEVEL_H: 552},
+    'R17x43': {ERROR_LEVEL_M: 312, ERROR_LEVEL_H: 168},
+    'R17x59': {ERROR_LEVEL_M: 448, ERROR_LEVEL_H: 224},
+    'R17x77': {ERROR_LEVEL_M: 624, ERROR_LEVEL_H: 304},
+    'R17x99': {ERROR_LEVEL_M: 800, ERROR_LEVEL_H: 448},
+    'R17x139': {ERROR_LEVEL_M: 1216, ERROR_LEVEL_H: 608},
 }
 
 
@@ -481,6 +562,26 @@ FORMAT_INFO_MICRO = (
     0x6793, 0x62a4, 0x6dfd, 0x68ca, 0x7678, 0x734f, 0x7c16, 0x7921,
     0x06de, 0x03e9, 0x0cb0, 0x0987, 0x1735, 0x1202, 0x1d5b, 0x186c,
     0x2508, 0x203f, 0x2f66, 0x2a51, 0x34e3, 0x31d4, 0x3e8d, 0x3bba,
+)
+
+FORMAT_INFO_RECT_MICRO_LEFT = (
+    0x1faB2, 0x1e597, 0x1dBdd, 0x1c4f8, 0x1B86c, 0x1a749, 0x19903, 0x18626, 0x17f0e, 0x1602B,
+    0x15e61, 0x14144, 0x13dd0, 0x122f5, 0x11cBf, 0x1039a, 0x0f1ca, 0x0eeef, 0x0d0a5, 0x0cf80,
+    0x0B314, 0x0ac31, 0x0927B, 0x08d5e, 0x07476, 0x06B53, 0x05519, 0x04a3c, 0x036a8, 0x0298d,
+    0x017c7, 0x008e2, 0x3f367, 0x3ec42, 0x3d208, 0x3cd2d, 0x3B1B9, 0x3ae9c, 0x390d6, 0x38ff3,
+    0x376dB, 0x369fe, 0x357B4, 0x34891, 0x33405, 0x32B20, 0x3156a, 0x30a4f, 0x2f81f, 0x2e73a,
+    0x2d970, 0x2c655, 0x2Bac1, 0x2a5e4, 0x29Bae, 0x2848B, 0x27da3, 0x26286, 0x25ccc, 0x243e9,
+    0x23f7d, 0x22058, 0x21e12, 0x20137
+)
+
+FORMAT_INFO_RECT_MICRO_RIGHT = (
+    0x20a7b, 0x2155e, 0x22b14, 0x23431, 0x248a5, 0x25780, 0x269ca, 0x276ef, 0x28fc7, 0x290e2,
+    0x2aea8, 0x2b18d, 0x2cd19, 0x2d23c, 0x2ec76, 0x2f353, 0x30103, 0x31e26, 0x3206c, 0x33f49,
+    0x343dd, 0x35cf8, 0x362b2, 0x37d97, 0x384bf, 0x39b9a, 0x3a5d0, 0x3baf5, 0x3c661, 0x3d944,
+    0x3e70e, 0x3f82b, 0x003ae, 0x01c8b, 0x022c1, 0x03de4, 0x04170, 0x05e55, 0x0601f, 0x07f3a,
+    0x08612, 0x09937, 0x0a77d, 0x0b858, 0x0c4cc, 0x0dbe9, 0x0e5a3, 0x0fa86, 0x108d6, 0x117f3,
+    0x129b9, 0x1369c, 0x14a08, 0x1552d, 0x16b67, 0x17442, 0x18d6a, 0x1924f, 0x1ac05, 0x1b320,
+    0x1cfb4, 0x1d091, 0x1eedb, 0x1f1fe
 )
 
 
@@ -539,6 +640,16 @@ ALIGNMENT_POS = (
     (6, 26, 54, 82, 110, 138, 166),
     (6, 30, 58, 86, 114, 142, 170),  # Version 40
 )
+
+# ISO/IEC 23941:2022(E) -- Annex D - Position of alignment patterns
+# Table D.1 — Column coordinates of centre module of alignment patterns (page 61)
+RECT_MICRO_ALIGNMENT_POS = {
+    43: (21,),
+    59: (19, 39),
+    77: (25, 51),
+    99: (23, 49, 75),
+    139: (27, 55, 83, 111),
+}
 
 
 # ISO/IEC 18004:2015 -- Annex A - Error detection and correction generator polynomials

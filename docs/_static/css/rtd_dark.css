@@ -1,0 +1,114 @@
+/*!
+ * @name          Readthedocs
+ * @namespace     http://userstyles.org
+ * @description	  Styles the documentation pages hosted on Readthedocs.io
+ * @author        Anthony Post
+ * @homepage      https://userstyles.org/styles/142968
+ * @version       0.20170529055029
+ *
+ * Modified by Aloïs Dreyfus: 20200527-1037
+ * Modified by Erik Kalkoken: 20220615
+ */
+
+@media (prefers-color-scheme: dark) {
+	a:visited {
+		color: #bf84d8;
+	}
+
+	pre {
+		background-color: #2d2d2d !important;
+	}
+
+	.wy-nav-content {
+		background: #3c3c3c;
+		color: aliceblue;
+	}
+
+	.method dt, .class dt, .data dt, .attribute dt, .function dt,
+	.descclassname, .descname {
+		background-color: #525252 !important;
+		color: white !important;
+	}
+
+	.toc-backref {
+		color: grey !important;
+	}
+
+	code.literal {
+		background-color: #2d2d2d !important;
+		border: 1px solid #6d6d6d !important;
+	}
+
+	.wy-nav-content-wrap {
+		background-color: rgba(0, 0, 0, 0.6) !important;
+	}
+
+	.sidebar {
+		background-color: #191919 !important;
+	}
+
+	.sidebar-title {
+		background-color: #2b2b2b !important;
+	}
+
+	.xref, .py-meth {
+		color: #7ec3e6 !important;
+	}
+
+	.admonition, .note {
+		background-color: #2d2d2d !important;
+	}
+
+	.wy-side-nav-search {
+		background-color: inherit;
+		border-bottom: 1px solid #fcfcfc;
+	}
+
+	.wy-table thead, .rst-content table.docutils thead, .rst-content table.field-list thead {
+		background-color: #b9b9b9;
+	}
+
+	.wy-table thead th, .rst-content table.docutils thead th, .rst-content table.field-list thead th {
+		border: solid 2px #e1e4e5;
+	}
+
+	.wy-table thead p, .rst-content table.docutils thead p, .rst-content table.field-list thead p {
+		margin: 0;
+	}
+
+	.wy-table-odd td, .wy-table-striped tr:nth-child(2n-1) td, .rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td {
+		background-color: #343131;
+	}
+
+	.highlight .m {
+		color: inherit
+	}
+
+	/* Literal.Number */
+	.highlight .nv {
+		color: #3a7ca8
+	}
+
+	/* Name.Variable */
+
+	body {
+		text-align: justify;
+	}
+
+	.rst-content .section .admonition ul {
+		margin-bottom: 0;
+	}
+
+	li.toctree-l1 {
+		margin-top: 5px;
+		margin-bottom: 5px;
+	}
+
+	.wy-menu-vertical li code {
+		color: #E74C3C;
+	}
+
+	.wy-menu-vertical .xref {
+		color: #2980B9 !important;
+	}
+}
