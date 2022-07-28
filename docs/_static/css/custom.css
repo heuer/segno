@@ -31,4 +31,12 @@
     .feature_no {
         color: #ff5454
     }
+
+    .highlight pre {
+        background: #282a36 !important;
+    }
+
+    .highlight .go {
+      color: #98a5f7 !important;
+    }
 }
