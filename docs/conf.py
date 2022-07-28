@@ -211,6 +211,7 @@ html_static_path = ['_static']
 htmlhelp_basename = 'segnodoc'
 
 html_css_files = [
+    'css/rtd_dark.css',
     'css/custom.css',
 ]
 
