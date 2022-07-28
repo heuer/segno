@@ -212,6 +212,7 @@ htmlhelp_basename = 'segnodoc'
 
 html_css_files = [
     'css/rtd_dark.css',
+    'css/vim.css',
     'css/custom.css',
 ]
 

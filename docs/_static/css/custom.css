@@ -20,3 +20,15 @@
 .feature_no {
    color: darkred;
 }
+
+
+@media (prefers-color-scheme: dark) {
+
+    .feature_yes {
+        color: #53b353
+    }
+
+    .feature_no {
+        color: #ff5454
+    }
+}
