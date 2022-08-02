@@ -127,8 +127,8 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. |ISO 1-M| image:: _static/iso_fig1_1m.png
     :alt: 1-M QR code encoding 'QR Code Symbol'
-    :width: 87
-    :height: 87
+    :width: 75
+    :height: 75
 
 .. |ISO M2-L| image:: _static/iso_fig2_m2l.png
     :alt: M2-L Micro QR code encoding '01234567'
@@ -137,13 +137,13 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. |mask4 1-M| image:: _static/iso_fig1_1m_mask4.png
     :alt: 1-M QR code encoding 'QR Code Symbol' using mask 4
-    :width: 87
-    :height: 87
+    :width: 75
+    :height: 75
 
 .. |segno 1-M| image:: _static/iso_fig1_1m_segno.png
     :alt: 1-M QR code encoding 'QR Code Symbol' using mask 5
-    :width: 87
-    :height: 87
+    :width: 75
+    :height: 75
 
 .. |segno M2-L| image:: _static/iso_fig2_m2l_segno.png
     :alt: M2-L Micro QR code encoding '01234567'
