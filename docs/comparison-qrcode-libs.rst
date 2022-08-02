@@ -27,7 +27,7 @@ Features
     Mixing modes                                                        Yes                      Yes                       Yes
     QR Codes version 1 - 40                                             Yes                      Yes                       Yes
     Micro QR Codes version M1 - M4                                      No                       No                        Yes
-    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 [2]_ |br| |ISO 1-M|     No |br| |qrcode 1-M|     No |br| |qrcode 1-M|      Yes |br| |segno 1-M|
+    Output acc. to ISO/IEC 18004:2015(E) Fig. 1 [2]_ |br| |ISO 1-M|     No |br| |mask4 1-M|      No |br| |mask4 1-M|       Yes |br| |segno 1-M|
     Output acc. to ISO/IEC 18004:2015(E) Fig. 2 |br| |ISO M2-L|         -                        -                         Yes |br| |segno M2-L|
     Find maximal error correction level                                 No                       Yes                       Yes
     Optimize QR Codes                                                   Yes                      No                        No
@@ -64,8 +64,9 @@ Features
 .. [1] The Hanzi mode is not part of ISO/IEC 18004 and may not be supported by all QR Code decoders.
        Segno uses the Hanzi mode if the user enables it explicitly, see :ref:`hanzi-mode` for details
 
-.. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``),
-       the generated QR code may look different because they choose a different mask pattern.
+.. [2] Even if all libs generate the same byte output (``40 e5 15 22 04 36 f6 46 52 05 37 96 d6 26 f6 c0``)
+       for the input "QR Code Symbol", the generated QR code may look different because they choose a different
+       mask pattern.
        ISO/IEC 18004:2015(E) (cf. page 7) uses mask 5, while qrcode and qrcodegen use mask 4.
        All these QR codes can be read by common QR Code readers.
 
@@ -126,33 +127,28 @@ Create a QR code 1-M "QR Code Symbol" and serialize it as PNG image.
 
 .. |ISO 1-M| image:: _static/iso_fig1_1m.png
     :alt: 1-M QR code encoding 'QR Code Symbol'
-    :width: 63
-    :height: 63
+    :width: 87
+    :height: 87
 
 .. |ISO M2-L| image:: _static/iso_fig2_m2l.png
     :alt: M2-L Micro QR code encoding '01234567'
-    :width: 52
-    :height: 52
+    :width: 51
+    :height: 51
 
-.. |qrcode 1-M| image:: _static/iso_fig1_1m_qrcode.png
+.. |mask4 1-M| image:: _static/iso_fig1_1m_mask4.png
     :alt: 1-M QR code encoding 'QR Code Symbol' using mask 4
-    :width: 63
-    :height: 63
-
-.. |pyqr 1-M| image:: _static/iso_fig1_1m_pyqr.png
-    :alt: 1-M QR code encoding 'QR Code Symbol' using mask 6
-    :width: 63
-    :height: 63
+    :width: 87
+    :height: 87
 
 .. |segno 1-M| image:: _static/iso_fig1_1m_segno.png
     :alt: 1-M QR code encoding 'QR Code Symbol' using mask 5
-    :width: 63
-    :height: 63
+    :width: 87
+    :height: 87
 
 .. |segno M2-L| image:: _static/iso_fig2_m2l_segno.png
     :alt: M2-L Micro QR code encoding '01234567'
-    :width: 52
-    :height: 52
+    :width: 51
+    :height: 51
 
 
 The comparison included PyQRCode in all years before 2022. In the meantime, six
