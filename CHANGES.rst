@@ -1,6 +1,14 @@
 Changes
 =======
 
+1.x.y -- 2022-mm-dd
+-------------------
+* Internal changes: Made ``writers`` module independent of internal version constants,
+  they operate upon a matrix of a given size and know nothing about the QR Code version
+  (i.e. QR Code vs. Micro QR Code). These changes are backwards incompatible but the
+  ``writers`` module does not belong to the public API anyway.
+
+
 1.5.2 -- 2022-05-25
 -------------------
 * Added support for `PEP 517 <https://www.python.org/dev/peps/pep-0517/>`_

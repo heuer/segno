@@ -22,7 +22,7 @@ except (ValueError, SystemError, ImportError):
 def test_m3_wikipedia():
     qr = segno.make('Wikipedia', version='m3')
     assert 'M3-L' == qr.designator
-    ref_matrix = read_matrix('issue-33-m3-l-wikipedia')
+    ref_matrix = read_matrix('issue-33-m3-l-wikipedia')[0]
     assert ref_matrix == qr.matrix
 
 

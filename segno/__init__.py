@@ -223,7 +223,7 @@ class QRCode:
     """\
     Represents a (Micro) QR Code.
     """
-    __slots__ = ('matrix', 'mask', '_version', '_error', '_mode')
+    __slots__ = ('matrix', 'mask', '_version', '_error', '_mode', '_matrix_size')
 
     def __init__(self, code):
         """\
@@ -232,7 +232,8 @@ class QRCode:
         :param code: An object with a ``matrix``, ``version``, ``error``,
             ``mask`` and ``segments`` attribute.
         """
-        self.matrix = code.matrix
+        matrix = code.matrix
+        self.matrix = matrix
         """Returns the matrix.
 
         :rtype: tuple of :py:class:`bytearray` instances.
@@ -242,6 +243,7 @@ class QRCode:
 
         :rtype: int
         """
+        self._matrix_size = len(matrix[0]), len(matrix)
         self._version = code.version
         self._error = code.error
         self._mode = code.segments[0].mode if len(code.segments) == 1 else None
@@ -302,7 +304,7 @@ class QRCode:
 
         :rtype: int
         """
-        return utils.get_default_border_size(self._version)
+        return utils.get_default_border_size(self._matrix_size)
 
     @property
     def is_micro(self):
@@ -333,7 +335,7 @@ class QRCode:
                 default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
         :rtype: tuple (width, height)
         """
-        return utils.get_symbol_size(self._version, scale=scale, border=border)
+        return utils.get_symbol_size(self._matrix_size, scale=scale, border=border)
 
     def matrix_iter(self, scale=1, border=None, verbose=False):
         """\
@@ -383,7 +385,7 @@ class QRCode:
                 invalid (i.e. negative).
         """
         iterfn = utils.matrix_iter_verbose if verbose else utils.matrix_iter
-        return iterfn(self.matrix, self._version, scale, border)
+        return iterfn(self.matrix, self._matrix_size, scale, border)
 
     def show(self, delete_after=20, scale=10, border=None, dark='#000',
              light='#fff'):  # pragma: no cover
@@ -477,7 +479,7 @@ class QRCode:
                         (default: ``False``)
         :rtype: str
         """
-        return writers.as_svg_data_uri(self.matrix, self._version,
+        return writers.as_svg_data_uri(self.matrix, self._matrix_size,
                                        xmldecl=xmldecl, nl=nl,
                                        encode_minimal=encode_minimal,
                                        omit_charset=omit_charset, **kw)
@@ -520,7 +522,7 @@ class QRCode:
 
         :rtype: str
         """
-        return writers.as_png_data_uri(self.matrix, self._version, **kw)
+        return writers.as_png_data_uri(self.matrix, self._matrix_size, **kw)
 
     def terminal(self, out=None, border=None, compact=False):
         """\
@@ -540,18 +542,18 @@ class QRCode:
                 (default: ``False``).
         """
         if compact:
-            writers.write_terminal_compact(self.matrix, self._version, out or sys.stdout, border)
+            writers.write_terminal_compact(self.matrix, self._matrix_size, out or sys.stdout, border)
         elif out is None and sys.platform == 'win32':  # pragma: no cover
             # Windows < 10 does not support ANSI escape sequences, try to
             # call the a Windows specific terminal output which uses the
             # Windows API.
             try:
-                writers.write_terminal_win(self.matrix, self._version, border)
+                writers.write_terminal_win(self.matrix, self._matrix_size, border)
             except OSError:
                 # Use the standard output even if it may print garbage
-                writers.write_terminal(self.matrix, self._version, sys.stdout, border)
+                writers.write_terminal(self.matrix, self._matrix_size, sys.stdout, border)
         else:
-            writers.write_terminal(self.matrix, self._version, out or sys.stdout, border)
+            writers.write_terminal(self.matrix, self._matrix_size, out or sys.stdout, border)
 
     def save(self, out, kind=None, **kw):
         """\
@@ -949,7 +951,7 @@ class QRCode:
                 insensitive.
         :param kw: Any of the supported keywords by the specific serializer.
         """
-        writers.save(self.matrix, self._version, out, kind, **kw)
+        writers.save(self.matrix, self._matrix_size, out, kind, **kw)
 
     def __getattr__(self, name):
         """\

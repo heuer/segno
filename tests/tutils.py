@@ -15,7 +15,7 @@ import io
 def matrix_looks_valid(matrix):
     """\
     Returns if the matrix contains just ``0x0`` and ``0x1`` values.
-    Does not check if the the matrix represents a valid (Micro) QR Code.
+    Does not check if the matrix represents a valid (Micro) QR Code.
 
     :param matrix: tuple of bytearrays
     :return:
@@ -44,4 +44,4 @@ def read_matrix(name):
     with io.open(os.path.join(os.path.dirname(__file__), 'ref_matrix/{0}.txt'.format(name)), 'rt') as f:
         for row in f:
             matrix.append(bytearray([int(i) for i in row if i != '\n']))
-    return tuple(matrix)
+    return tuple(matrix), (len(matrix[0]), len(matrix))

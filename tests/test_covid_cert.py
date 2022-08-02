@@ -32,7 +32,7 @@ def test_covid_cert():
     qr = segno.make(cert_raw, error='m', boost_error=False)
     assert 'M' == qr.error
     assert 15 == qr.version
-    ref_matrix = read_matrix('covid-cert')
+    ref_matrix = read_matrix('covid-cert')[0]
     assert ref_matrix
     assert ref_matrix == qr.matrix
 

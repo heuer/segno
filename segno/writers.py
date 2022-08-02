@@ -13,7 +13,7 @@ DOES NOT belong to the public API.
 
 The serializers are independent of the :py:class:`segno.QRCode` (and the
 :py:class:`segno.encoder.Code`) class; they just need a matrix (tuple of
-bytearrays) and the version constant.
+bytearrays).
 """
 from __future__ import absolute_import, unicode_literals, division
 import io
@@ -91,12 +91,12 @@ def colorful(dark, light):
     """
     def decorate(f):
         @functools.wraps(f)
-        def wrapper(matrix, version, out, dark=dark, light=light, finder_dark=False, finder_light=False,
+        def wrapper(matrix, matrix_size, out, dark=dark, light=light, finder_dark=False, finder_light=False,
                     data_dark=False, data_light=False, version_dark=False, version_light=False,
                     format_dark=False, format_light=False, alignment_dark=False, alignment_light=False,
                     timing_dark=False, timing_light=False, separator=False, dark_module=False,
                     quiet_zone=False, **kw):
-            cm = _make_colormap(version, dark=dark, light=light, finder_dark=finder_dark,
+            cm = _make_colormap(*matrix_size, dark=dark, light=light, finder_dark=finder_dark,
                                 finder_light=finder_light, data_dark=data_dark,
                                 data_light=data_light, version_dark=version_dark,
                                 version_light=version_light, format_dark=format_dark,
@@ -104,27 +104,29 @@ def colorful(dark, light):
                                 alignment_light=alignment_light, timing_dark=timing_dark,
                                 timing_light=timing_light, separator=separator,
                                 dark_module=dark_module, quiet_zone=quiet_zone)
-            return f(matrix, version, out, cm, **kw)
+            return f(matrix, matrix_size, out, cm, **kw)
         if _PY2:  # pragma: no cover
             wrapper.__wrapped__ = f  # Needed by CLI to inspect the arguments
         return wrapper
     return decorate
 
 
-def _valid_width_height_and_border(version, scale, border):
+def _valid_width_height_and_border(matrix_size, scale, border):
     """"\
     Validates the scale and border and returns the width, height and the border.
     If the border is ``None´` the default border is returned.
+
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     """
     check_valid_scale(scale)
     check_valid_border(border)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale, border)
+    border = get_border(matrix_size, border)
+    width, height = get_symbol_size(matrix_size, scale, border)
     return width, height, border
 
 
 @colorful(dark='#000', light=None)
-def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True,
+def write_svg(matrix, matrix_size, out, colormap, scale=1, border=None, xmldecl=True,
               svgns=True, title=None, desc=None, svgid=None, svgclass='segno',
               lineclass='qrline', omitsize=False, unit=None, encoding='utf-8',
               svgversion=None, nl=True, draw_transparent=False):
@@ -132,7 +134,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     Serializes the QR code as SVG document.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write bytes.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -171,7 +173,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
     def matrix_to_lines_verbose():
         j = -.5  # stroke width / 2
         invalid_color = -1
-        for row in matrix_iter_verbose(matrix, version, scale=1, border=border):
+        for row in matrix_iter_verbose(matrix, matrix_size, scale=1, border=border):
             last_color = invalid_color
             x1, x2 = 0, 0
             j += 1
@@ -183,7 +185,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
                 last_color = c
             yield last_color, (x1, x2, j)
 
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     unit = unit or ''
     if unit and omitsize:
         raise ValueError('The unit "{}" has no effect if the size '
@@ -208,7 +210,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         coordinates[clr].append((x1 - x, y1 - y, x2 - x1))
         xy[clr] = x2, y1
     if need_background:
-        # Add an additional path for the background, will be modified after
+        # Additional path for the background, will be modified after
         # the SVG paths have been generated
         coordinates[colormap[consts.TYPE_QUIET_ZONE]] = [(0, 0, width // scale)]
     if not draw_transparent:
@@ -239,8 +241,8 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
         paths[color] = path
     if need_background:
         # This code is necessary since the path was generated by the loop above
-        # but the background path is special: It has no stroke- but a fill-color
-        # and it needs to be closed. Further, it has no class attribute.
+        # but the background path is special: It has no stroke-color but a fill-color.
+        # The fill-color needs to be closed. Further, it has no class attribute.
         k = colormap[consts.TYPE_QUIET_ZONE]
         paths[k] = re.sub(r'\sclass="[^"]+"', '',
                           paths[k].replace('stroke', 'fill')
@@ -284,7 +286,7 @@ def write_svg(matrix, version, out, colormap, scale=1, border=None, xmldecl=True
 _replace_quotes = partial(re.compile(br'(=)"([^"]+)"').sub, br"\1'\2'")
 
 
-def as_svg_data_uri(matrix, version, scale=1, border=None,
+def as_svg_data_uri(matrix, matrix_size, scale=1, border=None,
                     xmldecl=False, svgns=True, title=None,
                     desc=None, svgid=None, svgclass='segno',
                     lineclass='qrline', omitsize=False, unit='',
@@ -310,7 +312,7 @@ def as_svg_data_uri(matrix, version, scale=1, border=None,
     """
     encode = partial(quote, safe=b"") if not encode_minimal else partial(quote, safe=b" :/='")
     buff = io.BytesIO()
-    write_svg(matrix, version, buff, scale=scale, border=border, xmldecl=xmldecl,
+    write_svg(matrix, matrix_size, buff, scale=scale, border=border, xmldecl=xmldecl,
               svgns=svgns, title=title, desc=desc, svgclass=svgclass,
               lineclass=lineclass, omitsize=omitsize, encoding=encoding,
               svgid=svgid, unit=unit, svgversion=svgversion, nl=nl, **kw)
@@ -321,7 +323,7 @@ def as_svg_data_uri(matrix, version, scale=1, border=None,
                    encode(_replace_quotes(buff.getvalue())))
 
 
-def write_svg_debug(matrix, version, out, scale=15, border=None,
+def write_svg_debug(matrix, matrix_size, out, scale=15, border=None,
                     fallback_color='fuchsia', colormap=None,
                     add_legend=True):  # pragma: no cover
     """\
@@ -334,7 +336,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     Unknown modules are red by default.
 
     :param matrix: The matrix
-    :param version: Version constant
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: binary file-like object or file name
     :param scale: Scaling factor
     :param border: Quiet zone
@@ -355,7 +357,7 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
     if colormap is not None:
         clr_mapping.update(colormap)
     width, height, border = _valid_width_height_and_border(version, scale, border)
-    matrix_size = get_symbol_size(version, scale=1, border=0)[0]
+    matrix_width, matrix_height = matrix_size
     with writable(out, 'wt', encoding='utf-8') as f:
         legend = []
         write = f.write
@@ -364,9 +366,9 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         write('<style type="text/css"><![CDATA[ text { font-size: 1px; '
               'font-family: Helvetica, Arial, sans; } ]]></style>')
         write('<g transform="scale({0})">'.format(scale))
-        for i in range(matrix_size):
+        for i in range(matrix_height):
             y = i + border
-            for j in range(matrix_size):
+            for j in range(matrix_width):
                 x = j + border
                 bit = matrix[i][j]
                 if add_legend and bit not in (0x0, 0x1):
@@ -379,12 +381,12 @@ def write_svg_debug(matrix, version, out, scale=15, border=None,
         write('</g></svg>\n')
 
 
-def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=None):
+def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light=None):
     """\
     Serializes the QR code as EPS document.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write strings.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 point (1/72 inch) per module).
@@ -424,7 +426,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
 
         return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     stroke_color_is_black = _color_is_black(dark)
     stroke_color = dark if stroke_color_is_black else rgb_to_floats(dark)
     with writable(out, 'wt') as f:
@@ -451,7 +453,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         writeline('newpath')
         # Current pen position y-axis
         # Note: 0, 0 = lower left corner in PS coordinate system
-        y = get_symbol_size(version, scale=1, border=0)[1] + border - .5  # .5 = linewidth / 2
+        y = get_symbol_size(matrix_size, scale=1, border=0)[1] + border - .5  # .5 = linewidth / 2
         line_iter = matrix_to_lines(matrix, border, y, incby=-1)
         # EPS supports absolute coordinates as well, but relative coordinates
         # are more compact and IMO nicer; so the 1st coordinate is absolute, all
@@ -468,7 +470,7 @@ def write_eps(matrix, version, out, scale=1, border=None, dark='#000', light=Non
         writeline('%%EOF')
 
 
-def as_png_data_uri(matrix, version, scale=1, border=None,
+def as_png_data_uri(matrix, matrix_size, scale=1, border=None,
                     compresslevel=9, **kw):
     """\
     Converts the provided matrix into a PNG data URI.
@@ -478,15 +480,12 @@ def as_png_data_uri(matrix, version, scale=1, border=None,
     :rtype: str
     """
     buff = io.BytesIO()
-    write_png(matrix, version, buff, scale=scale, border=border,
-              compresslevel=compresslevel, **kw)
-    return 'data:image/png;base64,{0}' \
-           .format(base64.b64encode(buff.getvalue()).decode('ascii'))
+    write_png(matrix, matrix_size, buff, scale=scale, border=border, compresslevel=compresslevel, **kw)
+    return 'data:image/png;base64,{0}'.format(base64.b64encode(buff.getvalue()).decode('ascii'))
 
 
 @colorful(dark='#000', light='#fff')
-def write_png(matrix, version, out, colormap, scale=1, border=None,
-              compresslevel=9, dpi=None):
+def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compresslevel=9, dpi=None):
     """\
     Serializes the QR code as PNG image.
 
@@ -496,7 +495,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     are provided. This may require a bit depth of of 2 or 4.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write bytes.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -546,7 +545,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
                                 for e in zip_longest(*[iter(row)] * (8 // png_bit_depth), fillvalue=0x0))))
 
     scale = int(scale)
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     if dpi:
         dpi = int(dpi)
         if dpi < 0:
@@ -599,7 +598,7 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
     color_index = {}
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
-        miter = matrix_iter_verbose(matrix, version, scale=1, border=0)
+        miter = matrix_iter_verbose(matrix, matrix_size, scale=1, border=0)
         for module_type, clr in colormap.items():
             color_index[module_type] = palette.index(clr)
     else:
@@ -657,13 +656,13 @@ def write_png(matrix, version, out, colormap, scale=1, border=None,
         write(chunk(b'IEND', b''))
 
 
-def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
+def write_pdf(matrix, matrix_size, out, scale=1, border=None, dark='#000',
               light=None, compresslevel=9):
     """\
     Serializes the QR code as PDF document.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write bytes.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -698,7 +697,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
             return 1 / 255.0 * c if c != 1 else c
         return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     creation_date = "{0}{1:+03d}'{2:02d}'".format(time.strftime('%Y%m%d%H%M%S'),
                                                   time.timezone // 3600,
                                                   abs(time.timezone) % 60)
@@ -716,7 +715,7 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         append_cmd('{} {} {} RG'.format(*to_pdf_color(dark)))
     # Current pen position y-axis
     # Note: 0, 0 = lower left corner in PDF coordinate system
-    y = get_symbol_size(version, scale=1, border=0)[1] + border - .5
+    y = get_symbol_size(matrix_size, scale=1, border=0)[1] + border - .5
     # Set the origin in the upper left corner
     append_cmd('1 0 0 1 {0} {1} cm'.format(border, y))
     miter = matrix_to_lines(matrix, 0, 0, incby=-1)
@@ -750,12 +749,12 @@ def write_pdf(matrix, version, out, scale=1, border=None, dark='#000',
         writestr('startxref\r\n{0}\r\n%%EOF\r\n'.format(xref_location))
 
 
-def write_txt(matrix, version, out, border=None, dark='1', light='0'):
+def write_txt(matrix, matrix_size, out, border=None, dark='1', light='0'):
     """\
     Serializes QR code in a text format.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write text.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
@@ -763,7 +762,7 @@ def write_txt(matrix, version, out, border=None, dark='1', light='0'):
     :param dark: Character to use for the black modules (default: '1')
     :param light: Character to use for the white modules (default: '0')
     """
-    row_iter = matrix_iter(matrix, version, scale=1, border=border)
+    row_iter = matrix_iter(matrix, matrix_size, scale=1, border=border)
     colours = (str(light), str(dark))
     with writable(out, 'wt') as f:
         write = f.write
@@ -772,13 +771,13 @@ def write_txt(matrix, version, out, border=None, dark='1', light='0'):
             write('\n')
 
 
-def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
+def write_pbm(matrix, matrix_size, out, scale=1, border=None, plain=False):
     """\
     Serializes the matrix as `PBM <http://netpbm.sourceforge.net/doc/pbm.html>`_
     image.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write binary data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -795,8 +794,8 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
         return (reduce(lambda x, y: (x << 1) + y, e)
                 for e in zip_longest(*[iter(iterable)] * 8, fillvalue=0x0))
 
-    width, height, border = _valid_width_height_and_border(version, scale, border)
-    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
+    row_iter = matrix_iter(matrix, matrix_size, scale, border)
     with writable(out, 'wb') as f:
         write = f.write
         write('{0}\n'
@@ -812,13 +811,13 @@ def write_pbm(matrix, version, out, scale=1, border=None, plain=False):
                 write(b'\n')
 
 
-def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#fff'):
+def write_pam(matrix, matrix_size, out, scale=1, border=None, dark='#000', light='#fff'):
     """\
     Serializes the matrix as `PAM <http://netpbm.sourceforge.net/doc/pam.html>`_
     image.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write binary data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -843,8 +842,8 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
 
     if not dark:
         raise ValueError('Invalid stroke color "{0}"'.format(dark))
-    width, height, border = _valid_width_height_and_border(version, scale, border)
-    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
+    row_iter = matrix_iter(matrix, matrix_size, scale, border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
     transparency = False
     stroke_color = _color_to_rgb_or_rgba(dark, alpha_float=False)
@@ -885,13 +884,13 @@ def write_pam(matrix, version, out, scale=1, border=None, dark='#000', light='#f
 
 
 @colorful(dark='#000', light='#fff')
-def write_ppm(matrix, version, out, colormap, scale=1, border=None):
+def write_ppm(matrix, matrix_size, out, colormap, scale=1, border=None):
     """\
     Serializes the matrix as `PPM <http://netpbm.sourceforge.net/doc/ppm.html>`_
     image.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write binary data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -900,12 +899,12 @@ def write_ppm(matrix, version, out, colormap, scale=1, border=None):
             will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
     """
     scale = int(scale)
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     if None in colormap.values():
         raise ValueError('Transparency is not supported')
     for mt, clr in colormap.items():
         colormap[mt] = _color_to_rgb(clr)
-    row_iter = matrix_iter_verbose(matrix, version, scale, border)
+    row_iter = matrix_iter_verbose(matrix, matrix_size, scale, border)
     with writable(out, 'wb') as f:
         write = f.write
         write('P6 # Created by {0}\n{1} {2} 255\n'
@@ -914,13 +913,13 @@ def write_ppm(matrix, version, out, colormap, scale=1, border=None):
             write(b''.join(pack(b'>3B', *colormap[mt]) for mt in row))
 
 
-def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
+def write_xpm(matrix, matrix_size, out, scale=1, border=None, dark='#000',
               light='#fff', name='img'):
     """\
     Serializes the matrix as `XPM <https://en.wikipedia.org/wiki/X_PixMap>`_ image.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write binary data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 pixel per module).
@@ -936,8 +935,8 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
     :param str name: Name of the image (must be a valid C-identifier).
             Default: "img".
     """
-    width, height, border = _valid_width_height_and_border(version, scale, border)
-    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
+    row_iter = matrix_iter(matrix, matrix_size, scale, border)
     stroke_color = color_to_rgb_hex(dark) if dark is not None else 'None'
     bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
@@ -953,12 +952,12 @@ def write_xpm(matrix, version, out, scale=1, border=None, dark='#000',
         write('};\n')
 
 
-def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
+def write_xbm(matrix, matrix_size, out, scale=1, border=None, name='img'):
     """\
     Serializes the matrix as `XBM <https://en.wikipedia.org/wiki/X_BitMap>`_ image.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write text data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 in the provided unit per module).
@@ -969,8 +968,8 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
                  The prefix is used to construct the variable names:
                  ```#define <prefix>_width``` ```static unsigned char <prefix>_bits[]```
     """
-    width, height, border = _valid_width_height_and_border(version, scale, border)
-    row_iter = matrix_iter(matrix, version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
+    row_iter = matrix_iter(matrix, matrix_size, scale, border)
     with writable(out, 'wt') as f:
         write = f.write
         write('#define {0}_width {1}\n'
@@ -986,7 +985,7 @@ def write_xbm(matrix, version, out, scale=1, border=None, name='img'):
         write('};\n')
 
 
-def write_tex(matrix, version, out, scale=1, border=None, dark='black', unit='pt', url=None):
+def write_tex(matrix, matrix_size, out, scale=1, border=None, dark='black', unit='pt', url=None):
     """\
     Serializes the matrix as LaTeX PGF picture.
 
@@ -994,7 +993,7 @@ def write_tex(matrix, version, out, scale=1, border=None, dark='black', unit='pt
     (i.e. ``\\usepackage{pgf}``) in the LaTeX source.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write text data.
     :param scale: Indicates the size of a single module (default: 1 which
             corresponds to 1 x 1 in the provided unit per module).
@@ -1013,7 +1012,7 @@ def write_tex(matrix, version, out, scale=1, border=None, dark='black', unit='pt
 
     check_valid_scale(scale)
     check_valid_border(border)
-    border = get_border(version, border)
+    border = get_border(matrix_size, border)
     with writable(out, 'wt') as f:
         write = f.write
         write('% Creator:  {0}\n'.format(CREATOR))
@@ -1032,12 +1031,12 @@ def write_tex(matrix, version, out, scale=1, border=None, dark='black', unit='pt
         write('\\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
 
 
-def write_terminal(matrix, version, out, border=None):
+def write_terminal(matrix, matrix_size, out, border=None):
     """\
     Function to write to a terminal which supports ANSI escape codes.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write text.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
@@ -1046,7 +1045,7 @@ def write_terminal(matrix, version, out, border=None):
     with writable(out, 'wt') as f:
         write = f.write
         colours = ['\033[{0}m'.format(i) for i in (7, 49)]
-        for row in matrix_iter(matrix, version, scale=1, border=border):
+        for row in matrix_iter(matrix, matrix_size, scale=1, border=border):
             prev_bit = -1
             cnt = 0
             for bit in row:
@@ -1066,12 +1065,12 @@ def write_terminal(matrix, version, out, border=None):
             write('\n')
 
 
-def write_terminal_win(matrix, version, border=None):  # pragma: no cover
+def write_terminal_win(matrix, matrix_size, border=None):  # pragma: no cover
     """\
     Function to write a QR code to a MS Windows terminal.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
             will be used (``4`` for QR Codes, ``2`` for Micro QR Codes).
@@ -1089,7 +1088,7 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
     default_color = struct.unpack(b'hhhhHhhhhhh', csbi.raw)[4]
     set_color = partial(ctypes.windll.kernel32.SetConsoleTextAttribute, std_out)
     colours = (240, default_color)
-    for row in matrix_iter(matrix, version, scale=1, border=border):
+    for row in matrix_iter(matrix, matrix_size, scale=1, border=border):
         prev_bit = -1
         cnt = 0
         for bit in row:
@@ -1108,13 +1107,13 @@ def write_terminal_win(matrix, version, border=None):  # pragma: no cover
         write('\n')
 
 
-def write_terminal_compact(matrix, version, out, border=None):
+def write_terminal_compact(matrix, matrix_size, out, border=None):
     """\
     Function to write a QR code to a terminal using unicode half-block characters.
     Custom colors are not used.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: Filename or a file-like object supporting to write text.
     :param int border: Integer indicating the size of the quiet zone.
             If set to ``None`` (default), the recommended border size
@@ -1125,7 +1124,7 @@ def write_terminal_compact(matrix, version, out, border=None):
               (1, 0): '\u2584',  # Lower half block
               (0, 0): '\u2588',  # Full block
               }
-    it = [matrix_iter(matrix, version, scale=1, border=border)] * 2
+    it = [matrix_iter(matrix, matrix_size, scale=1, border=border)] * 2
     with writable(out, 'wt') as f:
         write = f.write
         for top_row, bottom_row in zip_longest(*it, fillvalue=repeat(1)):
@@ -1359,7 +1358,7 @@ def _invert_color(rgb_or_rgba):
     return tuple([255 - c for c in rgb_or_rgba])
 
 
-# <http://www.w3.org/TR/css3-color/#svg-color>
+# <https://www.w3.org/TR/css-color-3/#svg-color>
 _NAME2RGB = {
     'aliceblue': (240, 248, 255),
     'antiquewhite': (250, 235, 215),
@@ -1511,7 +1510,7 @@ _NAME2RGB = {
 }
 
 
-def _make_colormap(version, dark, light,
+def _make_colormap(matrix_width, matrix_height, dark, light,
                    finder_dark=False, finder_light=False,
                    data_dark=False, data_light=False,
                    version_dark=False, version_light=False,
@@ -1540,7 +1539,8 @@ def _make_colormap(version, dark, light,
         # will be brown
         cm = colormap(timing_dark=(165, 42, 42))
 
-    :param version: QR Code version (int constant)
+    :param int matrix_width: Matrix width
+    :param int matrix_height: Matrix height
     :param dark: Default color of dark modules
     :param light: Default color of light modules
     :param finder_dark: Color of the dark modules of the finder patterns.
@@ -1561,9 +1561,14 @@ def _make_colormap(version, dark, light,
     :rtype: dict
     """
     unsupported = ()
-    if version < 7:
+    is_square = matrix_width == matrix_height
+    if not is_square:  # rMQR
+        unsupported = [consts.TYPE_DARKMODULE, consts.TYPE_VERSION_DARK, consts.TYPE_VERSION_LIGHT]
+        if matrix_width < 43:  # rMQR R11x27, R13x27, …
+            unsupported.extend((consts.TYPE_ALIGNMENT_PATTERN_DARK, consts.TYPE_ALIGNMENT_PATTERN_LIGHT))
+    elif matrix_width < 45:  # QR Code version 7
         unsupported = [consts.TYPE_VERSION_DARK, consts.TYPE_VERSION_LIGHT]
-        if version < 1:  # Micro QR Code
+        if matrix_width < 21:  # Lesser than QR Code version 1 => Micro QR code
             unsupported.extend([consts.TYPE_DARKMODULE,
                                 consts.TYPE_ALIGNMENT_PATTERN_DARK,
                                 consts.TYPE_ALIGNMENT_PATTERN_LIGHT])
@@ -1603,12 +1608,12 @@ _VALID_SERIALIZERS = {
 }
 
 
-def save(matrix, version, out, kind=None, **kw):
+def save(matrix, matrix_size, out, kind=None, **kw):
     """\
     Serializes the matrix in any of the supported formats.
 
     :param matrix: The matrix to serialize.
-    :param int version: The (Micro) QR code version
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param out: A filename or a writable file-like object with a
             ``name`` attribute. If a stream like :py:class:`io.ByteIO` or
             :py:class:`io.StringIO` object without a ``name`` attribute is
@@ -1637,6 +1642,6 @@ def save(matrix, version, out, kind=None, **kw):
         raise ValueError('Unknown file extension ".{0}"'.format(ext))
     if is_svgz:
         with gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9)) as f:
-            serializer(matrix, version, f, **kw)
+            serializer(matrix, matrix_size, f, **kw)
     else:
-        serializer(matrix, version, out, **kw)
+        serializer(matrix, matrix_size, out, **kw)

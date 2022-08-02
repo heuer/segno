@@ -255,16 +255,19 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     # ISO/IEC 18004:2015(E) -- 7.6 Constructing the final message codeword sequence (page 45)
     buff = make_final_message(version, error, buff)
     # Matrix with timing pattern and reserved format / version regions
-    matrix = make_matrix(version)
+    width = calc_matrix_size(version)
+    height = width
+    matrix_size = width, height
+    matrix = make_matrix(width, height)
     # ISO/IEC 18004:2015 -- 6.3.3 Finder pattern (page 16)
     add_finder_patterns(matrix, is_micro)
     # ISO/IEC 18004:2015 -- 6.3.6 Alignment patterns (page 17)
-    add_alignment_patterns(matrix, version)
+    add_alignment_patterns(matrix, matrix_size)
     # ISO/IEC 18004:2015 -- 7.7 Codeword placement in matrix (page 46)
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    mask, matrix = find_and_apply_best_mask(matrix, version, is_micro, mask)
+    mask, matrix = find_and_apply_best_mask(matrix, matrix_size, is_micro, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -445,15 +448,21 @@ def add_timing_pattern(matrix, is_micro):
         bit ^= 0x1
 
 
-def add_alignment_patterns(matrix, version):
+def add_alignment_patterns(matrix, matrix_size):
     """\
     Adds the adjustment patterns to the matrix. For versions < 2 this is a
     no-op.
 
     ISO/IEC 18004:2015(E) -- 6.3.6 Alignment patterns (page 17)
     ISO/IEC 18004:2015(E) -- Annex E Position of alignment patterns (page 83)
+
+    :param matrix: An iterable of bytearrays.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     """
-    if version < 2:
+    width, height = matrix_size
+    is_square = width == height
+    version = (width - 17) // 4  # QR Codes: version * 4 +  17 == width / height of the matrix w/o border
+    if is_square and version < 2:  # QR Codes version < 2 don't have alignment patterns
         return
     pattern = (0x1, 0x1, 0x1, 0x1, 0x1,
                0x1, 0x0, 0x0, 0x0, 0x1,
@@ -598,7 +607,7 @@ def make_blocks(ec_infos, buff):
     return data_blocks, error_blocks
 
 
-def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
+def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
     """\
     Applies all mask patterns against the provided QR Code matrix and returns
     the best matrix and best pattern.
@@ -615,7 +624,6 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
     :rtype: tuple
     :return: A tuple of the best matrix and best data mask pattern index.
     """
-    matrix_size = len(matrix)
     # ISO/IEC 18004:2015 -- 7.8.3.1 Evaluation of QR Code symbols (page 53/54)
     # The data mask pattern which results in the lowest penalty score shall
     # be selected for the symbol.
@@ -631,9 +639,9 @@ def find_and_apply_best_mask(matrix, version, is_micro, proposed_mask=None):
         eval_mask = evaluate_micro_mask
     # Matrix to check if a module belongs to the encoding region
     # or to the function patterns
-    function_matrix = make_matrix(version)
+    function_matrix = make_matrix(*matrix_size)
     add_finder_patterns(function_matrix, is_micro)
-    add_alignment_patterns(function_matrix, version)
+    add_alignment_patterns(function_matrix, matrix_size)
     if not is_micro:
         function_matrix[-8][8] = 0x1
 
@@ -673,10 +681,11 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
     :param is_encoding_region: A function which returns ``True`` iff the
             row index / col index belongs to the data region.
     """
-    module_range = range(matrix_size)
-    for i in module_range:
+    width, height = matrix_size
+    width_range = range(width)
+    for i in range(height):
         row = matrix[i]
-        for j in module_range:
+        for j in width_range:
             if is_encoding_region(i, j):
                 row[j] ^= mask_pattern(i, j)
 
@@ -732,9 +741,9 @@ def mask_scores(matrix, matrix_size):
         idx = seq.find(n3_pattern)
         while idx != -1:
             offset = idx + 7
-            if idx in (0, matrix_size - 7) \
-                    or not any(seq[max(idx - 4, 0):min(idx, matrix_size)]) \
-                    or not any(seq[max(offset, 0):min(offset + 4, matrix_size)]):
+            if idx in (0, qr_size - 7) \
+                    or not any(seq[max(idx - 4, 0):min(idx, qr_size)]) \
+                    or not any(seq[max(offset, 0):min(offset + 4, qr_size)]):
                 count += 40  # N3 = 40
             else:
                 # Found no / not enough light modules, start at next possible
@@ -749,19 +758,21 @@ def mask_scores(matrix, matrix_size):
     score_n1 = 0
     score_n2 = 0
     score_n3 = 0
-    module_range = range(matrix_size)
+    assert matrix_size[0] == matrix_size[1]
+    qr_size = matrix_size[0]
+    qr_module_range = range(qr_size)
     dark_module_counter = 0
     last_row = None
     # Collects the bytes column-wise (required to calculate score N3)
-    n3_column = bytearray(matrix_size)
-    for i in module_range:
+    n3_column = bytearray(qr_size)
+    for i in qr_module_range:
         row = matrix[i]
         row_prev_bit = -1
         col_prev_bit = -1
         # N1
         n1_row_counter = 0
         n1_col_counter = 0
-        for j in module_range:
+        for j in qr_module_range:
             row_current_bit = row[j]
             col_current_bit = matrix[j][i]
             n3_column[j] = col_current_bit
@@ -795,7 +806,7 @@ def mask_scores(matrix, matrix_size):
         if n1_col_counter >= 5:
             score_n1 += n1_col_counter - 2
     # N4
-    percent = float(dark_module_counter) / (matrix_size ** 2)
+    percent = float(dark_module_counter) / (qr_size ** 2)
     score_n4 = 10 * int(abs(percent * 100 - 50) / 5)  # N4 = 10
     return score_n1, score_n2, score_n3, score_n4
 
@@ -810,7 +821,7 @@ def evaluate_micro_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    module_range = range(1, matrix_size)
+    module_range = range(1, matrix_size[0])
     last_row = matrix[-1]
     sum1 = sum(matrix[i][-1] for i in module_range)
     sum2 = sum(last_row[i] for i in module_range)
@@ -1123,7 +1134,7 @@ def make_segment(data, mode, encoding=None):
     return _Segment(buff.getbits(), char_count, segment_mode, segment_encoding)
 
 
-def make_matrix(version, reserve_regions=True, add_timing=True):
+def make_matrix(width, height, reserve_regions=True, add_timing=True):
     """\
     Creates a matrix of the provided `size` (w x h) initialized with the
     (illegal) value 0x2.
@@ -1131,14 +1142,16 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
     The "timing pattern" is already added to the matrix and the version
     and format areas are initialized with 0x0.
 
-    :param int version: The (Micro) QR Code version
+    :param int width: Matrix width
+    :param int height: Matrix height.
     :rtype: tuple of bytearrays
     """
-    size = calc_matrix_size(version)
-    row = [0x2] * size
-    matrix = tuple(bytearray(row) for i in range(size))
+    is_square = width == height
+    is_micro = is_square and width < 21
+    row = [0x2] * width
+    matrix = tuple(bytearray(row) for i in range(height))
     if reserve_regions:
-        if version > 6:
+        if is_square and width > 41:  # QR Codes < version 7 don't have a version pattern
             # Reserve version pattern areas
             for i in range(6):
                 row = matrix[i]
@@ -1155,12 +1168,12 @@ def make_matrix(version, reserve_regions=True, add_timing=True):
         for i in range(9):
             matrix[i][8] = 0x0  # Upper left
             row_eight[i] = 0x0  # Upper bottom
-            if version > 0:
+            if not is_micro:
                 matrix[-i][8] = 0x0  # Bottom left
                 row_eight[-i] = 0x0  # Upper right
     if add_timing:
         # ISO/IEC 18004:2015 -- 6.3.5 Timing pattern (page 17)
-        add_timing_pattern(matrix, version < 1)
+        add_timing_pattern(matrix, is_micro)
     return matrix
 
 

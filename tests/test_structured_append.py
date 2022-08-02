@@ -76,11 +76,11 @@ def test_encode_single():
     seq = segno.make_sequence('QR Code Symbol', version=1, error='M',
                               boost_error=False)
     assert '1-M' == seq.designator
-    ref_matrix = read_matrix('iso-fig-1')
+    ref_matrix = read_matrix('iso-fig-1')[0]
     assert ref_matrix == seq.matrix
     qr = seq[0]
     assert '1-M' == qr.designator
-    ref_matrix = read_matrix('iso-fig-1')
+    ref_matrix = read_matrix('iso-fig-1')[0]
     assert ref_matrix == qr.matrix
 
 
@@ -94,13 +94,13 @@ def test_encode_multi_by_version_or_symbol_count(version, symbol_count):
                               version=version, symbol_count=symbol_count,
                               error='m', mask=4, boost_error=False)
     assert 4 == len(seq)
-    ref_matrix = read_matrix('seq-iso-04-01')
+    ref_matrix = read_matrix('seq-iso-04-01')[0]
     assert ref_matrix == seq[0].matrix
-    ref_matrix = read_matrix('seq-iso-04-02')
+    ref_matrix = read_matrix('seq-iso-04-02')[0]
     assert ref_matrix == seq[1].matrix
-    ref_matrix = read_matrix('seq-iso-04-03')
+    ref_matrix = read_matrix('seq-iso-04-03')[0]
     assert ref_matrix == seq[2].matrix
-    ref_matrix = read_matrix('seq-iso-04-04')
+    ref_matrix = read_matrix('seq-iso-04-04')[0]
     assert ref_matrix == seq[3].matrix
 
 

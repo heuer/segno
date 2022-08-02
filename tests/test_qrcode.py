@@ -77,15 +77,15 @@ def test_illegal_version(version):
 @pytest.mark.parametrize('version', _LEGAL_MICRO_VERSIONS)
 def test_valid_mirco_versions(version):
     qr = segno.make(1, version=version)
-    assert version.upper() == qr.version
     assert qr.is_micro
+    assert version.upper() == qr.version
 
 
 @pytest.mark.parametrize('version', _LEGAL_VERSIONS)
 def test_valid_versions(version):
     qr = segno.make(1, version=version)
-    assert int(version) == qr.version
     assert not qr.is_micro
+    assert int(version) == qr.version
 
 
 @pytest.mark.parametrize('error', _LEGAL_ERROR_LEVELS)

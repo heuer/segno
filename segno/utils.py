@@ -24,36 +24,37 @@ __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
            'matrix_iter', 'matrix_iter_verbose')
 
 
-def get_default_border_size(version):
+def get_default_border_size(matrix_size):
     """\
     Returns the default border size (quiet zone) for the provided version.
 
-    :param int version: 1 .. 40 or a Micro QR Code version constant.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :rtype: int
     """
-    return 4 if version > 0 else 2
+    width, height = matrix_size
+    return 4 if width > 17 and width == height else 2
 
 
-def get_border(version, border):
+def get_border(matrix_size, border):
     """\
     Returns `border` if not ``None``, otherwise the default border size for
     the provided QR Code.
 
-    :param int version: 1 .. 40 or a Micro QR Code version constant
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param border: The size of the quiet zone or ``None``.
     :type border: int or None
 
     :rtype: int
     """
-    return border if border is not None else get_default_border_size(version)
+    return border if border is not None else get_default_border_size(matrix_size)
 
 
-def get_symbol_size(version, scale=1, border=None):
+def get_symbol_size(matrix_size, scale=1, border=None):
     """\
     Returns the symbol size (width x height) with the provided border and
     scaling factor.
 
-    :param int version: A version constant.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param scale: Indicates the size of a single module (default: 1).
             The size of a module depends on the used output format; i.e.
             in a PNG context, a scaling factor of 2 indicates that a module
@@ -65,11 +66,11 @@ def get_symbol_size(version, scale=1, border=None):
     :rtype: tuple (width, height)
     """
     if border is None:
-        border = get_default_border_size(version)
-    dim = version * 4 + 17 if version > 0 else (version + 4) * 2 + 9  # M4 = 0, M3 = -1 ...
-    dim += 2 * border
-    dim *= scale
-    return dim, dim
+        border = get_default_border_size(matrix_size)
+    width, height = matrix_size
+    width += 2 * border
+    height += 2 * border
+    return width * scale, height * scale
 
 
 def check_valid_scale(scale):
@@ -80,8 +81,7 @@ def check_valid_scale(scale):
     :type scale: float or int
     """
     if scale <= 0:
-        raise ValueError('The scale must not be negative or zero. '
-                         'Got: "{0}"'.format(scale))
+        raise ValueError('The scale must not be negative or zero. Got: "{0}"'.format(scale))
 
 
 def check_valid_border(border):
@@ -91,8 +91,7 @@ def check_valid_border(border):
     :param int border: Indicating the size of the quiet zone.
     """
     if border is not None and (int(border) != border or border < 0):
-        raise ValueError('The border must not a non-negative integer value. '
-                         'Got: "{0}"'.format(border))
+        raise ValueError('The border must not a non-negative integer value. Got: "{0}"'.format(border))
 
 
 def matrix_to_lines(matrix, x, y, incby=1):
@@ -126,7 +125,7 @@ def matrix_to_lines(matrix, x, y, incby=1):
             last_bit = 0x0
 
 
-def matrix_iter(matrix, version, scale=1, border=None):
+def matrix_iter(matrix, matrix_size, scale=1, border=None):
     """\
     Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
@@ -135,7 +134,7 @@ def matrix_iter(matrix, version, scale=1, border=None):
     is raised.
 
     :param matrix: An iterable of bytearrays.
-    :param int version: A version constant.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
@@ -144,18 +143,18 @@ def matrix_iter(matrix, version, scale=1, border=None):
     check_valid_border(border)
     scale = int(scale)
     check_valid_scale(scale)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale=1, border=0)
+    border = get_border(matrix_size, border)
+    width, height = matrix_size
     border_row = [0x0] * width
-    size_range = range(-border, width + border)
-    for i in size_range:
+    width_range, height_range = range(-border, width + border), range(-border, height + border)
+    for i in height_range:
         r = matrix[i] if 0 <= i < height else border_row
-        row = tuple(chain.from_iterable(repeat(r[j] if 0 <= j < width else 0x0, scale) for j in size_range))
+        row = tuple(chain.from_iterable(repeat(r[j] if 0 <= j < width else 0x0, scale) for j in width_range))
         for s in repeat(None, scale):
             yield row
 
 
-def matrix_iter_verbose(matrix, version, scale=1, border=None):
+def matrix_iter_verbose(matrix, matrix_size, scale=1, border=None):
     """\
     Returns an iterator / generator over the provided matrix which includes
     the border and the scaling factor.
@@ -169,7 +168,7 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
     is raised.
 
     :param matrix: An iterable of bytearrays.
-    :param int version: A version constant.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param int scale: The scaling factor (default: ``1``).
     :param int border: The border size or ``None`` to specify the
             default quiet zone (4 for QR Codes, 2 for Micro QR Codes).
@@ -179,12 +178,13 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
     check_valid_border(border)
     scale = int(scale)
     check_valid_scale(scale)
-    border = get_border(version, border)
-    width, height = get_symbol_size(version, scale=1, border=0)
-    is_micro = version < 1
+    border = get_border(matrix_size, border)
+    width, height = matrix_size
+    is_square = width == height
+    is_micro = is_square and width < 21  # 21 == QR Code version 1
     # Create an empty matrix with invalid 0x2 values
-    alignment_matrix = encoder.make_matrix(version, reserve_regions=False, add_timing=False)
-    encoder.add_alignment_patterns(alignment_matrix, version)
+    alignment_matrix = encoder.make_matrix(width, height, reserve_regions=False, add_timing=False)
+    encoder.add_alignment_patterns(alignment_matrix, matrix_size)
 
     def get_bit(i, j):
         # Check if we operate upon the matrix or the "virtual" border
@@ -195,7 +195,7 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
                 alignment_val = alignment_matrix[i][j]
                 if alignment_val != 0x2:
                     return (consts.TYPE_ALIGNMENT_PATTERN_LIGHT, consts.TYPE_ALIGNMENT_PATTERN_DARK)[alignment_val]
-                if version > 6:  # Version information
+                if is_square and width > 41:  # QR Codes < version 7 do not carry any version information
                     if i < 6 and width - 12 < j < width - 8 \
                             or height - 12 < i < height - 8 and j < 6:
                         return (consts.TYPE_VERSION_LIGHT, consts.TYPE_VERSION_DARK)[val]
@@ -224,8 +224,8 @@ def matrix_iter_verbose(matrix, version, scale=1, border=None):
         else:
             return consts.TYPE_QUIET_ZONE
 
-    size_range = range(-border, width + border)
-    for i in size_range:
-        row = tuple(chain.from_iterable(repeat(get_bit(i, j), scale) for j in size_range))
+    width_range, height_range = range(-border, width + border), range(-border, height + border)
+    for i in height_range:
+        row = tuple(chain.from_iterable(repeat(get_bit(i, j), scale) for j in width_range))
         for s in repeat(None, scale):
             yield row
