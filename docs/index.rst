@@ -31,6 +31,7 @@ Contents
     special-qrcode-factories
     contact-information
     epc-qrcodes
+    pillow-qrcodes
     artistic-qrcodes
     web-development
     command-line
