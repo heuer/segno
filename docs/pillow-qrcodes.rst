@@ -20,6 +20,7 @@ All PNG images can be opened by the Pillow library:
     >>> out.seek(0)  # Important to let PIL / Pillow load the image
     >>> img = Image.open(out)  # Done, do what ever you want with the PIL/Pillow image
 
+
 Convert QR code to RGB(A)
 -------------------------
 
@@ -29,15 +30,15 @@ image into a RGB or RGBA image:
 .. code-block:: python
 
     >>> img = Image.open(out).convert('RGB')  # We want to use Pillow with colors
-    >>> # Almost useless if Segno uses no transparency or if further processing requires no transparency / alpha channel
+    >>> # Only necessary if further processing requires transparency / an alpha channel
     >>> img = Image.open(out).convert('RGBA')
 
 
 Add a logo to a QR code
-_______________________
+-----------------------
 
 A common request to add a logo or any kind of other picture to the QR code is beyond the purpose of
-this library since it requires more image processing and more advanced 3rd party libraries.
+this library since it requires 3rd party libraries.
 The following code provides an example how to use Pillow to add a logo to the center
 of a QR code.
 
@@ -62,4 +63,5 @@ of a QR code.
     box = ((img_width - logo_img.size[0]) // 2, (img_height - logo_img.size[1]) // 2)
     img.paste(logo_img, box)
     img.save('qrcode_with_logo.png')
+
 
