@@ -1,7 +1,7 @@
 Pillow
 ======
 
-In order process the output of Segno with Pillow you may use the
+In order to process the output of Segno with Pillow you may use the
 :doc:`artistic-qrcodes <artistic-qrcodes>` plugin or use the result
 of Segno's capability to generate PNG images directly.
 
