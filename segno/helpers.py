@@ -449,7 +449,7 @@ def make_geo_data(lat, lng):
     :rtype: str
     """
     def float_to_str(f):
-        return '{0:.8f}'.format(f).rstrip('0')
+        return '{0:.8f}'.format(f).rstrip('0').rstrip('.')
 
     return 'geo:{0},{1}'.format(float_to_str(lat), float_to_str(lng))
 
