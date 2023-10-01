@@ -1,9 +1,9 @@
 Changes
 =======
 
-1.x.y -- 2022-mm-dd
+1.5.y -- 2023-mm-dd
 -------------------
-* Fixed `#PR 124 <https://github.com/heuer/segno/pull/124>`_ implemented by
+* Fixed `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
   `missionfloyd <https://github.com/missionfloyd>`_ 
   Remove the trailing dot of latitude/longitude information. 
 * Internal changes: Made ``writers`` module independent of internal version constants,
