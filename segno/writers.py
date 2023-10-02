@@ -356,7 +356,7 @@ def write_svg_debug(matrix, matrix_size, out, scale=15, border=None,
     }
     if colormap is not None:
         clr_mapping.update(colormap)
-    width, height, border = _valid_width_height_and_border(version, scale, border)
+    width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     matrix_width, matrix_height = matrix_size
     with writable(out, 'wt', encoding='utf-8') as f:
         legend = []

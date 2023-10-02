@@ -10,7 +10,6 @@ Test against PR 124
 <https://github.com/heuer/segno/pull/124>
 """
 from __future__ import unicode_literals, absolute_import
-import io
 import pytest
 from segno import helpers
 
@@ -22,4 +21,3 @@ def test_remove_trailing_zero_and_dot():
 
 if __name__ == '__main__':
     pytest.main([__file__])
-

@@ -10,7 +10,7 @@ Tests against the ``utils`` module.
 """
 from __future__ import absolute_import, unicode_literals
 import pytest
-from segno import utils, consts
+from segno import utils
 
 
 def test_get_border_qr():

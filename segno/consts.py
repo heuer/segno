@@ -310,7 +310,6 @@ RSYMBOL_CAPACITY = {
 }
 
 
-
 # ISO/IEC 18004:2015(E) -- Table 9 — Error correction characteristics for QR Code (page 38)
 # ISO/IEC 23941:2022(E) -- Table 8 — Error correction characteristics for rMQR (page 29)
 EC = namedtuple('EC', 'num_blocks num_total num_data')
