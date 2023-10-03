@@ -28,7 +28,10 @@ jobs:
                 pip install mypy
             - name: Run tests
               run: |
-               flake8 segno
-               flake8 tests/
-               mypy segno
                pytest
+            - name: Run lint tests
+              if: ${{ matrix.python-version == '3.11' }}
+              run: |
+                flake8 segno
+                flake8 tests/
+                mypy segno
