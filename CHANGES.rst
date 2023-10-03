@@ -3,13 +3,15 @@ Changes
 
 1.5.y -- 2023-mm-dd
 -------------------
-* Fixed `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
-  `missionfloyd <https://github.com/missionfloyd>`_ 
+* Merged `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
+  `missionfloyd <https://github.com/missionfloyd>`_: 
   Remove the trailing dot of latitude/longitude information. 
 * Internal changes: Made ``writers`` module independent of internal version constants,
   they operate upon a matrix of a given size and know nothing about the QR Code version
   (i.e. QR Code vs. Micro QR Code). These changes are backwards incompatible but the
   ``writers`` module does not belong to the public API anyway.
+* Dropped testing against PyPy2
+* Changed default Python test version to 3.11 (2.7 is still supported)
 
 
 1.5.2 -- 2022-05-25
