@@ -13,7 +13,7 @@ jobs:
       name: "python ${{ matrix.python-version }}"
       strategy:
         matrix:
-          python-version: [pypy-3.9, 2.7, 3.5, 3.6, 3.7, 3.8, 3.9, '3.10', '3.11']
+          python-version: [pypy-3.9, 3.7, 3.8, 3.9, '3.10', '3.11']
       steps:
             - uses: actions/checkout@v3
             - name: Set up python ${{ matrix.python-version }}
