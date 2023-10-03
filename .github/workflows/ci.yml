@@ -1,0 +1,34 @@
+name: ci
+
+on:
+    push:
+    pull_request:
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+      runs-on: ubuntu-22.04
+      name: "python ${{ matrix.python-version }}"
+      strategy:
+        matrix:
+          python-version: [pypy-3.9, 2.7, 3.5, 3.6, 3.7, 3.8, 3.9, '3.10', '3.11']
+      steps:
+            - uses: actions/checkout@v3
+            - name: Set up python ${{ matrix.python-version }}
+              uses: actions/setup-python@v4
+              with:
+                  python-version: ${{ matrix.python-version }}
+            - name: Install dependencies
+              run: |
+                sudo apt -y install libzbar0
+                pip install -r requirements-testing.txt
+                pip install flake8
+                pip install mypy
+            - name: Run tests
+              run: |
+               flake8 segno
+               flake8 tests/
+               mypy segno
+               pytest
