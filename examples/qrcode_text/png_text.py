@@ -88,7 +88,10 @@ def qr_with_text(qrcode: segno.QRCode, *, text: str = None,
     lines = text.splitlines()
     # Calculate the additional space required for the text
     for line in lines:
-        fw, fh = font.getsize(line)
+        try:  # Pillow versions < 10
+            fw, fh = font.getsize(line)
+        except AttributeError:
+            fw, fh = font.getbbox(line)[2:4]
         if fw > width:
             width = fw + font_size
         height += fh + line_spacing
