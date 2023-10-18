@@ -148,7 +148,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     :rtype: str
     """
     def make_multifield(name, val):
-        if val is None:
+        if not val:
             return ()
         if isinstance(val, str_type):
             val = (val,)
@@ -158,12 +158,9 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     data = ['MECARD:N:{0};'.format(escape(name))]
     if reading:
         data.append('SOUND:{0};'.format(escape(reading)))
-    if phone:
-        data.extend(make_multifield('TEL', phone))
-    if videophone:
-        data.extend(make_multifield('TELAV', videophone))
-    if email:
-        data.extend(make_multifield('EMAIL', email))
+    data.extend(make_multifield('TEL', phone))
+    data.extend(make_multifield('TELAV', videophone))
+    data.extend(make_multifield('EMAIL', email))
     if nickname:
         data.append('NICKNAME:{0};'.format(escape(nickname)))
     if birthday:
@@ -172,8 +169,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
         except AttributeError:
             pass
         data.append('BDAY:{0};'.format(birthday))
-    if url:
-        data.extend(make_multifield('URL', url))
+    data.extend(make_multifield('URL', url))
     adr_properties = (pobox, roomno, houseno, city, prefecture, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
@@ -305,7 +301,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     :rtype: str
     """
     def make_multifield(name, val):
-        if val is None:
+        if not val:
             return ()
         if isinstance(val, str_type):
             val = (val,)
@@ -317,26 +313,16 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             'FN:{0}'.format(escape(displayname))]
     if org:
         data.append('ORG:{0}'.format(escape(org)))
-    if email:
-        data.extend(make_multifield('EMAIL', email))
-    if phone:
-        data.extend(make_multifield('TEL', phone))
-    if fax:
-        data.extend(make_multifield('TEL;TYPE=FAX', fax))
-    if videophone:
-        data.extend(make_multifield('TEL;TYPE=VIDEO', videophone))
-    if cellphone:
-        data.extend(make_multifield('TEL;TYPE=CELL', cellphone))
-    if homephone:
-        data.extend(make_multifield('TEL;TYPE=HOME', homephone))
-    if workphone:
-        data.extend(make_multifield('TEL;TYPE=WORK', workphone))
-    if url:
-        data.extend(make_multifield('URL', url))
-    if title:
-        data.extend(make_multifield('TITLE', title))
-    if photo_uri:
-        data.extend(make_multifield('PHOTO;VALUE=uri', photo_uri))
+    data.extend(make_multifield('EMAIL', email))
+    data.extend(make_multifield('TEL', phone))
+    data.extend(make_multifield('TEL;TYPE=FAX', fax))
+    data.extend(make_multifield('TEL;TYPE=VIDEO', videophone))
+    data.extend(make_multifield('TEL;TYPE=CELL', cellphone))
+    data.extend(make_multifield('TEL;TYPE=HOME', homephone))
+    data.extend(make_multifield('TEL;TYPE=WORK', workphone))
+    data.extend(make_multifield('URL', url))
+    data.extend(make_multifield('TITLE', title))
+    data.extend(make_multifield('PHOTO;VALUE=uri', photo_uri))
     if nickname:
         data.append('NICKNAME:{0}'.format(escape(nickname)))
     adr_properties = (pobox, street, city, region, zipcode, country)
