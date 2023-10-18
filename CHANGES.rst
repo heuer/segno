@@ -14,6 +14,10 @@ Changes
 * Changed default Python test version to 3.11 (2.7 is still supported)
 * Support for Python 2.7 will be dropped because it is no longer possible to run automatic
   tests against the version.
+* Removed deprecated statements from setup.cfg (`#127 <https://github.com/heuer/segno/issues/127>`_
+  thanks for the hint, `Gene <https://github.com/gene-git>`_)
+* Updated example to Pillow 10 API (`#128 <https://github.com/heuer/segno/issues/128>`_,
+  again thanks to `Gene <https://github.com/gene-git>`_)
 
 
 1.5.2 -- 2022-05-25
