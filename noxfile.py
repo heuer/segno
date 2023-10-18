@@ -16,10 +16,10 @@ from itertools import chain
 import shutil
 import nox
 
-_PY_VERSIONS = ('2.7', '3.7', '3.8', '3.9', '3.10', 'pypy', 'pypy3')
-_PY_DEFAULT_VERSION = '3.10'
+_PY_VERSIONS = ('2.7', '3.7', '3.8', '3.9', '3.10', '3.11', 'pypy3')
+_PY_DEFAULT_VERSION = '3.11'
 
-nox.options.sessions = ['test-2.7', 'test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy', 'test-pypy3']
+nox.options.sessions = ['test-2.7', 'test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy3']
 
 
 @nox.session(python=_PY_VERSIONS)
@@ -27,14 +27,6 @@ def test(session):
     """\
     Run test suite.
     """
-    if session.python == 'pypy':
-        # See <https://github.com/heuer/segno/issues/80>
-        pip_ver = session.run('pip', '--version', silent=True)
-        m = re.search(r'pip ([0-9.]{4})', pip_ver)
-        assert m
-        if m.group(1) in ('20.2', '20.3'):
-            session.run('pip', 'uninstall', '-y', 'pip')
-            session.run('easy_install', 'pip==20.1.1')
     session.install('-Ur', 'requirements-testing.txt')
     session.install('.')
     session.run('py.test')
@@ -85,7 +77,7 @@ def lint(session):
     session.install('flake8', 'mypy')
     session.run('mypy', 'segno')
     session.run('flake8', 'segno')
-    session.run('flake8', 'tests/')
+    session.run('flake8', 'tests')
 
 
 @nox.session(python=_PY_DEFAULT_VERSION)
