@@ -12,7 +12,6 @@ Don't include blank vcard/mecard fields.
 """
 from __future__ import unicode_literals, absolute_import
 import pytest
-import segno
 from segno import helpers
 
 
