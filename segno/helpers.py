@@ -148,7 +148,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     :rtype: str
     """
     def make_multifield(name, val):
-        if val is None:
+        if not val:
             return ()
         if isinstance(val, str_type):
             val = (val,)
@@ -301,7 +301,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     :rtype: str
     """
     def make_multifield(name, val):
-        if val is None:
+        if not val:
             return ()
         if isinstance(val, str_type):
             val = (val,)
