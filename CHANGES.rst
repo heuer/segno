@@ -6,6 +6,9 @@ Changes
 * Merged `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
   `missionfloyd <https://github.com/missionfloyd>`_: 
   Remove the trailing dot of latitude/longitude information. 
+* Merged `PR #125 <https://github.com/heuer/segno/pull/125>`_ implemented by
+  `missionfloyd <https://github.com/missionfloyd>`_: 
+  More lenient check how to interpret empty or false values in vCard and MeCard.
 * Internal changes: Made ``writers`` module independent of internal version constants,
   they operate upon a matrix of a given size and know nothing about the QR Code version
   (i.e. QR Code vs. Micro QR Code). These changes are backwards incompatible but the
