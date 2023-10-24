@@ -59,14 +59,8 @@ def coverage(session):
     """\
     Run coverage.
     """
-    session.install('coverage', '-Ur', 'requirements-testing.txt')
     session.install('.')
-    output_dir = os.path.abspath(os.path.join(session.create_tmp(), 'html'))
-    cover = partial(session.run, 'coverage')
-    cover('erase')
-    cover('run', './tests/alltests.py')
-    cover('report')
-    cover('html', '-d', output_dir)
+    session.run('pytest', '--cov=segno')
 
 
 @nox.session(python=_PY_DEFAULT_VERSION)
