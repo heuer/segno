@@ -15,8 +15,8 @@ Changes
   ``writers`` module does not belong to the public API anyway.
 * Dropped testing against PyPy2
 * Changed default Python test version to 3.11 (2.7 is still supported)
-* Support for Python 2.7 will be dropped because it is no longer possible to run automatic
-  tests against the version.
+* Support for Python 2.7 will be dropped in the next version of Segno because it is
+  no longer possible to run automatic tests against Python 2.x.
 * Removed deprecated statements from setup.cfg (`#127 <https://github.com/heuer/segno/issues/127>`_
   thanks for the hint, `Gene <https://github.com/gene-git>`_)
 * Updated example to Pillow 10 API (`#128 <https://github.com/heuer/segno/issues/128>`_,
