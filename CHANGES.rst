@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.5.y -- 2023-mm-dd
+1.5.3 -- 2023-10-25
 -------------------
 * Merged `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
   `missionfloyd <https://github.com/missionfloyd>`_: 
