@@ -19,13 +19,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 import decimal
 import segno
-try:  # pragma: no cover
-    from urllib.parse import quote
-    str_type = str
-except ImportError:  # pragma: no cover
-    from urllib import quote
-    str = unicode  # noqa: F821
-    str_type = basestring  # noqa: F821
+from urllib.parse import quote
 
 
 _MECARD_ESCAPE = {
@@ -150,7 +144,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     def make_multifield(name, val):
         if not val:
             return ()
-        if isinstance(val, str_type):
+        if isinstance(val, str):
             val = (val,)
         return ['{0}:{1};'.format(name, escape(i)) for i in val]
 
@@ -303,7 +297,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     def make_multifield(name, val):
         if not val:
             return ()
-        if isinstance(val, str_type):
+        if isinstance(val, str):
             val = (val,)
         return ['{0}:{1}'.format(name, escape(i)) for i in val]
 
@@ -334,7 +328,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             birthday = birthday.strftime('%Y-%m-%d')
         except AttributeError:
             pass
-        if not isinstance(birthday, str_type) or not _looks_like_datetime(birthday):
+        if not isinstance(birthday, str) or not _looks_like_datetime(birthday):
             raise ValueError('"birthday" does not seem to be a valid date or date/time representation')
         data.append('BDAY:{0}'.format(birthday))
     if lat and not lng or lng and not lat:
@@ -350,7 +344,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             rev = rev.strftime('%Y-%m-%d')
         except AttributeError:
             pass
-        if not isinstance(rev, str_type) or not _looks_like_datetime(rev):
+        if not isinstance(rev, str) or not _looks_like_datetime(rev):
             raise ValueError('"rev" does not seem to be a valid date or date/time representation')
         data.append('REV:{0}'.format(rev))
     data.append('END:VCARD')
@@ -486,7 +480,7 @@ def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
     def multi(val):
         if not val:
             return ()
-        if isinstance(val, str_type):
+        if isinstance(val, str):
             return (val,)
         return tuple(val)
 
@@ -548,7 +542,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     bic = bic.strip() if bic else bic
     name = name.strip() if name else name
     if encoding is not None:
-        if isinstance(encoding, str_type):
+        if isinstance(encoding, str):
             try:
                 encoding = encodings.index(encoding.lower()) + 1
             except ValueError:
