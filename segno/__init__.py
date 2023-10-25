@@ -10,25 +10,17 @@ QR Code and Micro QR Code implementation.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
-from __future__ import absolute_import, unicode_literals
 import sys
 import io
 from . import encoder
 from .encoder import DataOverflowError
 from . import writers, utils
-try:  # pragma: no cover
-    str_type = basestring  # noqa: F821
-except NameError:  # pragma: no cover
-    str_type = str
 
 __version__ = '1.5.4.dev'
 
 __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
 
-
-# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
-__metaclass__ = type
 
 
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
@@ -420,12 +412,8 @@ class QRCode:
         import tempfile
         import webbrowser
         import threading
-        try:  # Python 3
-            from urllib.parse import urljoin
-            from urllib.request import pathname2url
-        except ImportError:  # Python 2
-            from urlparse import urljoin  # noqa
-            from urllib import pathname2url  # noqa
+        from urllib.parse import urljoin
+        from urllib.request import pathname2url
 
         def delete_file(name):
             time.sleep(delete_after)
@@ -1010,7 +998,7 @@ class QRCodeSequence(tuple):
         """
         filename = lambda o, n: o  # noqa: E731
         m = len(self)
-        if m > 1 and isinstance(out, str_type):
+        if m > 1 and isinstance(out, str):
             dot_idx = out.rfind('.')
             if dot_idx > -1:
                 out = out[:dot_idx] + '-{0:02d}-{1:02d}' + out[dot_idx:]
@@ -1026,3 +1014,4 @@ class QRCodeSequence(tuple):
             return getattr(self[0], item)
         raise AttributeError("{0} object has no attribute '{1}'"
                              .format(self.__class__, item))
+

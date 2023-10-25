@@ -24,7 +24,7 @@ standard conform QR Code and Micro QR Code generation acc. to ISO/IEC 18004:2015
 
 Unique features
 ---------------
-* Pure Python QR Code generator (supports 2.7, 3.5+, PyPy2 and PyPy3)
+* Pure Python QR Code generator 
 * No dependencies
 * A lot of `serialization formats <https://segno.readthedocs.io/en/stable/serializers.html#available-serializers>`_ (SVG, PNG, EPS, PDF, ...)
 * `Fastest (pure Python) QR Code encoder <https://segno.readthedocs.io/en/stable/comparison-qrcode-libs.html#performance>`_

@@ -12,7 +12,6 @@ DOES NOT belong to the public API.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
-from __future__ import absolute_import, division
 from operator import itemgetter, gt, lt, xor
 from functools import partial, reduce
 from itertools import islice, chain, product
@@ -21,27 +20,12 @@ import math
 import codecs
 from collections import namedtuple
 from . import consts
-_PY2 = False
-try:  # pragma: no cover
-    from itertools import zip_longest
-    str_type = str  # type: ignore
-    numeric = int
-except ImportError:  # pragma: no cover
-    _PY2 = True
-    from itertools import izip_longest as zip_longest, imap as map  # type: ignore
-    str_type = basestring  # type: ignore  # noqa: F821
-    from numbers import Number
-    numeric = Number  # type: ignore
-    str = unicode  # type: ignore  # noqa: F821
-    range = xrange  # type: ignore  # noqa: F821
+from itertools import zip_longest
 import sys  # noqa: E402
 _MAX_PENALTY_SCORE = sys.maxsize
 del sys
 
 __all__ = ('encode', 'encode_sequence', 'DataOverflowError')
-
-# <https://wiki.python.org/moin/PortingToPy3k/BilingualQuickRef#New_Style_Classes>
-__metaclass__ = type
 
 
 class DataOverflowError(ValueError):
@@ -973,7 +957,7 @@ def prepare_data(content, mode, encoding):
     """
     segments = Segments()
     add_segment = segments.add_segment
-    if isinstance(content, (str_type, bytes, numeric)):
+    if isinstance(content, (str, bytes, int)):
         add_segment(make_segment(content, mode, encoding))
         return segments
     for item in content:
@@ -1086,14 +1070,10 @@ def make_segment(data, mode, encoding=None):
                 append_bits(to_byte(chunk), 6)
     elif segment_mode == consts.MODE_BYTE:
         # ISO/IEC 18004:2015(E) -- 7.4.5 Byte mode (page 27)
-        if _PY2:  # pragma: no cover
-            segment_data = (ord(b) for b in segment_data)
         for b in segment_data:
             append_bits(b, 8)
     elif segment_mode == consts.MODE_HANZI:
         # GBT 18284-2000 -- 6.4.5 Hanzi mode (page 18)
-        if _PY2:  # pragma: no cover
-            segment_data = [ord(b) for b in segment_data]
         # Note: len(segment.data)! segment.data_length = len(segment.data) / 2!!
         for i in range(0, segment_length, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
@@ -1113,8 +1093,6 @@ def make_segment(data, mode, encoding=None):
             append_bits(((diff >> 8) * 0x60) + (diff & 0xff), 13)
     else:
         # ISO/IEC 18004:2015(E) -- 7.4.6 Kanji mode (page 29)
-        if _PY2:  # pragma: no cover
-            segment_data = [ord(b) for b in segment_data]
         for i in range(0, segment_length, 2):
             code = (segment_data[i] << 8) | segment_data[i + 1]
             if 0x8140 <= code <= 0x9ffc:
@@ -1358,8 +1336,6 @@ def is_kanji(data):
     data_len = len(data)
     if not data_len or data_len % 2:
         return False
-    if _PY2:  # pragma: no cover
-        data = (ord(c) for c in data)
     data_iter = iter(data)
     for i in range(0, data_len, 2):
         code = (next(data_iter) << 8) | next(data_iter)
@@ -1444,7 +1420,7 @@ def calc_structured_append_parity(content):
     :param str content: The content.
     :rtype: int
     """
-    if not isinstance(content, str_type):
+    if not isinstance(content, str):
         content = str(content)
     try:
         data = content.encode('iso-8859-1')
@@ -1453,8 +1429,6 @@ def calc_structured_append_parity(content):
             data = content.encode('shift-jis')
         except (LookupError, UnicodeError):
             data = content.encode('utf-8')
-    if _PY2:  # pragma: no cover
-        data = (ord(c) for c in data)
     return reduce(xor, data)
 
 

@@ -15,7 +15,6 @@ The serializers are independent of the :py:class:`segno.QRCode` (and the
 :py:class:`segno.encoder.Code`) class; they just need a matrix (tuple of
 bytearrays).
 """
-from __future__ import absolute_import, unicode_literals, division
 import io
 import re
 import zlib
@@ -35,17 +34,8 @@ import time
 from . import consts
 from .utils import matrix_to_lines, get_symbol_size, get_border, \
     check_valid_scale, check_valid_border, matrix_iter, matrix_iter_verbose
-_PY2 = False
-try:  # pragma: no cover
-    from itertools import zip_longest
-    from urllib.parse import quote
-except ImportError:  # pragma: no cover
-    _PY2 = True
-    from itertools import izip_longest as zip_longest
-    from urllib import quote
-    range = xrange  # noqa: F821
-    str = unicode  # noqa: F821
-    from io import open
+from itertools import zip_longest
+from urllib.parse import quote
 
 __all__ = ('writable', 'write_svg', 'write_png', 'write_eps', 'write_pdf',
            'write_txt', 'write_pbm', 'write_pam', 'write_ppm', 'write_xpm',
@@ -105,8 +95,6 @@ def colorful(dark, light):
                                 timing_light=timing_light, separator=separator,
                                 dark_module=dark_module, quiet_zone=quiet_zone)
             return f(matrix, matrix_size, out, cm, **kw)
-        if _PY2:  # pragma: no cover
-            wrapper.__wrapped__ = f  # Needed by CLI to inspect the arguments
         return wrapper
     return decorate
 
@@ -630,8 +618,6 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
         idat += scanline(chain(vertical_border, row, vertical_border))
         idat += same_as_above  # This is b'' if no scaling factor was provided
     idat += horizontal_border
-    if _PY2:  # pragma: no cover
-        idat = bytes(idat)
     with writable(out, 'wb') as f:
         write = f.write
         write(b'\211PNG\r\n\032\n')  # Magic number
