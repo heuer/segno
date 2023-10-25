@@ -24,11 +24,9 @@ _EXT_TO_KW_MAPPING = {}
 
 
 def _get_args(func):
-    # Python 2 vs Python 3
-    func_code = getattr(func, 'func_code', None) or func.__code__
-    defaults = getattr(func, 'func_defaults', None) or func.__defaults__
+    func_code = func.__code__
     args = func_code.co_varnames[:func_code.co_argcount]
-    return args[-len(defaults):]
+    return args[-len(func.__defaults__):]
 
 
 for ext, func in writers._VALID_SERIALIZERS.items():

@@ -11,12 +11,7 @@ Utility functions useful for writers or QR Code objects.
 
 DOES NOT belong to the public API.
 """
-from __future__ import absolute_import, unicode_literals
 from itertools import chain, repeat
-try:  # pragma: no cover
-    range = xrange
-except NameError:  # pragma: no cover
-    pass
 from . import consts
 
 __all__ = ('get_default_border_size', 'get_border', 'get_symbol_size',
