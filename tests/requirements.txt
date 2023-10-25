@@ -1,0 +1,5 @@
+# Requirements to run the tests
+pytest
+pytest-cov
+pypng~=0.0.20
+pyzbar~=0.1.8

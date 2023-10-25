@@ -23,7 +23,7 @@ jobs:
             - name: Install dependencies
               run: |
                   sudo apt -y install libzbar0
-                  pip install -r requirements-testing.txt
+                  pip install -r tests/requirements.txt
                   pip install setuptools
                   pip install flake8
                   pip install mypy

@@ -15,4 +15,4 @@ sphinx:
 
 python:
   install:
-    - requirements: requirements-rtd.txt
+    - requirements: docs/requirements.txt

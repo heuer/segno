@@ -1,6 +1,0 @@
-# Requirements to run the tests
-pytest~=4.6; python_version == '2.7'
-pytest~=6.0; python_version > '2.7'
-pytest-cov; python_version > '2.7'
-pypng~=0.0.20
-pyzbar~=0.1.8

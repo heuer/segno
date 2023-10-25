@@ -16,10 +16,10 @@ from itertools import chain
 import shutil
 import nox
 
-_PY_VERSIONS = ('2.7', '3.7', '3.8', '3.9', '3.10', '3.11', 'pypy3')
+_PY_VERSIONS = ('3.7', '3.8', '3.9', '3.10', '3.11', 'pypy3')
 _PY_DEFAULT_VERSION = '3.11'
 
-nox.options.sessions = ['test-2.7', 'test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy3']
+nox.options.sessions = ['test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy3']
 
 
 @nox.session(python=_PY_VERSIONS)
@@ -27,7 +27,7 @@ def test(session):
     """\
     Run test suite.
     """
-    session.install('-Ur', 'requirements-testing.txt')
+    session.install('-Ur', 'tests/requirements.txt')
     session.install('.')
     session.run('py.test')
 
@@ -37,7 +37,7 @@ def docs(session):
     """\
     Build the documentation.
     """
-    session.install('-Ur', 'requirements-rtd.txt')
+    session.install('-Ur', 'docs/requirements.txt')
     output_dir = os.path.abspath(os.path.join(session.create_tmp(), 'output'))
     shutil.rmtree(output_dir, ignore_errors=True)
     doctrees, html, man = map(partial(os.path.join, output_dir), ['doctrees', 'html', 'man'])
