@@ -15,7 +15,7 @@ Features
     Description                                                         `qrcode`_                `qrcodegen`_              `Segno`_
     ================================================================    =====================    ======================    ========
     Library license                                                     `BSD`_                   `MIT`_                    `BSD`_
-    Library version                                                     7.3.1                    1.7.0                     |version|
+    Library version                                                     7.4.2                    1.8.0                     |version|
     Mode Numeric                                                        Yes                      Yes                       Yes
     Mode Alphanumeric                                                   Yes                      Yes                       Yes
     Mode Byte                                                           Yes                      Yes                       Yes
