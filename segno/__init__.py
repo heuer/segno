@@ -22,7 +22,6 @@ __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
            'QRCodeSequence', 'DataOverflowError')
 
 
-
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
          eci=False, micro=None, boost_error=True):
     """\
@@ -1014,4 +1013,3 @@ class QRCodeSequence(tuple):
             return getattr(self[0], item)
         raise AttributeError("{0} object has no attribute '{1}'"
                              .format(self.__class__, item))
-
