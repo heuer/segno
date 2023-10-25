@@ -281,7 +281,7 @@ PNG Options
 
 Exit Status
 -----------
-:program:`segno` exits 0 on success, and >0 if an error occurs.
+:program:`segno` exits 0 on success, and 1 if an error occurs.
 
 
 Examples
