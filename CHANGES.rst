@@ -1,6 +1,11 @@
 Changes
 =======
 
+1.6.0 -- yyyy-mm-dd
+-------------------
+* Dropped Python 2.7 support
+
+
 1.5.3 -- 2023-10-25
 -------------------
 * Merged `PR #124 <https://github.com/heuer/segno/pull/124>`_ implemented by
