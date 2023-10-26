@@ -8,7 +8,6 @@
 """\
 Tests plugin loading.
 """
-import os
 import pytest
 import segno
 

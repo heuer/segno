@@ -950,10 +950,13 @@ class QRCode:
         of invoking the function depends on the plugin.
         """
         if name.startswith('to_'):
-            from pkg_resources import iter_entry_points
+            try:
+                from importlib import metadata
+            except ImportError:  # Python < 3.8
+                import importlib_metadata as metadata
             from functools import partial
-            for ep in iter_entry_points(group='segno.plugin.converter',
-                                        name=name[3:]):
+            for ep in metadata.entry_points(group='segno.plugin.converter', 
+                                            name=name[3:]):
                 plugin = ep.load()
                 return partial(plugin, self)
         raise AttributeError('{0} object has no attribute {1}'
