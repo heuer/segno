@@ -16,7 +16,7 @@ from itertools import chain
 import shutil
 import nox
 
-_PY_VERSIONS = ('3.7', '3.8', '3.9', '3.10', '3.11', 'pypy3')
+_PY_VERSIONS = ('3.7', '3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3')
 _PY_DEFAULT_VERSION = '3.11'
 
 nox.options.sessions = ['test-{}'.format(_PY_DEFAULT_VERSION), 'test-pypy3']
@@ -27,6 +27,9 @@ def test(session):
     """\
     Run test suite.
     """
+    import platform
+    if platform.python_version()[:4] == '3.12':
+        session.install('setuptools')  #TODO: Remove this, see issue <https://github.com/heuer/segno/issues/129>
     session.install('-Ur', 'tests/requirements.txt')
     session.install('.')
     session.run('py.test')
