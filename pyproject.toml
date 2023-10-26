@@ -33,12 +33,16 @@ classifiers = [
 "Changes" = "https://github.com/heuer/segno/blob/master/CHANGES.rst"
 
 
+[tool.setuptools]
+packages = ["segno"]
+
+
 [tool.setuptools.dynamic]
 version = {attr = "segno.__version__"}
 
 
 [project.scripts]
-segno = "segno:cli:main"
+segno = "segno.cli:main"
 
 
 [tool.setuptools.package-data]
