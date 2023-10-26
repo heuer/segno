@@ -1,2 +1,1 @@
 include LICENSE *.txt *.rst segno/*.pyi segno/py.typed pyproject.toml
-exclude requirements*
