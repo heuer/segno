@@ -951,13 +951,13 @@ class QRCode:
         """
         if name.startswith('to_'):
             try:
-                # Try to use the 3rd party lib first. This is required for 
+                # Try to use the 3rd party lib first. This is required for
                 # Python versions < 3.10
                 import importlib_metadata as metadata
             except ImportError:
                 from importlib import metadata
             from functools import partial
-            for ep in metadata.entry_points(group='segno.plugin.converter', 
+            for ep in metadata.entry_points(group='segno.plugin.converter',
                                             name=name[3:]):
                 plugin = ep.load()
                 return partial(plugin, self)
