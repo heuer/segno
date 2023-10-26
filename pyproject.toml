@@ -1,3 +1,62 @@
 [build-system]
 requires = ['setuptools']
 build-backend = 'setuptools.build_meta'
+
+
+[project]
+name = "segno"
+description = "QR Code and Micro QR Code generator for Python"
+dynamic = ["version"]
+readme = "README.rst"
+license = {file = "LICENSE"}
+authors = [{"name" = "Lars Heuer", email = "heuer@semagia.com"}]
+requires-python = ">=3.5"
+keywords = ["QR Code", "Micro QR Code", "ISO/IEC 18004", "ISO/IEC 18004:2006(E)",
+    "ISO/IEC 18004:2015(E)", "qrcode", "QR", "barcode", "matrix", "2D",]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Printing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/heuer/segno/"
+"Documentation" = "https://segno.readthedocs.io/"
+"Issue tracker" = "https://github.com/heuer/segno/issues/"
+"Changes" = "https://github.com/heuer/segno/blob/master/CHANGES.rst"
+
+
+[tool.setuptools.dynamic]
+version = {attr = "segno.__version__"}
+
+
+[project.scripts]
+segno = "segno:cli:main"
+
+
+[tool.setuptools.package-data]
+segno = ["py.typed", "*.pyi"]
+
+
+[tool.coverage.run]
+branch = true
+
+
+[tool.coverage.report]
+exclude_also = [
+    # Don't complain if non-runnable code isn't run:
+    "if __name__ == .__main__.:",
+]
+
+#TODO!
+#[options.data_files]
+#share/man/man1 =
+#    man/segno.1
+
