@@ -27,9 +27,6 @@ def test(session):
     """\
     Run test suite.
     """
-    import platform
-    if platform.python_version()[:4] == '3.12':
-        session.install('setuptools')  #TODO: Remove this, see issue <https://github.com/heuer/segno/issues/129>
     session.install('-Ur', 'tests/requirements.txt')
     session.install('.')
     session.run('py.test')

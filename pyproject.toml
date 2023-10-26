@@ -25,6 +25,9 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
 ]
+dependencies = [
+    "importlib-metadata>=3.6.0; python_version < '3.8'",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/heuer/segno/"
