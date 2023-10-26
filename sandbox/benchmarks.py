@@ -24,6 +24,10 @@ try:
 except ImportError:
     qrcodegen = None
 
+
+_PNG_COMPRESSION_LEVEL = 6  # Default Pillow PNG compression level
+
+
 if qrcode:
     def create_qrcode(data='QR Code Symbol'):
         """qrcode create 1-M"""
@@ -61,7 +65,8 @@ if qrcode:
         """qrcode PNG 1-M"""
         qr = QRCode(error_correction=ERROR_CORRECT_M, box_size=10)
         qr.add_data(data, optimize=False)
-        qr.make_image().save(os.path.join(_output_dir(), 'qrcode_%s.png' % data))
+        qr.make_image().save(os.path.join(_output_dir(), 'qrcode_%s.png' % data),
+                             compress_level=_PNG_COMPRESSION_LEVEL)
 
 if qrcodegen:
     def create_qrcodegen(data='QR Code Symbol'):
@@ -114,7 +119,7 @@ def svg_segno(data='QR Code Symbol'):
 def png_segno(data='QR Code Symbol'):
     """Segno PNG 1-M"""
     segno.make_qr(data, error='m', boost_error=False).save(os.path.join(_output_dir(), 'segno_%s.png' % data), scale=10,
-                                                           compresslevel=6)
+                                                           compresslevel=_PNG_COMPRESSION_LEVEL)
 
 
 def run_create_tests(which=None, number=200, table=None):
