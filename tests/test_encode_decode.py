@@ -10,14 +10,9 @@ Test suite which decodes generated QR Codes.
 
 Requires pyzbar and additional libs (libzbar0).
 """
-from __future__ import absolute_import, unicode_literals
 import io
 import pytest
 import segno
-try:
-    FileNotFoundError
-except NameError:  # Py2
-    FileNotFoundError = OSError
 try:
     from pyzbar.pyzbar import decode as zbardecode
 except (ImportError, FileNotFoundError):  # The latter may occur under Windows
