@@ -4,6 +4,9 @@ Changes
 1.6.0 -- yyyy-mm-dd
 -------------------
 * Dropped Python 2.7 support
+* Removed dependency on ``pkg_resources``. Segno uses ``importlib.metadata``
+  to provide plugins. For Python versions < 3.10 this introduces a dependency
+  on ``importlib-metadata``.
 
 
 1.5.3 -- 2023-10-25
