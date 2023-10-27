@@ -30,11 +30,12 @@ dependencies = [
     "importlib-metadata>=3.6.0; python_version < '3.10'",
 ]
 
+
 [project.urls]
-"Homepage" = "https://github.com/heuer/segno/"
-"Documentation" = "https://segno.readthedocs.io/"
+Homepage = "https://github.com/heuer/segno/"
+Documentation = "https://segno.readthedocs.io/"
 "Issue tracker" = "https://github.com/heuer/segno/issues/"
-"Changes" = "https://github.com/heuer/segno/blob/master/CHANGES.rst"
+Changes = "https://github.com/heuer/segno/blob/master/CHANGES.rst"
 
 
 [tool.setuptools]
