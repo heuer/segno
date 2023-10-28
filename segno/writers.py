@@ -545,10 +545,9 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
     transparent = (-1, -1, -1, -1)  # Invalid placeholder for transparent color
     dark_idx = consts.TYPE_FINDER_PATTERN_DARK
     qz_idx = consts.TYPE_QUIET_ZONE
-    for mt, clr in colormap.items():
-        colormap[mt] = png_color(clr)
+    clr_map = {k: png_color(colormap[k]) for k in colormap}
     # Creating a palette here regardless of the image type (greyscale vs. index-colors)
-    palette = sorted(set(colormap.values()), key=itemgetter(0, 1, 2))
+    palette = sorted(set(clr_map.values()), key=itemgetter(0, 1, 2))
     is_transparent = transparent in palette
     number_of_colors = len(palette)
     # Check if greyscale mode is applicable
@@ -574,9 +573,9 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
                     transparent_color = clr_val
                     break
             palette[0] = transparent_color
-            for module_type, clr in colormap.items():
+            for module_type, clr in clr_map.items():
                 if clr == transparent:
-                    colormap[module_type] = transparent_color
+                    clr_map[module_type] = transparent_color
     elif is_transparent:  # Greyscale and transparent
         if black in palette:
             # Since black is zero, it should be the first entry
@@ -587,15 +586,15 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
         miter = matrix_iter_verbose(matrix, matrix_size, scale=1, border=0)
-        for module_type, clr in colormap.items():
+        for module_type, clr in clr_map.items():
             color_index[module_type] = palette.index(clr)
     else:
         # Just two colors, use the cheap iterator which returns 0x0 or 0x1
         miter = iter(matrix)
         # The code to create the image requires that TYPE_QUIET_ZONE is available
-        color_index[qz_idx] = palette.index(colormap[qz_idx])
+        color_index[qz_idx] = palette.index(clr_map[qz_idx])
         color_index[0] = color_index[qz_idx]
-        color_index[1] = palette.index(colormap[dark_idx])
+        color_index[1] = palette.index(clr_map[dark_idx])
     miter = ((color_index[b] for b in r) for r in miter)
     horizontal_border = b''
     vertical_border = b''
