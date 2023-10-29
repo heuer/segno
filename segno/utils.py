@@ -179,7 +179,7 @@ def matrix_iter_verbose(matrix, matrix_size, scale=1, border=None):
     is_micro = is_square and width < 21  # 21 == QR Code version 1
     # Create an empty matrix with invalid 0x2 values
     alignment_matrix = encoder.make_matrix(width, height, reserve_regions=False, add_timing=False)
-    encoder.add_alignment_patterns(alignment_matrix, matrix_size)
+    encoder.add_alignment_patterns(alignment_matrix, width, height)
 
     def get_bit(i, j):
         # Check if we operate upon the matrix or the "virtual" border

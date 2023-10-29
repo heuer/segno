@@ -16,7 +16,6 @@ import segno
 from urllib.parse import quote
 
 
-
 def test_png_colorful():
     dark = 'darkred'
     data_dark = 'darkorange'

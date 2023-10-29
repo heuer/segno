@@ -566,140 +566,139 @@ def test_find_version(data, error, micro, expected_version):
 def test_thonky_add_format_info():
     # <http://www.thonky.com/qr-code-tutorial/format-version-information#put-the-format-string-into-the-qr-code>
     version = 1
-    matrix_size = 21, 21  # Version 1
-    matrix = encoder.make_matrix(*matrix_size, reserve_regions=False)
-    encoder.add_finder_patterns(matrix, is_micro=False)
+    width, height = 21, 21  # Version 1
+    matrix = encoder.make_matrix(width, height, reserve_regions=False)
+    encoder.add_finder_patterns(matrix, width, height)
     encoder.add_format_info(matrix, version, consts.ERROR_LEVEL_L, 4)
-    ref_matrix, ref_matrix_size = read_matrix('thonky_format')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_matrix_width, ref_matrix_height = read_matrix('thonky_format')
+    assert ref_matrix_width, ref_matrix_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_thonky_add_version_info():
     # <http://www.thonky.com/qr-code-tutorial/format-version-information>
     version = 7
-    matrix_size = 45, 45  # Version 7
-    matrix = encoder.make_matrix(*matrix_size, reserve_regions=False)
-    encoder.add_finder_patterns(matrix, is_micro=False)
-    encoder.add_alignment_patterns(matrix, matrix_size)
+    width, height = 45, 45  # Version 7
+    matrix = encoder.make_matrix(width, height, reserve_regions=False)
+    encoder.add_finder_patterns(matrix, width, height)
+    encoder.add_alignment_patterns(matrix, width, height)
     encoder.add_version_info(matrix, version)
     matrix[-8][8] = 0x1  # dark module
-    ref_matrix, ref_matrix_size = read_matrix('thonky_version')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_matrix_width, ref_matrix_height = read_matrix('thonky_version')
+    assert ref_matrix_width, ref_matrix_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_eval_micro():
     # ISO/IEC 18004:2006(E) page 54
     # 6.8.2.2 Evaluation of Micro QR Code symbols
-    matrix, matrix_size = read_matrix('iso_6.8.2.2')
-    res = encoder.evaluate_micro_mask(matrix, matrix_size)
+    matrix, width, height = read_matrix('iso_6.8.2.2')
+    res = encoder.evaluate_micro_mask(matrix, width, height)
     assert 104 == res
 
 
 def make_thonky_score_matrix():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking-1')
-    return matrix, matrix_size
+    return read_matrix('thonky_datamasking-1')
 
 
 def test_score_n1():
-    matrix, matrix_size = make_thonky_score_matrix()
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = make_thonky_score_matrix()
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[0]
     assert 180 == score
 
 
 def test_score_n2():
-    matrix, matrix_size = make_thonky_score_matrix()
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = make_thonky_score_matrix()
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[1]
     assert 90 == score
 
 
 def test_score_n3():
-    matrix, matrix_size = make_thonky_score_matrix()
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = make_thonky_score_matrix()
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[2]
     # Thonky: 80
     assert 760 == score
 
 
 def test_score_n4():
-    matrix, matrix_size = read_matrix('thonky_datamasking-2')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking-2')
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[3]
     assert 0 == score
 
 
 def test_thonky_pattern_0():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-0')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-0')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 180 == scores[0]
     assert 90 == scores[1]
     # Thonky: 80
     assert 760 == scores[2]
     assert 0 == scores[3]
     # See score 3
-    assert 350 - 80 + 760 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 350 - 80 + 760 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_1():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-1')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-1')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 172 == scores[0]
     assert 129 == scores[1]
     # Thonky: 120
     assert 760 == scores[2]
     assert 0 == scores[3]
     # See score 3
-    assert 421 - 120 + 760 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 421 - 120 + 760 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_2():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-2')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-2')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 206 == scores[0]
     assert 141 == scores[1]
     # Thonky: 160
     assert 800 == scores[2]
     assert 0 == scores[3]
-    assert 507 - 160 + 800 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 507 - 160 + 800 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_3():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-3')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-3')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 180 == scores[0]
     assert 141 == scores[1]
     # Thonky: 120
     assert 760 == scores[2]
     # Thonky: 2, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
     assert 0 == scores[3]
-    assert 443 - 2 - 120 + 760 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 443 - 2 - 120 + 760 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_4():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-4')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-4')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 195 == scores[0]
     assert 138 == scores[1]
     # Thonky: 200
     assert 800 == scores[2]
     assert 0 == scores[3]
     # See score 3
-    assert 533 - 200 + 800 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 533 - 200 + 800 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_5():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-5')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-5')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 189 == scores[0]
     assert 156 == scores[1]
     # Thonky: 200
@@ -707,13 +706,13 @@ def test_thonky_pattern_5():
     # Thonky: 2, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
     assert 0 == scores[3]
     # See score 3 and 4
-    assert 547 - 2 - 200 + 800 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 547 - 2 - 200 + 800 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_6():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-6')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-6')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 171 == scores[0]
     assert 102 == scores[1]
     # Thonky: 80
@@ -721,28 +720,28 @@ def test_thonky_pattern_6():
     # Thonky: 4, but that's impossible: Either 0 or a multiple of 10 (N4 = 10)
     assert 0 == scores[3]
     # See score 3 and 4
-    assert 357 - 4 - 80 + 840 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 357 - 4 - 80 + 840 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_thonky_pattern_7():
     # http://www.thonky.com/qr-code-tutorial/data-masking
-    matrix, matrix_size = read_matrix('thonky_datamasking_mask-7')
-    scores = encoder.mask_scores(matrix, matrix_size)
+    matrix, width, height = read_matrix('thonky_datamasking_mask-7')
+    scores = encoder.mask_scores(matrix, width, height)
     assert 197 == scores[0]
     assert 123 == scores[1]
     # Thonky: 200
     assert 720 == scores[2]
     assert 0 == scores[3]
     # See score 3
-    assert 520 - 200 + 720 == encoder.evaluate_mask(matrix, matrix_size)
+    assert 520 - 200 + 720 == encoder.evaluate_mask(matrix, width, height)
 
 
 def test_score_n1_iso():
     # For example, impose 5 penalty points on the block of “dark:dark:dark:dark:dark:dark:dark”
     # module pattern, where a series of seven consecutive modules is counted as one block
     matrix = tuple(bytearray([1] * 7) for i in range(7))
-    matrix_size = [len(matrix)] * 2
-    scores = encoder.mask_scores(matrix, matrix_size)
+    width, height = [len(matrix)] * 2
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[0]
     assert 5 * 7 * 2 == score
 
@@ -753,13 +752,13 @@ def test_score_n2_iso():
     # be included in this block, the penalty applied to this block shall be
     # calculated as 4 (blocks) x 3 (points) = 12 points.
     matrix = (bytearray([1, 1, 1]), bytearray([1, 1, 1]), bytearray([1, 1, 1]))
-    matrix_size = [len(matrix)] * 2
-    scores = encoder.mask_scores(matrix, matrix_size)
+    width, height = [len(matrix)] * 2
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[1]
     assert 12 == score
 
     matrix = (bytearray([0, 0, 0]), bytearray([0, 0, 0]), bytearray([0, 0, 0]))
-    scores = encoder.mask_scores(matrix, matrix_size)
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[1]
     assert 12 == score
 
@@ -804,8 +803,8 @@ def test_score_n4_iso(score, percent):
 
     matrix = make_matrix()
     fill_matrix(matrix, percent)
-    matrix_size = [len(matrix)] * 2
-    scores = encoder.mask_scores(matrix, matrix_size)
+    width, height = [len(matrix)] * 2
+    scores = encoder.mask_scores(matrix, width, height)
     score = scores[3]
     assert score == score
 
@@ -1114,7 +1113,7 @@ def test_codeword_placement_iso_i2():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(width, height)
-    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_finder_patterns(matrix, width, height)
     encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i2_code_placement')[0]
     assert ref_matrix == matrix
@@ -1133,7 +1132,7 @@ def test_codeword_placement_iso_i3():
     expected = bits(expected_s)
     assert expected == buff.getbits()
     matrix = encoder.make_matrix(width, height)
-    encoder.add_finder_patterns(matrix, is_micro=version < 1)
+    encoder.add_finder_patterns(matrix, width, height)
     encoder.add_codewords(matrix, buff, version=version)
     ref_matrix = read_matrix('iso-i3_code_placement')[0]
     assert ref_matrix == matrix
@@ -1146,88 +1145,89 @@ def _make_figure22_matrix():
         for i in range(len(row)):
             if row[i] == 0x2:
                 row[i] = 0x0
-    encoder.add_finder_patterns(matrix, True)
-    return matrix, (width, height)
+    encoder.add_finder_patterns(matrix, width, height)
+    return matrix, width, height
 
 
 def test_figure22_mask0():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 22 - Mask 0
-    matrix, matrix_size = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, matrix_size, True, proposed_mask=0)
+    matrix, width, height = _make_figure22_matrix()
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, width, height, proposed_mask=0)
     assert 0 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
         matrix[i][8] = 0x1
-    ref_matrix, ref_matrix_size = read_matrix('fig-22-mask-0')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_width, ref_height = read_matrix('fig-22-mask-0')
+    assert ref_width, ref_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_figure22_mask1():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 22 - Mask 1
-    matrix, matrix_size = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, matrix_size, True, proposed_mask=1)
+    matrix, width, height = _make_figure22_matrix()
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, width, height, proposed_mask=1)
     assert 1 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
         matrix[i][8] = 0x1
-    ref_matrix, ref_matrix_size = read_matrix('fig-22-mask-1')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_width, ref_height = read_matrix('fig-22-mask-1')
+    assert ref_width, ref_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_figure22_mask2():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 22 - Mask 2
-    matrix, matrix_size = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, matrix_size, True, proposed_mask=2)
+    matrix, width, height = _make_figure22_matrix()
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, width, height, proposed_mask=2)
     assert 2 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
         matrix[i][8] = 0x1
-    ref_matrix, ref_matrix_size = read_matrix('fig-22-mask-2')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_width, ref_height = read_matrix('fig-22-mask-2')
+    assert ref_width, ref_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_figure22_mask3():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 22 - Mask 3
-    matrix, matrix_size = _make_figure22_matrix()
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, matrix_size, True, proposed_mask=3)
+    matrix, width, height = _make_figure22_matrix()
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, width, height, proposed_mask=3)
     assert 3 == mask
     # Format info = dark modules
     for i in range(9):
         matrix[8][i] = 0x1
         matrix[i][8] = 0x1
-    ref_matrix, ref_matrix_size = read_matrix('fig-22-mask-3')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_width, ref_height = read_matrix('fig-22-mask-3')
+    assert ref_width, ref_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_fig23_best_mask():
     # ISO/IEC 18004:2015(E) - 7.8.2 Data mask patterns
     # Figure 23
-    matrix, matrix_size = read_matrix('fig-23-unmasked')
-    mask, matrix = encoder.find_and_apply_best_mask(matrix, matrix_size, is_micro=False)
+    matrix, width, height = read_matrix('fig-23-unmasked')
+    mask, matrix = encoder.find_and_apply_best_mask(matrix, width, height)
     assert 0 == mask
-    ref_matrix, ref_matrix_size = read_matrix('fig-23-mask-0')
-    assert ref_matrix_size == matrix_size
+    ref_matrix, ref_width, ref_height = read_matrix('fig-23-mask-0')
+    assert ref_width, ref_height == (width, height)
     assert ref_matrix == matrix
 
 
 def test_format_info_figure26():
     # 7.9.2 Micro QR Code symbols (page 57)
     version = consts.VERSION_M1
+    width, height = 10, 10
     mask = 3
     matrix = tuple([bytearray([0x0] * 11) for i in range(11)])
     encoder.add_timing_pattern(matrix, is_micro=True)
-    encoder.add_finder_patterns(matrix, is_micro=True)
+    encoder.add_finder_patterns(matrix, width, height)
     encoder.add_format_info(matrix, version=version, error=None, mask_pattern=mask)
     ref_matrix = read_matrix('fig-26')[0]
     assert ref_matrix == matrix
