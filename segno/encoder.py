@@ -241,17 +241,16 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
     # Matrix with timing pattern and reserved format / version regions
     width = calc_matrix_size(version)
     height = width
-    matrix_size = width, height
     matrix = make_matrix(width, height)
     # ISO/IEC 18004:2015 -- 6.3.3 Finder pattern (page 16)
-    add_finder_patterns(matrix, is_micro)
+    add_finder_patterns(matrix, width, height)
     # ISO/IEC 18004:2015 -- 6.3.6 Alignment patterns (page 17)
-    add_alignment_patterns(matrix, matrix_size)
+    add_alignment_patterns(matrix, width, height)
     # ISO/IEC 18004:2015 -- 7.7 Codeword placement in matrix (page 46)
     add_codewords(matrix, buff, version)
     # ISO/IEC 18004:2015(E) -- 7.8.2 Data mask patterns (page 50)
     # ISO/IEC 18004:2015(E) -- 7.8.3 Evaluation of data masking results (page 53)
-    mask, matrix = find_and_apply_best_mask(matrix, matrix_size, is_micro, mask)
+    mask, matrix = find_and_apply_best_mask(matrix, width, height, mask)
     # ISO/IEC 18004:2015(E) -- 7.9 Format information (page 55)
     add_format_info(matrix, version, error, mask)
     # ISO/IEC 18004:2015(E) -- 7.10 Version information (page 58)
@@ -379,7 +378,19 @@ def write_pad_codewords(buff, version, capacity, length):
             write(pad_codewords[i % 2])
 
 
-def add_finder_patterns(matrix, is_micro):
+# Finder pattern (includes separator around each side!)
+_FINDER_PATTERN = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
+                   (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
+                   (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
+                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+                   (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
+                   (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
+                   (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
+                   (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
+
+
+def add_finder_patterns(matrix, width, height):
     """\
     Adds the finder pattern(s) with the separators to the matrix.
 
@@ -390,27 +401,18 @@ def add_finder_patterns(matrix, is_micro):
     ISO/IEC 18004:2015(E) -- 6.3.4 Separator (page 17)
 
     :param matrix: The matrix.
-    :param bool is_micro: Indicates if the matrix represents a Micro QR Code.
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     """
-    # Finder pattern (includes separator around each side!)
-    pattern = ((0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0),
-               (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
-               (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
-               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-               (0x0, 0x1, 0x0, 0x1, 0x1, 0x1, 0x0, 0x1, 0x0),
-               (0x0, 0x1, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0),
-               (0x0, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x1, 0x0),
-               (0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0))
+    is_square = width == height
     corners = ((0, 0), (0, len(matrix) - 8), (-8, 0))  # Upper left, upper right, bottom left
-    if is_micro:
+    if is_square and width < 21:
         corners = ((0, 0),)
     finder_range = range(8)
     for i, j in corners:
         offset = 1 if i == 0 else 0
         sepoffset = 0 if j != 0 else 1
         for r in finder_range:
-            matrix[i + r][j:j + 8] = pattern[offset + r][sepoffset:sepoffset + 8]
+            matrix[i + r][j:j + 8] = _FINDER_PATTERN[offset + r][sepoffset:sepoffset + 8]
 
 
 def add_timing_pattern(matrix, is_micro):
@@ -432,7 +434,7 @@ def add_timing_pattern(matrix, is_micro):
         bit ^= 0x1
 
 
-def add_alignment_patterns(matrix, matrix_size):
+def add_alignment_patterns(matrix, width, height):
     """\
     Adds the adjustment patterns to the matrix. For versions < 2 this is a
     no-op.
@@ -443,7 +445,6 @@ def add_alignment_patterns(matrix, matrix_size):
     :param matrix: An iterable of bytearrays.
     :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     """
-    width, height = matrix_size
     is_square = width == height
     version = (width - 17) // 4  # QR Codes: version * 4 +  17 == width / height of the matrix w/o border
     if is_square and version < 2:  # QR Codes version < 2 don't have alignment patterns
@@ -591,7 +592,7 @@ def make_blocks(ec_infos, buff):
     return data_blocks, error_blocks
 
 
-def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
+def find_and_apply_best_mask(matrix, width, height, proposed_mask=None):
     """\
     Applies all mask patterns against the provided QR Code matrix and returns
     the best matrix and best pattern.
@@ -602,8 +603,7 @@ def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
     ISO/IEC 18004:2015(E) -- 7.8.3.2 Evaluation of Micro QR Code symbols (page 54/55)
 
     :param matrix: A matrix.
-    :param int version: A version (Micro) QR Code version constant.
-    :param bool is_micro: Indicates if the matrix represents a Micro QR Code
+    :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     :param proposed_mask: Optional int to indicate the preferred mask.
     :rtype: tuple
     :return: A tuple of the best matrix and best data mask pattern index.
@@ -614,6 +614,7 @@ def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
     is_better = lt
     best_score = _MAX_PENALTY_SCORE
     eval_mask = evaluate_mask
+    is_micro = width == height and width < 21
     if is_micro:
         # ISO/IEC 18004:2015(E) - 7.8.3.2 Evaluation of Micro QR Code symbols (page 54/55)
         # The data mask pattern which results in the highest score shall be
@@ -623,9 +624,9 @@ def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
         eval_mask = evaluate_micro_mask
     # Matrix to check if a module belongs to the encoding region
     # or to the function patterns
-    function_matrix = make_matrix(*matrix_size)
-    add_finder_patterns(function_matrix, is_micro)
-    add_alignment_patterns(function_matrix, matrix_size)
+    function_matrix = make_matrix(width, height)
+    add_finder_patterns(function_matrix, width, height)
+    add_alignment_patterns(function_matrix, width, height)
     if not is_micro:
         function_matrix[-8][8] = 0x1
 
@@ -635,17 +636,17 @@ def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
     mask_patterns = get_data_mask_functions(is_micro)
     # If the user supplied a mask pattern, the evaluation step is skipped
     if proposed_mask is not None:
-        apply_mask(matrix, mask_patterns[proposed_mask], matrix_size,
+        apply_mask(matrix, mask_patterns[proposed_mask], width, height,
                    is_encoding_region)
         return proposed_mask, matrix
 
     best_matrix = None
     for mask_number, mask_pattern in enumerate(mask_patterns):
         m = [ba[:] for ba in matrix]
-        apply_mask(m, mask_pattern, matrix_size, is_encoding_region)
+        apply_mask(m, mask_pattern, width, height, is_encoding_region)
         # NOTE: DO NOT add format / version info in advance of evaluation
         # See ISO/IEC 18004:2015(E) -- 7.8. Data masking (page 50)
-        score = eval_mask(m, matrix_size)
+        score = eval_mask(m, width, height)
         if is_better(score, best_score):
             best_score = score
             best_pattern = mask_number
@@ -653,7 +654,7 @@ def find_and_apply_best_mask(matrix, matrix_size, is_micro, proposed_mask=None):
     return best_pattern, best_matrix
 
 
-def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
+def apply_mask(matrix, mask_pattern, width, height, is_encoding_region):
     """\
     Applies the provided mask pattern on the `matrix`.
 
@@ -665,7 +666,6 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
     :param is_encoding_region: A function which returns ``True`` iff the
             row index / col index belongs to the data region.
     """
-    width, height = matrix_size
     width_range = range(width)
     for i in range(height):
         row = matrix[i]
@@ -674,7 +674,7 @@ def apply_mask(matrix, mask_pattern, matrix_size, is_encoding_region):
                 row[j] ^= mask_pattern(i, j)
 
 
-def evaluate_mask(matrix, matrix_size):
+def evaluate_mask(matrix, width, height):
     """\
     Evaluates the provided `matrix` of a QR code.
 
@@ -684,10 +684,10 @@ def evaluate_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    return sum(mask_scores(matrix, matrix_size))
+    return sum(mask_scores(matrix, width, height))
 
 
-def mask_scores(matrix, matrix_size):
+def mask_scores(matrix, width, height):
     """\
     Returns the penalty score features of the matrix.
 
@@ -742,8 +742,8 @@ def mask_scores(matrix, matrix_size):
     score_n1 = 0
     score_n2 = 0
     score_n3 = 0
-    assert matrix_size[0] == matrix_size[1]
-    qr_size = matrix_size[0]
+    assert width == height
+    qr_size = width
     qr_module_range = range(qr_size)
     dark_module_counter = 0
     last_row = None
@@ -795,7 +795,7 @@ def mask_scores(matrix, matrix_size):
     return score_n1, score_n2, score_n3, score_n4
 
 
-def evaluate_micro_mask(matrix, matrix_size):
+def evaluate_micro_mask(matrix, width, height):
     """\
     Evaluates the provided `matrix` of a Micro QR code.
 
@@ -805,7 +805,7 @@ def evaluate_micro_mask(matrix, matrix_size):
     :param matrix_size: The width (or height) of the matrix.
     :return int: The penalty score of the matrix.
     """
-    module_range = range(1, matrix_size[0])
+    module_range = range(1, width)
     last_row = matrix[-1]
     sum1 = sum(matrix[i][-1] for i in module_range)
     sum2 = sum(last_row[i] for i in module_range)
