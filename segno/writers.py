@@ -567,9 +567,8 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
             # Choose a random color which becomes transparent.
             transparent_color = next(clr for clr in rgb_values if clr not in palette)
             palette[0] = transparent_color
-            for module_type, clr in clr_map.items():
-                if clr == transparent:
-                    clr_map[module_type] = transparent_color
+            # Replace the placeholder "transparent" with the actual RGB(A) value
+            clr_map.update({module_type: transparent_color for module_type, clr in clr_map.items() if clr == transparent})
     elif is_transparent:  # Greyscale and transparent
         if black in palette:
             # Since black is zero, it should be the first entry
@@ -578,7 +577,7 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
     if number_of_colors > 2:
         # Need the more expensive matrix iterator
         miter = matrix_iter_verbose(matrix, matrix_size, scale=1, border=0)
-        color_index = {k: palette.index(v) for k, v in clr_map.items()}
+        color_index = {module_type: palette.index(clr) for module_type, clr in clr_map.items()}
     else:
         # Just two colors, use the cheap iterator which returns 0x0 or 0x1
         miter = iter(matrix)
