@@ -11,14 +11,9 @@ Test against issue #105.
 
 Requires pyzbar and additional libs (libzbar0).
 """
-from __future__ import absolute_import, unicode_literals
 import io
 import pytest
 from segno.helpers import make_epc_qr
-try:
-    FileNotFoundError
-except NameError:  # Py2
-    FileNotFoundError = OSError
 try:
     from pyzbar.pyzbar import decode as zbardecode
 except (ImportError, FileNotFoundError):  # The latter may occur under Windows

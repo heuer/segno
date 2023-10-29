@@ -8,15 +8,10 @@
 """\
 PAM related tests.
 """
-from __future__ import unicode_literals, absolute_import
 import re
 import io
 import pytest
 import segno
-try:
-    range = xrange  # noqa
-except NameError:
-    pass
 
 
 def test_invalid_color():

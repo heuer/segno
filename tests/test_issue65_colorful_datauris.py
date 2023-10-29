@@ -9,15 +9,12 @@
 Test against issue #65.
 <https://github.com/heuer/segno/issues/65>
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import base64
 import pytest
 import segno
-try:
-    from urllib.parse import quote
-except ImportError:
-    from urllib import quote
+from urllib.parse import quote
+
 
 
 def test_png_colorful():

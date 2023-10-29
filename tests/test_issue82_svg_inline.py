@@ -8,16 +8,9 @@
 """\
 SVG embeddable into HTML tests.
 """
-from __future__ import absolute_import, unicode_literals
 import xml.etree.ElementTree as etree
 import pytest
 import segno
-_PY2 = False
-try:
-    unicode
-    _PY2 = True
-except NameError:
-    pass
 
 _CSS_CLASS = 'segno'
 _PATH_CLASS = 'qrline'
@@ -48,8 +41,6 @@ def _parse_xml(s):
     """\
     Parses XML and returns the root element.
     """
-    if _PY2:
-        s = s.encode('utf-8')
     return etree.fromstring(s)
 
 
