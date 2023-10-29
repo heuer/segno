@@ -568,7 +568,8 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
             transparent_color = next(clr for clr in rgb_values if clr not in palette)
             palette[0] = transparent_color
             # Replace the placeholder "transparent" with the actual RGB(A) value
-            clr_map.update({module_type: transparent_color for module_type, clr in clr_map.items() if clr == transparent})
+            clr_map.update({module_type: transparent_color
+                            for module_type, clr in clr_map.items() if clr == transparent})
     elif is_transparent:  # Greyscale and transparent
         if black in palette:
             # Since black is zero, it should be the first entry
