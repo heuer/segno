@@ -1,7 +1,7 @@
 Changes
 =======
 
-1.6.0 -- yyyy-mm-dd
+1.6.0 -- 2023-11-28
 -------------------
 * Dropped Python 2.7 support
 * Removed dependency on ``pkg_resources``. Segno uses ``importlib.metadata``
