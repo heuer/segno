@@ -1,6 +1,6 @@
 [build-system]
-requires = ['setuptools']
-build-backend = 'setuptools.build_meta'
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
 
 [project]
@@ -38,20 +38,8 @@ Documentation = "https://segno.readthedocs.io/"
 Changes = "https://github.com/heuer/segno/blob/master/CHANGES.rst"
 
 
-[tool.setuptools]
-packages = ["segno"]
-
-
-[tool.setuptools.dynamic]
-version = {attr = "segno.__version__"}
-
-
 [project.scripts]
 segno = "segno.cli:main"
-
-
-[tool.setuptools.package-data]
-segno = ["py.typed", "*.pyi"]
 
 
 [tool.coverage.run]
@@ -64,8 +52,6 @@ exclude_also = [
     "if __name__ == .__main__.:",
 ]
 
-#TODO!
-#[options.data_files]
-#share/man/man1 =
-#    man/segno.1
+[tool.flit.external-data]
+"share/man/man1" = "man/segno.1"
 
