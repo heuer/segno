@@ -65,7 +65,7 @@ save animated WebP images as well.
     >>> import segno
     >>> qrcode = segno.make('The Beatles -- Abbey Road', error='h')
     >>> qrcode.to_artistic(background='src/abbey-road-walking.gif',
-    ...                    target='abbey-road.webp' scale=4)
+    ...                    target='abbey-road.webp', scale=4)
 
 .. image:: _static/artistic/abbey-road.webp
     :alt: 4-H QR code encoding "The Beatles -- Abbey Road" (animated)
@@ -92,7 +92,7 @@ the ``kind`` parameter is provided:
     >>> import segno
     >>> qrcode = segno.make('The Beatles -- Let It Be', error='h')
     >>> out = io.BytesIO()
-    >>> qrcode.to_artistic(background='src/letitbe.jpg', target=out scale=5, kind='jpg')
+    >>> qrcode.to_artistic(background='src/letitbe.jpg', target=out, scale=5, kind='jpg')
 
 .. image:: _static/artistic/letitbe.jpg
     :alt: 3-H QR code encoding "The Beatles -- Let It Be" with a background image
