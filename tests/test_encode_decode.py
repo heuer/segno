@@ -11,6 +11,8 @@ Test suite which decodes generated QR Codes.
 Requires pyzbar and additional libs (libzbar0).
 """
 import io
+import cv2 as cv
+import numpy as np
 import pytest
 import segno
 try:
@@ -19,23 +21,33 @@ except (ImportError, FileNotFoundError):  # The latter may occur under Windows
     pytestmark = pytest.mark.skip
 
 
-def qr_to_bytes(qrcode, scale):
-    if qrcode.is_micro:
-        raise Exception('zbar cannot decode Micro QR codes')
-    buff = io.BytesIO()
-    for row in qrcode.matrix_iter(scale=scale):
-        buff.write(bytearray(0x0 if b else 0xff for b in row))
-    return buff.getvalue()
-
-
-def decode(qrcode):
+def decode_kanji(qrcode):
     scale = 3
     width, height = qrcode.symbol_size(scale=scale)
-    qr_bytes = qr_to_bytes(qrcode, scale)
-    decoded = zbardecode((qr_bytes, width, height))
+    out = io.BytesIO()
+    for row in qrcode.matrix_iter(scale=scale):
+        out.write(bytearray(0x0 if b else 0xff for b in row))
+    decoded = zbardecode((out.getvalue(), width, height))
     assert 1 == len(decoded)
     assert 'QRCODE' == decoded[0].type
     return decoded[0].data.decode('utf-8')
+
+
+def decode_cv(qrcode):
+    out = io.BytesIO()
+    qrcode.save(out, scale=3, kind='png')
+    out.seek(0)
+    img = cv.imdecode(np.frombuffer(out.getvalue(), np.uint8), flags=cv.IMREAD_COLOR)
+    detector = cv.QRCodeDetector()
+    decoded, points, qrcode_bin = detector.detectAndDecode(img)
+    return decoded or None
+
+
+def decode(qrcode):
+    if qrcode.is_micro:
+        raise Exception('Cannot decode Micro QR codes')
+    # OpenCV does not support Kanji
+    return decode_cv(qrcode) if qrcode.mode != 'kanji' else decode_kanji(qrcode)
 
 
 @pytest.mark.parametrize('content, mode',
@@ -56,7 +68,7 @@ def test_stackoverflow_issue():
     content = 'Thomsôn Gonçalves Ámaral,325.432.123-21'
     qr = segno.make(content, encoding='utf-8')
     assert 'byte' == qr.mode
-    assert content == decode(qr).encode('shift-jis').decode('utf-8')
+    assert content == decode(qr)
 
 
 def test_pyqrcode_issue76():
@@ -69,6 +81,15 @@ def test_pyqrcode_issue76():
     assert 'byte' == qr.mode
     assert content == decode(qr)
     qr = segno.make(content.encode('utf-8'), micro=False)
+    assert 'byte' == qr.mode
+    assert content == decode(qr)
+
+
+@pytest.mark.parametrize('encoding', [None, 'latin1', 'ISO-8859-1', 'utf-8'])
+def test_issue134(encoding):
+    # See <https://github.com/heuer/segno/issues/134>
+    content = 'Märchen'
+    qr = segno.make(content, encoding=encoding, micro=False)
     assert 'byte' == qr.mode
     assert content == decode(qr)
 

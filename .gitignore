@@ -2,6 +2,7 @@
 .coverage
 .[nt]ox/
 .idea/
+.venv/
 *.egg-info
 dist/
 build/

@@ -20,20 +20,13 @@ except (ImportError, FileNotFoundError):  # The latter may occur under Windows
     pytestmark = pytest.mark.skip
 
 
-def qr_to_bytes(qrcode, scale):
-    if qrcode.is_micro:
-        raise Exception('zbar cannot decode Micro QR codes')
-    buff = io.BytesIO()
-    for row in qrcode.matrix_iter(scale=scale):
-        buff.write(bytearray(0x0 if b else 0xff for b in row))
-    return buff.getvalue()
-
-
 def decode(qrcode):
     scale = 3
     width, height = qrcode.symbol_size(scale=scale)
-    qr_bytes = qr_to_bytes(qrcode, scale)
-    decoded = zbardecode((qr_bytes, width, height))
+    out = io.BytesIO()
+    for row in qrcode.matrix_iter(scale=scale):
+        out.write(bytearray(0x0 if b else 0xff for b in row))
+    decoded = zbardecode((out.getvalue(), width, height))
     assert 1 == len(decoded)
     assert 'QRCODE' == decoded[0].type
     return decoded[0].data.decode('utf-8').encode('cp932')
