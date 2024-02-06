@@ -11,17 +11,21 @@ Test suite which decodes generated QR Codes.
 Requires pyzbar and additional libs (libzbar0).
 """
 import io
-import cv2 as cv
-import numpy as np
 import pytest
 import segno
+_cv_available = True
+try:
+    import cv2 as cv
+    import numpy as np
+except (ImportError):
+    _cv_available = False
 try:
     from pyzbar.pyzbar import decode as zbardecode
 except (ImportError, FileNotFoundError):  # The latter may occur under Windows
     pytestmark = pytest.mark.skip
 
 
-def decode_kanji(qrcode):
+def decode_zbar(qrcode):
     scale = 3
     width, height = qrcode.symbol_size(scale=scale)
     out = io.BytesIO()
@@ -47,7 +51,9 @@ def decode(qrcode):
     if qrcode.is_micro:
         raise Exception('Cannot decode Micro QR codes')
     # OpenCV does not support Kanji
-    return decode_cv(qrcode) if qrcode.mode != 'kanji' else decode_kanji(qrcode)
+    if _cv_available and qrcode.mode != 'kanji':
+        return decode_cv(qrcode)
+    return decode_zbar(qrcode)
 
 
 @pytest.mark.parametrize('content, mode',
@@ -68,7 +74,10 @@ def test_stackoverflow_issue():
     content = 'Thomsôn Gonçalves Ámaral,325.432.123-21'
     qr = segno.make(content, encoding='utf-8')
     assert 'byte' == qr.mode
-    assert content == decode(qr)
+    decoded = decode(qr)
+    if not _cv_available:
+        decoded = decoded.encode('shift-jis').decode('utf-8')
+    assert content == decoded
 
 
 def test_pyqrcode_issue76():
@@ -85,6 +94,7 @@ def test_pyqrcode_issue76():
     assert content == decode(qr)
 
 
+@pytest.mark.skipif(not _cv_available, reason="Requires OpenCV")
 @pytest.mark.parametrize('encoding', [None, 'latin1', 'ISO-8859-1', 'utf-8'])
 def test_issue134(encoding):
     # See <https://github.com/heuer/segno/issues/134>

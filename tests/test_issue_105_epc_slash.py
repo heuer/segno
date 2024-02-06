@@ -13,19 +13,23 @@ Requires pyzbar and additional libs (libzbar0).
 """
 import io
 import pytest
-import cv2 as cv
-import numpy as np
 from segno.helpers import make_epc_qr
+try:
+    from pyzbar.pyzbar import decode as zbardecode
+except (ImportError, FileNotFoundError):  # The latter may occur under Windows
+    pytestmark = pytest.mark.skip
 
 
 def decode(qrcode):
+    scale = 3
+    width, height = qrcode.symbol_size(scale=scale)
     out = io.BytesIO()
-    qrcode.save(out, scale=3, kind='png')
-    out.seek(0)
-    img = cv.imdecode(np.frombuffer(out.getvalue(), np.uint8), flags=cv.IMREAD_COLOR)
-    detector = cv.QRCodeDetector()
-    decoded, points, qrcode_bin = detector.detectAndDecode(img)
-    return decoded or None
+    for row in qrcode.matrix_iter(scale=scale):
+        out.write(bytearray(0x0 if b else 0xff for b in row))
+    decoded = zbardecode((out.getvalue(), width, height))
+    assert 1 == len(decoded)
+    assert 'QRCODE' == decoded[0].type
+    return decoded[0].data.decode('utf-8')
 
 
 @pytest.mark.parametrize('text', ['/',
