@@ -11,12 +11,18 @@ Test against issue #109.
 
 Requires pyzbar and additional libs (libzbar0).
 """
+import platform
 import io
 import pytest
 import segno
 try:
     from pyzbar.pyzbar import decode as zbardecode
 except (ImportError, FileNotFoundError):  # The latter may occur under Windows
+    pytestmark = pytest.mark.skip
+
+_libc, _ = platform.libc_ver()
+
+if _libc != 'glibc':  # Does not work with zbar/musl
     pytestmark = pytest.mark.skip
 
 

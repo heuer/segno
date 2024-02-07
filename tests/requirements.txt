@@ -4,7 +4,6 @@ pytest-cov
 pypng~=0.0.20
 pyzbar~=0.1.8
 qrcode-artistic
-opencv-python; platform.python_implementation != 'PyPy'
 Pillow
 importlib-metadata>=3.6.0; python_version < '3.10'
 
