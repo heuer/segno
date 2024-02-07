@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2023 -- Lars Heuer
+# Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright (c) 2016 - 2023 -- Lars Heuer
+# Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
 #
 # License: BSD License
@@ -33,10 +33,6 @@ import pytest
 import segno
 from segno import helpers
 _qr_decoder_available = False
-try:
-    FileNotFoundError
-except NameError:  # Py2
-    FileNotFoundError = OSError
 try:
     from pyzbar.pyzbar import decode as zbardecode
     _qr_decoder_available = True
