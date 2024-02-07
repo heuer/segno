@@ -22,7 +22,6 @@ jobs:
                   python-version: ${{ matrix.python-version }}
             - name: Install dependencies
               run: |
-                  sudo apt -y install pypy3-dev
                   sudo apt -y install libzbar0
                   pip install -r tests/requirements.txt
                   pip install flake8
@@ -31,7 +30,7 @@ jobs:
               run: |
                   pytest
             - name: Run lint tests
-              if: ${{ matrix.python-version == '3.11' }}
+              if: ${{ matrix.python-version == '3.12' }}
               run: |
                   flake8 segno
                   flake8 tests/
