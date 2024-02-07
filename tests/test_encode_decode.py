@@ -48,8 +48,8 @@ def test_encode_decode(content, mode):
     assert content == decode(qr)
 
 
-@pytest.mark.skipif(IS_MUSL, reason="zbar does not support latin1 with musl")  # See <https://github.com/heuer/segno/issues/134>
-def test_encode_decode_latin1():
+@pytest.mark.skipif(IS_MUSL, reason="zbar does not support latin1 with musl")
+def test_encode_decode_latin1():  # See <https://github.com/heuer/segno/issues/134>
     content = 'Märchenbücher'
     qr = segno.make_qr(content)
     assert 'byte' == qr.mode
@@ -78,7 +78,6 @@ def test_pyqrcode_issue76():
     qr = segno.make(content.encode('utf-8'), micro=False)
     assert 'byte' == qr.mode
     assert content == decode(qr)
-
 
 
 if __name__ == '__main__':
