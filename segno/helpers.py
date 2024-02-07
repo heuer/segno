@@ -15,7 +15,6 @@ To create a (Micro) QR code which should use a specific error correction level
 or version etc., use the "_data" factory functions which return a string which
 can be used as input for :py:func:`segno.make()`.
 """
-from __future__ import absolute_import, unicode_literals
 import re
 import decimal
 import segno

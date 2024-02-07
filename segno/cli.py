@@ -12,7 +12,6 @@ Command line script to generate (Micro) QR codes with Segno.
 
 "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.
 """
-from __future__ import absolute_import, unicode_literals
 import os
 import sys
 import argparse
