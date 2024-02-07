@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.6.1 -- 2024-mm--dd
+--------------------
+* Switched from setuptools to flit for setup
+* Updated test suite to work with musl based distributions
+
+
 1.6.0 -- 2023-11-28
 -------------------
 * Dropped Python 2.7 support
