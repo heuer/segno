@@ -39,7 +39,6 @@ Contents
     man/index
     plugins
     api
-    python2
     changes
 
 
