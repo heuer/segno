@@ -88,8 +88,8 @@ The library is also available at `conda-forge <https://conda-forge.org/>`_
     $ conda install -c conda-forge segno
 
 
-Debian 11 / Bullseye
-^^^^^^^^^^^^^^^^^^^^
+Debian
+^^^^^^
 
 ::
 
