@@ -74,9 +74,9 @@ def make_wifi_data(ssid, password=None, security=None, hidden=False):
     data = 'WIFI:'
     if security:
         data += 'T:{0};'.format(security.upper() if security != 'nopass' else security)
-    data += 'S:{0};'.format(escape(ssid))
+    data += f'S:{escape(ssid)};'
     if password is not None:
-        data += 'P:{0};'.format(escape(password))
+        data += f'P:{escape(password)};'
     data += 'H:true;' if hidden else ';'
     return data
 
@@ -148,27 +148,27 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
         return ['{0}:{1};'.format(name, escape(i)) for i in val]
 
     escape = _escape_mecard
-    data = ['MECARD:N:{0};'.format(escape(name))]
+    data = [f'MECARD:N:{escape(name)};']
     if reading:
-        data.append('SOUND:{0};'.format(escape(reading)))
+        data.append(f'SOUND:{escape(reading)};')
     data.extend(make_multifield('TEL', phone))
     data.extend(make_multifield('TELAV', videophone))
     data.extend(make_multifield('EMAIL', email))
     if nickname:
-        data.append('NICKNAME:{0};'.format(escape(nickname)))
+        data.append(f'NICKNAME:{escape(nickname)};')
     if birthday:
         try:
             birthday = birthday.strftime('%Y%m%d')
         except AttributeError:
             pass
-        data.append('BDAY:{0};'.format(birthday))
+        data.append(f'BDAY:{birthday};')
     data.extend(make_multifield('URL', url))
     adr_properties = (pobox, roomno, houseno, city, prefecture, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
         data.append('ADR:{0},{1},{2},{3},{4},{5},{6};'.format(*adr_data))
     if memo:
-        data.append('MEMO:{0};'.format(escape(memo)))
+        data.append(f'MEMO:{escape(memo)};')
     data.append(';')
     return ''.join(data)
 
@@ -302,8 +302,8 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
 
     escape = _escape_vcard
     data = ['BEGIN:VCARD', 'VERSION:3.0',
-            'N:{0}'.format(name),
-            'FN:{0}'.format(escape(displayname))]
+            f'N:{name}',
+            f'FN:{escape(displayname)}']
     if org:
         data.append('ORG:{0}'.format(escape(org)))
     data.extend(make_multifield('EMAIL', email))
@@ -317,7 +317,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     data.extend(make_multifield('TITLE', title))
     data.extend(make_multifield('PHOTO;VALUE=uri', photo_uri))
     if nickname:
-        data.append('NICKNAME:{0}'.format(escape(nickname)))
+        data.append(f'NICKNAME:{escape(nickname)}')
     adr_properties = (pobox, street, city, region, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
@@ -329,15 +329,15 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             pass
         if not isinstance(birthday, str) or not _looks_like_datetime(birthday):
             raise ValueError('"birthday" does not seem to be a valid date or date/time representation')
-        data.append('BDAY:{0}'.format(birthday))
+        data.append(f'BDAY:{birthday}')
     if lat and not lng or lng and not lat:
         raise ValueError('Incomplete geo information, please specify latitude and longitude.')
     if lat and lng:
-        data.append('GEO:{0};{1}'.format(lat, lng))
+        data.append(f'GEO:{lat};{lng}')
     if source:
-        data.append('SOURCE:{0}'.format(escape(source)))
+        data.append(f'SOURCE:{escape(source)}')
     if memo:
-        data.append('NOTE:{0}'.format(escape(memo)))
+        data.append(f'NOTE:{escape(memo)}')
     if rev:
         try:
             rev = rev.strftime('%Y-%m-%d')
@@ -345,7 +345,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             pass
         if not isinstance(rev, str) or not _looks_like_datetime(rev):
             raise ValueError('"rev" does not seem to be a valid date or date/time representation')
-        data.append('REV:{0}'.format(rev))
+        data.append(f'REV:{rev}')
     data.append('END:VCARD')
     data.append('')
     return '\r\n'.join(data)
@@ -444,7 +444,7 @@ def make_geo_data(lat, lng):
     def float_to_str(f):
         return '{0:.8f}'.format(f).rstrip('0').rstrip('.')
 
-    return 'geo:{0},{1}'.format(float_to_str(lat), float_to_str(lng))
+    return f'geo:{float_to_str(lat)},{float_to_str(lng)}'
 
 
 def make_geo(lat, lng):
