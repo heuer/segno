@@ -161,7 +161,7 @@ def build_release(session):
     Builds a release: Creates sdist and wheel
     """
     version = _validate_version(session)
-    session.install('build', 'wheel')
+    session.install('build', 'wheel', 'flit-core')
     git = partial(session.run, 'git', external=True)
     git('fetch')
     git('fetch', '--tags')
