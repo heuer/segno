@@ -1,8 +1,8 @@
 Changes
 =======
 
-1.6.1 -- 2024-mm--dd
---------------------
+1.6.1 -- 2024-02-08
+-------------------
 * Switched from setuptools to flit for setup
 * Updated test suite to work with musl based distributions
 
