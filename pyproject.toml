@@ -59,7 +59,7 @@ include = ["docs/", "tests/",
            "noxfile.py", 
            "MANIFEST.in", 
            "pyproject.toml"]
-exclude = [".github", ".*"]
+exclude = [".github", ".*", "sandbox/*"]
 
 
 [tool.flit.external-data]
