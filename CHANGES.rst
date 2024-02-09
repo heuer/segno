@@ -1,6 +1,12 @@
 Changes
 =======
 
+1.6.2 -- 2024-mm-dd
+-------------------
+* Fixed packaging: include man page, source distribution did not
+  contain all relevant files such as docs and test suite.
+
+
 1.6.1 -- 2024-02-08
 -------------------
 * Switched from setuptools to flit for setup
