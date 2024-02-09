@@ -167,7 +167,7 @@ def build_release(session):
     git('fetch', '--tags')
     git('checkout', version)
     shutil.rmtree('dist', ignore_errors=True)
-    session.run('flit', 'build')
+    session.run('flit', 'build', external=True)
     git('checkout', 'master')
 
 

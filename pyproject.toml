@@ -59,6 +59,8 @@ include = ["docs/", "tests/",
            "noxfile.py", 
            "MANIFEST.in", 
            "pyproject.toml"]
+exclude = [".github", ".*"]
+
 
 [tool.flit.external-data]
 directory = "data"
