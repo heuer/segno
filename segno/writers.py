@@ -102,7 +102,7 @@ def colorful(dark, light):
 def _valid_width_height_and_border(matrix_size, scale, border):
     """"\
     Validates the scale and border and returns the width, height and the border.
-    If the border is ``None´` the default border is returned.
+    If the border is ``None`` the default border is returned.
 
     :param tuple(int, int) matrix_size: Tuple of width and height of the matrix.
     """
