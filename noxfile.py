@@ -50,7 +50,7 @@ def docs(session):
     import segno
     if 'dev' not in segno.__version__:
         shutil.copyfile(os.path.join(man, 'segno.1'),
-                        os.path.abspath(os.path.join(os.path.dirname(__file__), 'man', 'segno.1')))
+                        os.path.abspath(os.path.join(os.path.dirname(__file__), 'data/share/man/man1/', 'segno.1')))
         session.log("'man/segno.1' has been modified, don't forget to commit")
 
 
@@ -161,13 +161,13 @@ def build_release(session):
     Builds a release: Creates sdist and wheel
     """
     version = _validate_version(session)
-    session.install('build', 'wheel', 'flit-core')
+    session.install('flit-core')
     git = partial(session.run, 'git', external=True)
     git('fetch')
     git('fetch', '--tags')
     git('checkout', version)
     shutil.rmtree('dist', ignore_errors=True)
-    session.run('python', '-m', 'build', '--no-isolation')
+    session.run('flit', 'build')
     git('checkout', 'master')
 
 

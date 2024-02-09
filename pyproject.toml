@@ -52,6 +52,14 @@ exclude_also = [
     "if __name__ == .__main__.:",
 ]
 
+[tool.flit.sdist]
+include = ["docs/", "tests/", 
+           "LICENSE", 
+           "*.rst",  # CHANGES and README
+           "noxfile.py", 
+           "MANIFEST.in", 
+           "pyproject.toml"]
+
 [tool.flit.external-data]
-"share/man/man1" = "man/segno.1"
+directory = "data"
 
