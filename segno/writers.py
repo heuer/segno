@@ -512,9 +512,7 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
         Returns a PNG chunk with checksum.
         """
         chunk_head = name + data
-        # See <https://docs.python.org/2/library/zlib.html#zlib.crc32>
-        # why crc32() & 0xFFFFFFFF is necessary
-        return pack(b'>I', len(data)) + chunk_head + pack(b'>I', zlib.crc32(chunk_head) & 0xFFFFFFFF)
+        return pack(b'>I', len(data)) + chunk_head + pack(b'>I', zlib.crc32(chunk_head))
 
     def scale_row_x_axis(row):
         """\
