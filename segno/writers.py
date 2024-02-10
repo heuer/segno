@@ -420,10 +420,10 @@ def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
     with writable(out, 'wt') as f:
         writeline = partial(write_line, f.write)
         writeline('%!PS-Adobe-3.0 EPSF-3.0')
-        writeline('%%Creator: {0}'.format(CREATOR))
-        writeline('%%CreationDate: {0}'.format(time.strftime("%Y-%m-%d %H:%M:%S")))
+        writeline(f'%%Creator: {CREATOR}')
+        writeline(f'%%CreationDate: {time.strftime("%Y-%m-%d %H:%M:%S")}')
         writeline('%%DocumentData: Clean7Bit')
-        writeline('%%BoundingBox: 0 0 {0} {1}'.format(width, height))
+        writeline(f'%%BoundingBox: 0 0 {width} {height}')
         # Write the shortcuts
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
@@ -447,11 +447,11 @@ def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
         # are more compact and IMO nicer; so the 1st coordinate is absolute, all
         # other coordinates are relative
         (x1, y1), (x2, y2) = next(line_iter)
-        coord = ['{0} {1} moveto {2} 0 l'.format(x1, y1, x2 - x1)]
+        coord = [f'{x1} {y1} moveto {x2 - x1} 0 l']
         append_coord = coord.append
         x = x2
         for (x1, y1), (x2, y2) in line_iter:
-            append_coord(' {0} {1} m {2} 0 l'.format(x1 - x, int(y1 - y), x2 - x1))
+            append_coord(f' {x1 - x} {int(y1 - y)} m {x2 - x1} 0 l')
             x, y = x2, y2
         writeline(''.join(coord))
         writeline('stroke')
@@ -513,12 +513,6 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
         """
         chunk_head = name + data
         return pack(b'>I', len(data)) + chunk_head + pack(b'>I', zlib.crc32(chunk_head))
-
-    def scale_row_x_axis(row):
-        """\
-        Returns each pixel `scale` times.
-        """
-        return chain(*(repeat(b, scale) for b in row))
 
     def scanline(row, filter_type=b'\0'):
         """\
@@ -599,7 +593,7 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
     if scale > 1:
         # 2 == PNG Filter "Up"  <https://www.w3.org/TR/PNG/#9-table91>
         same_as_above = scanline(repeat(0x0, width), filter_type=b'\2') * (scale - 1)
-        miter = map(scale_row_x_axis, miter)
+        miter = (chain(*(repeat(b, scale) for b in row)) for row in miter)
     idat = bytearray(horizontal_border)
     for row in miter:
         # Chain precalculated left border with row and right border
@@ -846,13 +840,13 @@ def write_pam(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
     with writable(out, 'wb') as f:
         write = f.write
         write('P7\n'
-              '# Created by {0}\n'
-              'WIDTH {1}\n'
-              'HEIGHT {2}\n'
-              'DEPTH {3}\n'
-              'MAXVAL {4}\n'
-              'TUPLTYPE {5}\n'
-              'ENDHDR\n'.format(CREATOR, width, height, depth, maxval, tuple_type).encode('ascii'))
+              f'# Created by {CREATOR}\n'
+              f'WIDTH {width}\n'
+              f'HEIGHT {height}\n'
+              f'DEPTH {depth}\n'
+              f'MAXVAL {maxval}\n'
+              f'TUPLTYPE {tuple_type}\n'
+              'ENDHDR\n'.encode('ascii'))
         for row in row_iter:
             write(row_filter(row))
 
@@ -881,8 +875,7 @@ def write_ppm(matrix, matrix_size, out, colormap, scale=1, border=None):
     row_iter = matrix_iter_verbose(matrix, matrix_size, scale, border)
     with writable(out, 'wb') as f:
         write = f.write
-        write('P6 # Created by {0}\n{1} {2} 255\n'
-              .format(CREATOR, width, height).encode('ascii'))
+        write(f'P6 # Created by {CREATOR}\n{width} {height} 255\n'.encode('ascii'))
         for row in row_iter:
             write(b''.join(pack(b'>3B', *colormap[mt]) for mt in row))
 
@@ -915,11 +908,11 @@ def write_xpm(matrix, matrix_size, out, scale=1, border=None, dark='#000',
     bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
         write = f.write
-        write('/* XPM */\n'
-              'static char *{0}[] = {{\n'
-              '"{1} {2} 2 1",\n'
-              '"  c {3}",\n'
-              '"X c {4}",\n'.format(name, width, height, bg_color, stroke_color))
+        write(f'/* XPM */\n'
+              f'static char *{name}[] = {{\n'
+              f'"{width} {height} 2 1",\n'
+              f'"  c {bg_color}",\n'
+              f'"X c {stroke_color}",\n')
         for i, row in enumerate(row_iter):
             write(''.join(chain(['"'], (' ' if not b else 'X' for b in row),
                                 ['"{0}\n'.format(',' if i < height - 1 else '')])))
