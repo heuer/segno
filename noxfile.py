@@ -19,7 +19,7 @@ import nox
 _PY_VERSIONS = ('3.5', '3.6', '3.7', '3.8', '3.9', '3.10', '3.11', '3.12', 'pypy3')
 _PY_DEFAULT_VERSION = sys.version[:4]
 
-nox.options.sessions = chain(['test-{}'.format(version) for version in _PY_VERSIONS], ['coverage', 'lint'])
+nox.options.sessions = chain([f'test-{version}' for version in _PY_VERSIONS], ['coverage', 'lint'])
 
 
 @nox.session(python=_PY_VERSIONS)
@@ -29,7 +29,10 @@ def test(session):
     """
     session.install('-Ur', 'tests/requirements.txt')
     session.install('.')
-    session.run('py.test')
+    if session.posargs:
+        session.run('pytest', *[f'tests/{test_file}' for test_file in session.posargs])
+    else:
+        session.run('pytest')
 
 
 @nox.session(python=_PY_DEFAULT_VERSION)
@@ -113,20 +116,21 @@ def start_release(session):
     git('checkout', 'master')
     prev_version = _get_current_version(session)
     version = _validate_version(session)
-    valid_version = bool(int(session.run('python', '-c', 'from packaging.version import parse;'
-                                                         'prev_version = parse("{0}");'
-                                                         'next_version = parse("{1}");'
-                                                         'print(1 if prev_version < next_version else 0)'
-                                         .format(prev_version, version), silent=True)))
+    valid_version = bool(int(session.run('python', '-c', 
+                                            'from packaging.version import parse;'
+                                            f'prev_version = parse("{prev_version}");'
+                                            f'next_version = parse("{version}");'
+                                            'print(1 if prev_version < next_version else 0)', 
+                                         silent=True)))
     if not valid_version:
         session.error('Invalid version')
-    release_branch = 'release-{}'.format(version)
+    release_branch = f'release-{version}'
     git('checkout', '-b', release_branch, 'master')
     _change_version(session, prev_version, version)
     git('add', 'segno/__init__.py')
-    session.log('Now on branch "{}". Run the tests, run nox -e docs. Update and add CHANGES'.format(release_branch))
+    session.log(f'Now on branch "{release_branch}". Run the tests, run nox -e docs. Update and add CHANGES')
     session.log('Commit any changes.')
-    session.log('When done, call nox -e finish-release -- {}'.format(version))
+    session.log(f'When done, call nox -e finish-release -- {version}')
 
 
 @nox.session(name='finish-release', python=_PY_DEFAULT_VERSION)
@@ -139,11 +143,11 @@ def finish_release(session):
     * Increments the development version
     """
     version = _validate_version(session)
-    release_branch = 'release-{}'.format(version)
+    release_branch = f'release-{version}'
     git = partial(session.run, 'git', external=True)
     git('checkout', 'master')
-    git('merge', '--no-ff', release_branch, '-m', 'Merge release branch {}'.format(release_branch))
-    git('tag', '-a', version, '-m', 'Release {}'.format(version))
+    git('merge', '--no-ff', release_branch, '-m', f'Merge release branch {release_branch}')
+    git('tag', '-a', version, '-m', f'Release {version}')
     git('branch', '-d', release_branch)
     version_parts = version.split('.')
     patch = str(int(version_parts[2]) + 1)
@@ -152,7 +156,7 @@ def finish_release(session):
     git('add', 'segno/__init__.py')
     git('commit', '-m', 'Incremented development version')
     session.log('Finished. Run git push / git push origin --tags and '
-                'nox -e build-release -- {} / nox -e upload-release'.format(version))
+                f'nox -e build-release -- {version} / nox -e upload-release')
 
 
 @nox.session(name='build-release', python=_PY_DEFAULT_VERSION)
