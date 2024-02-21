@@ -71,12 +71,11 @@ def coverage(session):
 @nox.session(python=_PY_DEFAULT_VERSION)
 def lint(session):
     """\
-    Run flake8
+    Run linters.
     """
-    session.install('flake8', 'mypy')
+    session.install('ruff', 'mypy')
     session.run('mypy', 'segno')
-    session.run('flake8', 'segno')
-    session.run('flake8', 'tests')
+    session.run('ruff', '.')
 
 
 @nox.session(python=_PY_DEFAULT_VERSION)

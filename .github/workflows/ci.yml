@@ -24,7 +24,7 @@ jobs:
               run: |
                   sudo apt -y install libzbar0
                   pip install -r tests/requirements.txt
-                  pip install flake8
+                  pip install ruff
                   pip install mypy
             - name: Run tests
               run: |
@@ -32,6 +32,5 @@ jobs:
             - name: Run lint tests
               if: ${{ matrix.python-version == '3.12' }}
               run: |
-                  flake8 segno
-                  flake8 tests/
+                  ruff .
                   mypy segno
