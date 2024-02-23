@@ -462,7 +462,7 @@ def as_png_data_uri(matrix, matrix_size, scale=1, border=None, compresslevel=9, 
     """
     buff = io.BytesIO()
     write_png(matrix, matrix_size, buff, scale=scale, border=border, compresslevel=compresslevel, **kw)
-    return f'data:image/png;base64,{base64.b64encode(buff.getvalue()).decode('ascii')}'
+    return f'data:image/png;base64,{base64.b64encode(buff.getvalue()).decode("ascii")}'
 
 
 @colorful(dark='#000', light='#fff')
