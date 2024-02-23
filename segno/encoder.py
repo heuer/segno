@@ -1286,7 +1286,7 @@ def get_error_name(error_const):
     for name, val in consts.ERROR_MAPPING.items():
         if val == error_const:
             return name
-    raise ValueError('Unknown error level "{error_const}"')
+    raise ValueError(f'Unknown error level "{error_const}"')
 
 
 def get_version_name(version_const):
