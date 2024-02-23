@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 PNG related tests.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import os
 import re
@@ -218,7 +216,7 @@ def _make_pixel_array(pixels, is_greyscale):
         elif rgb == (255, 255, 255):
             return 1
         else:
-            raise ValueError('Unexpected RGB tuple: {0})'.format(rgb))
+            raise ValueError(f'Unexpected RGB tuple: {rgb})')
     res = []
     if is_greyscale:
         res = [list(row[:]) for row in pixels]
@@ -233,7 +231,7 @@ def _get_reference_filename(filename):
     """\
     Returns an absolute path to the "reference" filename.
     """
-    return os.path.join(os.path.dirname(__file__), 'ref/{0}'.format(filename))
+    return os.path.join(os.path.dirname(__file__), f'ref/{filename}')
 
 
 def _get_png_info(**kw):

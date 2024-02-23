@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -115,11 +114,11 @@ def start_release(session):
     git('checkout', 'master')
     prev_version = _get_current_version(session)
     version = _validate_version(session)
-    valid_version = bool(int(session.run('python', '-c', 
+    valid_version = bool(int(session.run('python', '-c',
                                             'from packaging.version import parse;'
                                             f'prev_version = parse("{prev_version}");'
                                             f'next_version = parse("{version}");'
-                                            'print(1 if prev_version < next_version else 0)', 
+                                            'print(1 if prev_version < next_version else 0)',
                                          silent=True)))
     if not valid_version:
         session.error('Invalid version')
@@ -192,7 +191,7 @@ def _validate_version(session):
         session.error('Too many arguments')
     version = session.posargs[0]
     if not re.match(r'^[0-9]+\.[0-9]+\.[0-9]+$', version):
-        session.error('Invalid version number: "{}"'.format(version))
+        session.error(f'Invalid version number: "{version}"')
     return version
 
 
@@ -201,7 +200,7 @@ def _get_current_version(session):
     Returns the current Segno version.
     """
     fn = os.path.abspath(os.path.join(os.path.dirname(__file__), 'segno/__init__.py'))
-    with open(fn, 'r', encoding='utf-8') as f:
+    with open(fn, encoding='utf-8') as f:
         content = f.read()
     m = re.search(r'^__version__ = ["\']([^"\']+)["\']$', content, flags=re.MULTILINE)
     if m:
@@ -214,15 +213,13 @@ def _change_version(session, previous_version, next_version):
     Changes the segno.__init__.__version__ from previous_version to next_version.
     """
     fn = os.path.abspath(os.path.join(os.path.dirname(__file__), 'segno/__init__.py'))
-    with open(fn, 'r', encoding='utf-8') as f:
+    with open(fn, encoding='utf-8') as f:
         content = f.read()
-    new_content = re.sub(r'^(__version__ = ["\'])({0})(["\'])$'
-                         .format(re.escape(previous_version)),
-                         r'\g<1>{}\g<3>'.format(next_version), content,
+    new_content = re.sub(rf'^(__version__ = ["\'])({re.escape(previous_version)})(["\'])$',
+                         rf'\g<1>{next_version}\g<3>', content,
                          flags=re.MULTILINE)
     if content != new_content:
         with open(fn, 'w', encoding='utf-8') as f:
             f.write(new_content)
         return
-    session.error('Cannot modify version. Provided: "{}" (previous) "{}" (next)'
-                  .format(previous_version, next_version))
+    session.error(f'Cannot modify version. Provided: "{previous_version}" (previous) "{next_version}" (next)')

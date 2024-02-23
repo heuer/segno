@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Tests against the encoder module.
 """
-from __future__ import absolute_import, unicode_literals
 import pytest
 import segno
 from segno import consts
@@ -35,7 +33,7 @@ _DATA_AUTODETECT = (
     ('茗', 'kanji'),
     ('漢字', 'kanji'),
     ('外来語', 'kanji'),
-    ('外来語'.encode('utf-8'), 'byte'),
+    ('外来語'.encode(), 'byte'),
 )
 
 

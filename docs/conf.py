@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # segno documentation build configuration file
 #

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -429,7 +428,7 @@ def test_scale_float():
     root = _parse_xml(svg)
     path = _get_first_path(root)
     assert path is not None
-    assert 'scale({0})'.format(scale) in path.attrib['transform']
+    assert f'scale({scale})' in path.attrib['transform']
 
 
 def test_unit_omitsize():

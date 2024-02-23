@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -9,7 +8,6 @@
 Utility functions for test cases.
 """
 import os
-import io
 
 
 def matrix_looks_valid(matrix):
@@ -29,7 +27,7 @@ def matrix_looks_valid(matrix):
         return True, ''
     msg = 'Invalid values: '
     for i, j, bit in invalid_values:
-        msg += '\nrow: {0}, col {1}, value: {2}'.format(i, j, bit)
+        msg += f'\nrow: {i}, col {j}, value: {bit}'
     return False, msg
 
 
@@ -41,7 +39,7 @@ def read_matrix(name):
     :return: A tuple of bytearrays
     """
     matrix = []
-    with io.open(os.path.join(os.path.dirname(__file__), 'ref_matrix/{0}.txt'.format(name)), 'rt') as f:
+    with open(os.path.join(os.path.dirname(__file__), f'ref_matrix/{name}.txt')) as f:
         for row in f:
             matrix.append(bytearray([int(i) for i in row if i != '\n']))
     return tuple(matrix), len(matrix[0]), len(matrix[1])

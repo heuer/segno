@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -9,7 +8,6 @@
 Test against issue #4.
 <https://github.com/heuer/segno/issues/4>
 """
-from __future__ import unicode_literals, absolute_import
 from segno import consts, encoder
 
 

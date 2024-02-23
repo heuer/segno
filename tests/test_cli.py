@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Tests against the command line script.
 """
-from __future__ import absolute_import, unicode_literals
 import os
 import io
 import tempfile
@@ -282,7 +280,7 @@ def test_dark():
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
 def test_dark_transparent(arg):
-    args = cli.parse(['--dark={}'.format(arg), '-output=x.png', ''])
+    args = cli.parse([f'--dark={arg}', '-output=x.png', ''])
     assert args.dark == arg
     assert cli.build_config(args)['dark'] is None
 
@@ -294,7 +292,7 @@ def test_light():
 
 @pytest.mark.parametrize('arg', ['transparent', 'trans'])
 def test_light_transparent(arg):
-    args = cli.parse(['--light={}'.format(arg), '-output=x.png', ''])
+    args = cli.parse([f'--light={arg}', '-output=x.png', ''])
     assert args.light == arg
     assert cli.build_config(args)['light'] is None
 
@@ -322,7 +320,7 @@ def test_error_code():
                                                  ('tex', '% Creator: ', 'rt'),
                                                  ])
 def test_output(arg, ext, expected, mode):
-    f = tempfile.NamedTemporaryFile('w', suffix='.{0}'.format(ext),
+    f = tempfile.NamedTemporaryFile('w', suffix=f'.{ext}',
                                     delete=False)
     f.close()
     try:
@@ -490,14 +488,14 @@ def _parse_xml(buff):
 
 def test_svgclass3():
     fname = _make_tmp_svg_filename()
-    res = cli.main(['--output={0}'.format(fname), 'test'])
+    res = cli.main([f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
     root = _parse_xml(data)
     assert root is not None
     assert root.get('class') is not None
-    res = cli.main(['--svgclass', '', '--output={0}'.format(fname), 'test'])
+    res = cli.main(['--svgclass', '', f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -521,7 +519,7 @@ def test_svg_lineclass2():
 
 def test_lineclass3():
     fname = _make_tmp_svg_filename()
-    res = cli.main(['--output={0}'.format(fname), 'test'])
+    res = cli.main([f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -530,7 +528,7 @@ def test_lineclass3():
     path = root[0]
     assert path is not None
     assert path.get('class') is not None
-    res = cli.main(['--lineclass', '', '--output={0}'.format(fname), 'test'])
+    res = cli.main(['--lineclass', '', f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -587,7 +585,7 @@ def test_draw_transparent():
     fname = _make_tmp_svg_filename()
     res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
                     '--align-light=yellow', '--quiet-zone=yellow',
-                    '--output={0}'.format(fname), 'test'])
+                    f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -596,7 +594,7 @@ def test_draw_transparent():
     assert 3 == len(paths)
     res = cli.main(['--dark=green', '--finder-dark=green', '--dark-module=blue',
                     '--align-light=yellow', '--quiet-zone=yellow',
-                    '--draw-transparent', '--output={0}'.format(fname), 'test'])
+                    '--draw-transparent', f'--output={fname}', 'test'])
     assert 0 == res
     with open(fname, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -617,7 +615,7 @@ def test_png_svg_command():
 def test_output_svgz():
     f = tempfile.NamedTemporaryFile('w', suffix='.svgz', delete=False)
     f.close()
-    res = cli.main(['--scale=10', '--dark=red', '--output={0}'.format(f.name),
+    res = cli.main(['--scale=10', '--dark=red', f'--output={f.name}',
                     'test'])
     assert 0 == res
     with gzip.open(f.name) as f:

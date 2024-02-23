@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 PNG related tests.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno

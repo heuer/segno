@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Different output tests.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno
@@ -90,7 +88,7 @@ def test_data(kind, buffer_factory, to_matrix_func, data, error, border, kw):
     for i, row in enumerate(qr.matrix):
         exptected_row = bytearray(matrix[i])
         assert len(row) == len(exptected_row)
-        assert exptected_row == row, 'Error in row {0}'.format(i)
+        assert exptected_row == row, f'Error in row {i}'
 
 
 if __name__ == '__main__':

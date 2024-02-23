@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 SVG related tests.
 """
-from __future__ import absolute_import, unicode_literals
 import os
 import re
 import io
@@ -490,7 +488,7 @@ def test_scale_float():
     root = _parse_xml(out)
     path = _get_first_path(root)
     assert path is not None
-    assert 'scale({0})'.format(scale) in path.attrib['transform']
+    assert f'scale({scale})' in path.attrib['transform']
 
 
 def test_unit_omitsize():
@@ -580,7 +578,7 @@ def svg_as_matrix(buff, border):
     h = root.attrib['height']
     w = root.attrib['width']
     if h != w:
-        raise ValueError('Expected equal height/width, got height="{}" width="{}"'.format(h, w))
+        raise ValueError(f'Expected equal height/width, got height="{h}" width="{w}"')
     size = int(w) - 2 * border
     d = path.attrib['d']
     res = []
@@ -605,7 +603,7 @@ def svg_as_matrix(buff, border):
         elif op == 'M':
             absolute_x = length
             if x != border:
-                raise ValueError('Unexpected border width. Expected "{}", got "{}"'.format(border, x))
+                raise ValueError(f'Unexpected border width. Expected "{border}", got "{x}"')
         res_row.extend([1] * length)
     res_row.extend([0] * (size - len(res_row)))
     return res

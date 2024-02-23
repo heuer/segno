@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -10,7 +9,6 @@ Test against issue <https://github.com/pyqrcode/pyqrcodeNG/issues/15>.
 
 Adapted for Segno to check if it suffers from the same problem.
 """
-from __future__ import absolute_import, unicode_literals
 import pytest
 import segno
 

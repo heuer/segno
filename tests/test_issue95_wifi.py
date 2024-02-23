@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -27,7 +26,6 @@ copyrighted by ZXing authors:
  See the License for the specific language governing permissions and
  limitations under the License.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno

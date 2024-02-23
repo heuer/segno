@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -176,8 +175,8 @@ def write_svg(matrix, matrix_size, out, colormap, scale=1, border=None, xmldecl=
     width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     unit = unit or ''
     if unit and omitsize:
-        raise ValueError('The unit "{}" has no effect if the size '
-                         '(width and height) is omitted.'.format(unit))
+        raise ValueError(f'The unit "{unit}" has no effect if the size '
+                         '(width and height) is omitted.')
     omit_encoding = encoding is None
     if omit_encoding:
         encoding = 'utf-8'
@@ -207,9 +206,9 @@ def write_svg(matrix, matrix_size, out, colormap, scale=1, border=None, xmldecl=
         except KeyError:
             pass
     paths = {}
-    scale_info = ' transform="scale({})"'.format(scale) if scale != 1 else ''
+    scale_info = f' transform="scale({scale})"' if scale != 1 else ''
     p = '<path{}{}'.format(scale_info if not need_svg_group else '',
-                           '' if not lineclass else ' class={}'.format(quoteattr(lineclass)))
+                           '' if not lineclass else f' class={quoteattr(lineclass)}')
     for color, coord in coordinates.items():
         path = p
         clr = svg_color(color)
@@ -217,9 +216,9 @@ def write_svg(matrix, matrix_size, out, colormap, scale=1, border=None, xmldecl=
             opacity = None
             if isinstance(clr, tuple):
                 clr, opacity = clr
-            path += ' stroke={}'.format(quoteattr(clr))
+            path += f' stroke={quoteattr(clr)}'
             if opacity is not None:
-                path += ' stroke-opacity={}'.format(quoteattr(str(opacity)))
+                path += f' stroke-opacity={quoteattr(str(opacity))}'
         path += ' d="'
         path += ''.join('{moveto}{x} {y}h{l}'.format(moveto=('m' if i > 0 else 'M'),
                                                      x=x, l=length,
@@ -234,33 +233,33 @@ def write_svg(matrix, matrix_size, out, colormap, scale=1, border=None, xmldecl=
         k = colormap[consts.TYPE_QUIET_ZONE]
         paths[k] = re.sub(r'\sclass="[^"]+"', '',
                           paths[k].replace('stroke', 'fill')
-                                  .replace('"/>', 'v{0}h-{1}z"/>'.format(height // scale, width // scale)))
+                                  .replace('"/>', f'v{height // scale}h-{width // scale}z"/>'))
     svg = ''
     if xmldecl:
         svg += '<?xml version="1.0"'
         if not omit_encoding:
-            svg += ' encoding={}'.format(quoteattr(encoding))
+            svg += f' encoding={quoteattr(encoding)}'
         svg += '?>\n'
     svg += '<svg'
     if svgns:
         svg += ' xmlns="http://www.w3.org/2000/svg"'
     if svgversion is not None and svgversion < 2.0:
-        svg += ' version={}'.format(quoteattr(str(svgversion)))
+        svg += f' version={quoteattr(str(svgversion))}'
     if not omitsize:
-        svg += ' width="{0}{2}" height="{1}{2}"'.format(width, height, unit)
+        svg += f' width="{width}{unit}" height="{height}{unit}"'
     if omitsize or unit:
-        svg += ' viewBox="0 0 {} {}"'.format(width, height)
+        svg += f' viewBox="0 0 {width} {height}"'
     if svgid:
-        svg += ' id={}'.format(quoteattr(svgid))
+        svg += f' id={quoteattr(svgid)}'
     if svgclass:
-        svg += ' class={}'.format(quoteattr(svgclass))
+        svg += f' class={quoteattr(svgclass)}'
     svg += '>'
     if title is not None:
-        svg += '<title>{}</title>'.format(escape(title))
+        svg += f'<title>{escape(title)}</title>'
     if desc is not None:
-        svg += '<desc>{}</desc>'.format(escape(desc))
+        svg += f'<desc>{escape(desc)}</desc>'
     if need_svg_group:
-        svg += '<g{}>'.format(scale_info)
+        svg += f'<g{scale_info}>'
     svg += ''.join(sorted(paths.values(), key=len))
     if need_svg_group:
         svg += '</g>'
@@ -304,11 +303,8 @@ def as_svg_data_uri(matrix, matrix_size, scale=1, border=None,
               svgns=svgns, title=title, desc=desc, svgclass=svgclass,
               lineclass=lineclass, omitsize=omitsize, encoding=encoding,
               svgid=svgid, unit=unit, svgversion=svgversion, nl=nl, **kw)
-    return 'data:image/svg+xml{0},{1}' \
-           .format(';charset=' + encoding if not omit_charset else '',
-                   # Replace " quotes with ' and URL encode the result
-                   # See also https://codepen.io/tigt/post/optimizing-svgs-in-data-uris
-                   encode(_replace_quotes(buff.getvalue())))
+    return f'data:image/svg+xml{(";charset=" + encoding if not omit_charset else "")},' \
+           + encode(_replace_quotes(buff.getvalue()))
 
 
 def write_svg_debug(matrix, matrix_size, out, scale=15, border=None,
@@ -350,10 +346,10 @@ def write_svg_debug(matrix, matrix_size, out, scale=15, border=None,
         legend = []
         write = f.write
         write('<?xml version="1.0" encoding="utf-8"?>\n')
-        write('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {0} {1}">'.format(width, height))
+        write(f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">')
         write('<style type="text/css"><![CDATA[ text { font-size: 1px; '
               'font-family: Helvetica, Arial, sans; } ]]></style>')
-        write('<g transform="scale({0})">'.format(scale))
+        write(f'<g transform="scale({scale})">')
         for i in range(matrix_height):
             y = i + border
             for j in range(matrix_width):
@@ -362,10 +358,10 @@ def write_svg_debug(matrix, matrix_size, out, scale=15, border=None,
                 if add_legend and bit not in (0x0, 0x1):
                     legend.append((x, y, bit))
                 fill = clr_mapping.get(bit, fallback_color)
-                write('<rect x="{0}" y="{1}" width="1" height="1" fill="{2}"/>'.format(x, y, fill))
+                write(f'<rect x="{x}" y="{y}" width="1" height="1" fill="{fill}"/>')
         # legend may be empty if add_legend == False
         for x, y, val in legend:
-            write('<text x="{0}" y="{1}">{2}</text>'.format(x + .2, y + .9, val))
+            write(f'<text x="{x + .2}" y="{y + .9}">{val}</text>')
         write('</g></svg>\n')
 
 
@@ -407,8 +403,7 @@ def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
         def to_float(c):
             if isinstance(c, float):
                 if not 0.0 <= c <= 1.0:
-                    raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
-                                     .format(c))
+                    raise ValueError(f'Invalid color "{c}". Not in range 0 .. 1')
                 return c
             return 1 / 255.0 * c if c != 1 else c
 
@@ -428,16 +423,15 @@ def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
         writeline('/m { rmoveto } bind def')
         writeline('/l { rlineto } bind def')
         if light is not None:
-            writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'
-                      .format(*rgb_to_floats(light)))
+            writeline('{0:f} {1:f} {2:f} setrgbcolor clippath fill'.format(*rgb_to_floats(light)))  # noqa UP030
             if stroke_color_is_black:
                 # Reset RGB color back to black iff stroke color is black
                 # In case stroke color != black set the RGB color later
                 writeline('0 0 0 setrgbcolor')
         if not stroke_color_is_black:
-            writeline('{0:f} {1:f} {2:f} setrgbcolor'.format(*stroke_color))
+            writeline('{0:f} {1:f} {2:f} setrgbcolor'.format(*stroke_color))  # noqa UP030
         if scale != 1:
-            writeline('{0} {0} scale'.format(scale))
+            writeline(f'{scale} {scale} scale')
         writeline('newpath')
         # Current pen position y-axis
         # Note: 0, 0 = lower left corner in PS coordinate system
@@ -469,7 +463,7 @@ def as_png_data_uri(matrix, matrix_size, scale=1, border=None,
     """
     buff = io.BytesIO()
     write_png(matrix, matrix_size, buff, scale=scale, border=border, compresslevel=compresslevel, **kw)
-    return 'data:image/png;base64,{0}'.format(base64.b64encode(buff.getvalue()).decode('ascii'))
+    return f'data:image/png;base64,{base64.b64encode(buff.getvalue()).decode('ascii')}'
 
 
 @colorful(dark='#000', light='#fff')
@@ -555,7 +549,7 @@ def write_png(matrix, matrix_size, out, colormap, scale=1, border=None, compress
         palette.sort(key=len, reverse=True)  # RGBA colors first
         if is_transparent:
             png_trans_idx = 0
-            rgb_values = _NAME2RGB.values() if len(palette[1]) == 3 else (clr + (0,) for clr in _NAME2RGB.values())
+            rgb_values = _NAME2RGB.values() if len(palette[1]) == 3 else ((*clr, 0) for clr in _NAME2RGB.values())
             # Choose a random color which becomes transparent.
             transparent_color = next(clr for clr in rgb_values if clr not in palette)
             palette[0] = transparent_color
@@ -659,24 +653,21 @@ def write_pdf(matrix, matrix_size, out, scale=1, border=None, dark='#000',
         def to_float(c):
             if isinstance(c, float):
                 if not 0.0 <= c <= 1.0:
-                    raise ValueError('Invalid color "{0}". Not in range 0 .. 1'
-                                     .format(c))
+                    raise ValueError(f'Invalid color "{c}". Not in range 0 .. 1')
                 return c
             return 1 / 255.0 * c if c != 1 else c
         return tuple([to_float(i) for i in _color_to_rgb(clr)])
 
     width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
-    creation_date = "{0}{1:+03d}'{2:02d}'".format(time.strftime('%Y%m%d%H%M%S'),
-                                                  time.timezone // 3600,
-                                                  abs(time.timezone) % 60)
+    creation_date = f"{time.strftime('%Y%m%d%H%M%S')}{(time.timezone // 3600):+03d}'{(abs(time.timezone) % 60):02d}'"
     cmds = []
     append_cmd = cmds.append
     if scale > 1:
-        append_cmd('{0} 0 0 {0} 0 0 cm'.format(scale))
+        append_cmd(f'{scale} 0 0 {scale} 0 0 cm')
     if light is not None:
         # If the background color is defined, a rect is drawn in the background
         append_cmd('{} {} {} rg'.format(*to_pdf_color(light)))
-        append_cmd('0 0 {} {} re'.format(width, height))
+        append_cmd(f'0 0 {width} {height} re')
         append_cmd('f q')
     # Set the stroke color only iff it is not black (default)
     if not _color_is_black(dark):
@@ -685,10 +676,10 @@ def write_pdf(matrix, matrix_size, out, scale=1, border=None, dark='#000',
     # Note: 0, 0 = lower left corner in PDF coordinate system
     y = get_symbol_size(matrix_size, scale=1, border=0)[1] + border - .5
     # Set the origin in the upper left corner
-    append_cmd('1 0 0 1 {0} {1} cm'.format(border, y))
+    append_cmd(f'1 0 0 1 {border} {y} cm')
     miter = matrix_to_lines(matrix, 0, 0, incby=-1)
     # PDF supports absolute coordinates, only
-    cmds.extend('{0} {1} m {2} {1} l'.format(x1, y1, x2) for (x1, y1), (x2, y2) in miter)
+    cmds.extend(f'{x1} {y1} m {x2} {y1} l' for (x1, y1), (x2, y2) in miter)
     append_cmd('S')
     graphic = zlib.compress((' '.join(cmds)).encode('ascii'), compresslevel)
     with writable(out, 'wb') as f:
@@ -698,11 +689,10 @@ def write_pdf(matrix, matrix_size, out, scale=1, border=None, dark='#000',
         write(b'%PDF-1.4\r%\xE2\xE3\xCF\xD3\r\n')
         for obj in ('obj <</Type /Catalog /Pages 2 0 R>>\r\nendobj\r\n',
                     'obj <</Type /Pages /Kids [3 0 R] /Count 1>>\r\nendobj\r\n',
-                    'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {0} {1}] /Contents 4 0 R>>\r\nendobj\r\n'
-                    .format(width, height),
-                    'obj <</Length {0} /Filter /FlateDecode>>\r\nstream\r\n'.format(len(graphic))):
+                    f'obj <</Type /Page /Parent 2 0 R /MediaBox [0 0 {width} {height}] /Contents 4 0 R>>\r\nendobj\r\n',
+                    f'obj <</Length {len(graphic)} /Filter /FlateDecode>>\r\nstream\r\n'):
             object_pos.append(f.tell())
-            writestr('{0} 0 {1}'.format(len(object_pos), obj))
+            writestr(f'{len(object_pos)} 0 {obj}')
         write(graphic)
         write(b'\r\nendstream\r\nendobj\r\n')
         object_pos.append(f.tell())
@@ -710,11 +700,11 @@ def write_pdf(matrix, matrix_size, out, scale=1, border=None, dark='#000',
                  .format(len(object_pos), creation_date, CREATOR))
         object_pos.append(f.tell())
         xref_location = f.tell()
-        writestr('xref\r\n0 {0}\r\n0000000000 65535 f\r\n'.format(len(object_pos) + 1))
+        writestr(f'xref\r\n0 {len(object_pos) + 1}\r\n0000000000 65535 f\r\n')
         for pos in object_pos:
-            writestr('{0:010d} {1:05d} n\r\n'.format(pos, 0))
-        writestr('trailer <</Size {0}/Root 1 0 R/Info 5 0 R>>\r\n'.format(len(object_pos) + 1))
-        writestr('startxref\r\n{0}\r\n%%EOF\r\n'.format(xref_location))
+            writestr(f'{pos:010d} {0:05d} n\r\n')
+        writestr(f'trailer <</Size {len(object_pos) + 1}/Root 1 0 R/Info 5 0 R>>\r\n')
+        writestr(f'startxref\r\n{xref_location}\r\n%%EOF\r\n')
 
 
 def write_txt(matrix, matrix_size, out, border=None, dark='1', light='0'):
@@ -766,10 +756,9 @@ def write_pbm(matrix, matrix_size, out, scale=1, border=None, plain=False):
     row_iter = matrix_iter(matrix, matrix_size, scale, border)
     with writable(out, 'wb') as f:
         write = f.write
-        write('{0}\n'
-              '# Created by {1}\n'
-              '{2} {3}\n'
-              .format(('P4' if not plain else 'P1'), CREATOR, width, height).encode('ascii'))
+        write(f'{("P4" if not plain else "P1")}\n'
+              f'# Created by {CREATOR}\n'
+              f'{width} {height}\n'.encode('ascii'))
         if not plain:
             for row in row_iter:
                 write(bytearray(pack_row(row)))
@@ -809,7 +798,7 @@ def write_pam(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
         return b''.join(colours[b] for b in row)
 
     if not dark:
-        raise ValueError('Invalid stroke color "{0}"'.format(dark))
+        raise ValueError(f'Invalid stroke color "{dark}"')
     width, height, border = _valid_width_height_and_border(matrix_size, scale, border)
     row_iter = matrix_iter(matrix, matrix_size, scale, border)
     depth, maxval, tuple_type = 1, 1, 'BLACKANDWHITE'
@@ -834,7 +823,7 @@ def write_pam(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
     elif is_rgb:
         maxval = max(chain(stroke_color, bg_color))
         depth = 3 if not transparency else 4
-        fmt = '>{0}B'.format(depth).encode('ascii')
+        fmt = f'>{depth}B'.encode('ascii')
         colours = (pack(fmt, *bg_color), pack(fmt, *stroke_color))
     row_filter = invert_row_bits if colours is None else partial(row_to_color_values, colours=colours)
     with writable(out, 'wb') as f:
@@ -908,14 +897,14 @@ def write_xpm(matrix, matrix_size, out, scale=1, border=None, dark='#000',
     bg_color = color_to_rgb_hex(light) if light is not None else 'None'
     with writable(out, 'wt') as f:
         write = f.write
-        write(f'/* XPM */\n'
+        write('/* XPM */\n'
               f'static char *{name}[] = {{\n'
               f'"{width} {height} 2 1",\n'
               f'"  c {bg_color}",\n'
               f'"X c {stroke_color}",\n')
         for i, row in enumerate(row_iter):
             write(''.join(chain(['"'], (' ' if not b else 'X' for b in row),
-                                ['"{0}\n'.format(',' if i < height - 1 else '')])))
+                                [f'"{(',' if i < height - 1 else '')}\n'])))
         write('};\n')
 
 
@@ -939,13 +928,13 @@ def write_xbm(matrix, matrix_size, out, scale=1, border=None, name='img'):
     row_iter = matrix_iter(matrix, matrix_size, scale, border)
     with writable(out, 'wt') as f:
         write = f.write
-        write('#define {0}_width {1}\n'
-              '#define {0}_height {2}\n'
-              'static unsigned char {0}_bits[] = {{\n'.format(name, width, height))
+        write(f'#define {name}_width {width}\n'
+              f'#define {name}_height {height}\n'
+              f'static unsigned char {name}_bits[] = {{\n')
         for i, row in enumerate(row_iter, start=1):
             iter_ = zip_longest(*[iter(row)] * 8, fillvalue=0x0)
             # Reverse bits since XBM uses little endian
-            bits = ['0x{0:02x}'.format(reduce(lambda x, y: (x << 1) + y, bits[::-1])) for bits in iter_]
+            bits = [f'0x{reduce(lambda x, y: (x << 1) + y, bits[::-1]):02x}' for bits in iter_]
             write('    ')
             write(', '.join(bits))
             write(',\n' if i < height else '\n')
@@ -975,27 +964,29 @@ def write_tex(matrix, matrix_size, out, scale=1, border=None, dark='black', unit
             "hyperref" package. Default: ``None``.
     """
     def point(x, y):
-        return '\\pgfqpoint{{{0}{2}}}{{{1}{2}}}'.format(x, y, unit)
+        return f'\\pgfqpoint{{{x}{unit}}}{{{y}{unit}}}'
 
     check_valid_scale(scale)
     check_valid_border(border)
     border = get_border(matrix_size, border)
+    end_marker = ''
     with writable(out, 'wt') as f:
         write = f.write
-        write('% Creator:  {0}\n'.format(CREATOR))
-        write('% Date:     {0}\n'.format(time.strftime('%Y-%m-%dT%H:%M:%S')))
+        write(f'% Creator:  {CREATOR}\n')
+        write(f'% Date:     {time.strftime('%Y-%m-%dT%H:%M:%S')}\n')
         if url:
-            write('\\href{{{0}}}{{'.format(url))
+            write(f'\\href{{{url}}}{{')
+            end_marker = '}'
         write('\\begin{pgfpicture}\n')
-        write('  \\pgfsetlinewidth{{{0}{1}}}\n'.format(scale, unit))
+        write(f'  \\pgfsetlinewidth{{{scale}{unit}}}\n')
         if dark and dark != 'black':
-            write('  \\color{{{0}}}\n'.format(dark))
+            write(f'  \\color{{{dark}}}\n')
         x, y = border, -border
         for (x1, y1), (x2, y2) in matrix_to_lines(matrix, x, y, incby=-1):
-            write('  \\pgfpathmoveto{{{0}}}\n'.format(point(x1 * scale, y1 * scale)))
-            write('  \\pgfpathlineto{{{0}}}\n'.format(point(x2 * scale, y2 * scale)))
+            write(f'  \\pgfpathmoveto{{{point(x1 * scale, y1 * scale)}}}\n')
+            write(f'  \\pgfpathlineto{{{point(x2 * scale, y2 * scale)}}}\n')
         write('  \\pgfusepath{stroke}\n')
-        write('\\end{{pgfpicture}}{0}\n'.format('' if not url else '}'))
+        write(f'\\end{{pgfpicture}}{end_marker}\n')
 
 
 def write_terminal(matrix, matrix_size, out, border=None):
@@ -1011,7 +1002,7 @@ def write_terminal(matrix, matrix_size, out, border=None):
     """
     with writable(out, 'wt') as f:
         write = f.write
-        colours = ['\033[{0}m'.format(i) for i in (7, 49)]
+        colours = [f'\033[{i}m' for i in (7, 49)]
         for row in matrix_iter(matrix, matrix_size, scale=1, border=border):
             prev_bit = -1
             cnt = 0
@@ -1143,17 +1134,17 @@ def _color_to_webcolor(color, allow_css3_colors=True, optimize=True):
     alpha_channel = None
     if len(clr) == 4:
         if allow_css3_colors:
-            return 'rgba({0},{1},{2},{3})'.format(*clr)
+            return 'rgba({0},{1},{2},{3})'.format(*clr)  # noqa UP030
         alpha_channel = clr[3]
         clr = clr[:3]
-    hx = '#{0:02x}{1:02x}{2:02x}'.format(*clr)
+    hx = '#{0:02x}{1:02x}{2:02x}'.format(*clr)  # noqa UP030
     if optimize:
         if hx == '#d2b48c':
             hx = 'tan'  # shorter
         elif hx == '#ff0000':
             hx = 'red'  # shorter
         elif hx[1] == hx[2] and hx[3] == hx[4] and hx[5] == hx[6]:
-            hx = '#{0}{1}{2}'.format(hx[1], hx[3], hx[5])
+            hx = f'#{hx[1]}{hx[3]}{hx[5]}'
     return hx if alpha_channel is None else (hx, alpha_channel)
 
 
@@ -1166,7 +1157,7 @@ def color_to_rgb_hex(color):
             ``(R, G, B, A)``)
     :returns: ``#RRGGBB``.
     """
-    return '#{0:02x}{1:02x}{2:02x}'.format(*_color_to_rgb(color))
+    return '#{0:02x}{1:02x}{2:02x}'.format(*_color_to_rgb(color))  # noqa UP030
 
 
 def _color_is_black(color):
@@ -1214,8 +1205,8 @@ def _color_to_rgb(color):
     """
     rgb = _color_to_rgb_or_rgba(color)
     if len(rgb) != 3:
-        raise ValueError('The alpha channel {0} in color "{1}" cannot be '
-                         'converted to RGB'.format(rgb[3], color))
+        raise ValueError(f'The alpha channel {rgb[3]} in color "{color}" cannot be '
+                         'converted to RGB')
     return rgb
 
 
@@ -1249,7 +1240,7 @@ def _color_to_rgba(color, alpha_float=True):
                     res.append(alpha_channel[0])
         if is_valid:
             return tuple(res)
-        raise ValueError('Unsupported color "{0}"'.format(color))
+        raise ValueError(f'Unsupported color "{color}"')
     try:
         return _NAME2RGB[color.lower()] + alpha_channel
     except KeyError:
@@ -1260,9 +1251,8 @@ def _color_to_rgba(color, alpha_float=True):
             else:
                 return clr + alpha_channel
         except ValueError:
-            raise ValueError('Unsupported color "{0}". Neither a known web '
-                             'color name nor a color in hexadecimal format.'
-                             .format(color))
+            raise ValueError(f'Unsupported color "{color}". Neither a known web '
+                             'color name nor a color in hexadecimal format.')
 
 
 def _hex_to_rgb_or_rgba(color, alpha_float=True):
@@ -1286,7 +1276,7 @@ def _hex_to_rgb_or_rgba(color, alpha_float=True):
         color = ''.join([color[i] * 2 for i in range(len(color))])
     color_len = len(color)
     if color_len not in (6, 8):
-        raise ValueError('Input #{0} is not in #RRGGBB nor in #RRGGBBAA format'.format(color))
+        raise ValueError(f'Input #{color} is not in #RRGGBB nor in #RRGGBBAA format')
     res = tuple([int(color[i:i + 2], 16) for i in range(0, color_len, 2)])
     if alpha_float and color_len == 8:
         res = res[:3] + (_alpha_value(res[3], alpha_float),)
@@ -1311,7 +1301,7 @@ def _alpha_value(color, alpha_float):
         else:
             if 0 <= color <= 1.0:
                 return color * 255.0
-    raise ValueError('Invalid alpha channel value: {0}'.format(color))
+    raise ValueError(f'Invalid alpha channel value: {color}')
 
 
 def _invert_color(rgb_or_rgba):
@@ -1606,7 +1596,7 @@ def save(matrix, matrix_size, out, kind=None, **kw):
     try:
         serializer = _VALID_SERIALIZERS[ext if not is_svgz else 'svg']
     except KeyError:
-        raise ValueError('Unknown file extension ".{0}"'.format(ext))
+        raise ValueError(f'Unknown file extension ".{ext}"')
     if is_svgz:
         with gzip.open(out, 'wb', compresslevel=kw.pop('compresslevel', 9)) as f:
             serializer(matrix, matrix_size, f, **kw)

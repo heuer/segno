@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -9,7 +8,6 @@
 Test against issue <https://github.com/mnooner256/pyqrcode/issues/17#issuecomment-419731805>
 and <https://github.com/heuer/pyqrcode/issues/10>
 """
-from __future__ import unicode_literals, absolute_import
 import segno
 
 

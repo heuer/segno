@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 CLI colormap (PNG) related tests.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import os
 import tempfile
@@ -25,7 +23,7 @@ def _make_tmp_png_filename():
 
 def test_greyscale():
     fn = _make_tmp_png_filename()
-    res = cli.main(['--quiet-zone=white', '--output={0}'.format(fn), 'test'])
+    res = cli.main(['--quiet-zone=white', f'--output={fn}', 'test'])
     with open(fn, 'rb') as f:
         data = io.BytesIO(f.read())
     os.unlink(fn)
@@ -37,7 +35,7 @@ def test_greyscale():
 
 def test_not_greyscale():
     fn = _make_tmp_png_filename()
-    res = cli.main(['--quiet-zone=transparent', '--output={0}'.format(fn),
+    res = cli.main(['--quiet-zone=transparent', f'--output={fn}',
                     'test'])
     with open(fn, 'rb') as f:
         data = io.BytesIO(f.read())
@@ -56,7 +54,7 @@ def test_not_greyscale():
 def test_plte_colors():
     fn = _make_tmp_png_filename()
     res = cli.main(['--quiet-zone=green', '--finder-dark=purple',
-                    '--finder-light=yellow', '--output={0}'.format(fn), 'test'])
+                    '--finder-light=yellow', f'--output={fn}', 'test'])
     with open(fn, 'rb') as f:
         data = io.BytesIO(f.read())
     os.unlink(fn)

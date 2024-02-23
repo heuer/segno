@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -10,7 +9,6 @@ Tests if the PNG serializer does not add more colors than needed.
 
 See also issue <https://github.com/heuer/segno/issues/62>
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import pytest
 import segno

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -9,7 +8,6 @@
 Tests against issue 39
 <https://github.com/heuer/segno/issues/39>
 """
-from __future__ import absolute_import, unicode_literals
 import os
 import io
 import tempfile
@@ -24,7 +22,7 @@ def test_output():
                                                 dark='red')
     f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
     f.close()
-    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name),
+    cli.main(['-e=M', '--scale=10', '--dark=red', f'--output={f.name}',
               'Good Times'])
     f = open(f.name, 'rb')
     content = f.read()
@@ -39,7 +37,7 @@ def test_output2():
                                                 dark='red')
     f = tempfile.NamedTemporaryFile('w', suffix='.png', delete=False)
     f.close()
-    cli.main(['-e=M', '--scale=10', '--dark=red', '--output={0}'.format(f.name),
+    cli.main(['-e=M', '--scale=10', '--dark=red', f'--output={f.name}',
               'Good', 'Times'])
     f = open(f.name, 'rb')
     content = f.read()

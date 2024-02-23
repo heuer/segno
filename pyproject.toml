@@ -67,5 +67,7 @@ directory = "data"
 
 
 [tool.ruff]
-exclude = ['examples']
+lint.select = ['E', 'F', 'N', 'W', 'UP', 'RUF']
+exclude = ['examples', 'tests']
+line-length = 120
 

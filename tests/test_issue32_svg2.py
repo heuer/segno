@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -11,7 +10,6 @@ Test against issue #32.
 
 SVG version 2.0 shouldn't have a version attribute.
 """
-from __future__ import absolute_import, unicode_literals
 import io
 import xml.etree.ElementTree as etree
 import pytest

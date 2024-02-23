@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 SVG related tests for multicolor support.
 """
-from __future__ import absolute_import, unicode_literals
 import io
 import xml.etree.ElementTree as etree
 import pytest

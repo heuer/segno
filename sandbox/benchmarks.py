@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 """\
 Some benchmarks running against QR Code generators
 """

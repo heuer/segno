@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Terminal output related tests.
 """
-from __future__ import absolute_import, unicode_literals, division
 import io
 import re
 import pytest

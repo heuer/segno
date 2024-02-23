@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 XPM output related tests.
 """
-from __future__ import absolute_import, unicode_literals
 import io
 import re
 import segno
@@ -60,7 +58,7 @@ def test_write_xpm_width_height():
     out = io.StringIO()
     qr.save(out, kind='xpm', border=border, scale=scale)
     img_data = _img_data(out.getvalue())[0]
-    assert img_data.startswith('{0} {1}'.format(width, height))
+    assert img_data.startswith(f'{width} {height}')
 
 
 def xpm_as_matrix(buff, border):

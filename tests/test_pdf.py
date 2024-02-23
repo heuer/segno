@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 PDF related tests.
 """
-from __future__ import absolute_import, unicode_literals
 import re
 import io
 import zlib
@@ -20,7 +18,7 @@ def test_default_scale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     scale = 1
-    scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
+    scale_cmd = f'{scale} 0 0 {scale} 0 0 cm'
     qr.save(out, kind='pdf', compresslevel=0)
     assert scale_cmd not in _find_graphic(out)
 
@@ -29,7 +27,7 @@ def test_scale():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     scale = 2
-    scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
+    scale_cmd = f'{scale} 0 0 {scale} 0 0 cm'
     qr.save(out, kind='pdf', scale=scale, compresslevel=0)
     assert scale_cmd in _find_graphic(out)
 
@@ -38,7 +36,7 @@ def test_scale_float():
     qr = segno.make_qr('test')
     out = io.BytesIO()
     scale = 1.34
-    scale_cmd = '{0} 0 0 {0} 0 0 cm'.format(scale)
+    scale_cmd = f'{scale} 0 0 {scale} 0 0 cm'
     qr.save(out, kind='pdf', scale=scale, compresslevel=0)
     assert scale_cmd in _find_graphic(out)
 
@@ -119,14 +117,14 @@ def pdf_as_matrix(buff, border):
     h, w = re.search(br'/MediaBox \[0 0 ([0-9]+) ([0-9]+)]', pdf,
                      flags=re.MULTILINE).groups()
     if h != w:
-        raise ValueError('Expected equal height/width, got height="{}" width="{}"'.format(h, w))
+        raise ValueError(f'Expected equal height/width, got height="{h}" width="{w}"')
     size = int(w) - 2 * border
 
     graphic = _find_graphic(buff)
     res = [[0] * size for i in range(size)]
     for x1, y1, x2, y2 in re.findall(r'\s*(-?\d+)\s+(-?\d+)\s+m\s+'
                                      r'(-?\d+)\s+(-?\d+)\s+l', graphic):
-        x1, y1, x2, y2 = [int(i) for i in (x1, y1, x2, y2)]
+        x1, y1, x2, y2 = (int(i) for i in (x1, y1, x2, y2))
         y = abs(y1)
         res[y][x1:x2] = [1] * (x2 - x1)
     return res

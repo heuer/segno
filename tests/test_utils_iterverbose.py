@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,8 +7,6 @@
 """\
 Tests against the ``utils.matrix_iter_verboses`` function.
 """
-from __future__ import absolute_import, unicode_literals, print_function
-import io
 import os
 import pytest
 from segno import encoder, utils, consts
@@ -23,8 +20,8 @@ def read_matrix(name):
     :return: A tuple of bytearrays
     """
     matrix = []
-    with io.open(os.path.join(os.path.dirname(__file__),
-                              'feature_decompose/{0}.txt'.format(name)), 'rt') as f:
+    with open(os.path.join(os.path.dirname(__file__),
+                              f'feature_decompose/{name}.txt')) as f:
         for row in f:
             matrix.append(bytearray([int(i) for i in row if i != '\n']))
     return matrix
@@ -59,7 +56,7 @@ def test_finder_pattern_dark_and_light_qr():
     res = []
     for row in utils.matrix_iter_verbose(matrix, matrix_size, border=0):
         res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK,
-                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
+                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))
     expected = read_matrix('v1-finder-dark-and-light')
     assert expected == res
 
@@ -93,7 +90,7 @@ def test_finder_pattern_dark_and_light_mqr():
     res = []
     for row in utils.matrix_iter_verbose(matrix, matrix_size, border=0):
         res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_FINDER_PATTERN_DARK,
-                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))  # noqa: E501
+                                               consts.TYPE_FINDER_PATTERN_LIGHT)] for v in row]))
     expected = read_matrix('m2-finder-dark-and-light')
     assert expected == res
 
@@ -227,7 +224,7 @@ def test_alignment_dark_and_light():
     res = []
     for row in utils.matrix_iter_verbose(matrix, matrix_size, border=0):
         res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_ALIGNMENT_PATTERN_LIGHT,
-                                               consts.TYPE_ALIGNMENT_PATTERN_DARK)] for v in row]))  # noqa: E501
+                                               consts.TYPE_ALIGNMENT_PATTERN_DARK)] for v in row]))
     expected = read_matrix('v12-alignment-dark-and-light')
     assert expected == res
 
@@ -261,7 +258,7 @@ def test_version_dark_and_light():
     res = []
     for row in utils.matrix_iter_verbose(matrix, matrix_size, border=0):
         res.append(bytearray([(0x2, 0x1)[v in (consts.TYPE_VERSION_LIGHT,
-                                               consts.TYPE_VERSION_DARK)] for v in row]))  # noqa: E501
+                                               consts.TYPE_VERSION_DARK)] for v in row]))
     expected = read_matrix('v7-version-dark-and-light')
     assert expected == res
 

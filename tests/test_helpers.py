@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -9,7 +8,6 @@
 Tests against the helper factory functions.
 Issue <https://github.com/heuer/segno/issues/19>
 """
-from __future__ import unicode_literals, absolute_import
 import pytest
 import segno
 from segno import helpers
@@ -146,8 +144,8 @@ def test_vcard_data():
            'VERSION:3.0\r\n' \
            'N:Doe;John\r\n' \
            'FN:John Doe\r\n' \
-           'PHOTO;VALUE=uri:{0}\r\n' \
-           'END:VCARD\r\n'.format(photo_uri) == vcard
+           f'PHOTO;VALUE=uri:{photo_uri}\r\n' \
+           'END:VCARD\r\n' == vcard
     photo_uris = ('https://www.example.org/image.jpg',
                   'https://www.example.com/image_another.gif')
     vcard = helpers.make_vcard_data('Doe;John', 'John Doe',
@@ -239,8 +237,8 @@ def test_vcard_data_source_url():
                           'VERSION:3.0\r\n' \
                           'N:Mustermann;Max\r\n' \
                           'FN:Max Mustermann\r\n' \
-                          'SOURCE:{}\r\n' \
-                          'END:VCARD\r\n'.format(source_url)
+                          f'SOURCE:{source_url}\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann',
                                     source=source_url)
     assert expected_vcard_data == vcard
@@ -252,8 +250,8 @@ def test_vcard_data_nickname():
                           'VERSION:3.0\r\n' \
                           'N:Mustermann;Max\r\n' \
                           'FN:Max Mustermann\r\n' \
-                          'NICKNAME:{}\r\n' \
-                          'END:VCARD\r\n'.format(nickname)
+                          f'NICKNAME:{nickname}\r\n' \
+                          'END:VCARD\r\n'
     vcard = helpers.make_vcard_data('Mustermann;Max', 'Max Mustermann',
                                     nickname=nickname)
     assert expected_vcard_data == vcard

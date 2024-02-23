@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2022 -2024 -- Lars Heuer
 # All rights reserved.

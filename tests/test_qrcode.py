@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 QR Code tests.
 """
-from __future__ import absolute_import, unicode_literals
 import os
 import io
 from itertools import chain
@@ -408,7 +406,7 @@ def test_save_eps_filestream():
         fn = f.name
         qr.save(f)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    with open(fn, mode='r') as f:
+    with open(fn) as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val
@@ -420,7 +418,7 @@ def test_save_eps_filename():
         fn = f.name
     qr.save(fn)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    with open(fn, mode='r') as f:
+    with open(fn) as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val
@@ -432,7 +430,7 @@ def test_save_txt_filestream():
         fn = f.name
         qr.save(f)
     expected = '000000'
-    with open(fn, mode='r') as f:
+    with open(fn) as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val
@@ -444,7 +442,7 @@ def test_save_txt_filename():
         fn = f.name
         qr.save(fn)
     expected = '000000'
-    with open(fn, mode='r', encoding='utf-8') as f:
+    with open(fn, encoding='utf-8') as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val
@@ -457,7 +455,7 @@ def test_save_kind_filestream(kind):
         fn = f.name
         qr.save(f, kind=kind)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    with open(fn, mode='r') as f:
+    with open(fn) as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val
@@ -468,7 +466,7 @@ def test_save_kind_filename():
     f = tempfile.NamedTemporaryFile('w', suffix='.murks', delete=False)
     f.close()
     qr.save(f.name, kind='eps')
-    f = open(f.name, mode='r')
+    f = open(f.name)
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
     val = f.read(len(expected))
     f.close()
@@ -484,7 +482,7 @@ def test_save_kind_overrides_filename():
     # ... but we want EPS
     qr.save(fn, kind='eps')
     expected = '%!PS-Adobe-3.0 EPSF-3.0'
-    with open(f.name, mode='r') as f:
+    with open(f.name) as f:
         val = f.read(len(expected))
     os.unlink(fn)
     assert expected == val

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Tests against the encoder module.
 """
-from __future__ import absolute_import, unicode_literals
 import pytest
 from segno import consts
 from segno import encoder
@@ -158,7 +156,7 @@ def test_prepare_data_multiple_mode_none_encoding():
     mode, encoding = consts.MODE_BYTE, consts.DEFAULT_BYTE_ENCODING
     assert (len('Ä'.encode(consts.DEFAULT_BYTE_ENCODING)), mode, encoding) == seg1[1:]
     encoding = 'utf-8'
-    assert (len('Ä'.encode('utf-8')), mode, encoding) == seg2[1:]
+    assert (len('Ä'.encode()), mode, encoding) == seg2[1:]
     assert seg1 == seg3  # Encoding detection should produce the same result as 1st tuple
 
 
@@ -360,7 +358,7 @@ def test_is_alphanumeric(data):
 
 
 @pytest.mark.parametrize('data', [b'a', b'0123b', b'_', b'http://www.example.org/',  b'',
-                                  'ü'.encode('utf-8'), 'Ü'.encode('utf-8'),
+                                  'ü'.encode(), 'Ü'.encode(),
                                   'ä'.encode(consts.DEFAULT_BYTE_ENCODING), b'HELLO\nWORLD', b'Ab'])
 def test_is_not_alphanumeric(data):
     assert not encoder.is_alphanumeric(data)
@@ -392,7 +390,7 @@ _test_find_mode_test_data = (
         ('茗'.encode('shift_jis'), consts.MODE_KANJI),
         ('漢字'.encode('shift_jis'), consts.MODE_KANJI),
         ('外来語'.encode('shift_jis'), consts.MODE_KANJI),
-        ('外来語'.encode('utf-8'), consts.MODE_BYTE),
+        ('外来語'.encode(), consts.MODE_BYTE),
     )
 
 
@@ -1046,7 +1044,7 @@ def test_encode_iso_fig1():
     qr = encoder.encode('QR Code Symbol', error='M', mask=None, micro=False, boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
-    assert 5 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert 5 == qr.mask, f'Wrong mask, got: {qr.mask}'
     ref_matrix = read_matrix('iso-fig-1')[0]
     assert ref_matrix == qr.matrix
 
@@ -1059,11 +1057,11 @@ def test_encode_iso_i2():
     qr = encoder.encode('01234567', error='m', version=1, mask=2, micro=False, boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
-    assert 2 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert 2 == qr.mask, f'Wrong mask, got: {qr.mask}'
     qr = encoder.encode('01234567', error='m', mask=2, micro=False, boost_error=False)
     assert consts.ERROR_LEVEL_M == qr.error
     assert 1 == qr.version
-    assert 2 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert 2 == qr.mask, f'Wrong mask, got: {qr.mask}'
     ref_matrix = read_matrix('iso-i2')[0]
     assert ref_matrix == qr.matrix
 
@@ -1075,12 +1073,12 @@ def test_encode_iso_i3():
     qr = encoder.encode('01234567', error='l', version='m2', boost_error=False)
     assert consts.ERROR_LEVEL_L == qr.error
     assert consts.VERSION_M2 == qr.version
-    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert 1 == qr.mask, f'Wrong mask, got: {qr.mask}'
     assert ref_matrix == qr.matrix
     qr = encoder.encode('01234567', error='l', version=None, micro=True, boost_error=False)
     assert consts.ERROR_LEVEL_L == qr.error
     assert consts.VERSION_M2 == qr.version
-    assert 1 == qr.mask, 'Wrong mask, got: {0}'.format(qr.mask)
+    assert 1 == qr.mask, f'Wrong mask, got: {qr.mask}'
     assert ref_matrix == qr.matrix
 
 

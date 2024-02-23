@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 EPS related tests.
 """
-from __future__ import absolute_import, unicode_literals
 import re
 import io
 import pytest
@@ -112,7 +110,7 @@ def test_scale_float():
     out = io.StringIO()
     scale = 1.34
     qr.save(out, kind='eps', scale=scale)
-    assert '{0} {0} scale'.format(scale) in out.getvalue()
+    assert f'{scale} {scale} scale' in out.getvalue()
 
 
 def eps_as_matrix(buff, border):
@@ -125,7 +123,7 @@ def eps_as_matrix(buff, border):
     h, w = re.search(r'^%%BoundingBox: 0 0 ([0-9]+) ([0-9]+)', eps,
                      flags=re.MULTILINE).groups()
     if h != w:
-        raise ValueError('Expected equal height/width, got height="{}" width="{}"'.format(h, w))
+        raise ValueError(f'Expected equal height/width, got height="{h}" width="{w}"')
     size = int(w) - 2 * border
     path = re.search(r'^newpath[\s+](.+?)(^stroke)', eps,
                      flags=re.DOTALL | re.MULTILINE).group(1).strip()
@@ -143,7 +141,7 @@ def eps_as_matrix(buff, border):
         if op == 'moveto':
             absolute_x = 0
             if x != border:
-                raise ValueError('Unexpected border width. Expected "{}", got "{}"'.format(border, x))
+                raise ValueError(f'Unexpected border width. Expected "{border}", got "{x}"')
         else:
             absolute_x += x
             bit = 0 if op == 'm' else 1

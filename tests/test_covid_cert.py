@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -12,7 +11,6 @@ See
 * <https://github.com/Digitaler-Impfnachweis/covpass-android/issues/93>
 * <https://github.com/lincolnloop/python-qrcode/issues/244>
 """
-from __future__ import absolute_import
 import segno
 try:
     from .tutils import read_matrix

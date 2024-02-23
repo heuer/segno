@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -10,7 +9,6 @@ Issue <https://github.com/heuer/segno/issues/128>
 
 Don't include blank vcard/mecard fields.
 """
-from __future__ import unicode_literals, absolute_import
 import pytest
 from segno import helpers
 

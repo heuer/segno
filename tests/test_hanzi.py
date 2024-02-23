@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Shi Yan
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 Tests against Hanzi encoding.
 """
-from __future__ import absolute_import, unicode_literals
 import pytest
 import segno
 from segno import consts, encoder
@@ -96,7 +94,7 @@ def test_not_hanzi():
 
 
 def test_not_hanzi2():
-    qr = segno.make_qr('Ä'.encode('utf-8'))
+    qr = segno.make_qr('Ä'.encode())
     assert 'byte' == qr.mode
     assert '1-H' == qr.designator
 

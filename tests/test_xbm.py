@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -8,7 +7,6 @@
 """\
 XBM related tests.
 """
-from __future__ import unicode_literals, absolute_import
 import io
 import re
 import pytest
@@ -29,8 +27,8 @@ def test_defaults():
     out = io.StringIO()
     qr.save(out, kind='xbm')
     width, height = qr.symbol_size()
-    assert '#define img_width {0}'.format(width) in out.getvalue()
-    assert '#define img_height {0}'.format(height) in out.getvalue()
+    assert f'#define img_width {width}' in out.getvalue()
+    assert f'#define img_height {height}' in out.getvalue()
     assert 'static unsigned char img_bits[] = {' in out.getvalue()
 
 
@@ -39,8 +37,8 @@ def test_name():
     out = io.StringIO()
     qr.save(out, kind='xbm', name='bla_bla')
     width, height = qr.symbol_size()
-    assert '#define bla_bla_width {0}'.format(width) in out.getvalue()
-    assert '#define bla_bla_height {0}'.format(height) in out.getvalue()
+    assert f'#define bla_bla_width {width}' in out.getvalue()
+    assert f'#define bla_bla_height {height}' in out.getvalue()
     assert 'static unsigned char bla_bla_bits[] = {' in out.getvalue()
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2016 - 2024 -- Lars Heuer
 # All rights reserved.
@@ -10,7 +9,6 @@ EPC QR Codes.
 
 Test against issue <https://github.com/heuer/segno/issues/55>.
 """
-from __future__ import absolute_import, unicode_literals
 import decimal
 import pytest
 from segno.helpers import make_epc_qr, _make_epc_qr_data as make_epc_qr_data
