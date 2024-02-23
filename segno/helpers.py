@@ -73,7 +73,7 @@ def make_wifi_data(ssid, password=None, security=None, hidden=False):
     escape = _escape_mecard
     data = 'WIFI:'
     if security:
-        data += 'T:{0};'.format(security.upper() if security != 'nopass' else security)
+        data += f'T:{security.upper() if security != "nopass" else security};'
     data += f'S:{escape(ssid)};'
     if password is not None:
         data += f'P:{escape(password)};'
@@ -145,7 +145,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
             return ()
         if isinstance(val, str):
             val = (val,)
-        return ['{0}:{1};'.format(name, escape(i)) for i in val]
+        return [f'{name}:{escape(i)};' for i in val]
 
     escape = _escape_mecard
     data = [f'MECARD:N:{escape(name)};']
@@ -166,7 +166,7 @@ def make_mecard_data(name, reading=None, email=None, phone=None, videophone=None
     adr_properties = (pobox, roomno, houseno, city, prefecture, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
-        data.append('ADR:{0},{1},{2},{3},{4},{5},{6};'.format(*adr_data))
+        data.append('ADR:{0},{1},{2},{3},{4},{5},{6};'.format(*adr_data))  # noqa UP030
     if memo:
         data.append(f'MEMO:{escape(memo)};')
     data.append(';')
@@ -298,14 +298,14 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
             return ()
         if isinstance(val, str):
             val = (val,)
-        return ['{0}:{1}'.format(name, escape(i)) for i in val]
+        return [f'{name}:{escape(i)}' for i in val]
 
     escape = _escape_vcard
     data = ['BEGIN:VCARD', 'VERSION:3.0',
             f'N:{name}',
             f'FN:{escape(displayname)}']
     if org:
-        data.append('ORG:{0}'.format(escape(org)))
+        data.append(f'ORG:{escape(org)}')
     data.extend(make_multifield('EMAIL', email))
     data.extend(make_multifield('TEL', phone))
     data.extend(make_multifield('TEL;TYPE=FAX', fax))
@@ -321,7 +321,7 @@ def make_vcard_data(name, displayname, email=None, phone=None, fax=None,
     adr_properties = (pobox, street, city, region, zipcode, country)
     if any(adr_properties):
         adr_data = [escape(i or '') for i in adr_properties]
-        data.append('ADR:{0};;{1};{2};{3};{4};{5}'.format(*adr_data))
+        data.append('ADR:{0};;{1};{2};{3};{4};{5}'.format(*adr_data))  # noqa UP030
     if birthday:
         try:
             birthday = birthday.strftime('%Y-%m-%d')
@@ -442,7 +442,7 @@ def make_geo_data(lat, lng):
     :rtype: str
     """
     def float_to_str(f):
-        return '{0:.8f}'.format(f).rstrip('0').rstrip('.')
+        return f'{f:.8f}'.rstrip('0').rstrip('.')
 
     return f'geo:{float_to_str(lat)},{float_to_str(lng)}'
 
@@ -491,11 +491,11 @@ def make_make_email_data(to, cc=None, bcc=None, subject=None, body=None):
     for key, val in (('cc', cc), ('bcc', bcc)):
         vals = multi(val)
         if vals:
-            data.append('{0}{1}={2}'.format(delim, key, ','.join(vals)))
+            data.append(f'{delim}{key}={",".join(vals)}')
             delim = '&'
     for key, val in (('subject', subject), ('body', body)):
         if val is not None:
-            data.append('{0}{1}={2}'.format(delim, key, quote(val.encode('utf-8'))))
+            data.append(f'{delim}{key}={quote(val.encode("utf-8"))}')
         delim = '&'
     return ''.join(data)
 
@@ -545,28 +545,27 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
             try:
                 encoding = encodings.index(encoding.lower()) + 1
             except ValueError:
-                raise ValueError('Invalid encoding "{0}", use one of {1}'.format(encoding, encodings))
+                raise ValueError(f'Invalid encoding "{encoding}", use one of {encodings}')
         elif not isinstance(encoding, int) or not 1 <= encoding <= len(encodings):
-            raise ValueError('Invalid encoding number only 1 .. 8 are allowed, got "{}"'.format(encoding))
+            raise ValueError(f'Invalid encoding number only 1 .. 8 are allowed, got "{encoding}"')
     if not text and not reference or text and reference:
         raise ValueError('Either a text or a creditor reference (ISO 11649) must be provided')
     if text and not 0 < len(text) <= 140:
-        raise ValueError('Invalid text, max. 140 characters are allowed, got "{}"'.format(len(text)))
+        raise ValueError(f'Invalid text, max. 140 characters are allowed, got "{len(text)}"')
     elif reference and not 0 < len(reference) <= 35:
-        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, got "{}"'
-                         .format(len(reference)))
+        raise ValueError('Invalid creditor reference (ISO 11649), max. 35 characters are allowed, '
+                         f'got "{len(reference)}"')
     if name is None or not 0 < len(name) <= 70:
-        raise ValueError('Invalid name, max. 70 characters are allowed, got "{}"'.format(name))
+        raise ValueError(f'Invalid name, max. 70 characters are allowed, got "{name}"')
     if iban is None or not 4 < len(iban) <= 34:
-        raise ValueError('Invalid IBAN, min. 5 and max. 34 characters are allowed, got "{}"'.format(iban))
+        raise ValueError(f'Invalid IBAN, min. 5 and max. 34 characters are allowed, got "{iban}"')
     if bic and len(bic) not in (8, 11):
-        raise ValueError('Invalid BIC, should be 8 or 11 characters long, got "{}"'.format(bic))
+        raise ValueError(f'Invalid BIC, should be 8 or 11 characters long, got "{bic}"')
     if purpose and len(purpose) != 4:
-        raise ValueError('Invalid purpose, 4 characters are allowed, got "{}"'.format(purpose))
+        raise ValueError(f'Invalid purpose, 4 characters are allowed, got "{purpose}"')
     amount = decimal.Decimal(amount)
     if not min_amount <= amount <= max_amount:
-        raise ValueError('Invalid amount, must be in bigger or equal {} and less or equal {}'
-                         .format(min_amount, max_amount))
+        raise ValueError(f'Invalid amount, must be in bigger or equal {min_amount} and less or equal {max_amount}')
     tmp_data = ['BCD',  # Service tag
                 '002',  # Version
                 '',  # character set (will be set later)
@@ -574,7 +573,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
                 bic or '',  # BIC
                 name,  # Name of the recipient
                 iban,  # IBAN
-                'EUR{:.2f}'.format(amount).rstrip('0').rstrip('.'),  # Amount
+                f'EUR{amount:.2f}'.rstrip('0').rstrip('.'),  # Amount
                 purpose or '',  # Purpose
                 reference or '',  # Remittance
                 ]
@@ -596,7 +595,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     data = '\n'.join(tmp_data).encode(encodings[charset - 1])
     # Max. payload: 331 bytes
     if len(data) > 331:  # pragma: no cover
-        raise ValueError('Payload is too big: Max. 331 bytes allowed, got {} bytes'.format(len(data)))
+        raise ValueError(f'Payload is too big: Max. 331 bytes allowed, got {len(data)} bytes')
     return data
 
 
@@ -648,5 +647,5 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
                        error='m', boost_error=False)
     # This shouldn't happen
     if qr.version > 13:  # pragma: no cover
-        raise ValueError('Invalid EPC QR Code, max. QR Code version 13 is allowed, got "{}"'.format(qr.designator))
+        raise ValueError(f'Invalid EPC QR Code, max. QR Code version 13 is allowed, got "{qr.designator}"')
     return qr
