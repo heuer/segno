@@ -46,14 +46,19 @@ def create_charts():
             elif ' SVG' in name:
                 svg_data.append((name.replace(' SVG', ''), val))
     output_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../docs/_static/')
-    for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code', os.path.join(output_dir, 'chart_create_1m.svg')),
-                                  (create_7q_data, 'Create a 7-Q QR Code', os.path.join(output_dir, 'chart_create_7q.svg')),
-                                  (create_30h_data, 'Create a 30-H QR Code', os.path.join(output_dir, 'chart_create_30h.svg')),
-                                  (svg_data, 'Create a 1-M QR Code and write SVG', os.path.join(output_dir, 'chart_svg.svg')),
-                                  (png_data, 'Create a 1-M QR Code and write PNG', os.path.join(output_dir, 'chart_png.svg'))):
+    for data, title, filename in ((create_1m_data, 'Create a 1-M QR Code',
+                                   os.path.join(output_dir, 'chart_create_1m.svg')),
+                                  (create_7q_data, 'Create a 7-Q QR Code',
+                                   os.path.join(output_dir, 'chart_create_7q.svg')),
+                                  (create_30h_data, 'Create a 30-H QR Code',
+                                   os.path.join(output_dir, 'chart_create_30h.svg')),
+                                  (svg_data, 'Create a 1-M QR Code and write SVG',
+                                   os.path.join(output_dir, 'chart_svg.svg')),
+                                  (png_data, 'Create a 1-M QR Code and write PNG',
+                                   os.path.join(output_dir, 'chart_png.svg'))):
         create_chart(title,
-                     [(name, [{'value': float(val), 'color': color_map[name], 'label': name}]) for name, val in sorted(data, key=lambda t: Decimal(t[1]))],
-                     filename)
+                     [(name, [{'value': float(val), 'color': color_map[name], 'label': name}])
+                     for name, val in sorted(data, key=lambda t: Decimal(t[1]))], filename)
 
 
 if __name__ == '__main__':

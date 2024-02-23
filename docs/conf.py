@@ -7,7 +7,6 @@
 #
 # All configuration values have a default; values that are commented out
 # serve to show the default.
-from __future__ import unicode_literals
 import os
 import sys
 import sphinx_rtd_theme
@@ -55,7 +54,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'Segno'
-copyright = '2016 - 2024 Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.'
+copyright = '2016 - 2024 Lars Heuer -- "QR Code" and "Micro QR Code" are registered trademarks of DENSO WAVE INCORPORATED.' # noqa: E501
 author = 'Lars Heuer'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -240,8 +239,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'segno.tex', u'Segno Documentation',
-   u'Author', 'manual'),
+  (master_doc, 'segno.tex', 'Segno Documentation', 'Author', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -283,7 +281,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'segno', u'Segno Documentation',
+  (master_doc, 'segno', 'Segno Documentation',
    author, 'segno', 'One line description of project.',
    'Miscellaneous'),
 ]

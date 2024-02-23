@@ -424,7 +424,7 @@ class QRCode:
         f = tempfile.NamedTemporaryFile('wb', suffix='.png', delete=False)
         try:
             self.save(f, scale=scale, dark=dark, light=light, border=border)
-        except:  # noqa: E722
+        except:
             f.close()
             os.unlink(f.name)
             raise
@@ -961,8 +961,7 @@ class QRCode:
                                             name=name[3:]):
                 plugin = ep.load()
                 return partial(plugin, self)
-        raise AttributeError('{0} object has no attribute {1}'
-                             .format(self.__class__, name))
+        raise AttributeError(f'{self.__class__} object has no attribute {name}')
 
 
 class QRCodeSequence(tuple):
@@ -974,7 +973,7 @@ class QRCodeSequence(tuple):
     __slots__ = ()
 
     def __new__(cls, qrcodes):
-        return super(QRCodeSequence, cls).__new__(cls, qrcodes)
+        return super().__new__(cls, qrcodes)
 
     def terminal(self, out=None, border=None, compact=False):
         """\
@@ -1016,5 +1015,4 @@ class QRCodeSequence(tuple):
         """
         if len(self) == 1:
             return getattr(self[0], item)
-        raise AttributeError("{0} object has no attribute '{1}'"
-                             .format(self.__class__, item))
+        raise AttributeError(f"{self.__class__} object has no attribute '{item}'")

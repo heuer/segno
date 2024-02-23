@@ -76,7 +76,7 @@ def check_valid_scale(scale):
     :type scale: float or int
     """
     if scale <= 0:
-        raise ValueError('The scale must not be negative or zero. Got: "{0}"'.format(scale))
+        raise ValueError(f'The scale must not be negative or zero. Got: "{scale}"')
 
 
 def check_valid_border(border):
@@ -86,7 +86,7 @@ def check_valid_border(border):
     :param int border: Indicating the size of the quiet zone.
     """
     if border is not None and (int(border) != border or border < 0):
-        raise ValueError('The border must not a non-negative integer value. Got: "{0}"'.format(border))
+        raise ValueError(f'The border must not a non-negative integer value. Got: "{border}"')
 
 
 def matrix_to_lines(matrix, x, y, incby=1):

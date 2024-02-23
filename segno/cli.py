@@ -49,8 +49,7 @@ def make_parser():
         return val if val != int(val) else int(val)
 
     parser = argparse.ArgumentParser(prog='segno',
-                                     description='Segno QR Code and Micro QR Code generator version {0}'
-                                     .format(segno.__version__))
+                                     description=f'Segno QR Code and Micro QR Code generator version {segno.__version__}')  # noqa: E501
     parser.add_argument('--version', '-v', help='(Micro) QR Code version: 1 .. 40 or "M1", "M2", "M3", "M4"',
                         required=False,)
     parser.add_argument('--error', '-e', help='Error correction level: "L": 7%% (default), "M": 15%%, "Q": 25%%, '
@@ -177,8 +176,7 @@ def make_parser():
                                 action='store_true')
     # Show Segno's version --version and -v are taken by QR Code version
     parser.add_mutually_exclusive_group().add_argument('--ver', '-V', help="Shows Segno's version",
-                                                       action='version',
-                                                       version='Segno {0}'.format(segno.__version__))
+                                                       action='version', version=f'Segno {segno.__version__}')
     parser.add_argument('content', nargs='+', help='The content to encode')
     return parser
 
@@ -294,7 +292,7 @@ class _AttrDict(dict):
     Internal helper class.
     """
     def __init__(self, *args, **kwargs):
-        super(_AttrDict, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__dict__ = self
 
 

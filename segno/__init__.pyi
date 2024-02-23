@@ -1,58 +1,60 @@
-from typing import Any, AnyStr, Callable, Optional, Tuple, Union, IO, TextIO, Iterator, Iterable
+from typing import Any, AnyStr, Callable, IO, TextIO, Iterator, Iterable
 from .encoder import DataOverflowError as DataOverflowError
 
 __version__ : str
 
-def make(content: Union[int, str, bytes],
-         error: Optional[str] = None,
-         version: Optional[Union[int, str]] = None,
-         mode: Optional[str] = None,
-         mask: Optional[int] = None,
-         encoding: Optional[str] = None,
+
+def make(content: int | str | bytes,
+         error: str | None = None,
+         version: int | str | None = None,
+         mode: str | None = None,
+         mask: int | None = None,
+         encoding: str | None = None,
          eci: bool = False,
-         micro: Optional[bool] = None,
+         micro: bool | None = None,
          boost_error: bool = True) -> QRCode: ...
 
 
-def make_qr(content: Union[int, str, bytes],
-            error: Optional[str] = None,
-            version: Optional[Union[int, str]] = None,
-            mode: Optional[str] = None,
-            mask: Optional[int] = None,
-            encoding: Optional[str] = None,
+def make_qr(content: int | str | bytes,
+            error: str | None = None,
+            version: int | str | None = None,
+            mode: str | None = None,
+            mask: int | None = None,
+            encoding: str | None = None,
             eci: bool = False, boost_error: bool = True) -> QRCode: ...
 
 
-def make_micro(content: Union[int, str, bytes],
-               error: Optional[str] = None,
-               version: Optional[Union[int, str]] = None,
-               mode: Optional[str] = None,
-               mask: Optional[int] = None,
-               encoding: Optional[str] = None,
+def make_micro(content: int | str | bytes,
+               error: str | None = None,
+               version: int | str | None = None,
+               mode: str | None = None,
+               mask: int | None = None,
+               encoding: str | None = None,
                boost_error: bool = True) -> QRCode: ...
 
 
-def make_sequence(content: Union[int, str, bytes],
-                  error: Optional[str] = None,
-                  version: Optional[Union[int, str]] = None,
-                  mode: Optional[str] = None,
-                  mask: Optional[int] = None,
-                  encoding: Optional[str] = None,
+def make_sequence(content: int | str | bytes,
+                  error: str | None = None,
+                  version: int | str | None = None,
+                  mode: str | None = None,
+                  mask: int | None = None,
+                  encoding: str | None = None,
                   boost_error: bool = True,
-                  symbol_count: Optional[int] = None) -> QRCodeSequence: ...
+                  symbol_count: int | None = None) -> QRCodeSequence: ...
+
 
 class QRCode:
-    matrix: Tuple[bytearray, ...]
+    matrix: tuple[bytearray, ...]
     mask: int
 
     @property
-    def version(self) -> Union[int, str]: ...
+    def version(self) -> int | str: ...
 
     @property
     def error(self) -> str: ...
 
     @property
-    def mode(self) -> Optional[str]: ...
+    def mode(self) -> str | None: ...
 
     @property
     def designator(self) -> str: ...
@@ -63,16 +65,16 @@ class QRCode:
     @property
     def is_micro(self) -> bool: ...
 
-    def symbol_size(self, scale: Union[int, float] = 1,
-                    border: Optional[int] = None) -> Tuple[Union[int, float], Union[int, float]]: ...
+    def symbol_size(self, scale: int | float = 1,
+                    border: int | None = None) -> tuple[int | float, int | float]: ...
 
-    def matrix_iter(self, scale: Union[int, float] = 1,
-                    border: Optional[int] = None,
+    def matrix_iter(self, scale: int | float = 1,
+                    border: int | None = None,
                     verbose: bool = False) -> Iterator[Iterable[int]]: ...
 
-    def show(self, delete_after: Union[int, float] = 20, scale: Union[int, float] = 10,
-             border: Optional[int] = None, dark: Union[tuple, str] = '#000',
-             light: Union[tuple, str] = '#fff') -> None: ...
+    def show(self, delete_after: int | float = 20, scale: int | float = 10,
+             border: int | None = None, dark: tuple | str = '#000',
+             light: tuple | str = '#fff') -> None: ...
 
     def svg_data_uri(self, xmldecl: bool = False, encode_minimal: bool = False,
                      omit_charset: bool = False, nl: bool = False,
@@ -82,13 +84,13 @@ class QRCode:
 
     def png_data_uri(self, **kw: Any) -> str: ...
 
-    def terminal(self, out: Optional[Union[TextIO, str]] = None,
-                border: Optional[int] = None, compact: bool = False) -> None: ...
+    def terminal(self, out: TextIO | str | None = None,
+                 border: int | None = None, compact: bool = False) -> None: ...
 
-    def save(self, out: Union[IO[AnyStr], str], kind: Optional[str] = None,
+    def save(self, out: IO[AnyStr] | str, kind: str | None = None,
              **kw: Any) -> None: ...
 
-    def __getattr__(self, name: Any) -> Optional[Callable]: ...
+    def __getattr__(self, name: Any) -> Callable | None: ...
 
     def __eq__(self, other: Any) -> bool: ...
 
@@ -96,10 +98,10 @@ class QRCode:
 
 
 class QRCodeSequence(tuple):
-    def terminal(self, out: Optional[Union[TextIO, str]] = None,
-                 border: Optional[int] = None, compact: bool = False) -> None: ...
+    def terminal(self, out: TextIO | str | None = None,
+                 border: int | None = None, compact: bool = False) -> None: ...
 
-    def save(self, out: Union[IO[AnyStr], str], kind: Optional[str] = None,
+    def save(self, out: IO[AnyStr] | str, kind: str | None = None,
              **kw: Any) -> None: ...
 
-    def __getattr__(self, name: Any) -> Optional[Callable]: ...
+    def __getattr__(self, name: Any) -> Callable | None: ...
