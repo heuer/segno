@@ -972,7 +972,7 @@ def write_tex(matrix, matrix_size, out, scale=1, border=None, dark='black', unit
     with writable(out, 'wt') as f:
         write = f.write
         write(f'% Creator:  {CREATOR}\n')
-        write(f'% Date:     {time.strftime('%Y-%m-%dT%H:%M:%S')}\n')
+        write(f'% Date:     {time.strftime("%Y-%m-%dT%H:%M:%S")}\n')
         if url:
             write(f'\\href{{{url}}}{{')
             end_marker = '}'
