@@ -452,8 +452,7 @@ def write_eps(matrix, matrix_size, out, scale=1, border=None, dark='#000', light
         writeline('%%EOF')
 
 
-def as_png_data_uri(matrix, matrix_size, scale=1, border=None,
-                    compresslevel=9, **kw):
+def as_png_data_uri(matrix, matrix_size, scale=1, border=None, compresslevel=9, **kw):
     """\
     Converts the provided matrix into a PNG data URI.
 
