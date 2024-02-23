@@ -902,8 +902,8 @@ def write_xpm(matrix, matrix_size, out, scale=1, border=None, dark='#000',
               f'"  c {bg_color}",\n'
               f'"X c {stroke_color}",\n')
         for i, row in enumerate(row_iter):
-            write(''.join(chain(['"'], (' ' if not b else 'X' for b in row),
-                                [f'"{(',' if i < height - 1 else '')}\n'])))
+            write(''.join(chain(['"'], (" " if not b else "X" for b in row),
+                                [f'"{("," if i < height - 1 else "")}\n'])))
         write('};\n')
 
 
