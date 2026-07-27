@@ -93,6 +93,22 @@ ERROR_MAPPING = {
     'H': ERROR_LEVEL_H,
 }
 
+# ISO/IEC 18004:2015(E) -- 7.4.8.2
+
+FNC1_FIRST = 0x5
+FNC1_SECOND = 0x9
+
+GS_BYTES = 0x1D
+# % character
+GS_ALPHANUMERIC = 0x25
+
+
+FNC1_MAPPING = {
+    'first': FNC1_FIRST,
+    'second': FNC1_SECOND,
+    # 'uri': None
+}
+
 #
 # ISO/IEC 18004:2015(E) -- 7.3.2 Extended Channel Interpretation (ECI) mode (page 20)
 #

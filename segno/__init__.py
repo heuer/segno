@@ -22,7 +22,7 @@ __all__ = ('make', 'make_qr', 'make_micro', 'make_sequence', 'QRCode',
 
 
 def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
-         eci=False, micro=None, boost_error=True):
+         eci=False, micro=None, boost_error=True, gs1=None):
     """\
     Creates a (Micro) QR Code.
 
@@ -136,11 +136,11 @@ def make(content, error=None, version=None, mode=None, mask=None, encoding=None,
     :rtype: QRCode
     """
     return QRCode(encoder.encode(content, error, version, mode, mask, encoding,
-                                 eci, micro, boost_error=boost_error))
+                                 eci, micro, boost_error=boost_error,gs1=gs1))
 
 
 def make_qr(content, error=None, version=None, mode=None, mask=None,
-            encoding=None, eci=False, boost_error=True):
+            encoding=None, eci=False, boost_error=True, gs1=None):
     """\
     Creates a QR code (never a Micro QR code).
 
@@ -149,7 +149,7 @@ def make_qr(content, error=None, version=None, mode=None, mask=None,
     :rtype: QRCode
     """
     return make(content, error=error, version=version, mode=mode, mask=mask,
-                encoding=encoding, eci=eci, micro=False, boost_error=boost_error)
+                encoding=encoding, eci=eci, micro=False, boost_error=boost_error,gs1=gs1)
 
 
 def make_micro(content, error=None, version=None, mode=None, mask=None,

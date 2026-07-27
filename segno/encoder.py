@@ -43,7 +43,7 @@ Code = namedtuple('Code', 'matrix version error mask segments')
 
 
 def encode(content, error=None, version=None, mode=None, mask=None,
-           encoding=None, eci=False, micro=None, boost_error=True):
+           encoding=None, eci=False, micro=None, boost_error=True,gs1=None):
     """\
     Creates a (Micro) QR code.
 
@@ -58,6 +58,9 @@ def encode(content, error=None, version=None, mode=None, mask=None,
 
     :rtype: namedtuple
     """
+    if micro and gs1:
+        raise ValueError(f'GS1 does not support Micro QR, parameter "gs1" is not None')
+
     version = normalize_version(version)
     if not micro and micro is not None and version in consts.MICRO_VERSIONS:
         raise ValueError(f'A Micro QR Code version ("{get_version_name(version)}") '
@@ -66,6 +69,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
         raise ValueError(f'Illegal Micro QR Code version "{get_version_name(version)}"')
     error = normalize_errorlevel(error, accept_none=True)
     mode = normalize_mode(mode)
+    gs1 = normalize_gs1(gs1)
     if mode is not None and version is not None \
             and not is_mode_supported(mode, version):
         raise ValueError(f'Mode "{get_mode_name(mode)}" is not available in version "{get_version_name(version)}"')
@@ -84,7 +88,7 @@ def encode(content, error=None, version=None, mode=None, mask=None,
         error = consts.ERROR_LEVEL_L
     is_micro = version < 1
     mask = normalize_mask(mask, is_micro)
-    return _encode(segments, error, version, mask, eci, boost_error)
+    return _encode(segments, error, version, mask, eci, boost_error, gs1=gs1)
 
 
 def encode_sequence(content, error=None, version=None, mode=None, mask=None,
@@ -199,7 +203,7 @@ def encode_sequence(content, error=None, version=None, mode=None, mask=None,
                     sa_info=sa_info(i)) for i, chunk in enumerate(chunks)]
 
 
-def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
+def _encode(segments, error, version, mask, eci, boost_error, sa_info=None, gs1=None):
     """\
     Creates a (Micro) QR code.
 
@@ -222,8 +226,9 @@ def _encode(segments, error, version, mask, eci, boost_error, sa_info=None):
             buff.append_bits(i, 4)
         buff.append_bits(sa_info.parity, 8)
     # ISO/IEC 18004:2015(E) -- 7.4 Data encoding (page 22)
-    for segment in segments:
-        write_segment(buff, segment, ver, ver_range, eci)
+    for e,segment in enumerate(segments):
+        gs_seperator = e+1<len(segments)
+        write_segment(buff, segment, ver, ver_range, eci, gs1, gs_seperator=gs_seperator)
     capacity = consts.SYMBOL_CAPACITY[version][error]
     # ISO/IEC 18004:2015(E) -- 7.4.9 Terminator (page 32)
     write_terminator(buff, capacity, ver, len(buff))
@@ -282,7 +287,7 @@ def boost_error_level(version, error, segments, eci, is_sa=False):
     return error
 
 
-def write_segment(buff, segment, ver, ver_range, eci=False):
+def write_segment(buff, segment, ver, ver_range, eci=False, gs1=None,gs_seperator=None):
     """\
     Writes a segment.
 
@@ -301,6 +306,8 @@ def write_segment(buff, segment, ver, ver_range, eci=False):
         append_bits(consts.MODE_ECI, 4)
         append_bits(get_eci_assignment_number(segment.encoding), 8)
     if ver is None:  # QR Code
+        if gs1:
+            append_bits(gs1, 4)
         append_bits(mode, 4)
         if mode == consts.MODE_HANZI:
             subset = 1  # Indicator for GB2312 subset
@@ -311,6 +318,12 @@ def write_segment(buff, segment, ver, ver_range, eci=False):
     append_bits(segment.char_count,
                 consts.CHAR_COUNT_INDICATOR_LENGTH[mode][ver_range])
     buff.extend(segment.bits)
+    # skip if last segment?
+    if gs_seperator:
+        if gs1 and mode is consts.MODE_ALPHANUMERIC:
+            append_bits(consts.GS_ALPHANUMERIC,8)
+        elif gs1 and mode is consts.MODE_BYTE:
+            append_bits(consts.GS_BYTES,8)
 
 
 def write_terminator(buff, capacity, ver, length):
@@ -1205,6 +1218,30 @@ def normalize_mode(mode):
     except (KeyError, AttributeError):
         raise ValueError(f'Illegal mode "{mode}". '
                          f'Supported values: {", ".join(sorted(consts.MODE_MAPPING.keys()))}')
+    
+
+
+def normalize_gs1(position):
+    """\
+    Returns a Functiona 1 character position constant which is equivalent to the
+    provided `position`.
+
+    In case the provided `mode` is ``None``, this function returns ``None``.
+    Otherwise a mode constant is returned unless the provided parameter cannot
+    be mapped to a valid mode. In the latter case, a :py:exc:`ValueError` is raised.
+
+    :param mode: An integer or string or ``None``.
+    :raises: :py:exc:`ValueError` In case the provided `mode` does not represent a valid
+             QR Code mode.
+    :rtype: int or None
+    """
+    if position is None or position in consts.FNC1_MAPPING.values():
+        return position
+    try:
+        return consts.FNC1_MAPPING[position.lower()]
+    except (KeyError, AttributeError):
+        raise ValueError(f'Illegal mode "{position}". '
+                         f'Supported values: {", ".join(sorted(consts.FNC1_MAPPING.keys()))}')
 
 
 def normalize_mask(mask, is_micro):
