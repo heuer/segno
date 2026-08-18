@@ -343,7 +343,13 @@ def write_padding_bits(buff, version, length):
     # the final bit (least significant bit) of the data stream to extend it
     # to the codeword boundary. [...]
     if version not in (consts.VERSION_M1, consts.VERSION_M3):
-        buff.extend([0] * (8 - (length % 8)))
+        # When the bit stream is already at a codeword (byte) boundary no
+        # padding bits must be added. ``-length % 8`` yields 0 in that case and
+        # ``8 - (length % 8)`` otherwise; using ``8 - (length % 8)`` directly
+        # would add a spurious 0x00 codeword and shift the pad codewords, which
+        # violates the standard and is rejected by strict decoders. See #148,
+        # #123.
+        buff.extend([0] * (-length % 8))
 
 
 def write_pad_codewords(buff, version, capacity, length):
