@@ -17,7 +17,7 @@ def test_write_txt():
     qr = segno.make_qr('test', error='m', boost_error=False)
     out = io.StringIO()
     qr.save(out, kind='txt', border=0)
-    expected = '11111110011'
+    expected = '11111110001'
     val = out.getvalue()
     assert expected == val[:len(expected)]
 

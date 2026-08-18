@@ -329,6 +329,59 @@ def test_write_padding_bits_thonky():
                 '01001101 01000011 01000000') == buff.getbits()
 
 
+def test_write_padding_bits_already_byte_aligned():
+    # Regression test for #148 (see also #123).
+    # ISO/IEC 18004:2015(E) -- 7.4.10: padding bits are only added if the bit
+    # stream does not already end at a codeword (byte) boundary. A stream whose
+    # length is a multiple of 8 must be left untouched -- adding a full spurious
+    # 0x00 codeword shifts the pad codewords and produces a non-conforming
+    # symbol that strict decoders (e.g. BoofCV) reject.
+    data = bits('01000000 01010110')  # 16 bits, already byte-aligned
+    buff = Buffer(data)
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
+    assert 16 == len(buff)
+    assert data == buff.getbits()
+
+
+def test_write_padding_bits_not_byte_aligned():
+    # Complements test_write_padding_bits_already_byte_aligned (#148): a stream
+    # that does not end at a byte boundary is still padded up to the next one.
+    data = bits('01000000 0101')  # 12 bits
+    buff = Buffer(data)
+    version = 1
+    encoder.write_padding_bits(buff, version, len(buff))
+    assert 16 == len(buff)
+    assert data + bits('0000') == buff.getbits()
+
+
+def test_encode_padding_conformance_byte_aligned():
+    # Conformance regression test for #148 (see also #123).
+    # segno.make('known', version=1, error='l') produces a data bit stream that
+    # is exactly byte-aligned (56 bits) after the terminator, which triggers the
+    # spurious-padding-byte bug. The data codeword sequence must follow
+    # ISO/IEC 18004:2015(E) -- 7.4.10: seven data codewords followed by the pad
+    # codewords 0xEC (11101100) and 0x11 (00010001) alternately -- so data
+    # codeword #7 (zero-based index 7) must be 0xEC, not the spurious 0x00.
+    version = 1
+    error = consts.ERROR_LEVEL_L
+    segment = encoder.make_segment('known', consts.MODE_BYTE)
+    buff = Buffer()
+    encoder.write_segment(buff, segment, None, encoder.version_range(version))
+    capacity = consts.SYMBOL_CAPACITY[version][error]
+    encoder.write_terminator(buff, capacity, None, len(buff))
+    assert 56 == len(buff)  # byte-aligned data stream -- the #148 trigger
+    encoder.write_padding_bits(buff, version, len(buff))
+    encoder.write_pad_codewords(buff, version, capacity, len(buff))
+    codewords = list(buff.toints())
+    expected = [0x40, 0x56, 0xb6, 0xe6, 0xf7, 0x76, 0xe0,
+                0xec, 0x11, 0xec, 0x11, 0xec, 0x11, 0xec, 0x11, 0xec, 0x11,
+                0xec, 0x11]
+    assert 19 == len(codewords)  # data codewords for a 1-L symbol
+    assert 0xec == codewords[7]
+    assert expected == codewords
+
+
 def test_write_pad_codewords_standard_value_i2():
     # See ISO/IEC 18004:2006(E) -- I.2 Encoding a QR Code symbol (page 94)
     data = bits('00010000 00100000 00001100 01010110 01100001 10000000')
