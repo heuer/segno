@@ -201,7 +201,7 @@ def matrix_iter_verbose(matrix, matrix_size, scale=1, border=None):
                     or (is_micro and ((i == 0 and j > 7) or (j == 0 and i > 7))):
                 return (consts.TYPE_TIMING_LIGHT, consts.TYPE_TIMING_DARK)[val]
             # Format - IMPORTANT: Check timing (see above) in advance!
-            if (i == 8 and (j < 9 or (not is_micro and j > width - 10))) \
+            if (i == 8 and (j < 9 or (not is_micro and j > width - 9))) \
                     or (j == 8 and (i < 8 or (not is_micro and i > height - 9))):
                 return (consts.TYPE_FORMAT_LIGHT, consts.TYPE_FORMAT_DARK)[val]
             # Finder pattern
