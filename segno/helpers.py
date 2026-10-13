@@ -520,7 +520,7 @@ def make_email(to, cc=None, bcc=None, subject=None, body=None):
                                               subject=subject, body=body))
 
 
-def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
+def _make_epc_qr_data(name, iban, amount=None, text=None, reference=None, bic=None,
                       purpose=None, encoding=None):
     """\
     Validates the input and creates the data for an EPC QR Code.
@@ -562,9 +562,12 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
         raise ValueError(f'Invalid BIC, should be 8 or 11 characters long, got "{bic}"')
     if purpose and len(purpose) != 4:
         raise ValueError(f'Invalid purpose, 4 characters are allowed, got "{purpose}"')
-    amount = decimal.Decimal(amount)
-    if not min_amount <= amount <= max_amount:
-        raise ValueError(f'Invalid amount, must be in bigger or equal {min_amount} and less or equal {max_amount}')
+    amount_data = ''
+    if amount is not None:
+        amount = decimal.Decimal(amount)
+        if not min_amount <= amount <= max_amount:
+            raise ValueError(f'Invalid amount, must be in bigger or equal {min_amount} and less or equal {max_amount}')
+        amount_data = f'EUR{amount:.2f}'.rstrip('0').rstrip('.')
     tmp_data = ['BCD',  # Service tag
                 '002',  # Version
                 '',  # character set (will be set later)
@@ -572,7 +575,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
                 bic or '',  # BIC
                 name,  # Name of the recipient
                 iban,  # IBAN
-                f'EUR{amount:.2f}'.rstrip('0').rstrip('.'),  # Amount
+                amount_data,  # Amount
                 purpose or '',  # Purpose
                 reference or '',  # Remittance
                 ]
@@ -598,7 +601,7 @@ def _make_epc_qr_data(name, iban, amount, text=None, reference=None, bic=None,
     return data
 
 
-def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
+def make_epc_qr(name, iban, amount=None, text=None, reference=None, bic=None,
                 purpose=None, encoding=None):
     """\
     Creates and returns an European Payments Council Quick Response Code
@@ -620,9 +623,10 @@ def make_epc_qr(name, iban, amount, text=None, reference=None, bic=None,
 
     :param str name: Name of the recipient.
     :param str iban: International Bank Account Number (IBAN)
-    :param amount: The amount (in EUR) to transfer.
+    :param amount: The amount (in EUR) to transfer. If omitted or ``None``, the
+            amount field is left empty for the payer to fill in.
             The currency is always Euro, no other currencies are supported.
-    :type amount: int, float, decimal.Decimal
+    :type amount: int, float, decimal.Decimal or None
     :param str text: Remittance Information (unstructured)
     :param str reference: Remittance Information (structured)
     :param str bic: Bank Identifier Code (BIC). Optional, only required

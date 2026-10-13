@@ -11,6 +11,7 @@ Test against issue <https://github.com/heuer/segno/issues/55>.
 """
 import decimal
 import pytest
+import segno
 from segno.helpers import make_epc_qr, _make_epc_qr_data as make_epc_qr_data
 
 
@@ -109,6 +110,28 @@ def test_reference_002(amount):
     assert not qr.is_micro
     assert qr.version <= 13
     assert 'M' == qr.error
+
+
+@pytest.mark.parametrize('omit_amount', [False, True])
+@pytest.mark.parametrize('remittance', [{'text': 'Donation'},
+                                        {'reference': 'RF18539007547034'}])
+@pytest.mark.parametrize('encoding', [1, 2])
+def test_optional_amount(omit_amount, remittance, encoding):
+    kw = dict(name='Test recipient', iban='FR1420041010050500013M02606',
+              purpose='CHAR', encoding=encoding, **remittance)
+    if not omit_amount:
+        kw['amount'] = None
+    data = make_epc_qr_data(**kw)
+    expected = (f'BCD\n002\n{encoding}\nSCT\n\nTest recipient\n'
+                'FR1420041010050500013M02606\n\nCHAR\n'
+                + remittance.get('reference', '')
+                + ('\nDonation' if 'text' in remittance else '')).encode()
+    assert data == expected
+    qr = make_epc_qr(**kw)
+    assert not qr.is_micro
+    assert qr.error == 'M'
+    assert qr.version <= 13
+    assert qr.matrix == segno.make_qr(expected, error='m', boost_error=False).matrix
 
 
 def _make_valid_kw():
