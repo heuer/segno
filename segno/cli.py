@@ -45,7 +45,17 @@ def make_parser():
 
     def _convert_scale(val):
         val = float(val)
+        if val <= 0:
+            raise argparse.ArgumentTypeError(
+                f'scale must be positive, got {val:g}')
         return val if val != int(val) else int(val)
+
+    def _convert_border(val):
+        val = int(val)
+        if val < 0:
+            raise argparse.ArgumentTypeError(
+                f'border must not be negative, got {val}')
+        return val
 
     parser = argparse.ArgumentParser(prog='segno',
                                      description=f'Segno QR Code and Micro QR Code generator version {segno.__version__}')  # noqa: E501
@@ -90,7 +100,7 @@ def make_parser():
                                                '2 modules for Micro QR Codes) will be used. '
                                                'A value of 0 omits the border',
                         default=None,
-                        type=int)
+                        type=_convert_border)
     parser.add_argument('--scale', '-s', help='Scaling factor. By default, a scaling factor of 1 is used. '
                                               'That may lead into too small images. '
                                               'Some output formats, i.e. SVG, accept a decimal value.',

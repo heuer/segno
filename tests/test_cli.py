@@ -631,5 +631,19 @@ def _make_tmp_svg_filename():
     return f.name
 
 
+def test_cli_rejects_non_positive_scale(capsys):
+    with pytest.raises(SystemExit) as exc:
+        cli.parse(['hello', '--scale', '0'])
+    assert exc.value.code == 2
+    assert 'scale' in capsys.readouterr().err
+
+
+def test_cli_rejects_negative_border(capsys):
+    with pytest.raises(SystemExit) as exc:
+        cli.parse(['hello', '--border', '-1'])
+    assert exc.value.code == 2
+    assert 'border' in capsys.readouterr().err
+
+
 if __name__ == '__main__':
     pytest.main([__file__])
